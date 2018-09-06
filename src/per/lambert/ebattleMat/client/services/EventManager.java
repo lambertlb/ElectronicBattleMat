@@ -13,8 +13,8 @@ public class EventManager implements IEventManager {
 	private final HandlerManager eventBus;
 
 	@Inject
-	public EventManager(final HandlerManager eventBus) {
-		this.eventBus = eventBus;
+	public EventManager() {
+		this.eventBus = new HandlerManager(new Object());
 	}
 
 	@Override
