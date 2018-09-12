@@ -1,25 +1,18 @@
 package per.lambert.ebattleMat.client.controls.LoginControl;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
+import per.lambert.ebattleMat.client.services.serviceData.LoginRequestData;
+
 public class LoginModel {
-	String userName = "";
-	String password = "";
 	String message = "";
 	boolean isEnabled;
 	
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+	LoginRequestData requestData = (LoginRequestData)JavaScriptObject.createObject().cast();
 	
-	public String getPassword() {
-		return password;
+	public LoginRequestData getRequestData() {
+		return requestData;
 	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
 	public String getMessage() {
 		return message;
 	}

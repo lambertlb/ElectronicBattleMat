@@ -4,7 +4,7 @@ public class DungeonData {
 	String token;
 
 	/**
-	 * get token
+	 * get token.
 	 * 
 	 * @return token
 	 */
@@ -12,7 +12,7 @@ public class DungeonData {
 		return (token);
 	}
 
-	public void parse(String jsonData) {
+	public void parse(final String jsonData) {
 	}
 
 	int errorCode;

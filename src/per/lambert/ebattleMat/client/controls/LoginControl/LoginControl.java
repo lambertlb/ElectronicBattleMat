@@ -118,7 +118,7 @@ void setLocalizedStrings() {
   
   @UiHandler("txtUserName")
   void userNameChanged(ChangeEvent event) {
-	  model.setPassword(txtUserName.getText());
+	  model.getRequestData().setUsername(txtUserName.getText());
   }
 
   @UiHandler("txtUserName")
@@ -141,7 +141,7 @@ void setLocalizedStrings() {
 
   @UiHandler("txtPassword")
   void passwordChanged(ChangeEvent event) {
-	  model.setPassword(txtPassword.getText());
+	  model.getRequestData().setPassword(txtPassword.getText());
   }
   
   @UiHandler("txtPassword")

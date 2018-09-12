@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.client.interfaces;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
 /**
  * @author LLambert Interface to user management services
  */
@@ -7,19 +9,20 @@ public interface IDungeonManagement {
 	/**
 	 * Login
 	 * 
-	 * @param username
-	 *            username
-	 * @param password
-	 *            password
+	 * @param requestData
+	 *            request data
 	 * @param callback
 	 *            callback
 	 */
-	void login(String username, String password, IUserCallback callback);
+	void login(JavaScriptObject requestData, IUserCallback callback);
+
 	/**
 	 * Get current user data
+	 * 
 	 * @return user data
 	 */
-	DungeonData	getDungeonData();
+	DungeonData getDungeonData();
+
 	/**
 	 * Get token for current user
 	 * 
