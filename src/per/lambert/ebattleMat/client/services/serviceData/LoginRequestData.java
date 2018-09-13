@@ -1,8 +1,6 @@
 package per.lambert.ebattleMat.client.services.serviceData;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
-public class LoginRequestData extends JavaScriptObject {
+public class LoginRequestData extends ServiceRequestData {
 	protected LoginRequestData() {
 	}
 

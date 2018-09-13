@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.w3c.dom.Document;
+import com.google.gson.Gson;
+
+import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 /**
  * Login handler
@@ -17,32 +19,42 @@ import org.w3c.dom.Document;
  *
  */
 public class LoginHandler implements IWebRequestHandler {
-
-	private ResponseUtils responder;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.honeywell.prototypes.server.interfaces.IWebRequestHandler#handleRequest
-	 * (javax.servlet.http.HttpServletRequest,
-	 * javax.servlet.http.HttpServletResponse, javax.servlet.http.HttpServlet,
-	 * java.util.Map)
-	 */
-	@Override	public final void handleRequest(final HttpServletRequest request, final HttpServletResponse resp,
-			final HttpServlet servlet, final Document dom,final String fileContents) throws ServletException {
-		if(responder == null) {
-			responder = new ResponseUtils("loginHandler", servlet);
+	public class LoginRequestData extends ServiceRequestData {
+		public LoginRequestData() {
 		}
-		try {
-			PrintWriter out = resp.getWriter();
-			out.print(responder.getNextResponse());
-			out.flush();
-		} catch (IOException ie) {
-			throw new ServletException();
-		}
+
+		private String username;
+
+		public final void setUsername(String username) {
+			this.username = username;
+		};
+
+		public final String getUsername() {
+			return this.username;
+		};
+
+		private String password;
+
+		public final void setPassword(String password) {
+			this.password = password;
+		};
+
+		public final String setPassword() {
+			return this.password;
+		};
+
+	}
+
+	@Override
+	public final void handleRequest(final HttpServletRequest request, final HttpServletResponse resp,
+			final HttpServlet servlet, final String jsonData) throws ServletException {
+		Gson gson = new Gson();
+		LoginRequestData requestData = gson.fromJson(jsonData, LoginRequestData.class);
+
+		/*
+		 * PrintWriter out = resp.getWriter(); out.print(responder.getNextResponse());
+		 * out.flush();
+		 */
 	}
 
 }
-
-

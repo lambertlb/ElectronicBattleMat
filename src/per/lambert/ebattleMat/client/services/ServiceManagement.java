@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.services;
 
+import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 
@@ -20,5 +21,14 @@ public class ServiceManagement {
 			dungeonManagement = new DungeonManagement();
 		}
 		return (dungeonManagement);
+	}
+
+	private static IDataRequester dataRequester;
+
+	public static IDataRequester getDataRequester() {
+		if (dataRequester == null) {
+			dataRequester = new DataRequester();
+		}
+		return (dataRequester);
 	}
 }

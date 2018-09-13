@@ -1,6 +1,6 @@
 package per.lambert.ebattleMat.client.interfaces;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 /**
  * @author LLambert Interface to user management services
@@ -14,7 +14,7 @@ public interface IDungeonManagement {
 	 * @param callback
 	 *            callback
 	 */
-	void login(JavaScriptObject requestData, IUserCallback callback);
+	void login(ServiceRequestData requestData, IUserCallback callback);
 
 	/**
 	 * Get current user data

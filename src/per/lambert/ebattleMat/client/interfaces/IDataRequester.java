@@ -1,11 +1,11 @@
 package per.lambert.ebattleMat.client.interfaces;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 public interface IDataRequester {
 	/**
 	 * Request data from server
 	 * @param callback to notify user
 	 */
-	void requestData(final JavaScriptObject postDataOject,  final IUserCallback callback);
+	void requestData(final ServiceRequestData postDataOject, final String requestType,  final IUserCallback callback);
 }
