@@ -45,16 +45,37 @@ public class LoginHandler implements IWebRequestHandler {
 
 	}
 
+	public class LoginResponseData extends ServiceResponseData {
+		private int token;
+
+		public int getToken() {
+			return token;
+		}
+
+		public void setToken(int token) {
+			this.token = token;
+		}
+	}
+
 	@Override
 	public final void handleRequest(final HttpServletRequest request, final HttpServletResponse resp,
-			final HttpServlet servlet, final String jsonData) throws ServletException {
+			final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		Gson gson = new Gson();
 		LoginRequestData requestData = gson.fromJson(jsonData, LoginRequestData.class);
 
-		/*
-		 * PrintWriter out = resp.getWriter(); out.print(responder.getNextResponse());
-		 * out.flush();
-		 */
+		LoginResponseData responseData = new LoginResponseData();
+		if (requestData.username == null || requestData.username == "" || requestData.password == null
+				|| requestData.password == "") {
+			responseData.setError(1);
+		} else {
+			responseData.setToken(requestData.username.hashCode());
+		}
+		String responseDataString = gson.toJson(responseData);
+
+		PrintWriter out = resp.getWriter();
+		out.print(responseDataString);
+		out.flush();
+
 	}
 
 }

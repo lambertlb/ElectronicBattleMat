@@ -16,17 +16,5 @@ public interface IDungeonManagement {
 	 */
 	void login(ServiceRequestData requestData, IUserCallback callback);
 
-	/**
-	 * Get current user data
-	 * 
-	 * @return user data
-	 */
-	DungeonData getDungeonData();
-
-	/**
-	 * Get token for current user
-	 * 
-	 * @return Token as string
-	 */
-	String getToken();
+	DungeonServerError getLastError();
 }

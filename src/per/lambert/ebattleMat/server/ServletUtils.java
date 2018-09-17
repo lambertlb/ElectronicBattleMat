@@ -84,7 +84,6 @@ public final class ServletUtils {
 		ServiceRequestData requestData = gson.fromJson(jb.toString(), ServiceRequestData.class);
 
 		String command = requestData.getServiceRequest();
-//		String command = "TEST";
 		if (command == null) {
 			throw new ServletException();
 		}

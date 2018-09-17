@@ -1,6 +1,7 @@
 package per.lambert.ebattleMat.client.controls.LoginControl;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
@@ -29,7 +30,7 @@ public class LoginPresenter {
 			}
 
 			public void onSuccess(final Object sender, final Object data) {
-				if (dungeonManagement.getDungeonData().getErrorCode() == 0) {
+				if (dungeonManagement.getLastError() == DungeonServerError.Succsess) {
 					view.close();
 					ServiceManagement.getEventManager()
 							.fireEvent(new ReasonForActionEvent(ReasonForAction.Login, null));
