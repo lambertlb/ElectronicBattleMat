@@ -13,4 +13,12 @@ public class ServiceRequestData extends JavaScriptObject {
 	public final native String getServiceRequest() /*-{
 		return this.serviceRequest;
 	}-*/;
+
+	public final native int getToken() /*-{
+		return this.token;
+	}-*/;
+
+	public final native void setToken(int token) /*-{
+		this.token = token;
+	}-*/;
 }

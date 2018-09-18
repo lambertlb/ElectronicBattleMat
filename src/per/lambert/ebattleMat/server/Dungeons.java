@@ -16,6 +16,7 @@ public class Dungeons extends HttpServlet {
 	public Dungeons() {
 		webServices = new HashMap<String, IWebRequestHandler>();
 		webServices.put("LOGIN", new LoginHandler());
+		webServices.put("DUNGEONLIST", new DungeonListHandler());
 	}
 
 	@Override

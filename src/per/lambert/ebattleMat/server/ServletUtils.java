@@ -87,10 +87,19 @@ public final class ServletUtils {
 		if (command == null) {
 			throw new ServletException();
 		}
+		if (!command.equalsIgnoreCase("LOGIN")) {
+			validateToken(requestData);
+		}
 		IWebRequestHandler handler = webServices.get(command);
 		if (handler != null) {
 			handler.handleRequest(request, response, servlet, jb.toString());
 			return;
+		}
+	}
+
+	private static void validateToken(ServiceRequestData requestData) throws ServletException {
+		if (requestData.getToken() == 0) {
+			throw new ServletException();
 		}
 	}
 

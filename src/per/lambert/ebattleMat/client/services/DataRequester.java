@@ -18,6 +18,12 @@ public class DataRequester implements IDataRequester {
 
 	@Override
 	public void requestData(final ServiceRequestData postDataOject, final String requestType, IUserCallback callback) {
+		requestData(postDataOject, 0, requestType, callback);
+	}
+
+	@Override
+	public void requestData(final ServiceRequestData postDataOject, final int token, final String requestType, IUserCallback callback) {
+		postDataOject.setToken(token);
 		postDataOject.setServiceRequest(requestType);
 		String requestData = JsonUtils.stringify(postDataOject);
 		String url = GWT.getModuleBaseURL() + "dungeons";
@@ -46,7 +52,6 @@ public class DataRequester implements IDataRequester {
 		}
 
 	}
-
 	protected void handleCallbackError(final DungeonServerError dungeonError, final Throwable exception,
 			IUserCallback userCallback) {
 		userCallback.onError(this, new IErrorInformation() {
