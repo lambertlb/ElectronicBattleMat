@@ -27,14 +27,13 @@ public class DungeonListHandler implements IWebRequestHandler {
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet,
 			String jsonData) throws ServletException, IOException {
 		DungeonListResponseData responseData = new DungeonListResponseData();
-		responseData.setDungeons(new String[] { "Dungeon1", "Dungeon2", "Dungeon3" });
+		responseData.setDungeons(DungeonsManager.getDungeonList(servlet));
 		Gson gson = new Gson();
 		String responseDataString = gson.toJson(responseData);
 
 		PrintWriter out = resp.getWriter();
 		out.print(responseDataString);
 		out.flush();
-
 	}
 
 }
