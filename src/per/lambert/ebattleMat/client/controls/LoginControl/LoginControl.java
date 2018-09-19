@@ -118,7 +118,7 @@ void setLocalizedStrings() {
   
   @UiHandler("txtUserName")
   void userNameChanged(ChangeEvent event) {
-	  model.getRequestData().setUsername(txtUserName.getText());
+	  presenter.getRequestData().setUsername(txtUserName.getText());
   }
 
   @UiHandler("txtUserName")
@@ -141,7 +141,7 @@ void setLocalizedStrings() {
 
   @UiHandler("txtPassword")
   void passwordChanged(ChangeEvent event) {
-	  model.getRequestData().setPassword(txtPassword.getText());
+	  presenter.getRequestData().setPassword(txtPassword.getText());
   }
   
   @UiHandler("txtPassword")
@@ -170,8 +170,8 @@ void setLocalizedStrings() {
 
 	@Override
 	public void update() {
-		displayMessage(model.getMessage());
-		setEnable(model.getIsEnabled());
+		displayMessage(presenter.getMessage());
+		setEnable(presenter.getIsEnabled());
 	}
 	
 	void setEnable(boolean enable) {
@@ -190,13 +190,6 @@ void setLocalizedStrings() {
 		}
 	}
 	
-	LoginModel model;
-	
-	@Override
-	public void setModel(LoginModel model) {
-		this.model = model;
-	}
-
 	@Override
 	public void close() {
 		hide();

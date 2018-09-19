@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.client.controls.LoginControl;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
@@ -7,24 +9,46 @@ import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.serviceData.LoginRequestData;
 
 public class LoginPresenter {
 
 	private ILoginView view;
-	LoginModel model;
+	LoginRequestData requestData = (LoginRequestData) JavaScriptObject.createObject().cast();
+	public LoginRequestData getRequestData() {
+		return requestData;
+	}
+
+	String message = "";
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	boolean isEnabled;
+
+	public boolean getIsEnabled() {
+		return isEnabled;
+	}
+
+	public void setIsEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 
 	public void setView(ILoginView view) {
 		this.view = view;
-		model = new LoginModel();
-		view.setModel(model);
 	}
 
 	public void ok() {
-		model.setIsEnabled(false);
+		setIsEnabled(false);
 		view.update();
 		final IDungeonManagement dungeonManagement = ServiceManagement.getDungeonManagment();
 
-		dungeonManagement.login(model.getRequestData(), new IUserCallback() {
+		dungeonManagement.login(requestData, new IUserCallback() {
 			public void onError(final Object sender, final IErrorInformation error) {
 				loginComplete("Login Fail");
 			}
@@ -41,8 +65,8 @@ public class LoginPresenter {
 	}
 
 	void loginComplete(String message) {
-		model.setMessage(message);
-		model.setIsEnabled(true);
+		setMessage(message);
+		setIsEnabled(true);
 		view.update();
 	}
 }
