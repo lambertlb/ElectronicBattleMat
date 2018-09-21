@@ -14,19 +14,46 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 import per.lambert.ebattleMat.client.controls.LoginControl.LoginControl;
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.services.ServiceManagement;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class ElectronicBattleMat implements EntryPoint {
-	private RootLayoutPanel	rootLayoutPanel;
+	private RootLayoutPanel rootLayoutPanel;
+
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
 		rootLayoutPanel = RootLayoutPanel.get();
-        LoginControl lc = new LoginControl();
-        lc.getElement().getStyle().setZIndex(400);
-        lc.show();
+		setupEventHandler();
+		LoginControl lc = new LoginControl();
+		lc.getElement().getStyle().setZIndex(400);
+		lc.show();
+	}
+
+	private void setupEventHandler() {
+		IEventManager eventManager = ServiceManagement.getEventManager();
+		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+			public void onReasonForAction(final ReasonForActionEvent event) {
+				if (event.getReasonForAction() == ReasonForAction.Login) {
+					selectDungeon();
+					startServices();
+				}
+			}
+		});
+	}
+
+	private void startServices() {
+	}
+
+	private void selectDungeon() {
+		DungeonSelectControl dungeonSelectControl = new DungeonSelectControl();
+		dungeonSelectControl.show();
 	}
 }

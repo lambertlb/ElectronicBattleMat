@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.client.interfaces;
 
+import java.util.List;
+
 import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 /**
@@ -17,4 +19,6 @@ public interface IDungeonManagement {
 	void login(ServiceRequestData requestData, IUserCallback callback);
 
 	DungeonServerError getLastError();
+
+	List<String> getDungeonList();
 }
