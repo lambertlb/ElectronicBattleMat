@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import per.lambert.ebattleMat.client.controls.DungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.controls.LoginControl.LoginControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
