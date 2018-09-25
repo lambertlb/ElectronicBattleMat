@@ -1,8 +1,6 @@
 package per.lambert.ebattleMat.server;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,6 +14,7 @@ import com.google.gson.Gson;
 
 public class DungeonsManager {
 	private static List<String> dungeonNames = new ArrayList<String>();
+	private static List<DungeonData> dungeonData;
 	private static ReentrantLock lock = new ReentrantLock();
 	private final static String fileLocation = "/usr/dungeonData/";
 
@@ -24,6 +23,16 @@ public class DungeonsManager {
 		try {
 			checkIfNeedToLoadDungeons(servlet);
 			return ((String[]) dungeonNames.toArray(new String[0]));
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public static List<DungeonData> getDungeonData(HttpServlet servlet) {
+		lock.lock();
+		try {
+			checkIfNeedToLoadDungeonData(servlet);
+			return (dungeonData);
 		} finally {
 			lock.unlock();
 		}
@@ -59,6 +68,39 @@ public class DungeonsManager {
 						br.close();
 					} catch (IOException e) {
 					}
+				}
+			}
+		}
+	}
+
+	private static void checkIfNeedToLoadDungeonData(HttpServlet servlet) {
+		if (dungeonData == null && dungeonNames != null && !dungeonNames.isEmpty()) {
+			dungeonData = new ArrayList<>();
+			for (String dungeonName : dungeonNames) {
+				loadDungeonData(servlet, dungeonName);
+			}
+		}
+	}
+
+	private static void loadDungeonData(HttpServlet servlet, String dungeonName) {
+		String name = dungeonName.toLowerCase();
+		Gson gson = new Gson();
+		BufferedReader br = null;
+		try {
+
+			String filePath = fileLocation + name + "/dungeonData.json";
+			InputStream is = servlet.getServletContext().getResourceAsStream(filePath);
+			InputStreamReader isr = new InputStreamReader(is);
+			br = new BufferedReader(isr);
+			DungeonData result = gson.fromJson(br, DungeonData.class);
+			if (result != null) {
+				dungeonData.add(result);
+			}
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
 				}
 			}
 		}

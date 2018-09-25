@@ -2,6 +2,7 @@ package per.lambert.ebattleMat.client.interfaces;
 
 import java.util.List;
 
+import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 /**
@@ -21,4 +22,6 @@ public interface IDungeonManagement {
 	DungeonServerError getLastError();
 
 	List<String> getDungeonList();
+
+	List<DungeonData> getDungeonData();
 }
