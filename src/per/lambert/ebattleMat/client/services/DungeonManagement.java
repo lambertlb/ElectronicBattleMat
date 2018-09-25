@@ -6,11 +6,13 @@ import java.util.List;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonDataResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListResponseData;
@@ -142,4 +144,16 @@ public class DungeonManagement implements IDungeonManagement {
 		callback.onSuccess(requestData, null);
 	}
 
+	DungeonData selectedDungeon;
+
+	public DungeonData getSelectedDungeon() {
+		return selectedDungeon;
+	}
+
+	@Override
+	public void selectDungeon(String dungeonsName) {
+		int index = dungeonList.indexOf(dungeonsName);
+		selectedDungeon = dungeonData.get(index);
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
+	}
 }

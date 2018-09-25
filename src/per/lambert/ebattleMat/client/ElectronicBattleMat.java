@@ -45,6 +45,11 @@ public class ElectronicBattleMat implements EntryPoint {
 				if (event.getReasonForAction() == ReasonForAction.Login) {
 					selectDungeon();
 					startServices();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonSelected) {
+					dungeonSelected();
+					return;
 				}
 			}
 		});
@@ -56,5 +61,15 @@ public class ElectronicBattleMat implements EntryPoint {
 	private void selectDungeon() {
 		DungeonSelectControl dungeonSelectControl = new DungeonSelectControl();
 		dungeonSelectControl.show();
+	}
+	
+	/**
+	 * Setup main display with selected dungeon
+	 */
+	private void dungeonSelected() {
+		final Label errorLabel = new Label("Error Label");
+		RootPanel loginPanel = RootPanel.get("loginControls");
+		loginPanel.getElement().getStyle().setPosition(Position.RELATIVE);
+		loginPanel.add(errorLabel);
 	}
 }

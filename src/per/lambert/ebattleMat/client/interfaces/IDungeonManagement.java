@@ -24,4 +24,6 @@ public interface IDungeonManagement {
 	List<String> getDungeonList();
 
 	List<DungeonData> getDungeonData();
+
+	void selectDungeon(String dungeonsName);
 }

@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,19 +44,15 @@ public class DungeonSelectControl extends DialogBox {
 	@UiField
 	ListBox dungeonDropdownList;
 
-	@UiHandler("dungeonDropdownList")
+	@UiField
+	Button selectButton;
+	
+	@UiHandler("selectButton")
 	void onClick(ClickEvent e) {
-		Window.alert("Hello!");
+		dungeonSelectPresenter.selectDungeon(dungeonDropdownList.getSelectedValue());
 	}
-
-	private void centerPopupOnPage() {
-		int minOffset = 10; // px
-		int knownDialogWidth = 400; // this is in the CSS
-		int heightAboveCenter = 200; // will set the top to 200px above center
-
-		int left = Math.max(minOffset, (Window.getClientWidth() / 2) - (knownDialogWidth / 2));
-		int top = Math.max(minOffset, (Window.getClientHeight() / 2) - heightAboveCenter);
-		setPopupPosition(left, top);
+	public void close() {
+		hide();
 	}
 
 }
