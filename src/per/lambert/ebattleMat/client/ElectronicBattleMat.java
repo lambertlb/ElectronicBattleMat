@@ -2,16 +2,10 @@ package per.lambert.ebattleMat.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
 import per.lambert.ebattleMat.client.controls.DungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.controls.LoginControl.LoginControl;
@@ -19,6 +13,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.maindisplay.ShellLayout;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 
 /**
@@ -26,6 +21,7 @@ import per.lambert.ebattleMat.client.services.ServiceManagement;
  */
 public class ElectronicBattleMat implements EntryPoint {
 	private RootLayoutPanel rootLayoutPanel;
+	private static SimpleLayoutPanel simplePanel = new SimpleLayoutPanel();
 
 	/**
 	 * This is the entry point method.
@@ -62,14 +58,21 @@ public class ElectronicBattleMat implements EntryPoint {
 		DungeonSelectControl dungeonSelectControl = new DungeonSelectControl();
 		dungeonSelectControl.show();
 	}
-	
+
 	/**
 	 * Setup main display with selected dungeon
 	 */
 	private void dungeonSelected() {
 		final Label errorLabel = new Label("Error Label");
+		final ShellLayout layout = new ShellLayout();
 		RootPanel loginPanel = RootPanel.get("loginControls");
 		loginPanel.getElement().getStyle().setPosition(Position.RELATIVE);
 		loginPanel.add(errorLabel);
+		setupDungeonView();
+		layout.mainPanel.add(simplePanel);
+		rootLayoutPanel.add(layout);
+	}
+
+	private void setupDungeonView() {
 	}
 }

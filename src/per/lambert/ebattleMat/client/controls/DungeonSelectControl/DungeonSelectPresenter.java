@@ -15,7 +15,7 @@ public class DungeonSelectPresenter {
 	}
 
 	public void selectDungeon(String dungeonsName) {
-		ServiceManagement.getDungeonManagment().selectDungeon(dungeonsName);
 		view.close();
+		ServiceManagement.getDungeonManagment().selectDungeon(dungeonsName);
 	}
 }
