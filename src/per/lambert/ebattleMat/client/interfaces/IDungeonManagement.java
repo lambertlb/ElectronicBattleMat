@@ -3,6 +3,7 @@ package per.lambert.ebattleMat.client.interfaces;
 import java.util.List;
 
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 /**
@@ -26,4 +27,14 @@ public interface IDungeonManagement {
 	List<DungeonData> getDungeonData();
 
 	void selectDungeon(String dungeonsName);
+
+	DungeonData getSelectedDungeon();
+
+	int getCurrentLevel();
+
+	void setCurrentLevel(int currentLevel);
+
+	DungeonLevel getCurrentLevelData();
+
+	String getDungeonNameForUrl();
 }

@@ -7,6 +7,6 @@ public class DungeonData extends JavaScriptObject {
 	}
 
 	public final native DungeonLevel[] getDungeonlevels() /*-{
-		return this.dungeonlevels;
+		return this.dungeonLevels;
 	}-*/;
 }

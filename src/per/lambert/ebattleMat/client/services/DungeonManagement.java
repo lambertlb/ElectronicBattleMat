@@ -15,6 +15,7 @@ import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonDataResponseData;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
@@ -41,6 +42,33 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public List<DungeonData> getDungeonData() {
 		return dungeonData;
+	}
+
+	DungeonData selectedDungeon;
+
+	@Override
+	public DungeonData getSelectedDungeon() {
+		return selectedDungeon;
+	}
+
+	int currentLevel;
+
+	@Override
+	public int getCurrentLevel() {
+		return currentLevel;
+	}
+
+	@Override
+	public void setCurrentLevel(int currentLevel) {
+		this.currentLevel = currentLevel;
+	}
+
+	@Override
+	public DungeonLevel getCurrentLevelData() {
+		if (currentLevel < selectedDungeon.getDungeonlevels().length) {
+			return(selectedDungeon.getDungeonlevels()[currentLevel]);
+		}
+		return null;
 	}
 
 	@Override
@@ -144,16 +172,22 @@ public class DungeonManagement implements IDungeonManagement {
 		callback.onSuccess(requestData, null);
 	}
 
-	DungeonData selectedDungeon;
-
-	public DungeonData getSelectedDungeon() {
-		return selectedDungeon;
+	String dungeonNameForUrl;
+	
+	@Override
+	public String getDungeonNameForUrl() {
+		return dungeonNameForUrl;
 	}
 
 	@Override
 	public void selectDungeon(String dungeonsName) {
 		int index = dungeonList.indexOf(dungeonsName);
 		selectedDungeon = dungeonData.get(index);
+		updateDungeonNameForUrl(dungeonsName);
 		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
+	}
+
+	private void updateDungeonNameForUrl(String dungeonsName) {
+		dungeonNameForUrl = dungeonsName.toLowerCase();
 	}
 }
