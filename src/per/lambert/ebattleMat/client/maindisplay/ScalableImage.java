@@ -19,7 +19,6 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,7 +33,14 @@ public class ScalableImage extends AbsolutePanel
 	 * image is known so that one side of the image exactly fills the parent and the
 	 * grid matches that.
 	 */
-	private static final int DEFAULT_GRID_SPACING = 100;
+	private int DEFAULT_GRID_SPACING = 100;
+	/**
+	 * Default zoom constant.
+	 */
+	private static final double DEFAULT_ZOOM = 1.1;
+	private static final int OVERLAYS_Z = 300;
+	// private static final int ROOM_OBJECTS_Z = 200;
+
 	/**
 	 * Adjusted grid spacing so the grid lines matches exactly to one side.
 	 */
@@ -108,6 +114,9 @@ public class ScalableImage extends AbsolutePanel
 	 * Offset of image in the vertical direction.
 	 */
 	private double offsetY = 0;
+
+	private double gridOffsetX = 0;
+	private double gridOffsetY = 0;
 	/**
 	 * Used by pan control.
 	 */
@@ -121,10 +130,6 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private double mouseDownYPos = 0;
 	/**
-	 * Is image scaled by width. If not then scaled by height
-	 */
-	private boolean scaledByWidth;
-	/**
 	 * Number of horizontal lines needed in the grid.
 	 */
 	private int horizontalLines;
@@ -132,10 +137,6 @@ public class ScalableImage extends AbsolutePanel
 	 * Number of vertical lines needed in the grid.
 	 */
 	private int verticalLines;
-	/**
-	 * Number of lines used in the scaled side.
-	 */
-	private int linesUsed;
 
 	/**
 	 * Widget for scaling an image. This supports zoom and pan
@@ -157,8 +158,6 @@ public class ScalableImage extends AbsolutePanel
 
 			@Override
 			public void onDragOver(DragOverEvent event) {
-				String data = event.getData("text");
-
 			}
 		}, DragOverEvent.getType());
 		this.addDomHandler(new DropHandler() {
@@ -172,7 +171,6 @@ public class ScalableImage extends AbsolutePanel
 
 			@Override
 			public void onDragLeave(DragLeaveEvent event) {
-				String data = event.getData("text");
 			}
 		}, DragLeaveEvent.getType());
 	}
@@ -180,43 +178,10 @@ public class ScalableImage extends AbsolutePanel
 	private void setupEventHandling() {
 	}
 
-	private static final int OVERLAYS_Z = 300;
-	private static final int DEVICES_Z = 200;
-
 	@Override
 	public void add(Widget w, int left, int top) {
 		super.add(w, left, top);
 		w.getElement().getStyle().setZIndex(OVERLAYS_Z);
-	}
-
-	/**
-	 * Current position for generating coordinates.
-	 */
-	private int currentX;
-	/**
-	 * Current position for generating coordinates.
-	 */
-	private int currentY;
-
-	/**
-	 * Get adjusted zoom factor.
-	 * 
-	 * @return adjusted zoom factor
-	 */
-	private double adjustedZoom() {
-		return (totalZoom / maxZoom);
-	}
-
-	/**
-	 * In order to have tool tips displayed for the connection lines we need to
-	 * capture (sink) mouse over events that occur on the line elements in the DOM
-	 * TODO - we need to unhook the handler when a connection no longer exists to
-	 * prevent memory leaks!
-	 * 
-	 * @param connectionPanel
-	 *            The panel containing the connection lines
-	 */
-	private void setupTooltipHandling(HTMLPanel connectionPanel) {
 	}
 
 	/**
@@ -229,12 +194,16 @@ public class ScalableImage extends AbsolutePanel
 	 * @param heightOfParent
 	 *            current height of parent window.
 	 */
-	public final void setImage(final Image imageToDisplay, final int widthOfParent, final int heightOfParent) {
+	public final void setImage(final Image imageToDisplay, final int widthOfParent, final int heightOfParent,
+			final int defaultGridSpacing, final double gridOffsetX, final double gridOffsetY) {
 		totalZoom = 1;
 		maxZoom = 1;
 		offsetX = 0;
 		offsetY = 0;
+		this.gridOffsetX = gridOffsetX;
+		this.gridOffsetY = gridOffsetY;
 
+		DEFAULT_GRID_SPACING = defaultGridSpacing;
 		this.image = imageToDisplay;
 		this.imageElement = (ImageElement) imageToDisplay.getElement().cast();
 
@@ -270,11 +239,6 @@ public class ScalableImage extends AbsolutePanel
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
 		mainDraw();
 	}
-
-	/**
-	 * Default zoom constant.
-	 */
-	private static final double DEFAULT_ZOOM = 1.1;
 
 	/**
 	 * Handle mouse wheel.
@@ -405,10 +369,10 @@ public class ScalableImage extends AbsolutePanel
 		context.beginPath();
 		context.setStrokeStyle(colorYellow);
 		double interval = scaledWidth / verticalLines;
-		double x = interval + offsetX;
-		double y = scaledHeight + offsetY;
+		double x = interval + offsetX + (gridOffsetX * totalZoom);
+		double y = scaledHeight + offsetY + (gridOffsetY * totalZoom);
 		for (int i = 0; i < verticalLines; ++i) {
-			context.moveTo(x, offsetY);
+			context.moveTo(x, offsetY + (gridOffsetY * totalZoom));
 			context.lineTo(x, y);
 			x += interval;
 		}
@@ -427,10 +391,10 @@ public class ScalableImage extends AbsolutePanel
 		context.beginPath();
 		context.setStrokeStyle(colorYellow);
 		double interval = scaledHeight / horizontalLines;
-		double y = interval + offsetY;
-		double x = scaledWidth + offsetX;
+		double y = interval + offsetY + (gridOffsetY * totalZoom);
+		double x = scaledWidth + offsetX + (gridOffsetX * totalZoom);
 		for (int i = 0; i < horizontalLines; ++i) {
-			context.moveTo(offsetX, y);
+			context.moveTo(offsetX + (gridOffsetX * totalZoom), y);
 			context.lineTo(x, y);
 			y += interval;
 		}
@@ -448,7 +412,8 @@ public class ScalableImage extends AbsolutePanel
 	private void outlinePicture(final double scaledWidth, final double scaledHeight) {
 		context.beginPath();
 		context.setStrokeStyle(colorYellow);
-		context.rect(offsetX, offsetY, scaledWidth, scaledHeight);
+		context.rect(offsetX + (gridOffsetX * totalZoom), offsetY + (gridOffsetY * totalZoom), scaledWidth,
+				scaledHeight);
 		context.stroke();
 	}
 
@@ -457,11 +422,7 @@ public class ScalableImage extends AbsolutePanel
 	 * fills the parent.
 	 */
 	private void calculateStartingZoom() {
-		if (scaledByWidth) {
-			totalZoom = (double) parentWidth / (double) imageWidth;
-		} else {
-			totalZoom = (double) parentHeight / (double) imageHeight;
-		}
+		totalZoom = 1;
 		maxZoom = totalZoom;
 	}
 
@@ -469,63 +430,11 @@ public class ScalableImage extends AbsolutePanel
 	 * Calculate numbers defendant on parent to image size and grid spacing.
 	 */
 	private void calculateDimensions() {
-		scaledByWidth = isScaleByWidth();
-		if (scaledByWidth) { // force image to fill based on width
-			adjustedImageWidth = imageWidth;
-			adjustedImageHeight = adjustDimensionToFillGrid(parentWidth, imageWidth, imageHeight);
-			horizontalLines = linesUsed;
-			verticalLines = (int) (parentWidth / adjustedGridSpacing);
-		} else { // force image to fill based on height
-			adjustedImageHeight = imageHeight;
-			adjustedImageWidth = adjustDimensionToFillGrid(parentHeight, imageHeight, imageWidth);
-			horizontalLines = (int) (parentHeight / adjustedGridSpacing);
-			verticalLines = linesUsed;
-		}
-	}
-
-	/**
-	 * Should we scale by width.
-	 * 
-	 * @return true if we should scale by width
-	 */
-	private boolean isScaleByWidth() {
-		double scaleWidth = (double) parentWidth / (double) imageWidth;
-		double scaleHeight = (double) parentHeight / (double) imageHeight;
-		return scaleWidth < scaleHeight;
-	}
-
-	/**
-	 * Adjust the image so that it scales exactly to the parent.
-	 * 
-	 * @param parentSize
-	 *            size of parent
-	 * @param hostSize1
-	 *            host size 1
-	 * @param hostSize2
-	 *            host size 2
-	 * @return adjusted size
-	 */
-	private int adjustDimensionToFillGrid(final int parentSize, final int hostSize1, final int hostSize2) {
-		adjustGridSpacing(parentSize);
-		double scaleFactor = (double) parentSize / hostSize1;
-		int scaledHeight = (int) (hostSize2 * scaleFactor);
-		linesUsed = (int) (scaledHeight / adjustedGridSpacing);
-		if ((int) (scaledHeight % adjustedGridSpacing) > 0) {
-			++linesUsed;
-		}
-		return ((int) (linesUsed * adjustedGridSpacing / scaleFactor));
-	}
-
-	/**
-	 * Adjust grid spacing based on parent dimension.
-	 * 
-	 * @param parentSize
-	 *            size used for calculation
-	 */
-	private void adjustGridSpacing(final int parentSize) {
-		int lines = parentSize / DEFAULT_GRID_SPACING;
-		double remainder = parentSize % DEFAULT_GRID_SPACING;
-		adjustedGridSpacing = DEFAULT_GRID_SPACING + (remainder / lines);
+		adjustedImageWidth = imageWidth;
+		adjustedImageHeight = imageHeight;
+		adjustedGridSpacing = DEFAULT_GRID_SPACING;
+		verticalLines = (int) (imageWidth / adjustedGridSpacing) + 1;
+		horizontalLines = (int) (imageHeight / adjustedGridSpacing) + 1;
 	}
 
 	private void dropDeviceData(DropEvent event) {
@@ -533,66 +442,5 @@ public class ScalableImage extends AbsolutePanel
 		int yCoord = event.getNativeEvent().getClientY();
 		xCoord = xCoord - getAbsoluteLeft();
 		yCoord = yCoord - getAbsoluteTop();
-	}
-
-	/**
-	 * This class is needed to contain the connection lines. It is just a wrapper
-	 * for an HTMLPanel in order to pass through the mouse events required for
-	 * panning and zooming the map.If necessary we could do processing and/or handle
-	 * other events.
-	 */
-	private class ConnectionPanel extends HTMLPanel {
-
-		public ConnectionPanel(final ScalableImage scalableImage, String html) {
-			super(html);
-			setupMouseHandlers(scalableImage);
-		}
-
-		/**
-		 * Set up the handlers for the mouse events to pass through to the parent
-		 * container
-		 * 
-		 * @param scalableImage
-		 *            the container for the connection panel
-		 */
-		private void setupMouseHandlers(final ScalableImage scalableImage) {
-			MouseWheelHandler mouseWheelHandler = new MouseWheelHandler() {
-
-				@Override
-				public void onMouseWheel(MouseWheelEvent event) {
-					scalableImage.onMouseWheel(event);
-				}
-			};
-
-			MouseDownHandler mouseDownHandler = new MouseDownHandler() {
-
-				@Override
-				public void onMouseDown(MouseDownEvent event) {
-					scalableImage.onMouseDown(event);
-				}
-			};
-
-			MouseUpHandler mouseUpHandler = new MouseUpHandler() {
-
-				@Override
-				public void onMouseUp(MouseUpEvent event) {
-					scalableImage.onMouseUp(event);
-				}
-			};
-
-			MouseMoveHandler mouseMoveHandler = new MouseMoveHandler() {
-
-				@Override
-				public void onMouseMove(MouseMoveEvent event) {
-					scalableImage.onMouseMove(event);
-				}
-			};
-
-			this.addDomHandler(mouseWheelHandler, MouseWheelEvent.getType());
-			this.addDomHandler(mouseDownHandler, MouseDownEvent.getType());
-			this.addDomHandler(mouseUpHandler, MouseUpEvent.getType());
-			this.addDomHandler(mouseMoveHandler, MouseMoveEvent.getType());
-		}
-
 	}
 }

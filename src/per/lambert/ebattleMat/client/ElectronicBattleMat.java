@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 import per.lambert.ebattleMat.client.controls.DungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.controls.LoginControl.LoginControl;
@@ -72,25 +73,31 @@ public class ElectronicBattleMat implements EntryPoint {
 	private void dungeonSelected() {
 		final Label errorLabel = new Label("Error Label");
 		final ShellLayout layout = new ShellLayout();
-		LoadImage();
+		final SimplePanel hideImagePanel = new SimplePanel();
+		final Image image = new Image();
+		LoadImage(image);
 		RootPanel loginPanel = RootPanel.get("loginControls");
 		loginPanel.getElement().getStyle().setPosition(Position.RELATIVE);
 		loginPanel.add(errorLabel);
+		loginPanel.add(hideImagePanel, 73, 70);
+		hideImagePanel.setSize("10px", "10px");
+		hideImagePanel.add(image);
+		hideImagePanel.setVisible(false);
 		setupDungeonView();
 		layout.mainPanel.add(simplePanel);
 		rootLayoutPanel.add(layout);
+		simplePanel.clear();
+		simplePanel.add(scaleImage);
 	}
 
-	Image image;
-	private void LoadImage() {
+	private void LoadImage(final Image image) {
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		String dungeonNameForUrl = ServiceManagement.getDungeonManagment().getDungeonNameForUrl();
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
 		String imageUrl = "usr/dungeonData/" + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
-		image = new Image();
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent event) {
-				scaleImage.setImage(image, simplePanel.getOffsetWidth(), simplePanel.getOffsetHeight());
+				scaleImage.setImage(image, simplePanel.getOffsetWidth(), simplePanel.getOffsetHeight(), 51, 10 , 10);
 			}
 		});
 		image.setUrl(imageUrl);
