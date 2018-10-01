@@ -14,7 +14,7 @@ xmlns:ribbon="urn:import:per.lambert.ebattleMat.client.controls.RibbonBar"
 	</ui:style>
 	<g:HTMLPanel>
 	 <div class="{style.topPanel}">
-	 	<ribbon:RibbonBarControl></ribbon:RibbonBarControl>
+	 	<ribbon:RibbonBar/>
 	 </div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

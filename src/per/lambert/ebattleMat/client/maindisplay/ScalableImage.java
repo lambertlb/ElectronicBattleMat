@@ -41,6 +41,16 @@ public class ScalableImage extends AbsolutePanel
 	private static final int OVERLAYS_Z = 300;
 	// private static final int ROOM_OBJECTS_Z = 200;
 
+	private Boolean showGrid;
+
+	public Boolean getShowGrid() {
+		return showGrid;
+	}
+
+	public void setShowGrid(Boolean showGrid) {
+		this.showGrid = showGrid;
+	}
+
 	/**
 	 * Adjusted grid spacing so the grid lines matches exactly to one side.
 	 */
@@ -341,7 +351,9 @@ public class ScalableImage extends AbsolutePanel
 		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + DEFAULT_GRID_SPACING,
 				parentHeight + DEFAULT_GRID_SPACING);
 		front.drawImage(back.getCanvas(), 0, 0);
-		drawGridLines();
+		if (showGrid) {
+			drawGridLines();
+		}
 	}
 
 	/**
