@@ -5,9 +5,8 @@
 		display: flex;
 		flex-direction: row;
 		width: 100%;
-		height: 20px;
-		justify-content: center;
-		align-items: center;
+		height: 25px;
+		justify-content: left;
 		z-index: 10;
 		color: white
 	}
@@ -19,6 +18,12 @@
 		height: 95px;
 		z-index: 10;
 	}
+	
+	.doubleboxstyle {
+		height: 12px;
+		width: 20px;
+		text-align: right;
+	}
 	</ui:style>
 	<g:HTMLPanel>
 		<div class="{style.flexgrid}">
@@ -28,11 +33,20 @@
 			<div class="{style.flexrow}">
 				<g:HorizontalPanel>
 					<g:Label text="Grid Size" />
-					<g:DoubleBox ui:field="gridSizeBox" styleName="style.doubleboxstyle" />
+					<g:DoubleBox ui:field="gridSizeBox" styleName="{style.doubleboxstyle}" />
 				</g:HorizontalPanel>
 			</div>
 			<div class="{style.flexrow}">
-				<!-- empty row -->
+				<g:HorizontalPanel>
+					<g:Label text="OffsetX" />
+					<g:DoubleBox ui:field="gridOffsetX" styleName="{style.doubleboxstyle}" />
+				</g:HorizontalPanel>
+			</div>
+			<div class="{style.flexrow}">
+				<g:HorizontalPanel>
+					<g:Label text="OffsetY" />
+					<g:DoubleBox ui:field="gridOffsetY" styleName="{style.doubleboxstyle}" />
+				</g:HorizontalPanel>
 			</div>
 			<div class="{style.flexrow}">
 				<g:Label ui:field="label" text="Grid Control" />

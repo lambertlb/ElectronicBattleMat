@@ -18,11 +18,11 @@ h1 {
 }
 
 .ribbonGroupLabel {
-	color: red;
+	color: white;
 }
 
 .doubleboxstyle {
-	color: red;
+	height:12px;
 	width: 20px;
 	text-align: center;
 }

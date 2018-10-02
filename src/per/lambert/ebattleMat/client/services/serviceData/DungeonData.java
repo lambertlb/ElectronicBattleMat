@@ -23,12 +23,4 @@ public class DungeonData extends JavaScriptObject {
 	public final native Boolean getShowGrid() /*-{
 		return (this.showGrid);
 	}-*/;
-	
-	public final native double getGridSize() /*-{
-		return this.gridSize;
-	}-*/;
-
-	public final native void setGridSize(double gridSize) /*-{
-		this.gridSize = gridSize;
-	}-*/;
 }

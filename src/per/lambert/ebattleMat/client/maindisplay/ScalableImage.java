@@ -22,18 +22,14 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.services.ServiceManagement;
+
 /**
  * @author LLambert Class to manage a scaled image with overlays.
  */
 public class ScalableImage extends AbsolutePanel
 		implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
 
-	/**
-	 * Base size of a grid cell. This will be scaled once the size of the parent and
-	 * image is known so that one side of the image exactly fills the parent and the
-	 * grid matches that.
-	 */
-	private int DEFAULT_GRID_SPACING = 100;
 	/**
 	 * Default zoom constant.
 	 */
@@ -43,18 +39,10 @@ public class ScalableImage extends AbsolutePanel
 
 	private Boolean showGrid;
 
-	public Boolean getShowGrid() {
-		return showGrid;
-	}
-
-	public void setShowGrid(Boolean showGrid) {
-		this.showGrid = showGrid;
-	}
-
 	/**
 	 * Adjusted grid spacing so the grid lines matches exactly to one side.
 	 */
-	private double adjustedGridSpacing;
+	private double gridSpacing;
 	/**
 	 * Main canvas that is drawn.
 	 */
@@ -204,16 +192,11 @@ public class ScalableImage extends AbsolutePanel
 	 * @param heightOfParent
 	 *            current height of parent window.
 	 */
-	public final void setImage(final Image imageToDisplay, final int widthOfParent, final int heightOfParent,
-			final int defaultGridSpacing, final double gridOffsetX, final double gridOffsetY) {
+	public final void setImage(final Image imageToDisplay, final int widthOfParent, final int heightOfParent) {
 		totalZoom = 1;
 		maxZoom = 1;
 		offsetX = 0;
 		offsetY = 0;
-		this.gridOffsetX = gridOffsetX;
-		this.gridOffsetY = gridOffsetY;
-
-		DEFAULT_GRID_SPACING = defaultGridSpacing;
 		this.image = imageToDisplay;
 		this.imageElement = (ImageElement) imageToDisplay.getElement().cast();
 
@@ -244,7 +227,6 @@ public class ScalableImage extends AbsolutePanel
 		backCanvas.setHeight(parentHeight + "px");
 		backCanvas.setCoordinateSpaceHeight(parentHeight);
 
-		calculateDimensions();
 		calculateStartingZoom();
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
 		mainDraw();
@@ -331,8 +313,9 @@ public class ScalableImage extends AbsolutePanel
 	 * Main method for drawing image.
 	 */
 	public final void mainDraw() {
-		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + DEFAULT_GRID_SPACING,
-				imageHeight + DEFAULT_GRID_SPACING);
+		calculateDimensions();
+		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing,
+				imageHeight + gridSpacing);
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
 		backContext.drawImage(imageElement, 0, 0);
 		buffer(backContext, context);
@@ -348,8 +331,8 @@ public class ScalableImage extends AbsolutePanel
 	 *            front canvas context
 	 */
 	public final void buffer(final Context2d back, final Context2d front) {
-		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + DEFAULT_GRID_SPACING,
-				parentHeight + DEFAULT_GRID_SPACING);
+		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing,
+				parentHeight + gridSpacing);
 		front.drawImage(back.getCanvas(), 0, 0);
 		if (showGrid) {
 			drawGridLines();
@@ -444,9 +427,12 @@ public class ScalableImage extends AbsolutePanel
 	private void calculateDimensions() {
 		adjustedImageWidth = imageWidth;
 		adjustedImageHeight = imageHeight;
-		adjustedGridSpacing = DEFAULT_GRID_SPACING;
-		verticalLines = (int) (imageWidth / adjustedGridSpacing) + 1;
-		horizontalLines = (int) (imageHeight / adjustedGridSpacing) + 1;
+		gridOffsetX = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX();
+		gridOffsetY = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY();
+		gridSpacing = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize();
+		showGrid = ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid();
+		verticalLines = (int) (imageWidth / gridSpacing) + 1;
+		horizontalLines = (int) (imageHeight / gridSpacing) + 1;
 	}
 
 	private void dropDeviceData(DropEvent event) {

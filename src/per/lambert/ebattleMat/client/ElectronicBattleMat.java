@@ -56,7 +56,6 @@ public class ElectronicBattleMat implements EntryPoint {
 					return;
 				}
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataChanged) {
-					scaleImage.setShowGrid(ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid());
 					scaleImage.mainDraw();
 					return;
 				}
@@ -102,7 +101,7 @@ public class ElectronicBattleMat implements EntryPoint {
 		String imageUrl = "usr/dungeonData/" + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent event) {
-				scaleImage.setImage(image, simplePanel.getOffsetWidth(), simplePanel.getOffsetHeight(), 51, 10 , 10);
+				scaleImage.setImage(image, simplePanel.getOffsetWidth(), simplePanel.getOffsetHeight());
 			}
 		});
 		image.setUrl(imageUrl);

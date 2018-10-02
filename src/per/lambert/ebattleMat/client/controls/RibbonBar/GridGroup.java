@@ -27,12 +27,9 @@ public class GridGroup extends Composite {
 	public GridGroup() {
 		initWidget(uiBinder.createAndBindUi(this));
 		label.setStyleName("ribbonGroupLabel");
-		double gridSize = ServiceManagement.getDungeonManagment().getSelectedDungeon().getGridSize();
-		if (gridSize == 0.0) {
-			gridSize = 30;
-		}
-		gridSizeBox.setStyleName("doubleboxstyle");
-		gridSizeBox.setValue(gridSize);
+		gridSizeBox.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize());
+		gridOffsetX.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX());
+		gridOffsetY.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY());
 	}
 
 	@UiField
@@ -42,6 +39,8 @@ public class GridGroup extends Composite {
 	Label label;
 
 	@UiField DoubleBox gridSizeBox;
+	@UiField DoubleBox gridOffsetX;
+	@UiField DoubleBox gridOffsetY;
 
 	@UiHandler("showGrid")
 	void onClick(ClickEvent e) {
@@ -50,6 +49,17 @@ public class GridGroup extends Composite {
 	}
 	@UiHandler("gridSizeBox")
 	void onValueChanged(ValueChangeEvent<Double> event) {
-        Window.alert( "Value Changed = New value: " + gridSizeBox.getValue() );
+		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridSize(gridSizeBox.getValue());
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
+	}
+	@UiHandler("gridOffsetX")
+	void onGridOffsetXChanged(ValueChangeEvent<Double> event) {
+		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridOffsetX(gridOffsetX.getValue());
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
+	}
+	@UiHandler("gridOffsetY")
+	void onGridOffsetYChanged(ValueChangeEvent<Double> event) {
+		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridOffsetY(gridOffsetY.getValue());
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
 	}
 }
