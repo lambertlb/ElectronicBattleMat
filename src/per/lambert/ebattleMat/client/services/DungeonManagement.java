@@ -47,6 +47,11 @@ public class DungeonManagement implements IDungeonManagement {
 	DungeonData selectedDungeon;
 
 	@Override
+	public boolean dungeonSelected() {
+		return(selectedDungeon != null);
+	}
+
+	@Override
 	public DungeonData getSelectedDungeon() {
 		return selectedDungeon;
 	}

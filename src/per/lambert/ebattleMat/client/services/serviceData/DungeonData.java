@@ -8,7 +8,7 @@ public class DungeonData extends JavaScriptObject {
 	}
 
 	public final native boolean getIsDirty() /*-{
-		return isDirty;
+		return this.isDirty;
 	}-*/;
 
 	public final native DungeonLevel[] getDungeonlevels() /*-{
@@ -16,11 +16,14 @@ public class DungeonData extends JavaScriptObject {
 	}-*/;
 
 	public final native void setShowGrid(Boolean showGrid) /*-{
-		isDirty = showGrid != this.showGrid;
+		this.isDirty = showGrid != (this.showGrid === undefined ? false : true);
 		this.showGrid = showGrid;
 	}-*/;
 
-	public final native Boolean getShowGrid() /*-{
+	public final native boolean getShowGrid() /*-{
+		if (this.showGrid === undefined) {
+			return(false);
+		}
 		return (this.showGrid);
 	}-*/;
 }

@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TopPanelControl extends Composite implements HasText {
+public class TopPanelControl extends Composite {
 
 	private static TopPanelControlUiBinder uiBinder = GWT.create(TopPanelControlUiBinder.class);
 
@@ -21,17 +21,4 @@ public class TopPanelControl extends Composite implements HasText {
 	public TopPanelControl() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
-
-	public TopPanelControl(String firstName) {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-
-
-	public void setText(String text) {
-	}
-
-	public String getText() {
-		return "TopPanel";
-	}
-
 }

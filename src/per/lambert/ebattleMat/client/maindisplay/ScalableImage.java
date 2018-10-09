@@ -37,12 +37,12 @@ public class ScalableImage extends AbsolutePanel
 	private static final int OVERLAYS_Z = 300;
 	// private static final int ROOM_OBJECTS_Z = 200;
 
-	private Boolean showGrid;
+	private boolean showGrid = false;
 
 	/**
 	 * Adjusted grid spacing so the grid lines matches exactly to one side.
 	 */
-	private double gridSpacing;
+	private double gridSpacing = 30;
 	/**
 	 * Main canvas that is drawn.
 	 */
@@ -66,27 +66,27 @@ public class ScalableImage extends AbsolutePanel
 	/**
 	 * Width of actual image.
 	 */
-	private int imageWidth;
+	private int imageWidth = 0;
 	/**
 	 * Height of actual image.
 	 */
-	private int imageHeight;
+	private int imageHeight = 0;
 	/**
 	 * Width of parent window.
 	 */
-	private int parentWidth;
+	private int parentWidth = 0;
 	/**
 	 * Height of parent window.
 	 */
-	private int parentHeight;
+	private int parentHeight = 0;
 	/**
 	 * Width of image after scaling to parent.
 	 */
-	private int adjustedImageWidth;
+	private int adjustedImageWidth = 0;
 	/**
 	 * Height of image after scaling to parent.
 	 */
-	private int adjustedImageHeight;
+	private int adjustedImageHeight = 0;
 	/**
 	 * image to display.
 	 */
@@ -130,11 +130,11 @@ public class ScalableImage extends AbsolutePanel
 	/**
 	 * Number of horizontal lines needed in the grid.
 	 */
-	private int horizontalLines;
+	private int horizontalLines = 0;
 	/**
 	 * Number of vertical lines needed in the grid.
 	 */
-	private int verticalLines;
+	private int verticalLines = 0;
 
 	/**
 	 * Widget for scaling an image. This supports zoom and pan
@@ -147,6 +147,7 @@ public class ScalableImage extends AbsolutePanel
 		canvas.addMouseUpHandler(this);
 		super.add(canvas, 0, 0);
 
+		showGrid = false;
 		setupDragAndDrop();
 		setupEventHandling();
 	}
@@ -288,7 +289,12 @@ public class ScalableImage extends AbsolutePanel
 			double yPos = event.getRelativeY(image.getElement());
 			offsetX += (xPos - mouseDownXPos);
 			offsetY += (yPos - mouseDownYPos);
-			mainDraw();
+			try {
+				mainDraw();
+			} catch (Exception ex) {
+				mouseDownXPos = xPos;
+				mouseDownYPos = yPos;
+			}
 			mouseDownXPos = xPos;
 			mouseDownYPos = yPos;
 		}
@@ -314,8 +320,7 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	public final void mainDraw() {
 		calculateDimensions();
-		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing,
-				imageHeight + gridSpacing);
+		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing, imageHeight + gridSpacing);
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
 		backContext.drawImage(imageElement, 0, 0);
 		buffer(backContext, context);
@@ -331,12 +336,9 @@ public class ScalableImage extends AbsolutePanel
 	 *            front canvas context
 	 */
 	public final void buffer(final Context2d back, final Context2d front) {
-		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing,
-				parentHeight + gridSpacing);
+		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
 		front.drawImage(back.getCanvas(), 0, 0);
-		if (showGrid) {
-			drawGridLines();
-		}
+		drawGridLines();
 	}
 
 	/**
@@ -347,9 +349,11 @@ public class ScalableImage extends AbsolutePanel
 	private void drawGridLines() {
 		double scaledWidth = adjustedImageWidth * totalZoom;
 		double scaledHeight = adjustedImageHeight * totalZoom;
-		drawVerticalGridLines(scaledWidth, scaledHeight);
-		drawHorizontalGridLines(scaledWidth, scaledHeight);
-		outlinePicture(scaledWidth, scaledHeight);
+		if (showGrid) {
+			drawVerticalGridLines(scaledWidth, scaledHeight);
+			drawHorizontalGridLines(scaledWidth, scaledHeight);
+			outlinePicture(scaledWidth, scaledHeight);
+		}
 	}
 
 	/**

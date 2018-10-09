@@ -29,6 +29,8 @@ public interface IDungeonManagement {
 	void selectDungeon(String dungeonsName);
 
 	DungeonData getSelectedDungeon();
+	
+	boolean dungeonSelected();
 
 	int getCurrentLevel();
 

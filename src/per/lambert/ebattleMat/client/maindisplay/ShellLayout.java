@@ -1,10 +1,15 @@
 package per.lambert.ebattleMat.client.maindisplay;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
 import per.lambert.ebattleMat.client.controls.TopPanel.TopPanelControl;
 
@@ -17,6 +22,9 @@ public class ShellLayout extends ResizeComposite {
 	PropertyPanel propertyPanel;
 	TopPanelControl topPanel;
 	LayoutPanel statusBar;
+	SimpleLayoutPanel simplePanel;
+	ScalableImage scaleImage;
+
 	public LayoutPanel mainPanel;
 
 	final double SELECTION_PANEL_SIZE = 225;
@@ -57,13 +65,19 @@ public class ShellLayout extends ResizeComposite {
 		propertyPanel = new PropertyPanel();
 		propertyPanel.setShellLayout(this);
 		statusBar = new LayoutPanel();
+		simplePanel = new SimpleLayoutPanel();
 		mainPanel = new LayoutPanel();
+		mainPanel.setSize("100%", "100%");
+		scaleImage = new ScalableImage();
+		simplePanel.clear();
+		simplePanel.add(scaleImage);
+		mainPanel.add(simplePanel);
 
 		// Add the panels to the holder
 		holder.addNorth(topPanel, RIBBON_BAR_SIZE);
 		holder.addSouth(statusBar, STATUS_BAR_SIZE);
-		holder.addWest(selectionPanel, SELECTION_PANEL_SIZE);
-		holder.addEast(propertyPanel, PROPERTY_PANEL_SIZE);
+//		holder.addWest(selectionPanel, SELECTION_PANEL_SIZE);
+//		holder.addEast(propertyPanel, PROPERTY_PANEL_SIZE);
 		holder.add(mainPanel);
 
 		// MUST CALL THIS METHOD to set the constraints; if you don't not much
@@ -83,9 +97,25 @@ public class ShellLayout extends ResizeComposite {
 		propertyPanel.getElement().getStyle().setBackgroundColor("lightblue");
 		statusBar.getElement().getStyle().setBackgroundColor("lightgray");
 
+		Window.addResizeHandler(new ResizeHandler() {
+			public void onResize(ResizeEvent event) {
+				doWindowResize(event);
+			}
+		});
+
 		return holder;
 	}
 	public void setSelectionPanelExpanded(boolean selectionPanelExpanded) {
 	}
-
+	public void setImage(Image image) {
+		scaleImage.setImage(image, simplePanel.getOffsetWidth(), simplePanel.getOffsetHeight());
+	}
+	public void dungeonDataChanged() {
+		scaleImage.mainDraw();		
+	}
+	private void doWindowResize(ResizeEvent event) {
+		int width = simplePanel.getOffsetWidth();
+		int height = simplePanel.getOffsetHeight();
+		scaleImage.parentWidthChanged(width, height);
+	}
 }

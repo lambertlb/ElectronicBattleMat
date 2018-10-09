@@ -4,6 +4,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -27,8 +30,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
  */
 public class ElectronicBattleMat implements EntryPoint {
 	private RootLayoutPanel rootLayoutPanel;
-	private static SimpleLayoutPanel simplePanel = new SimpleLayoutPanel();
-	private static ScalableImage scaleImage = new ScalableImage();
+	ShellLayout layout;
 	int pictureCount = 1;
 
 	/**
@@ -56,7 +58,7 @@ public class ElectronicBattleMat implements EntryPoint {
 					return;
 				}
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataChanged) {
-					scaleImage.mainDraw();
+					layout.dungeonDataChanged();
 					return;
 				}
 			}
@@ -76,7 +78,6 @@ public class ElectronicBattleMat implements EntryPoint {
 	 */
 	private void dungeonSelected() {
 		final Label errorLabel = new Label("Error Label");
-		final ShellLayout layout = new ShellLayout();
 		final SimplePanel hideImagePanel = new SimplePanel();
 		final Image image = new Image();
 		LoadImage(image);
@@ -88,10 +89,8 @@ public class ElectronicBattleMat implements EntryPoint {
 		hideImagePanel.add(image);
 		hideImagePanel.setVisible(false);
 		setupDungeonView();
-		layout.mainPanel.add(simplePanel);
+		layout = new ShellLayout();
 		rootLayoutPanel.add(layout);
-		simplePanel.clear();
-		simplePanel.add(scaleImage);
 	}
 
 	private void LoadImage(final Image image) {
@@ -101,7 +100,7 @@ public class ElectronicBattleMat implements EntryPoint {
 		String imageUrl = "usr/dungeonData/" + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent event) {
-				scaleImage.setImage(image, simplePanel.getOffsetWidth(), simplePanel.getOffsetHeight());
+				layout.setImage(image);
 			}
 		});
 		image.setUrl(imageUrl);
