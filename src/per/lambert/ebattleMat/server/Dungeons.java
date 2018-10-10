@@ -18,6 +18,7 @@ public class Dungeons extends HttpServlet {
 		webServices.put("LOGIN", new LoginHandler());
 		webServices.put("DUNGEONLIST", new DungeonListHandler());
 		webServices.put("DUNGEONDATA", new DungeonDataHandler());
+		webServices.put("SAVEDUNGEONDATA", new SaveDungeonDataHandler());
 	}
 
 	@Override

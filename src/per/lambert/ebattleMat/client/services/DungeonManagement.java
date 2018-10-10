@@ -18,6 +18,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonDataResponseDat
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
+import per.lambert.ebattleMat.client.services.serviceData.SaveDungeonDataRequest;
 import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 public class DungeonManagement implements IDungeonManagement {
@@ -194,5 +195,31 @@ public class DungeonManagement implements IDungeonManagement {
 
 	private void updateDungeonNameForUrl(String dungeonsName) {
 		dungeonNameForUrl = dungeonsName.toLowerCase();
+	}
+
+	@Override
+	public  void dungeonDataChanged() {
+		saveCurrentDungeonData();
+		ServiceManagement.getEventManager()
+		.fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));		
+	}
+
+	private void saveCurrentDungeonData() {
+		if (selectedDungeon != null) {
+			SaveDungeonDataRequest saveDungeonDataRequest = (SaveDungeonDataRequest) JavaScriptObject.createObject().cast();
+			saveDungeonDataRequest.setDungeonData(selectedDungeon);
+			IDataRequester dataRequester = ServiceManagement.getDataRequester();
+			dataRequester.requestData(saveDungeonDataRequest, token, "SAVEDUNGEONDATA", new IUserCallback() {
+
+				@Override
+				public void onSuccess(Object sender, Object data) {
+				}
+
+				@Override
+				public void onError(Object sender, IErrorInformation error) {
+					lastError = error.getError();
+				}
+			});
+		}
 	}
 }

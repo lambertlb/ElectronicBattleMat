@@ -39,4 +39,6 @@ public interface IDungeonManagement {
 	DungeonLevel getCurrentLevelData();
 
 	String getDungeonNameForUrl();
+	
+	void dungeonDataChanged();
 }

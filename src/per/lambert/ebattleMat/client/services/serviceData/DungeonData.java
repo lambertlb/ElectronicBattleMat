@@ -15,15 +15,23 @@ public class DungeonData extends JavaScriptObject {
 		return this.dungeonLevels;
 	}-*/;
 
-	public final native void setShowGrid(Boolean showGrid) /*-{
+	public final native void setShowGrid(boolean showGrid) /*-{
 		this.isDirty = showGrid != (this.showGrid === undefined ? false : true);
 		this.showGrid = showGrid;
 	}-*/;
 
 	public final native boolean getShowGrid() /*-{
 		if (this.showGrid === undefined) {
-			return(false);
+			return (false);
 		}
 		return (this.showGrid);
+	}-*/;
+
+	public final native String getDungeonName() /*-{
+		return (this.dungeonName);
+	}-*/;
+
+	public final native void setDungeonName(String dungeonName) /*-{
+		this.dungeonName = dungeonName;
 	}-*/;
 }

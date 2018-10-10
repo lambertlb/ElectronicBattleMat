@@ -1,9 +1,14 @@
 package per.lambert.ebattleMat.server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -11,6 +16,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.http.HttpServlet;
 
 import com.google.gson.Gson;
+
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.services.ServiceManagement;
 
 public class DungeonsManager {
 	private static List<String> dungeonNames = new ArrayList<String>();
@@ -104,5 +113,44 @@ public class DungeonsManager {
 				}
 			}
 		}
+	}
+
+	public static void saveDungeonData(final HttpServlet servlet, final DungeonData dungeonDataToSave)
+			throws IOException {
+		String dungeonDirectoryName = getDirectoryName(dungeonDataToSave.dungeonName);
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String directoryPath = servletPath.getPath() + fileLocation + dungeonDirectoryName;
+		makeSureDirectoryExists(directoryPath);
+		String filePath = directoryPath + "/dungeonData.json";
+		Gson gson = new Gson();
+		String dataToWrite = gson.toJson(dungeonDataToSave);
+		BufferedWriter output = null;
+		try {
+			lock.lock();
+			File file = new File(filePath);
+			file.delete();
+			output = new BufferedWriter(new FileWriter(file));
+			output.write(dataToWrite);
+		}
+		finally {
+			if (output != null) {
+				output.close();
+			}
+			lock.unlock();
+		}
+		dungeonData = null;
+		checkIfNeedToLoadDungeonData(servlet);
+	}
+
+	private static void makeSureDirectoryExists(String dungeonDirectoryPath) {
+		File path = new File(dungeonDirectoryPath);
+		if (!path.exists()) {
+			path.mkdir();
+		}
+	}
+
+	private static String getDirectoryName(String dungeonName) {
+		String directoryName = dungeonName.toLowerCase().replaceAll("\\s+", "_");
+		return directoryName;
 	}
 }

@@ -1,7 +1,7 @@
 package per.lambert.ebattleMat.server;
 
-import java.util.List;
-
 public class DungeonData {
+	public String dungeonName;
 	public DungeonLevel[] dungeonLevels;
+	public boolean showGrid;
 }

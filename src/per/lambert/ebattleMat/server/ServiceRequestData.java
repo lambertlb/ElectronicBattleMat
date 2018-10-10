@@ -24,4 +24,14 @@ public class ServiceRequestData {
 	public void setToken(int token) {
 		this.token = token;
 	}
+	
+	private String sessionName;
+
+	public String getSessionName() {
+		return sessionName;
+	}
+
+	public void setSessionName(String sessionName) {
+		this.sessionName = sessionName;
+	}
 }

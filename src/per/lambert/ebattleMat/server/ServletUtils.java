@@ -81,7 +81,8 @@ public final class ServletUtils {
 		}
 
 		Gson gson = new Gson();
-		ServiceRequestData requestData = gson.fromJson(jb.toString(), ServiceRequestData.class);
+		String jsonData = jb.toString();
+		ServiceRequestData requestData = gson.fromJson(jsonData, ServiceRequestData.class);
 
 		String command = requestData.getServiceRequest();
 		if (command == null) {
@@ -92,7 +93,7 @@ public final class ServletUtils {
 		}
 		IWebRequestHandler handler = webServices.get(command);
 		if (handler != null) {
-			handler.handleRequest(request, response, servlet, jb.toString());
+			handler.handleRequest(request, response, servlet, jsonData);
 			return;
 		}
 	}
