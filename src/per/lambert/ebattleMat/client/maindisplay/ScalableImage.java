@@ -157,8 +157,10 @@ public class ScalableImage extends AbsolutePanel
 
 			@Override
 			public void onDragOver(DragOverEvent event) {
+				highlightGridSquare(event.getNativeEvent().getClientX(),event.getNativeEvent().getClientY(), true);
 			}
 		}, DragOverEvent.getType());
+		
 		this.addDomHandler(new DropHandler() {
 			@Override
 			public void onDrop(DropEvent event) {
@@ -166,10 +168,12 @@ public class ScalableImage extends AbsolutePanel
 				dropDeviceData(event);
 			}
 		}, DropEvent.getType());
+		
 		this.addDomHandler(new DragLeaveHandler() {
 
 			@Override
 			public void onDragLeave(DragLeaveEvent event) {
+				highlightGridSquare(event.getNativeEvent().getClientX(),event.getNativeEvent().getClientY(), false);
 			}
 		}, DragLeaveEvent.getType());
 	}
@@ -445,4 +449,13 @@ public class ScalableImage extends AbsolutePanel
 		xCoord = xCoord - getAbsoluteLeft();
 		yCoord = yCoord - getAbsoluteTop();
 	}
+	protected void highlightGridSquare(int clientX, int clientY, boolean b) {
+		double xCoord = clientX - getAbsoluteLeft();
+		double yCoord = clientY - getAbsoluteTop();
+		if (xCoord < gridOffsetX || yCoord < gridOffsetY) {
+			return;
+		}
+		xCoord
+	}
+
 }

@@ -10,6 +10,7 @@
 	<g:HTMLPanel>
 		<g:HorizontalPanel>
 			<ribbon:GridGroup/>
+			<ribbon:CharacterSelect/>
 		</g:HorizontalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

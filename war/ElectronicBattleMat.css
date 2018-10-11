@@ -26,3 +26,11 @@ h1 {
 	width: 20px;
 	text-align: center;
 }
+
+.candrag {
+	border: thin solid grey;
+}
+
+.dropping {
+	border: thin solid blue;
+}

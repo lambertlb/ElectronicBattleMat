@@ -6,14 +6,6 @@
 		width: 25px;
 		text-align: right;
 	}
-	
-	.mypanel {
-		background-color: #C3D9FF;
-		border: 1px solid #000000;
-		padding: 3px;
-		margin: 3px;
-		font-weight: normal;
-	}
 	</ui:style>
 	<g:HTMLPanel>
 		<g:FlowPanel ui:field="panel">
@@ -49,67 +41,5 @@
 				</g:row>
 			</g:Grid>
 		</g:FlowPanel>
-		<!-- <g:Grid styleName="{style.flexgrid}"> -->
-		<!-- <g:row> -->
-		<!-- <g:customCell styleName="{style.flexrow}"> -->
-		<!-- <g:CheckBox ui:field="showGrid" text="Show Grid" /> -->
-		<!-- </g:customCell> -->
-		<!-- </g:row> -->
-		<!-- <g:row> -->
-		<!-- <g:customCell styleName="{style.flexrow}"> -->
-		<!-- <g:Label text="Grid Size" /> -->
-		<!-- </g:customCell> -->
-		<!-- <g:customCell styleName="optionalFooCellStyle"> -->
-		<!-- <g:DoubleBox ui:field="gridSizeBox" styleName="{style.doubleboxstyle}" /> -->
-		<!-- </g:customCell> -->
-		<!-- </g:row> -->
-		<!-- <g:row> -->
-		<!-- <g:customCell styleName="{style.flexrow}"> -->
-		<!-- <g:Label text="OffsetX" /> -->
-		<!-- </g:customCell> -->
-		<!-- <g:customCell styleName="{style.flexrow}"> -->
-		<!-- <g:DoubleBox ui:field="gridOffsetX" styleName="{style.doubleboxstyle}" /> -->
-		<!-- </g:customCell> -->
-		<!-- </g:row> -->
-		<!-- <g:row> -->
-		<!-- <g:customCell styleName="{style.flexrow}"> -->
-		<!-- <g:Label text="OffsetY" /> -->
-		<!-- </g:customCell> -->
-		<!-- <g:customCell styleName="{style.flexrow}"> -->
-		<!-- <g:DoubleBox ui:field="gridOffsetY" styleName="{style.doubleboxstyle}" /> -->
-		<!-- </g:customCell> -->
-		<!-- </g:row> -->
-		<!-- <g:row> -->
-		<!-- <g:customCell styleName="{style.flexrow}"> -->
-		<!-- <g:Label ui:field="label" text="Grid Control" /> -->
-		<!-- </g:customCell> -->
-		<!-- </g:row> -->
-		<!-- </g:Grid> -->
-		<!-- <div class="{style.flexgrid}"> -->
-		<!-- <div class="{style.flexrow}"> -->
-		<!-- <g:CheckBox ui:field="showGrid" text="Show Grid" /> -->
-		<!-- </div> -->
-		<!-- <div class="{style.flexrow}"> -->
-		<!-- <g:HorizontalPanel> -->
-		<!-- <g:Label text="Grid Size" /> -->
-		<!-- <g:DoubleBox ui:field="gridSizeBox" styleName="{style.doubleboxstyle}" /> -->
-		<!-- </g:HorizontalPanel> -->
-		<!-- </div> -->
-		<!-- <div class="{style.flexrow}"> -->
-		<!-- <g:HorizontalPanel> -->
-		<!-- <g:Label text="OffsetX" /> -->
-		<!-- <g:DoubleBox ui:field="gridOffsetX" styleName="{style.doubleboxstyle}" /> -->
-		<!-- </g:HorizontalPanel> -->
-		<!-- </div> -->
-		<!-- <div class="{style.flexrow}"> -->
-		<!-- <g:HorizontalPanel> -->
-		<!-- <g:Label text="OffsetY" /> -->
-		<!-- <g:DoubleBox ui:field="gridOffsetY" styleName="{style.doubleboxstyle}" /> -->
-		<!-- </g:HorizontalPanel> -->
-		<!-- </div> -->
-		<!-- <div class="{style.flexrow}"> -->
-		<!-- <g:Label ui:field="label" text="Grid Control" /> -->
-		<!-- </div> -->
-		<!-- </div> -->
 	</g:HTMLPanel>
 </ui:UiBinder> 
