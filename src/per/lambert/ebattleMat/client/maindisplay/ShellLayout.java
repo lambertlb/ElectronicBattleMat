@@ -24,6 +24,7 @@ public class ShellLayout extends ResizeComposite {
 	LayoutPanel statusBar;
 	SimpleLayoutPanel simplePanel;
 	ScalableImage scaleImage;
+	Label statusLabel;
 
 	public LayoutPanel mainPanel;
 
@@ -69,6 +70,7 @@ public class ShellLayout extends ResizeComposite {
 		mainPanel = new LayoutPanel();
 		mainPanel.setSize("100%", "100%");
 		scaleImage = new ScalableImage();
+		scaleImage.setParentPanel(this);
 		simplePanel.clear();
 		simplePanel.add(scaleImage);
 		mainPanel.add(simplePanel);
@@ -85,8 +87,8 @@ public class ShellLayout extends ResizeComposite {
 		holder.forceLayout();
 
 		// Add some labels and a button to the panels
-
-		statusBar.add(new Label("Status Bar"));
+		statusLabel = new Label("Status Bar");
+		statusBar.add(statusLabel);
 
 		// Throw in some colors and a white border so we can easily see the
 		// panels.
@@ -117,5 +119,8 @@ public class ShellLayout extends ResizeComposite {
 		int width = simplePanel.getOffsetWidth();
 		int height = simplePanel.getOffsetHeight();
 		scaleImage.parentWidthChanged(width, height);
+	}
+	public void setStatus(String status) {
+		statusLabel.setText(status);
 	}
 }

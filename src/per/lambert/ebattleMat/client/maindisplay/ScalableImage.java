@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.client.maindisplay;
 
+import java.awt.Paint;
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
@@ -103,7 +105,7 @@ public class ScalableImage extends AbsolutePanel
 	 * Maximum zoom factor. We do not allow zooming out farther than the initial
 	 * calculated zoom that fills the parent.
 	 */
-	private double maxZoom = 1;
+	private double maxZoom = .5;
 	/**
 	 * Offset of image in the horizontal direction.
 	 */
@@ -136,6 +138,19 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private int verticalLines = 0;
 
+	int dragColumn = -1;
+	int dragRow = -1;
+
+	ShellLayout parentPanel;
+
+	public ShellLayout getParentPanel() {
+		return parentPanel;
+	}
+
+	public void setParentPanel(ShellLayout parentPanel) {
+		this.parentPanel = parentPanel;
+	}
+
 	/**
 	 * Widget for scaling an image. This supports zoom and pan
 	 */
@@ -157,10 +172,10 @@ public class ScalableImage extends AbsolutePanel
 
 			@Override
 			public void onDragOver(DragOverEvent event) {
-				highlightGridSquare(event.getNativeEvent().getClientX(),event.getNativeEvent().getClientY(), true);
+				highlightGridSquare(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), true);
 			}
 		}, DragOverEvent.getType());
-		
+
 		this.addDomHandler(new DropHandler() {
 			@Override
 			public void onDrop(DropEvent event) {
@@ -168,12 +183,12 @@ public class ScalableImage extends AbsolutePanel
 				dropDeviceData(event);
 			}
 		}, DropEvent.getType());
-		
+
 		this.addDomHandler(new DragLeaveHandler() {
 
 			@Override
 			public void onDragLeave(DragLeaveEvent event) {
-				highlightGridSquare(event.getNativeEvent().getClientX(),event.getNativeEvent().getClientY(), false);
+				highlightGridSquare(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), false);
 			}
 		}, DragLeaveEvent.getType());
 	}
@@ -199,7 +214,7 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	public final void setImage(final Image imageToDisplay, final int widthOfParent, final int heightOfParent) {
 		totalZoom = 1;
-		maxZoom = 1;
+		maxZoom = .5;
 		offsetX = 0;
 		offsetY = 0;
 		this.image = imageToDisplay;
@@ -351,15 +366,20 @@ public class ScalableImage extends AbsolutePanel
 	 * scaled and look weird.
 	 */
 	private void drawGridLines() {
-		double scaledWidth = adjustedImageWidth * totalZoom;
-		double scaledHeight = adjustedImageHeight * totalZoom;
 		if (showGrid) {
-			drawVerticalGridLines(scaledWidth, scaledHeight);
-			drawHorizontalGridLines(scaledWidth, scaledHeight);
-			outlinePicture(scaledWidth, scaledHeight);
+			drawVerticalGridLines();
+			drawHorizontalGridLines();
+			outlinePicture();
 		}
 	}
 
+	private double columnToPixel(int column) {
+		return ((scaledGridSize() * column) + offsetX + gridOffsetX);
+	}
+
+	private double rowToPixel(int row) {
+		return ((scaledGridSize() * row) + offsetY + gridOffsetY);
+	}
 	/**
 	 * Draw vertical grid lines.
 	 * 
@@ -368,16 +388,14 @@ public class ScalableImage extends AbsolutePanel
 	 * @param scaledHeight
 	 *            scaled height.
 	 */
-	private void drawVerticalGridLines(final double scaledWidth, final double scaledHeight) {
+	private void drawVerticalGridLines() {
 		context.beginPath();
 		context.setStrokeStyle(colorYellow);
-		double interval = scaledWidth / verticalLines;
-		double x = interval + offsetX + (gridOffsetX * totalZoom);
-		double y = scaledHeight + offsetY + (gridOffsetY * totalZoom);
 		for (int i = 0; i < verticalLines; ++i) {
-			context.moveTo(x, offsetY + (gridOffsetY * totalZoom));
+			double x = (scaledGridSize() * i) + gridOffsetX + offsetX;
+			double y = (scaledGridSize() * (horizontalLines)) + gridOffsetY + offsetY;
+			context.moveTo(x, gridOffsetY + offsetY);
 			context.lineTo(x, y);
-			x += interval;
 		}
 		context.stroke();
 	}
@@ -390,16 +408,14 @@ public class ScalableImage extends AbsolutePanel
 	 * @param scaledHeight
 	 *            scaled height
 	 */
-	private void drawHorizontalGridLines(final double scaledWidth, final double scaledHeight) {
+	private void drawHorizontalGridLines() {
 		context.beginPath();
 		context.setStrokeStyle(colorYellow);
-		double interval = scaledHeight / horizontalLines;
-		double y = interval + offsetY + (gridOffsetY * totalZoom);
-		double x = scaledWidth + offsetX + (gridOffsetX * totalZoom);
 		for (int i = 0; i < horizontalLines; ++i) {
-			context.moveTo(offsetX + (gridOffsetX * totalZoom), y);
+			double y = (scaledGridSize() * i) + gridOffsetY + offsetY;
+			double x = (scaledGridSize() * (verticalLines)) + gridOffsetX + offsetX;
+			context.moveTo(gridOffsetX + offsetX, y);
 			context.lineTo(x, y);
-			y += interval;
 		}
 		context.stroke();
 	}
@@ -412,11 +428,12 @@ public class ScalableImage extends AbsolutePanel
 	 * @param scaledHeight
 	 *            scaled height
 	 */
-	private void outlinePicture(final double scaledWidth, final double scaledHeight) {
+	private void outlinePicture() {
 		context.beginPath();
 		context.setStrokeStyle(colorYellow);
-		context.rect(offsetX + (gridOffsetX * totalZoom), offsetY + (gridOffsetY * totalZoom), scaledWidth,
-				scaledHeight);
+		double width = (scaledGridSize() * (verticalLines));
+		double height = (scaledGridSize() * (horizontalLines));
+		context.rect(offsetX + gridOffsetX, offsetY + gridOffsetY, width, height);
 		context.stroke();
 	}
 
@@ -426,7 +443,6 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private void calculateStartingZoom() {
 		totalZoom = 1;
-		maxZoom = totalZoom;
 	}
 
 	/**
@@ -435,8 +451,8 @@ public class ScalableImage extends AbsolutePanel
 	private void calculateDimensions() {
 		adjustedImageWidth = imageWidth;
 		adjustedImageHeight = imageHeight;
-		gridOffsetX = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX();
-		gridOffsetY = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY();
+		gridOffsetX = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX() * totalZoom;
+		gridOffsetY = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY() * totalZoom;
 		gridSpacing = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize();
 		showGrid = ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid();
 		verticalLines = (int) (imageWidth / gridSpacing) + 1;
@@ -449,13 +465,48 @@ public class ScalableImage extends AbsolutePanel
 		xCoord = xCoord - getAbsoluteLeft();
 		yCoord = yCoord - getAbsoluteTop();
 	}
-	protected void highlightGridSquare(int clientX, int clientY, boolean b) {
-		double xCoord = clientX - getAbsoluteLeft();
-		double yCoord = clientY - getAbsoluteTop();
-		if (xCoord < gridOffsetX || yCoord < gridOffsetY) {
-			return;
-		}
-		xCoord
+
+	private double adjustedGridSize() {
+		return (gridSpacing * totalZoom);
 	}
 
+	protected void highlightGridSquare(int clientX, int clientY, boolean needFill) {
+		handleDragBox(false);
+		if (!needFill) {
+			return;
+		}
+		double xCoord = clientX - getAbsoluteLeft();
+		double yCoord = clientY - getAbsoluteTop();
+		int selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY) / totalZoom) / adjustedGridSize()));
+		int selectedRow = ((int) (((yCoord - offsetY - gridOffsetY) / totalZoom) / adjustedGridSize()));
+		if (selectedColumn < 0 || selectedColumn > horizontalLines || selectedRow < 0 || selectedRow > verticalLines) {
+			return;
+		}
+		dragColumn = selectedColumn;
+		dragRow = selectedRow;
+		handleDragBox(true);
+	}
+
+	private double scaledGridSize() {
+		return (gridSpacing * totalZoom);
+	}
+
+	private void handleDragBox(boolean draw) {
+		if (dragColumn < 0 || dragRow < 0) {
+			return;
+		}
+		if (draw) {
+			context.clearRect(columnToPixel(dragColumn), rowToPixel(dragRow), scaledGridSize(), scaledGridSize());
+			dragColumn = dragRow = -1;
+		} else {
+			context.setFillStyle("grey");
+			context.fillRect(columnToPixel(dragColumn), rowToPixel(dragRow), scaledGridSize(), scaledGridSize());
+		}
+	}
+
+	private void setStatus(String status) {
+		if (parentPanel != null) {
+			parentPanel.setStatus(status);
+		}
+	}
 }
