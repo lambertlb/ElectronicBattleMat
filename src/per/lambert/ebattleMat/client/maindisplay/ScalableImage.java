@@ -281,6 +281,7 @@ public class ScalableImage extends AbsolutePanel
 			offsetY += (yPosition * totalZoom);
 		}
 		totalZoom = zoom;
+		getRibbonBarData();
 		mainDraw();
 	}
 
@@ -451,19 +452,20 @@ public class ScalableImage extends AbsolutePanel
 	private void calculateDimensions() {
 		adjustedImageWidth = imageWidth;
 		adjustedImageHeight = imageHeight;
-		gridOffsetX = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX() * totalZoom;
-		gridOffsetY = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY() * totalZoom;
-		gridSpacing = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize();
+		getRibbonBarData();
 		showGrid = ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid();
 		verticalLines = (int) (imageWidth / gridSpacing) + 1;
 		horizontalLines = (int) (imageHeight / gridSpacing) + 1;
 	}
 
+	private void getRibbonBarData() {
+		gridOffsetX = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX() * totalZoom;
+		gridOffsetY = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY() * totalZoom;
+		gridSpacing = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize();
+	}
+
 	private void dropDeviceData(DropEvent event) {
-		int xCoord = event.getNativeEvent().getClientX();
-		int yCoord = event.getNativeEvent().getClientY();
-		xCoord = xCoord - getAbsoluteLeft();
-		yCoord = yCoord - getAbsoluteTop();
+		handleDragBox(false);
 	}
 
 	private double adjustedGridSize() {
@@ -477,10 +479,16 @@ public class ScalableImage extends AbsolutePanel
 		}
 		double xCoord = clientX - getAbsoluteLeft();
 		double yCoord = clientY - getAbsoluteTop();
-		int selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY) / totalZoom) / adjustedGridSize()));
-		int selectedRow = ((int) (((yCoord - offsetY - gridOffsetY) / totalZoom) / adjustedGridSize()));
+		int selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY)) / adjustedGridSize()));
+		int selectedRow = ((int) (((yCoord - offsetY - gridOffsetY)) / adjustedGridSize()));
 		if (selectedColumn < 0 || selectedColumn > horizontalLines || selectedRow < 0 || selectedRow > verticalLines) {
 			return;
+		}
+		if (selectedColumn >= verticalLines) {
+			selectedColumn = verticalLines-1;
+		}
+		if (selectedRow >= horizontalLines) {
+			selectedRow = horizontalLines-1;
 		}
 		dragColumn = selectedColumn;
 		dragRow = selectedRow;
@@ -495,9 +503,10 @@ public class ScalableImage extends AbsolutePanel
 		if (dragColumn < 0 || dragRow < 0) {
 			return;
 		}
-		if (draw) {
+		if (!draw) {
 			context.clearRect(columnToPixel(dragColumn), rowToPixel(dragRow), scaledGridSize(), scaledGridSize());
 			dragColumn = dragRow = -1;
+			mainDraw();
 		} else {
 			context.setFillStyle("grey");
 			context.fillRect(columnToPixel(dragColumn), rowToPixel(dragRow), scaledGridSize(), scaledGridSize());
