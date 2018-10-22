@@ -22,7 +22,8 @@ public class DataRequester implements IDataRequester {
 	}
 
 	@Override
-	public void requestData(final ServiceRequestData postDataOject, final int token, final String requestType, IUserCallback callback) {
+	public void requestData(final ServiceRequestData postDataOject, final int token, final String requestType,
+			IUserCallback callback) {
 		postDataOject.setToken(token);
 		postDataOject.setServiceRequest(requestType);
 		String requestData = JsonUtils.stringify(postDataOject);
@@ -30,7 +31,7 @@ public class DataRequester implements IDataRequester {
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
 		try {
 
-			Request request = builder.sendRequest(requestData, new RequestCallback() {
+			builder.sendRequest(requestData, new RequestCallback() {
 
 				// (i) callback handler when there is an error
 				public void onError(Request request, Throwable exception) {
@@ -52,6 +53,7 @@ public class DataRequester implements IDataRequester {
 		}
 
 	}
+
 	protected void handleCallbackError(final DungeonServerError dungeonError, final Throwable exception,
 			IUserCallback userCallback) {
 		userCallback.onError(this, new IErrorInformation() {

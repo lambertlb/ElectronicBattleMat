@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +16,13 @@ import javax.servlet.http.HttpServlet;
 
 import com.google.gson.Gson;
 
-import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
-import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
 
 public class DungeonsManager {
 	private static List<String> dungeonNames = new ArrayList<String>();
 	private static List<DungeonData> dungeonData;
 	private static ReentrantLock lock = new ReentrantLock();
-	private final static String fileLocation = "/usr/dungeonData/";
+	private final static String fileLocation = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
 
 	public static String[] getDungeonList(HttpServlet servlet) {
 		lock.lock();

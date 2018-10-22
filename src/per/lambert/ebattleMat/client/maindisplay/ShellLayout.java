@@ -109,16 +109,11 @@ public class ShellLayout extends ResizeComposite {
 	}
 	public void setSelectionPanelExpanded(boolean selectionPanelExpanded) {
 	}
-	public void setImage(Image image) {
-		scaleImage.setImage(image, simplePanel.getOffsetWidth(), simplePanel.getOffsetHeight());
-	}
 	public void dungeonDataChanged() {
-		scaleImage.mainDraw();		
+		scaleImage.loadImage();
 	}
 	private void doWindowResize(ResizeEvent event) {
-		int width = simplePanel.getOffsetWidth();
-		int height = simplePanel.getOffsetHeight();
-		scaleImage.parentWidthChanged(width, height);
+		scaleImage.loadImage();
 	}
 	public void setStatus(String status) {
 		statusLabel.setText(status);

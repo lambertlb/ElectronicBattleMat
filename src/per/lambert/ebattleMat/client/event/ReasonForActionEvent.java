@@ -1,7 +1,6 @@
 package per.lambert.ebattleMat.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 

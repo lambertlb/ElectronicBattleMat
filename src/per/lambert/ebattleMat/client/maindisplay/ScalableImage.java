@@ -1,7 +1,5 @@
 package per.lambert.ebattleMat.client.maindisplay;
 
-import java.awt.Paint;
-
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
@@ -12,6 +10,8 @@ import com.google.gwt.event.dom.client.DragOverEvent;
 import com.google.gwt.event.dom.client.DragOverHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -22,9 +22,13 @@ import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 
 /**
  * @author LLambert Class to manage a scaled image with overlays.
@@ -82,18 +86,6 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private int parentHeight = 0;
 	/**
-	 * Width of image after scaling to parent.
-	 */
-	private int adjustedImageWidth = 0;
-	/**
-	 * Height of image after scaling to parent.
-	 */
-	private int adjustedImageHeight = 0;
-	/**
-	 * image to display.
-	 */
-	private Image image;
-	/**
 	 * image context for drawing.
 	 */
 	private ImageElement imageElement;
@@ -142,6 +134,8 @@ public class ScalableImage extends AbsolutePanel
 	int dragRow = -1;
 
 	ShellLayout parentPanel;
+	private Image image = new Image();
+	int pictureCount = 1;
 
 	public ShellLayout getParentPanel() {
 		return parentPanel;
@@ -161,6 +155,10 @@ public class ScalableImage extends AbsolutePanel
 		canvas.addMouseDownHandler(this);
 		canvas.addMouseUpHandler(this);
 		super.add(canvas, 0, 0);
+		LayoutPanel hidePanel = new LayoutPanel();
+		hidePanel.setVisible(false);
+		hidePanel.add(image);
+		super.add(hidePanel,-1,-1);
 
 		showGrid = false;
 		setupDragAndDrop();
@@ -194,12 +192,25 @@ public class ScalableImage extends AbsolutePanel
 	}
 
 	private void setupEventHandling() {
+		image.addLoadHandler(new LoadHandler() {
+			public void onLoad(LoadEvent event) {
+				setImage();
+			}
+		});
 	}
 
 	@Override
 	public void add(Widget w, int left, int top) {
 		super.add(w, left, top);
 		w.getElement().getStyle().setZIndex(OVERLAYS_Z);
+	}
+
+	public void loadImage() {
+		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
+		String dungeonNameForUrl = ServiceManagement.getDungeonManagment().getDungeonNameForUrl();
+		String dungeonPicture = dungeonLevel.getLevelDrawing();
+		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
+		image.setUrl(imageUrl);
 	}
 
 	/**
@@ -212,15 +223,14 @@ public class ScalableImage extends AbsolutePanel
 	 * @param heightOfParent
 	 *            current height of parent window.
 	 */
-	public final void setImage(final Image imageToDisplay, final int widthOfParent, final int heightOfParent) {
+	public final void setImage() {
 		totalZoom = 1;
 		maxZoom = .5;
 		offsetX = 0;
 		offsetY = 0;
-		this.image = imageToDisplay;
-		this.imageElement = (ImageElement) imageToDisplay.getElement().cast();
+		this.imageElement = (ImageElement) image.getElement().cast();
 
-		parentWidthChanged(widthOfParent, heightOfParent);
+		parentWidthChanged(getParent().getOffsetWidth(), getParent().getOffsetHeight());
 	}
 
 	/**
@@ -450,8 +460,6 @@ public class ScalableImage extends AbsolutePanel
 	 * Calculate numbers defendant on parent to image size and grid spacing.
 	 */
 	private void calculateDimensions() {
-		adjustedImageWidth = imageWidth;
-		adjustedImageHeight = imageHeight;
 		getRibbonBarData();
 		showGrid = ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid();
 		verticalLines = (int) (imageWidth / gridSpacing) + 1;
@@ -513,6 +521,7 @@ public class ScalableImage extends AbsolutePanel
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void setStatus(String status) {
 		if (parentPanel != null) {
 			parentPanel.setStatus(status);
