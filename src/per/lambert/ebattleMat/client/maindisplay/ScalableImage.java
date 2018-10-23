@@ -23,10 +23,10 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.client.controls.scalablePog.ScalablePog;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 
@@ -137,6 +137,8 @@ public class ScalableImage extends AbsolutePanel
 	private Image image = new Image();
 	int pictureCount = 1;
 
+	private ScalablePog	scalablePog;
+	
 	public ShellLayout getParentPanel() {
 		return parentPanel;
 	}
@@ -158,11 +160,15 @@ public class ScalableImage extends AbsolutePanel
 		LayoutPanel hidePanel = new LayoutPanel();
 		hidePanel.setVisible(false);
 		hidePanel.add(image);
-		super.add(hidePanel,-1,-1);
+		super.add(hidePanel, -1, -1);
 
 		showGrid = false;
 		setupDragAndDrop();
 		setupEventHandling();
+		scalablePog = new ScalablePog();
+		scalablePog.setPogName("TestPog");
+		add(scalablePog, 100,100);
+		scalablePog.setScale(4.0);
 	}
 
 	private void setupDragAndDrop() {
@@ -209,7 +215,8 @@ public class ScalableImage extends AbsolutePanel
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		String dungeonNameForUrl = ServiceManagement.getDungeonManagment().getDungeonNameForUrl();
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
-		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
+		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?"
+				+ pictureCount++;
 		image.setUrl(imageUrl);
 	}
 
@@ -391,6 +398,7 @@ public class ScalableImage extends AbsolutePanel
 	private double rowToPixel(int row) {
 		return ((scaledGridSize() * row) + offsetY + gridOffsetY);
 	}
+
 	/**
 	 * Draw vertical grid lines.
 	 * 
@@ -493,10 +501,10 @@ public class ScalableImage extends AbsolutePanel
 			return;
 		}
 		if (selectedColumn >= verticalLines) {
-			selectedColumn = verticalLines-1;
+			selectedColumn = verticalLines - 1;
 		}
 		if (selectedRow >= horizontalLines) {
-			selectedRow = horizontalLines-1;
+			selectedRow = horizontalLines - 1;
 		}
 		dragColumn = selectedColumn;
 		dragRow = selectedRow;
