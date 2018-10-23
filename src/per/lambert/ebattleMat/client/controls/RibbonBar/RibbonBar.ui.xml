@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+ xmlns:g="urn:import:com.google.gwt.user.client.ui"
+ xmlns:ribbon="urn:import:per.lambert.ebattleMat.client.controls.RibbonBar">
+	<ui:style>
+	.important {
+		font-weight: bold;
+	}
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HorizontalPanel>
+			<ribbon:GridGroup/>
+			<ribbon:CharacterSelect/>
+		</g:HorizontalPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 
