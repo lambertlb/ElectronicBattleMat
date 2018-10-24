@@ -1,8 +1,12 @@
 package per.lambert.ebattleMat.client.maindisplay;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
@@ -29,6 +33,7 @@ import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.scalablePog.ScalablePog;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
+import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
  * @author LLambert Class to manage a scaled image with overlays.
@@ -68,7 +73,7 @@ public class ScalableImage extends AbsolutePanel
 	/**
 	 * line style yellow.
 	 */
-	private final CssColor colorYellow = CssColor.make("yellow");
+	private final CssColor gridColor = CssColor.make("grey");
 	/**
 	 * Width of actual image.
 	 */
@@ -137,8 +142,8 @@ public class ScalableImage extends AbsolutePanel
 	private Image image = new Image();
 	int pictureCount = 1;
 
-	private ScalablePog	scalablePog;
-	
+	private List<ScalablePog> pogs = new ArrayList<ScalablePog>();
+
 	public ShellLayout getParentPanel() {
 		return parentPanel;
 	}
@@ -165,10 +170,21 @@ public class ScalableImage extends AbsolutePanel
 		showGrid = false;
 		setupDragAndDrop();
 		setupEventHandling();
-		scalablePog = new ScalablePog();
-		scalablePog.setPogName("TestPog");
-		add(scalablePog, 100,100);
-		scalablePog.setScale(4.0);
+		addFakePod();
+	}
+
+	private void addFakePod() {
+		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
+		pogData.setPogName("Test POG");
+		pogData.setPogColumn(1);
+		pogData.setPogRow(1);
+		addPogToCanvas(pogData);
+	}
+
+	public void addPogToCanvas(PogData pogData) {
+		ScalablePog scalablePog = new ScalablePog(pogData);
+		pogs.add(scalablePog);
+		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
 	}
 
 	private void setupDragAndDrop() {
@@ -376,6 +392,16 @@ public class ScalableImage extends AbsolutePanel
 		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
 		front.drawImage(back.getCanvas(), 0, 0);
 		drawGridLines();
+		adjustPogs();
+	}
+
+	private void adjustPogs() {
+		for (ScalablePog pog : pogs) {
+			pog.setPogSize((int)gridSpacing - 4);
+			pog.setScale(totalZoom);
+			pog.getElement().getStyle().setZIndex(OVERLAYS_Z);
+			this.setWidgetPosition(pog, (int) columnToPixel(pog.getPogColumn()), (int) rowToPixel(pog.getPogRow()));
+		}
 	}
 
 	/**
@@ -409,7 +435,7 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private void drawVerticalGridLines() {
 		context.beginPath();
-		context.setStrokeStyle(colorYellow);
+		context.setStrokeStyle(gridColor);
 		for (int i = 0; i < verticalLines; ++i) {
 			double x = (scaledGridSize() * i) + gridOffsetX + offsetX;
 			double y = (scaledGridSize() * (horizontalLines)) + gridOffsetY + offsetY;
@@ -429,7 +455,7 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private void drawHorizontalGridLines() {
 		context.beginPath();
-		context.setStrokeStyle(colorYellow);
+		context.setStrokeStyle(gridColor);
 		for (int i = 0; i < horizontalLines; ++i) {
 			double y = (scaledGridSize() * i) + gridOffsetY + offsetY;
 			double x = (scaledGridSize() * (verticalLines)) + gridOffsetX + offsetX;
@@ -449,7 +475,7 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private void outlinePicture() {
 		context.beginPath();
-		context.setStrokeStyle(colorYellow);
+		context.setStrokeStyle(gridColor);
 		double width = (scaledGridSize() * (verticalLines));
 		double height = (scaledGridSize() * (horizontalLines));
 		context.rect(offsetX + gridOffsetX, offsetY + gridOffsetY, width, height);

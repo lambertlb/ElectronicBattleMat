@@ -1,15 +1,20 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:dl="urn:import:per.lambert.ebattleMat.client.controls.DraggableLabel">
 	<ui:style>
 	.scaled {
-		transform: scale(1); /* Equal to scaleX(0.7) scaleY(0.7) */
+		transform: scale(1);
+		border-style: solid;
+		border-width: 1;
+		border-color: RED;
 	}
 	</ui:style>
-	
+
 	<g:HTMLPanel>
-		<g:FlowPanel styleName="{style.scaled}" ui:field="pogPanel" >
-			<dl:DraggableLabel  ui:field="pogName" />
+		<g:FlowPanel styleName="{style.scaled}"
+			ui:field="pogPanel">
+			<dl:DraggableLabel ui:field="pogName" />
 		</g:FlowPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

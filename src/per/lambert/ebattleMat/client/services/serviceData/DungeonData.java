@@ -8,26 +8,38 @@ public class DungeonData extends JavaScriptObject {
 	}
 
 	public final native boolean getIsDirty() /*-{
+		if (this.isDirty === undefined) {
+			this.isDirty = false;
+		}
 		return this.isDirty;
 	}-*/;
 
 	public final native DungeonLevel[] getDungeonlevels() /*-{
+		if (this.dungeonLevels === undefined) {
+			dungeonLevels = null;
+		}
 		return this.dungeonLevels;
 	}-*/;
 
 	public final native void setShowGrid(boolean showGrid) /*-{
-		this.isDirty = showGrid != (this.showGrid === undefined ? false : true);
+		if (this.showGrid === undefined) {
+			this.showGrid = false;
+		}
+		this.isDirty = showGrid != this.showGrid;
 		this.showGrid = showGrid;
 	}-*/;
 
 	public final native boolean getShowGrid() /*-{
 		if (this.showGrid === undefined) {
-			return (false);
+			this.showGrid = false;
 		}
 		return (this.showGrid);
 	}-*/;
 
 	public final native String getDungeonName() /*-{
+		if (this.dungeonName === undefined) {
+			this.dungeonName = "";
+		}
 		return (this.dungeonName);
 	}-*/;
 

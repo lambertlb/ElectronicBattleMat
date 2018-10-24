@@ -5,6 +5,9 @@ public class DungeonDataResponseData extends ServiceRequestData {
 	}
 
 	public final native DungeonData[] getDungeonData() /*-{
+		if (this.dungeonData === undefined) {
+			this.dungeonData = null;
+		}
 		return this.dungeonData;
 	}-*/;
 
