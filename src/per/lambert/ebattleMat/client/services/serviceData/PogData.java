@@ -17,6 +17,17 @@ public class PogData extends JavaScriptObject {
 		this.pogName = pogName;
 	}-*/;
 
+	public final native String getPogImageUrl() /*-{
+		if (this.pogImageUrl === undefined) {
+			this.pogImageUrl = "";
+		}
+		return (this.pogImageUrl);
+	}-*/;
+
+	public final native void setPogImageUrl(String pogImageUrl) /*-{
+		this.pogImageUrl = pogImageUrl;
+	}-*/;
+
 	public final native int getPogColumn() /*-{
 		if (this.pogColumn === undefined) {
 			this.pogColumn = -1;

@@ -22,6 +22,8 @@ public class ElectronicBattleMat implements EntryPoint {
 	private RootLayoutPanel rootLayoutPanel;
 	ShellLayout layout;
 	public static String DUNGEON_DATA_LOCATION = "dungeonData/";
+	public static String DUNGEON_RESOURCE_LOCATION = "resources/";
+	public static String DUNGEON_PCPOG_LOCATION = "pcPogs/";
 
 	/**
 	 * This is the entry point method.

@@ -34,3 +34,9 @@ h1 {
 .dropping {
 	border: thin solid blue;
 }
+
+.bordered {
+	border-style: solid;
+	border-width: 1;
+	border-color: GREEN;
+}

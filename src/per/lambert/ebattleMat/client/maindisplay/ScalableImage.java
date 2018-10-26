@@ -53,7 +53,7 @@ public class ScalableImage extends AbsolutePanel
 	/**
 	 * Adjusted grid spacing so the grid lines matches exactly to one side.
 	 */
-	private double gridSpacing = 30;
+	private double gridSpacing = 50;
 	/**
 	 * Main canvas that is drawn.
 	 */
@@ -178,11 +178,14 @@ public class ScalableImage extends AbsolutePanel
 		pogData.setPogName("Test POG");
 		pogData.setPogColumn(1);
 		pogData.setPogRow(1);
+		pogData.setPogImageUrl(ElectronicBattleMat.DUNGEON_PCPOG_LOCATION +  "dwarf.jpeg");
 		addPogToCanvas(pogData);
 	}
 
 	public void addPogToCanvas(PogData pogData) {
+		getRibbonBarData();
 		ScalablePog scalablePog = new ScalablePog(pogData);
+		scalablePog.setPogSize((int)gridSpacing - 4);
 		pogs.add(scalablePog);
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
 	}
@@ -397,10 +400,9 @@ public class ScalableImage extends AbsolutePanel
 
 	private void adjustPogs() {
 		for (ScalablePog pog : pogs) {
-			pog.setPogSize((int)gridSpacing - 4);
-			pog.setScale(totalZoom);
 			pog.getElement().getStyle().setZIndex(OVERLAYS_Z);
-			this.setWidgetPosition(pog, (int) columnToPixel(pog.getPogColumn()), (int) rowToPixel(pog.getPogRow()));
+			this.setWidgetPosition(pog, (int) (columnToPixel(pog.getPogColumn())), (int) (rowToPixel(pog.getPogRow())));
+			pog.setPogSize((int)adjustedGridSize() - 4);
 		}
 	}
 
@@ -418,11 +420,11 @@ public class ScalableImage extends AbsolutePanel
 	}
 
 	private double columnToPixel(int column) {
-		return ((scaledGridSize() * column) + offsetX + gridOffsetX);
+		return ((adjustedGridSize() * column) + offsetX + gridOffsetX);
 	}
 
 	private double rowToPixel(int row) {
-		return ((scaledGridSize() * row) + offsetY + gridOffsetY);
+		return ((adjustedGridSize() * row) + offsetY + gridOffsetY);
 	}
 
 	/**
@@ -437,8 +439,8 @@ public class ScalableImage extends AbsolutePanel
 		context.beginPath();
 		context.setStrokeStyle(gridColor);
 		for (int i = 0; i < verticalLines; ++i) {
-			double x = (scaledGridSize() * i) + gridOffsetX + offsetX;
-			double y = (scaledGridSize() * (horizontalLines)) + gridOffsetY + offsetY;
+			double x = columnToPixel(i);
+			double y = rowToPixel(horizontalLines);
 			context.moveTo(x, gridOffsetY + offsetY);
 			context.lineTo(x, y);
 		}
@@ -457,8 +459,8 @@ public class ScalableImage extends AbsolutePanel
 		context.beginPath();
 		context.setStrokeStyle(gridColor);
 		for (int i = 0; i < horizontalLines; ++i) {
-			double y = (scaledGridSize() * i) + gridOffsetY + offsetY;
-			double x = (scaledGridSize() * (verticalLines)) + gridOffsetX + offsetX;
+			double y = rowToPixel(i);
+			double x = columnToPixel(verticalLines);
 			context.moveTo(gridOffsetX + offsetX, y);
 			context.lineTo(x, y);
 		}
@@ -476,8 +478,8 @@ public class ScalableImage extends AbsolutePanel
 	private void outlinePicture() {
 		context.beginPath();
 		context.setStrokeStyle(gridColor);
-		double width = (scaledGridSize() * (verticalLines));
-		double height = (scaledGridSize() * (horizontalLines));
+		double width = (adjustedGridSize() * (verticalLines));
+		double height = (adjustedGridSize() * (horizontalLines));
 		context.rect(offsetX + gridOffsetX, offsetY + gridOffsetY, width, height);
 		context.stroke();
 	}
@@ -537,21 +539,17 @@ public class ScalableImage extends AbsolutePanel
 		handleDragBox(true);
 	}
 
-	private double scaledGridSize() {
-		return (gridSpacing * totalZoom);
-	}
-
 	private void handleDragBox(boolean draw) {
 		if (dragColumn < 0 || dragRow < 0) {
 			return;
 		}
 		if (!draw) {
-			context.clearRect(columnToPixel(dragColumn), rowToPixel(dragRow), scaledGridSize(), scaledGridSize());
+			context.clearRect(columnToPixel(dragColumn), rowToPixel(dragRow), adjustedGridSize(), adjustedGridSize());
 			dragColumn = dragRow = -1;
 			mainDraw();
 		} else {
 			context.setFillStyle("grey");
-			context.fillRect(columnToPixel(dragColumn), rowToPixel(dragRow), scaledGridSize(), scaledGridSize());
+			context.fillRect(columnToPixel(dragColumn), rowToPixel(dragRow), adjustedGridSize(), adjustedGridSize());
 		}
 	}
 
