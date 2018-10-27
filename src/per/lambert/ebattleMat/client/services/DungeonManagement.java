@@ -18,6 +18,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonDataResponseDat
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
+import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.SaveDungeonDataRequest;
 import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
@@ -49,7 +50,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 	@Override
 	public boolean dungeonSelected() {
-		return(selectedDungeon != null);
+		return (selectedDungeon != null);
 	}
 
 	@Override
@@ -72,9 +73,19 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public DungeonLevel getCurrentLevelData() {
 		if (currentLevel < selectedDungeon.getDungeonlevels().length) {
-			return(selectedDungeon.getDungeonlevels()[currentLevel]);
+			return (selectedDungeon.getDungeonlevels()[currentLevel]);
 		}
 		return null;
+	}
+
+	private PogData pogBeingDragged;
+
+	public void setPogBeingDragged(PogData pogBeingDragged) {
+		this.pogBeingDragged = pogBeingDragged;
+	}
+
+	public PogData getPogBeingDragged() {
+		return (pogBeingDragged);
 	}
 
 	@Override
@@ -179,7 +190,7 @@ public class DungeonManagement implements IDungeonManagement {
 	}
 
 	String dungeonNameForUrl;
-	
+
 	@Override
 	public String getDungeonNameForUrl() {
 		return dungeonNameForUrl;
@@ -198,15 +209,16 @@ public class DungeonManagement implements IDungeonManagement {
 	}
 
 	@Override
-	public  void dungeonDataChanged() {
+	public void dungeonDataChanged() {
 		saveCurrentDungeonData();
 		ServiceManagement.getEventManager()
-		.fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));		
+				.fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
 	}
 
 	private void saveCurrentDungeonData() {
 		if (selectedDungeon != null) {
-			SaveDungeonDataRequest saveDungeonDataRequest = (SaveDungeonDataRequest) JavaScriptObject.createObject().cast();
+			SaveDungeonDataRequest saveDungeonDataRequest = (SaveDungeonDataRequest) JavaScriptObject.createObject()
+					.cast();
 			saveDungeonDataRequest.setDungeonData(selectedDungeon);
 			IDataRequester dataRequester = ServiceManagement.getDataRequester();
 			dataRequester.requestData(saveDungeonDataRequest, token, "SAVEDUNGEONDATA", new IUserCallback() {

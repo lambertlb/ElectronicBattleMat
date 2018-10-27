@@ -203,7 +203,7 @@ public class ScalableImage extends AbsolutePanel
 			@Override
 			public void onDrop(DropEvent event) {
 				event.preventDefault();
-				dropDeviceData(event);
+				dropPog(event);
 			}
 		}, DropEvent.getType());
 
@@ -508,8 +508,17 @@ public class ScalableImage extends AbsolutePanel
 		gridSpacing = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize();
 	}
 
-	private void dropDeviceData(DropEvent event) {
-		handleDragBox(false);
+	private void dropPog(DropEvent event) {
+		int newColumn = dragColumn;
+		int newRow = dragRow;
+//		handleDragBox(false);
+		ScalablePog dragPog = getPogThatWasDragged();
+		dragPog.setPogPosition(newColumn, newRow);
+		mainDraw();
+	}
+
+	private ScalablePog getPogThatWasDragged() {
+		return pogs.get(0);
 	}
 
 	private double adjustedGridSize() {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
+import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 /**
@@ -41,4 +42,7 @@ public interface IDungeonManagement {
 	String getDungeonNameForUrl();
 	
 	void dungeonDataChanged();
+	
+	void	setPogBeingDragged(PogData pogBeingDragged);
+	PogData getPogBeingDragged();
 }

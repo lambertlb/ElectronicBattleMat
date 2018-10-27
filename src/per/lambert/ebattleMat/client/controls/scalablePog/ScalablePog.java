@@ -4,9 +4,14 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.DragStartEvent;
+import com.google.gwt.event.dom.client.DragStartHandler;
+import com.google.gwt.event.dom.client.HasDragStartHandlers;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -17,9 +22,10 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.client.services.ServiceManagement;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
-public class ScalablePog extends Composite {
+public class ScalablePog extends Composite implements HasDragStartHandlers {
 
 	private static ScalablePogUiBinder uiBinder = GWT.create(ScalablePogUiBinder.class);
 
@@ -104,6 +110,18 @@ public class ScalablePog extends Composite {
 		pogDrawPanel.add(hidePanel, -1, -1);
 		pogDrawPanel.add(canvas, 0, 0);
 		setupEventHandling();
+		getElement().setDraggable(Element.DRAGGABLE_TRUE);
+		addDragStartHandler(new DragStartHandler() {
+			@Override
+			public void onDragStart(DragStartEvent event) {
+				ServiceManagement.getDungeonManagment().setPogBeingDragged(pogData);
+				event.setData("text", "IM DRAGGING");
+
+				// Copy the label image for the drag icon
+				// 10,10 indicates the pointer offset, not the image size.
+				event.getDataTransfer().setDragImage(pogMainPanel.getElement(), 0, 150);
+			}
+		});
 	}
 
 	private void setupEventHandling() {
@@ -112,6 +130,10 @@ public class ScalablePog extends Composite {
 				setImage();
 			}
 		});
+	}
+
+	public HandlerRegistration addDragStartHandler(DragStartHandler handler) {
+		return addBitlessDomHandler(handler, DragStartEvent.getType());
 	}
 
 	public final void setImage() {
@@ -192,16 +214,19 @@ public class ScalablePog extends Composite {
 	}
 
 	private int imageCount = 1;
+
 	public void setPogImageUrl(String pogImageUrl) {
 		pogData.setPogImageUrl(pogImageUrl);
-		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + ElectronicBattleMat.DUNGEON_RESOURCE_LOCATION + pogImageUrl + "?"
-				+ imageCount++;
+		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + ElectronicBattleMat.DUNGEON_RESOURCE_LOCATION
+				+ pogImageUrl + "?" + imageCount++;
 		image.setUrl(imageUrl);
 	}
+
 	/**
 	 * Offset for clearing rectangle.
 	 */
 	private static final int CLEAR_OFFEST = -10;
+
 	public void mainDraw() {
 		if (!imageLoaded) {
 			return;
@@ -212,6 +237,7 @@ public class ScalablePog extends Composite {
 		backContext.drawImage(imageElement, 0, 0);
 		buffer(backContext, context);
 	}
+
 	public final void buffer(final Context2d back, final Context2d front) {
 		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth, parentHeight);
 		front.drawImage(back.getCanvas(), 0, 0);
