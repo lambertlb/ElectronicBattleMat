@@ -49,4 +49,15 @@ public class PogData extends JavaScriptObject {
 	public final native void setPogRow(int pogRow) /*-{
 		this.pogRow = pogRow;
 	}-*/;
+
+	public final native int getPogSize() /*-{
+		if (this.pogSize === undefined) {
+			this.pogSize = 1;
+		}
+		return (this.pogSize);
+	}-*/;
+
+	public final native void setPogSize(int pogSize) /*-{
+		this.pogSize = pogSize;
+	}-*/;
 }

@@ -71,12 +71,20 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 	 * current zoom factor for image.
 	 */
 	private double totalZoom = 1;
-	/**
-	 * Is image scaled by width. If not then scaled by height
-	 */
-	private boolean scaledByWidth;
 	private PogData pogData;
-	private int pogSize;
+
+	public PogData getPogData() {
+		return pogData;
+	}
+
+	public int getPogSize() {
+		return pogData.getPogSize();
+	}
+
+	public void setPogSize(int pogSize) {
+		pogData.setPogSize(pogSize);
+	}
+
 	private boolean imageLoaded = false;
 
 	@UiField
@@ -206,10 +214,10 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 		return (pogData.getPogRow());
 	}
 
-	public void setPogSize(int size) {
-		this.pogSize = size;
-		pogMainPanel.setWidth(size + "px");
-		pogMainPanel.setHeight(size + "px");
+	public void setPogWidth(int width) {
+		int scaledWidth = (width - 2) * pogData.getPogSize();
+		pogMainPanel.setWidth(scaledWidth + "px");
+		pogMainPanel.setHeight(scaledWidth + "px");
 		mainDraw();
 	}
 
@@ -217,8 +225,7 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 
 	public void setPogImageUrl(String pogImageUrl) {
 		pogData.setPogImageUrl(pogImageUrl);
-		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + ElectronicBattleMat.DUNGEON_RESOURCE_LOCATION
-				+ pogImageUrl + "?" + imageCount++;
+		String imageUrl = pogImageUrl + "?" + imageCount++;
 		image.setUrl(imageUrl);
 	}
 
@@ -239,7 +246,8 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 	}
 
 	public final void buffer(final Context2d back, final Context2d front) {
-		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth, parentHeight);
+		front.setFillStyle("white");
+		front.fillRect(0, 0, parentWidth, parentHeight);
 		front.drawImage(back.getCanvas(), 0, 0);
 	}
 }

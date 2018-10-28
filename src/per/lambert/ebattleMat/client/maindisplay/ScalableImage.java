@@ -175,17 +175,28 @@ public class ScalableImage extends AbsolutePanel
 
 	private void addFakePod() {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
-		pogData.setPogName("Test POG");
+		pogData.setPogName("Reeve the Mighty");
 		pogData.setPogColumn(1);
 		pogData.setPogRow(1);
-		pogData.setPogImageUrl(ElectronicBattleMat.DUNGEON_PCPOG_LOCATION +  "dwarf.jpeg");
+		pogData.setPogSize(1);
+		pogData.setPogImageUrl("dungeonData/resources/pcPogs/dwarf.jpeg?1");
 		addPogToCanvas(pogData);
+
+		pogData = (PogData) JavaScriptObject.createObject().cast();
+		pogData.setPogName("Red Dragon");
+		pogData.setPogColumn(3);
+		pogData.setPogRow(4);
+		pogData.setPogImageUrl(
+				"https://vignette.wikia.nocookie.net/forgottenrealms/images/6/6d/Monster_Manual_5e_-_Dragon%2C_Copper_-_p110.jpg");
+		pogData.setPogSize(2);
+		addPogToCanvas(pogData);
+
 	}
 
 	public void addPogToCanvas(PogData pogData) {
 		getRibbonBarData();
 		ScalablePog scalablePog = new ScalablePog(pogData);
-		scalablePog.setPogSize((int)gridSpacing - 4);
+		scalablePog.setPogWidth((int) gridSpacing - 4);
 		pogs.add(scalablePog);
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
 	}
@@ -402,7 +413,7 @@ public class ScalableImage extends AbsolutePanel
 		for (ScalablePog pog : pogs) {
 			pog.getElement().getStyle().setZIndex(OVERLAYS_Z);
 			this.setWidgetPosition(pog, (int) (columnToPixel(pog.getPogColumn())), (int) (rowToPixel(pog.getPogRow())));
-			pog.setPogSize((int)adjustedGridSize() - 4);
+			pog.setPogWidth((int) adjustedGridSize());
 		}
 	}
 
@@ -511,14 +522,21 @@ public class ScalableImage extends AbsolutePanel
 	private void dropPog(DropEvent event) {
 		int newColumn = dragColumn;
 		int newRow = dragRow;
-//		handleDragBox(false);
 		ScalablePog dragPog = getPogThatWasDragged();
-		dragPog.setPogPosition(newColumn, newRow);
-		mainDraw();
+		if (dragPog != null && newColumn >= 0 && newRow >= 0) {
+			dragPog.setPogPosition(newColumn, newRow);
+			mainDraw();
+		}
 	}
 
 	private ScalablePog getPogThatWasDragged() {
-		return pogs.get(0);
+		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
+		for (ScalablePog pog : pogs) {
+			if (pog.getPogData() == pogBeingDragged) {
+				return(pog);
+			}
+		}
+		return null;
 	}
 
 	private double adjustedGridSize() {
@@ -552,13 +570,15 @@ public class ScalableImage extends AbsolutePanel
 		if (dragColumn < 0 || dragRow < 0) {
 			return;
 		}
+		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
+		double size = adjustedGridSize() * pogBeingDragged.getPogSize();
 		if (!draw) {
-			context.clearRect(columnToPixel(dragColumn), rowToPixel(dragRow), adjustedGridSize(), adjustedGridSize());
+			context.clearRect(columnToPixel(dragColumn), rowToPixel(dragRow), size, size);
 			dragColumn = dragRow = -1;
 			mainDraw();
 		} else {
 			context.setFillStyle("grey");
-			context.fillRect(columnToPixel(dragColumn), rowToPixel(dragRow), adjustedGridSize(), adjustedGridSize());
+			context.fillRect(columnToPixel(dragColumn), rowToPixel(dragRow), size, size);
 		}
 	}
 
