@@ -35,8 +35,10 @@ public class DungeonSelectControl extends DialogBox {
 		dungeonSelectPresenter = new DungeonSelectPresenter();
 		dungeonSelectPresenter.setView(this);
 		setWidget(uiBinder.createAndBindUi(this));
-		setAutoHideEnabled(true);
+		setAutoHideEnabled(false);
 		setGlassEnabled(true);
+		setModal(true);
+		setText("Dungeon Select");
 		center();
 	}
 
