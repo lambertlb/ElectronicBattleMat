@@ -5,7 +5,7 @@
 		background-color: ivory;
 	}
 	</ui:style>
-	<g:FlowPanel styleName="{style.panel}">
+	<g:FlowPanel styleName="{style.panel}" width = "300px" height = "300px" >
 		<g:ListBox ui:field="dungeonDropdownList" />
 		<g:Button text="Select Dungeon" ui:field="selectButton"/>
 	</g:FlowPanel>

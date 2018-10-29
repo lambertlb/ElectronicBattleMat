@@ -3,7 +3,7 @@
 	<ui:style>
 	.doubleboxstyle {
 		height: 12px;
-		width: 25px;
+		width: 20px;
 		text-align: right;
 	}
 	</ui:style>

@@ -533,7 +533,7 @@ public class ScalableImage extends AbsolutePanel
 		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
 		for (ScalablePog pog : pogs) {
 			if (pog.getPogData() == pogBeingDragged) {
-				return(pog);
+				return (pog);
 			}
 		}
 		return null;
@@ -552,14 +552,11 @@ public class ScalableImage extends AbsolutePanel
 		double yCoord = clientY - getAbsoluteTop();
 		int selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY)) / adjustedGridSize()));
 		int selectedRow = ((int) (((yCoord - offsetY - gridOffsetY)) / adjustedGridSize()));
-		if (selectedColumn < 0 || selectedColumn > horizontalLines || selectedRow < 0 || selectedRow > verticalLines) {
+		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
+		int pogWidth = pogBeingDragged.getPogSize() - 1;
+		if (selectedColumn < 0 || selectedColumn + pogWidth >= verticalLines || selectedRow < 0
+				|| selectedRow + pogWidth >= horizontalLines) {
 			return;
-		}
-		if (selectedColumn >= verticalLines) {
-			selectedColumn = verticalLines - 1;
-		}
-		if (selectedRow >= horizontalLines) {
-			selectedRow = horizontalLines - 1;
 		}
 		dragColumn = selectedColumn;
 		dragRow = selectedRow;

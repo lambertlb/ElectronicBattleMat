@@ -7,9 +7,8 @@
 	}
 	</ui:style>
 	<g:HTMLPanel>
-		<g:VerticalPanel ui:field="panel" width="50px">
-			<dl:DraggableLabel text="cleric"/>
-			<dl:DraggableLabel text="fighter"/>
+		<g:VerticalPanel ui:field="panel">
+			<g:Button ui:field="selectPog" text="Select Pog"/>
 		</g:VerticalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 
