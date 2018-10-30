@@ -179,7 +179,7 @@ public class ScalableImage extends AbsolutePanel
 		pogData.setPogColumn(1);
 		pogData.setPogRow(1);
 		pogData.setPogSize(1);
-		pogData.setPogImageUrl("dungeonData/resources/pcPogs/dwarf.jpeg?1");
+		pogData.setPogImageUrl("dungeonData/resources/pcPogs/dwarf.jpeg");
 		addPogToCanvas(pogData);
 
 		pogData = (PogData) JavaScriptObject.createObject().cast();

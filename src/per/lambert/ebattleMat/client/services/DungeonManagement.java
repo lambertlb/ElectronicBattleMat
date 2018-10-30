@@ -1,9 +1,10 @@
 package per.lambert.ebattleMat.client.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -14,13 +15,10 @@ import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonDataResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
-import per.lambert.ebattleMat.client.services.serviceData.SaveDungeonDataRequest;
-import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 public class DungeonManagement implements IDungeonManagement {
 	private DungeonServerError lastError;
@@ -37,13 +35,6 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public List<String> getDungeonList() {
 		return dungeonList;
-	}
-
-	private List<DungeonData> dungeonData = new ArrayList<>();
-
-	@Override
-	public List<DungeonData> getDungeonData() {
-		return dungeonData;
 	}
 
 	DungeonData selectedDungeon;
@@ -89,25 +80,28 @@ public class DungeonManagement implements IDungeonManagement {
 	}
 
 	@Override
-	public void login(ServiceRequestData requestData, IUserCallback callback) {
+	public void login(final String username, final String password, IUserCallback callback) {
 		lastError = DungeonServerError.Succsess;
 		IDataRequester dataRequester = ServiceManagement.getDataRequester();
-		dataRequester.requestData(requestData, "LOGIN", new IUserCallback() {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("username", username);
+		parameters.put("password", password);
+		dataRequester.requestData("", token, "LOGIN", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				handleSuccessfulLogin(requestData, callback, data);
+				handleSuccessfulLogin(username, callback, data);
 			}
 
 			@Override
 			public void onError(Object sender, IErrorInformation error) {
 				lastError = error.getError();
-				callback.onError(requestData, error);
+				callback.onError(username, error);
 			}
 		});
 	}
 
-	private void handleSuccessfulLogin(ServiceRequestData requestData, IUserCallback callback, Object data) {
+	private void handleSuccessfulLogin(Object requestData, IUserCallback callback, Object data) {
 		LoginResponseData loginResponseData = JsonUtils.<LoginResponseData>safeEval((String) data);
 		token = loginResponseData.getToken();
 		lastError = DungeonServerError.fromInt(loginResponseData.getError());
@@ -135,14 +129,15 @@ public class DungeonManagement implements IDungeonManagement {
 		});
 	}
 
-	private void getDungeonList(ServiceRequestData requestData, IUserCallback callback) {
-		ServiceRequestData serviceRequest = (ServiceRequestData) JavaScriptObject.createObject().cast();
+	private void getDungeonList(Object requestData, IUserCallback callback) {
 		IDataRequester dataRequester = ServiceManagement.getDataRequester();
-		dataRequester.requestData(serviceRequest, token, "DUNGEONLIST", new IUserCallback() {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("fileName", "dungeonList.json");
+		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				handleSuccessfulDungeonList(requestData, callback, data);
+				handleSuccessfulDungeonList("", callback, data);
 			}
 
 			@Override
@@ -153,38 +148,11 @@ public class DungeonManagement implements IDungeonManagement {
 		});
 	}
 
-	private void handleSuccessfulDungeonList(ServiceRequestData requestData, IUserCallback callback, Object data) {
+	private void handleSuccessfulDungeonList(Object requestData, IUserCallback callback, Object data) {
 		DungeonListResponseData dungeonListResponseData = JsonUtils.<DungeonListResponseData>safeEval((String) data);
 		dungeonList.clear();
 		for (String dungeon : dungeonListResponseData.getDungeons()) {
 			dungeonList.add(dungeon);
-		}
-		getDungeonData(requestData, callback);
-	}
-
-	private void getDungeonData(ServiceRequestData requestData, IUserCallback callback) {
-		ServiceRequestData serviceRequest = (ServiceRequestData) JavaScriptObject.createObject().cast();
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
-		dataRequester.requestData(serviceRequest, token, "DUNGEONDATA", new IUserCallback() {
-
-			@Override
-			public void onSuccess(Object sender, Object data) {
-				handleSuccessfulDungeonData(requestData, callback, data);
-			}
-
-			@Override
-			public void onError(Object sender, IErrorInformation error) {
-				lastError = error.getError();
-				callback.onError(requestData, error);
-			}
-		});
-	}
-
-	private void handleSuccessfulDungeonData(ServiceRequestData requestData, IUserCallback callback, Object data) {
-		DungeonDataResponseData dungeonDataResponseData = JsonUtils.<DungeonDataResponseData>safeEval((String) data);
-		dungeonData.clear();
-		for (DungeonData dungeon : dungeonDataResponseData.getDungeonData()) {
-			dungeonData.add(dungeon);
 		}
 		callback.onSuccess(requestData, null);
 	}
@@ -198,10 +166,27 @@ public class DungeonManagement implements IDungeonManagement {
 
 	@Override
 	public void selectDungeon(String dungeonsName) {
-		int index = dungeonList.indexOf(dungeonsName);
-		selectedDungeon = dungeonData.get(index);
 		updateDungeonNameForUrl(dungeonsName);
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("fileName", dungeonNameForUrl + "/dungeonData.json");
+		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				handleDungeonData(data);
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+		});
+	}
+
+	private void handleDungeonData(Object data) {
+		selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
 		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
+		dungeonDataChanged();
 	}
 
 	private void updateDungeonNameForUrl(String dungeonsName) {
@@ -217,11 +202,10 @@ public class DungeonManagement implements IDungeonManagement {
 
 	private void saveCurrentDungeonData() {
 		if (selectedDungeon != null) {
-			SaveDungeonDataRequest saveDungeonDataRequest = (SaveDungeonDataRequest) JavaScriptObject.createObject()
-					.cast();
-			saveDungeonDataRequest.setDungeonData(selectedDungeon);
+			Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("fileName", "dungeonList.json");
 			IDataRequester dataRequester = ServiceManagement.getDataRequester();
-			dataRequester.requestData(saveDungeonDataRequest, token, "SAVEDUNGEONDATA", new IUserCallback() {
+			dataRequester.requestData("", token, "SAVEJSONFILE", parameters, new IUserCallback() {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {

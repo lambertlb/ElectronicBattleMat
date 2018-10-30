@@ -5,32 +5,21 @@ import java.util.List;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
-import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 /**
  * @author LLambert Interface to user management services
  */
 public interface IDungeonManagement {
-	/**
-	 * Login
-	 * 
-	 * @param requestData
-	 *            request data
-	 * @param callback
-	 *            callback
-	 */
-	void login(ServiceRequestData requestData, IUserCallback callback);
+	void login(final String username, final String password, IUserCallback callback);
 
 	DungeonServerError getLastError();
 
 	List<String> getDungeonList();
 
-	List<DungeonData> getDungeonData();
-
 	void selectDungeon(String dungeonsName);
 
 	DungeonData getSelectedDungeon();
-	
+
 	boolean dungeonSelected();
 
 	int getCurrentLevel();
@@ -40,9 +29,10 @@ public interface IDungeonManagement {
 	DungeonLevel getCurrentLevelData();
 
 	String getDungeonNameForUrl();
-	
+
 	void dungeonDataChanged();
-	
-	void	setPogBeingDragged(PogData pogBeingDragged);
+
+	void setPogBeingDragged(PogData pogBeingDragged);
+
 	PogData getPogBeingDragged();
 }

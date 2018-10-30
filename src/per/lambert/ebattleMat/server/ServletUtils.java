@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-
 /**
  * Servlet Utilities
  * 
@@ -46,27 +44,6 @@ public final class ServletUtils {
 		return (parameters);
 	}
 
-	/**
-	 * Common method for distributing web requests
-	 * 
-	 * @param request
-	 *            request
-	 * @param response
-	 *            response
-	 * @param webServices
-	 *            map of supported services
-	 * @param servlet
-	 *            servlet making the request
-	 * @throws ServletException
-	 *             exception
-	 * @throws IOException
-	 *             exception
-	 */
-	public static void handleGetRequest(final HttpServletRequest request, final HttpServletResponse response,
-			final Map<String, IWebRequestHandler> webServices, final HttpServlet servlet)
-			throws ServletException, IOException {
-	}
-
 	public static void handlePostRequest(final HttpServletRequest request, final HttpServletResponse response,
 			final Map<String, IWebRequestHandler> webServices, final HttpServlet servlet)
 			throws ServletException, IOException {
@@ -77,41 +54,30 @@ public final class ServletUtils {
 			while ((line = reader.readLine()) != null)
 				jb.append(line);
 		} catch (Exception e) {
-			/* report an error */
+			throw new ServletException();
 		}
 
-		Gson gson = new Gson();
-		String jsonData = jb.toString();
-		ServiceRequestData requestData = gson.fromJson(jsonData, ServiceRequestData.class);
-
-		String command = requestData.getServiceRequest();
+		String command = request.getParameter("request");
 		if (command == null) {
 			throw new ServletException();
 		}
 		if (!command.equalsIgnoreCase("LOGIN")) {
-			validateToken(requestData);
+			validateToken(request);
 		}
 		IWebRequestHandler handler = webServices.get(command);
 		if (handler != null) {
-			handler.handleRequest(request, response, servlet, jsonData);
+			handler.handleRequest(request, response, servlet, jb.toString());
 			return;
 		}
 	}
 
-	private static void validateToken(ServiceRequestData requestData) throws ServletException {
-		if (requestData.getToken() == 0) {
+	private static void validateToken(final HttpServletRequest request) throws ServletException {
+		int token = Integer.parseUnsignedInt(request.getParameter("token"));
+		if (token == 0) {
 			throw new ServletException();
 		}
 	}
 
-	/**
-	 * MAke sure legal user
-	 * 
-	 * @param token
-	 *            user token
-	 * @throws ServletException
-	 *             exception
-	 */
 	public static void validateUser(final String token) throws ServletException {
 		if (token == null || token.isEmpty()) {
 			throw new ServletException();

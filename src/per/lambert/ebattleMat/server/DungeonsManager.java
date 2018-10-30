@@ -128,8 +128,7 @@ public class DungeonsManager {
 			file.delete();
 			output = new BufferedWriter(new FileWriter(file));
 			output.write(dataToWrite);
-		}
-		finally {
+		} finally {
 			if (output != null) {
 				output.close();
 			}
@@ -149,5 +148,32 @@ public class DungeonsManager {
 	private static String getDirectoryName(String dungeonName) {
 		String directoryName = dungeonName.toLowerCase().replaceAll("\\s+", "_");
 		return directoryName;
+	}
+
+	public static String getFileAsString(final HttpServlet servlet, final String fileName) {
+		BufferedReader br = null;
+		lock.lock();
+		try {
+			StringBuilder builder = new StringBuilder();
+			String filePath = fileLocation + fileName;
+			InputStream is = servlet.getServletContext().getResourceAsStream(filePath);
+			InputStreamReader isr = new InputStreamReader(is);
+			br = new BufferedReader(isr);
+			String line;
+			while ((line = br.readLine()) != null) {
+				builder.append(line);
+			}
+			return(builder.toString());
+		} catch (IOException e) {
+			return("");
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+				}
+			}
+			lock.unlock();
+		}
 	}
 }

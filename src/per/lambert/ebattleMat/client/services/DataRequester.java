@@ -1,36 +1,35 @@
 package per.lambert.ebattleMat.client.services;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Window;
 
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
-import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
 
 public class DataRequester implements IDataRequester {
 
 	@Override
-	public void requestData(final ServiceRequestData postDataOject, final String requestType, IUserCallback callback) {
-		requestData(postDataOject, 0, requestType, callback);
-	}
-
-	@Override
-	public void requestData(final ServiceRequestData postDataOject, final int token, final String requestType,
-			IUserCallback callback) {
-		postDataOject.setToken(token);
-		postDataOject.setServiceRequest(requestType);
-		String requestData = JsonUtils.stringify(postDataOject);
-		String url = GWT.getModuleBaseURL() + "dungeons";
+	public void requestData(final String requestData, final int token, final String requestType,
+			final Map<String, String> parameters, final IUserCallback callback) {
+		parameters.put("token", "" + token);
+		parameters.put("request", "" + requestType);
+		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+		urlBuilder.setPath("electronicbattlemat/dungeons");
+		addParametersToURL(parameters, urlBuilder);
+		String url = urlBuilder.buildString();
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
 		try {
-
 			builder.sendRequest(requestData, new RequestCallback() {
 
 				// (i) callback handler when there is an error
@@ -51,7 +50,6 @@ public class DataRequester implements IDataRequester {
 		} catch (RequestException e) {
 			handleCallbackError(DungeonServerError.Undefined1, e, callback);
 		}
-
 	}
 
 	protected void handleCallbackError(final DungeonServerError dungeonError, final Throwable exception,
@@ -76,6 +74,18 @@ public class DataRequester implements IDataRequester {
 				return "";
 			}
 		});
+	}
+
+	private void addParametersToURL(final Map<String, String> parameters, final UrlBuilder urlBuilder) {
+		if (parameters != null) {
+			Iterator<Map.Entry<String, String>> contactIterator = parameters.entrySet().iterator();
+			while (contactIterator.hasNext()) {
+				Map.Entry<String, String> anEntry = contactIterator.next();
+				String parameter = anEntry.getKey();
+				String value = anEntry.getValue();
+				urlBuilder.setParameter(parameter, value);
+			}
+		}
 	}
 
 }

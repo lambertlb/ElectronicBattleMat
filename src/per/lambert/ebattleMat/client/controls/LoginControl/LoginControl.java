@@ -118,7 +118,7 @@ void setLocalizedStrings() {
   
   @UiHandler("txtUserName")
   void userNameChanged(ChangeEvent event) {
-	  presenter.getRequestData().setUsername(txtUserName.getText());
+	  presenter.setUsername(txtUserName.getText());
   }
 
   @UiHandler("txtUserName")
@@ -141,7 +141,7 @@ void setLocalizedStrings() {
 
   @UiHandler("txtPassword")
   void passwordChanged(ChangeEvent event) {
-	  presenter.getRequestData().setPassword(txtPassword.getText());
+	  presenter.setPassword(txtPassword.getText());
   }
   
   @UiHandler("txtPassword")

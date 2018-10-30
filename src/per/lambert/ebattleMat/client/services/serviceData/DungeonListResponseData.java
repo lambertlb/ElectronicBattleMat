@@ -5,7 +5,7 @@ public class DungeonListResponseData extends ServiceRequestData {
 	}
 
 	public final native String[] getDungeons() /*-{
-		return this.dungeons;
+		return this.dungeonList;
 	}-*/;
 
 }

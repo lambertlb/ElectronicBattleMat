@@ -16,15 +16,8 @@ public class Dungeons extends HttpServlet {
 	public Dungeons() {
 		webServices = new HashMap<String, IWebRequestHandler>();
 		webServices.put("LOGIN", new LoginHandler());
-		webServices.put("DUNGEONLIST", new DungeonListHandler());
-		webServices.put("DUNGEONDATA", new DungeonDataHandler());
 		webServices.put("SAVEDUNGEONDATA", new SaveDungeonDataHandler());
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		ServletUtils.handleGetRequest(request, response, webServices, this);
+		webServices.put("LOADJSONFILE", new loadJsonDataHandler());
 	}
 
 	@Override

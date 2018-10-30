@@ -6,6 +6,7 @@ import per.lambert.ebattleMat.client.services.ServiceManagement;
 
 public class DungeonSelectPresenter {
 	private DungeonSelectControl view;
+
 	public void setView(DungeonSelectControl dungeonSelectControl) {
 		view = dungeonSelectControl;
 	}

@@ -19,31 +19,6 @@ import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
  *
  */
 public class LoginHandler implements IWebRequestHandler {
-	public class LoginRequestData extends ServiceRequestData {
-		public LoginRequestData() {
-		}
-
-		private String username;
-
-		public final void setUsername(String username) {
-			this.username = username;
-		};
-
-		public final String getUsername() {
-			return this.username;
-		};
-
-		private String password;
-
-		public final void setPassword(String password) {
-			this.password = password;
-		};
-
-		public final String setPassword() {
-			return this.password;
-		};
-
-	}
 
 	public class LoginResponseData extends ServiceResponseData {
 		private int token;
@@ -60,16 +35,15 @@ public class LoginHandler implements IWebRequestHandler {
 	@Override
 	public final void handleRequest(final HttpServletRequest request, final HttpServletResponse resp,
 			final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
-		Gson gson = new Gson();
-		LoginRequestData requestData = gson.fromJson(jsonData, LoginRequestData.class);
-
 		LoginResponseData responseData = new LoginResponseData();
-		if (requestData.username == null || requestData.username == "" || requestData.password == null
-				|| requestData.password == "") {
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		if (username == null || username == "" || password == null || password == "") {
 			responseData.setError(1);
 		} else {
-			responseData.setToken(requestData.username.hashCode());
+			responseData.setToken(username.hashCode());
 		}
+		Gson gson = new Gson();
 		String responseDataString = gson.toJson(responseData);
 
 		PrintWriter out = resp.getWriter();

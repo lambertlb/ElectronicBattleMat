@@ -75,6 +75,5 @@ public class ElectronicBattleMat implements EntryPoint {
 		loginPanel.add(errorLabel);
 		layout = new ShellLayout();
 		rootLayoutPanel.add(layout);
-		layout.dungeonDataChanged();
 	}
 }

@@ -1,7 +1,5 @@
 package per.lambert.ebattleMat.client.controls.LoginControl;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
@@ -9,20 +7,35 @@ import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
-import per.lambert.ebattleMat.client.services.serviceData.LoginRequestData;
 
 public class LoginPresenter {
 
 	private ILoginView view;
-	LoginRequestData requestData = (LoginRequestData) JavaScriptObject.createObject().cast();
-	public LoginRequestData getRequestData() {
-		return requestData;
-	}
 
 	String message = "";
 
 	public String getMessage() {
 		return message;
+	}
+
+	private String username;
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	private String password;
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public void setMessage(String message) {
@@ -48,7 +61,7 @@ public class LoginPresenter {
 		view.update();
 		final IDungeonManagement dungeonManagement = ServiceManagement.getDungeonManagment();
 
-		dungeonManagement.login(requestData, new IUserCallback() {
+		dungeonManagement.login(username, password, new IUserCallback() {
 			public void onError(final Object sender, final IErrorInformation error) {
 				loginComplete("Login Fail");
 			}
