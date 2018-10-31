@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import per.lambert.ebattleMat.client.services.serviceData.ServiceRequestData;
-
 /**
  * Login handler
  * 
