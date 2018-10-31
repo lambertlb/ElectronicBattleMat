@@ -8,6 +8,5 @@
 			"gridOffsetY": 10
 		}
 	],
-	"showGrid": false,
-	"isDirty": true
+	"showGrid": true
 }

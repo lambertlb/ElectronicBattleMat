@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.Gson;
 
@@ -121,6 +122,33 @@ public class DungeonsManager {
 		String filePath = directoryPath + "/dungeonData.json";
 		Gson gson = new Gson();
 		String dataToWrite = gson.toJson(dungeonDataToSave);
+		BufferedWriter output = null;
+		try {
+			lock.lock();
+			File file = new File(filePath);
+			file.delete();
+			output = new BufferedWriter(new FileWriter(file));
+			output.write(dataToWrite);
+		} finally {
+			if (output != null) {
+				output.close();
+			}
+			lock.unlock();
+		}
+		dungeonData = null;
+		checkIfNeedToLoadDungeonData(servlet);
+	}
+
+	public static void saveDungeonData(final HttpServletRequest request,final HttpServlet servlet, final String dataToWrite)
+			throws IOException {
+		String dungeonDirectoryName = getDirectoryName(request.getParameter("dungeonName"));
+		if (dungeonDirectoryName == null || dungeonDirectoryName.isEmpty()) {
+			return;
+		}
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String directoryPath = servletPath.getPath() + fileLocation + dungeonDirectoryName;
+		makeSureDirectoryExists(directoryPath);
+		String filePath = directoryPath + "/dungeonData.json";
 		BufferedWriter output = null;
 		try {
 			lock.lock();

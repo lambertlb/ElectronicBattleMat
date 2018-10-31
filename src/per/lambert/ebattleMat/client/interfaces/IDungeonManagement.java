@@ -31,6 +31,7 @@ public interface IDungeonManagement {
 	String getDungeonNameForUrl();
 
 	void dungeonDataChanged();
+	void saveDungeonData();
 
 	void setPogBeingDragged(PogData pogBeingDragged);
 

@@ -47,24 +47,24 @@ public class GridGroup extends Composite {
 	@UiHandler("showGrid")
 	void onClick(ClickEvent e) {
 		ServiceManagement.getDungeonManagment().getSelectedDungeon().setShowGrid(showGrid.getValue());
-		ServiceManagement.getDungeonManagment().dungeonDataChanged();
+		ServiceManagement.getDungeonManagment().saveDungeonData();
 	}
 
 	@UiHandler("gridSizeBox")
 	void onValueChanged(ValueChangeEvent<Double> event) {
 		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridSize(gridSizeBox.getValue());
-		ServiceManagement.getDungeonManagment().dungeonDataChanged();
+		ServiceManagement.getDungeonManagment().saveDungeonData();
 	}
 
 	@UiHandler("gridOffsetX")
 	void onGridOffsetXChanged(ValueChangeEvent<Double> event) {
 		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridOffsetX(gridOffsetX.getValue());
-		ServiceManagement.getDungeonManagment().dungeonDataChanged();
+		ServiceManagement.getDungeonManagment().saveDungeonData();
 	}
 
 	@UiHandler("gridOffsetY")
 	void onGridOffsetYChanged(ValueChangeEvent<Double> event) {
 		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridOffsetY(gridOffsetY.getValue());
-		ServiceManagement.getDungeonManagment().dungeonDataChanged();
+		ServiceManagement.getDungeonManagment().saveDungeonData();
 	}
 }

@@ -49,6 +49,12 @@ public class DungeonManagement implements IDungeonManagement {
 		return selectedDungeon;
 	}
 
+	private String selectedDungeonsName;
+	
+	public String getSelectedDungeonsName() {
+		return selectedDungeonsName;
+	}
+
 	int currentLevel;
 
 	@Override
@@ -195,17 +201,22 @@ public class DungeonManagement implements IDungeonManagement {
 
 	@Override
 	public void dungeonDataChanged() {
-		saveCurrentDungeonData();
 		ServiceManagement.getEventManager()
 				.fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
+	}
+	@Override
+	public void saveDungeonData() {
+		saveCurrentDungeonData();
+		dungeonDataChanged();
 	}
 
 	private void saveCurrentDungeonData() {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
-			parameters.put("fileName", "dungeonList.json");
+			parameters.put("dungeonName", selectedDungeon.getDungeonName());
 			IDataRequester dataRequester = ServiceManagement.getDataRequester();
-			dataRequester.requestData("", token, "SAVEJSONFILE", parameters, new IUserCallback() {
+			String dungeonDataString = JsonUtils.stringify(selectedDungeon);
+			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {
