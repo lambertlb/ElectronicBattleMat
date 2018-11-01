@@ -11,7 +11,7 @@ public class DungeonSelectPresenter {
 		view = dungeonSelectControl;
 	}
 
-	public List<String> getDungeonList() {
+	public String[] getDungeonList() {
 		return ServiceManagement.getDungeonManagment().getDungeonList();
 	}
 

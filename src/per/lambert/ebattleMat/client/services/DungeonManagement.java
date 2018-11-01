@@ -1,11 +1,8 @@
 package per.lambert.ebattleMat.client.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -30,14 +27,17 @@ public class DungeonManagement implements IDungeonManagement {
 
 	private int token;
 
-	private List<String> dungeonList = new ArrayList<String>();
+	private DungeonListData dungeonListData;
 
 	@Override
-	public List<String> getDungeonList() {
-		return dungeonList;
+	public String[] getDungeonList() {
+		if (dungeonListData != null) {
+			return (dungeonListData.getDungeons());
+		}
+		return null;
 	}
 
-	DungeonData selectedDungeon;
+	private DungeonData selectedDungeon;
 
 	@Override
 	public boolean dungeonSelected() {
@@ -154,25 +154,12 @@ public class DungeonManagement implements IDungeonManagement {
 		});
 	}
 
-	static class DungeonListData extends JavaScriptObject {
-		protected DungeonListData() {
-		}
-
-		public final native String[] getDungeons() /*-{
-			return this.dungeonList;
-		}-*/;
-	}
-
 	private void handleSuccessfulDungeonList(Object requestData, IUserCallback callback, Object data) {
-		dungeonList.clear();
-		DungeonListData dungeonListResponseData = JsonUtils.<DungeonListData>safeEval((String) data);
-		for (String dungeon : dungeonListResponseData.getDungeons()) {
-			dungeonList.add(dungeon);
-		}
+		dungeonListData = JsonUtils.<DungeonListData>safeEval((String) data);
 		callback.onSuccess(requestData, null);
 	}
 
-	String dungeonNameForUrl;
+	private String dungeonNameForUrl;
 
 	@Override
 	public String getDungeonNameForUrl() {

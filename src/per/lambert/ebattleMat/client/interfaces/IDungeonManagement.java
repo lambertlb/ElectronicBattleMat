@@ -14,7 +14,7 @@ public interface IDungeonManagement {
 
 	DungeonServerError getLastError();
 
-	List<String> getDungeonList();
+	String[] getDungeonList();
 
 	void selectDungeon(String dungeonsName);
 

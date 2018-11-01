@@ -77,7 +77,6 @@ public class LoginControl extends PopupPanel implements ILoginView
   @Override public void onLoad() {
 	  super.onLoad();
 	  setLocalizedStrings();  
-	  //TODO - need to use dependency injection;
 	  presenter = new LoginPresenter();
 	  presenter.setView(this);
   }

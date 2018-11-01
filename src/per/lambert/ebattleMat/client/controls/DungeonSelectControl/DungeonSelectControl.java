@@ -19,7 +19,7 @@ public class DungeonSelectControl extends DialogBox {
 	@Override
 	protected void onLoad() {
 		super.onLoad();
-		List<String> dungeonList = dungeonSelectPresenter.getDungeonList();
+		String[] dungeonList = dungeonSelectPresenter.getDungeonList();
 		for (String dungeon : dungeonList) {
 			dungeonDropdownList.addItem(dungeon);
 		}
