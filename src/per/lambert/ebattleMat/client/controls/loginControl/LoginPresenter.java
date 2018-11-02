@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.LoginControl;
+package per.lambert.ebattleMat.client.controls.loginControl;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;

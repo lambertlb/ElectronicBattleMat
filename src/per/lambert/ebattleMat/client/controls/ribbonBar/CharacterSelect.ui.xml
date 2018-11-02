@@ -1,6 +1,5 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:dl="urn:import:per.lambert.ebattleMat.client.controls.DraggableLabel">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 	.important {
 		font-weight: bold;
@@ -9,6 +8,8 @@
 	<g:HTMLPanel>
 		<g:VerticalPanel ui:field="panel">
 			<g:Button ui:field="selectPog" text="Select Pog"/>
+			<g:ListBox ui:field="characterSelect" visibleItemCount="1">
+			</g:ListBox>
 		</g:VerticalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

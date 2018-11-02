@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.RibbonBar;
+package per.lambert.ebattleMat.client.controls.ribbonBar;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

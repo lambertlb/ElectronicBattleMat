@@ -3,5 +3,7 @@ package per.lambert.ebattleMat.client.interfaces;
 public enum ReasonForAction {
 	Login,
 	DungeonSelected,
-	DungeonDataChanged
+	DungeonDataChanged,
+	CharacterPogsLoaded,
+	PogWasSelected
 }

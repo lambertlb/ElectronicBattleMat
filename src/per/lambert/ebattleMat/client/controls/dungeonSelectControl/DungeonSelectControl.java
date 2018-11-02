@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.DungeonSelectControl;
+package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
 import java.util.List;
 

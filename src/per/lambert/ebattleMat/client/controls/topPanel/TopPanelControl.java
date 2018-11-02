@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.TopPanel;
+package per.lambert.ebattleMat.client.controls.topPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.LoginControl;
+package per.lambert.ebattleMat.client.controls.loginControl;
 
 public interface ILoginView {
 	void update();

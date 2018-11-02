@@ -4,7 +4,7 @@
 
 	<ui:style src="LoginControl.css" />
 	
-	<ui:style field="myStyle" type="per.lambert.ebattleMat.client.controls.LoginControl.LoginControl.MyStyle">
+	<ui:style field="myStyle" type="per.lambert.ebattleMat.client.controls.loginControl.LoginControl.MyStyle">
 	.hidden {
 		visibility: hidden;
 	}

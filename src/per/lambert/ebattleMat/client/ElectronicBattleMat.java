@@ -6,8 +6,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
-import per.lambert.ebattleMat.client.controls.DungeonSelectControl.DungeonSelectControl;
-import per.lambert.ebattleMat.client.controls.LoginControl.LoginControl;
+import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
+import per.lambert.ebattleMat.client.controls.loginControl.LoginControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;

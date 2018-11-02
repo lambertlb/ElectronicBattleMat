@@ -17,7 +17,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -122,11 +124,8 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 			@Override
 			public void onDragStart(DragStartEvent event) {
 				ServiceManagement.getDungeonManagment().setPogBeingDragged(pogData);
-				event.setData("text", "IM DRAGGING");
-
-				// Copy the label image for the drag icon
-				// 10,10 indicates the pointer offset, not the image size.
-				event.getDataTransfer().setDragImage(pogMainPanel.getElement(), 0, 150);
+//				event.setData("text", "IM DRAGGING");
+				event.getDataTransfer().setDragImage(pogMainPanel.getElement(), 10, 120);
 			}
 		});
 	}

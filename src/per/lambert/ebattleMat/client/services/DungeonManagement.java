@@ -14,8 +14,10 @@ import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonListData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.services.serviceData.PogList;
 
 public class DungeonManagement implements IDungeonManagement {
 	private DungeonServerError lastError;
@@ -55,7 +57,7 @@ public class DungeonManagement implements IDungeonManagement {
 		return selectedDungeonsName;
 	}
 
-	int currentLevel;
+	private int currentLevel;
 
 	@Override
 	public int getCurrentLevel() {
@@ -73,6 +75,25 @@ public class DungeonManagement implements IDungeonManagement {
 			return (selectedDungeon.getDungeonlevels()[currentLevel]);
 		}
 		return null;
+	}
+
+	private PogList pcPogs;
+
+	@Override
+	public PogList getPcPogs() {
+		return pcPogs;
+	}
+
+	private PogData selectedPog;
+	
+	@Override
+	public PogData getSelectedPog() {
+		return selectedPog;
+	}
+
+	@Override
+	public void setSelectedPog(PogData selectedPog) {
+		this.selectedPog = selectedPog;
 	}
 
 	private PogData pogBeingDragged;
@@ -183,6 +204,7 @@ public class DungeonManagement implements IDungeonManagement {
 			public void onError(Object sender, IErrorInformation error) {
 			}
 		});
+		loadInResourceData();
 	}
 
 	private void handleDungeonData(Object data) {
@@ -226,4 +248,28 @@ public class DungeonManagement implements IDungeonManagement {
 			});
 		}
 	}
+
+	private void loadInResourceData() {
+		loadCharacterPogs();
+	}
+
+	private void loadCharacterPogs() {
+		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("fileName", "resources/pcPogs/characterPogs.json");
+		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				pcPogs = JsonUtils.<PogList>safeEval((String) data);
+				ServiceManagement.getEventManager()
+						.fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+		});
+	}
+
 }

@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.LoginControl;
+package per.lambert.ebattleMat.client.controls.loginControl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;

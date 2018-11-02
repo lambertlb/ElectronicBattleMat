@@ -1,10 +1,9 @@
 package per.lambert.ebattleMat.client.interfaces;
 
-import java.util.List;
-
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.services.serviceData.PogList;
 
 /**
  * @author LLambert Interface to user management services
@@ -32,6 +31,9 @@ public interface IDungeonManagement {
 
 	void dungeonDataChanged();
 	void saveDungeonData();
+	PogList getPcPogs();
+	PogData getSelectedPog();
+	void setSelectedPog(PogData selectedPog);
 
 	void setPogBeingDragged(PogData pogBeingDragged);
 
