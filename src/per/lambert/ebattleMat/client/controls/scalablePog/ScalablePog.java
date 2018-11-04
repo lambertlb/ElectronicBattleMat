@@ -6,6 +6,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.DragLeaveEvent;
+import com.google.gwt.event.dom.client.DragLeaveHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.HasDragStartHandlers;
@@ -124,8 +126,14 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 			@Override
 			public void onDragStart(DragStartEvent event) {
 				ServiceManagement.getDungeonManagment().setPogBeingDragged(pogData);
-//				event.setData("text", "IM DRAGGING");
 				event.getDataTransfer().setDragImage(pogMainPanel.getElement(), 10, 120);
+			}
+		});
+		addDragLeaveHandler(new DragLeaveHandler() {
+			@Override
+			public void onDragLeave(DragLeaveEvent event) {
+				event.preventDefault();
+				event.stopPropagation();
 			}
 		});
 	}
@@ -140,6 +148,10 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 
 	public HandlerRegistration addDragStartHandler(DragStartHandler handler) {
 		return addBitlessDomHandler(handler, DragStartEvent.getType());
+	}
+
+	public HandlerRegistration addDragLeaveHandler(DragLeaveHandler handler) {
+		return addBitlessDomHandler(handler, DragLeaveEvent.getType());
 	}
 
 	public final void setImage() {

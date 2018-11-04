@@ -46,6 +46,7 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private static final double DEFAULT_ZOOM = 1.1;
 	private static final int OVERLAYS_Z = 300;
+	private static final int GREYOUT_Z = 310;
 	// private static final int ROOM_OBJECTS_Z = 200;
 
 	private boolean showGrid = false;
@@ -138,8 +139,9 @@ public class ScalableImage extends AbsolutePanel
 	int dragColumn = -1;
 	int dragRow = -1;
 
-	ShellLayout parentPanel;
+	private ShellLayout parentPanel;
 	private Image image = new Image();
+	private LayoutPanel greyOutPanel;
 	int pictureCount = 1;
 
 	private List<ScalablePog> pogs = new ArrayList<ScalablePog>();
@@ -166,31 +168,16 @@ public class ScalableImage extends AbsolutePanel
 		hidePanel.setVisible(false);
 		hidePanel.add(image);
 		super.add(hidePanel, -1, -1);
+		addGreyoutPanel();
 
 		showGrid = false;
 		setupDragAndDrop();
 		setupEventHandling();
-		addFakePod();
 	}
 
-	private void addFakePod() {
-		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
-		pogData.setPogName("Reeve the Mighty");
-		pogData.setPogColumn(1);
-		pogData.setPogRow(1);
-		pogData.setPogSize(1);
-		pogData.setPogImageUrl("dungeonData/resources/pcPogs/dwarf.jpeg");
-		addPogToCanvas(pogData);
-
-		pogData = (PogData) JavaScriptObject.createObject().cast();
-		pogData.setPogName("Red Dragon");
-		pogData.setPogColumn(3);
-		pogData.setPogRow(4);
-		pogData.setPogImageUrl(
-				"https://vignette.wikia.nocookie.net/forgottenrealms/images/6/6d/Monster_Manual_5e_-_Dragon%2C_Copper_-_p110.jpg");
-		pogData.setPogSize(2);
-		addPogToCanvas(pogData);
-
+	private void addGreyoutPanel() {
+		greyOutPanel = new LayoutPanel();
+		super.add(greyOutPanel, 100, 100);
 	}
 
 	public ScalablePog addPogToCanvas(PogData pogData) {
@@ -199,7 +186,7 @@ public class ScalableImage extends AbsolutePanel
 		scalablePog.setPogWidth((int) gridSpacing - 4);
 		pogs.add(scalablePog);
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
-		return(scalablePog);
+		return (scalablePog);
 	}
 
 	private void setupDragAndDrop() {
@@ -207,7 +194,7 @@ public class ScalableImage extends AbsolutePanel
 
 			@Override
 			public void onDragOver(DragOverEvent event) {
-				highlightGridSquare(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), true);
+				highlightGridSquare(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 			}
 		}, DragOverEvent.getType());
 
@@ -218,12 +205,10 @@ public class ScalableImage extends AbsolutePanel
 				dropPog(event);
 			}
 		}, DropEvent.getType());
-
 		this.addDomHandler(new DragLeaveHandler() {
 
 			@Override
 			public void onDragLeave(DragLeaveEvent event) {
-				highlightGridSquare(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), false);
 			}
 		}, DragLeaveEvent.getType());
 	}
@@ -376,6 +361,7 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	public final void onMouseUp(final MouseUpEvent event) {
 		this.mouseDown = false;
+		removeHighlightGridSquare();
 	}
 
 	/**
@@ -526,6 +512,7 @@ public class ScalableImage extends AbsolutePanel
 		ScalablePog dragPog = getPogThatWasDragged();
 		if (dragPog != null && newColumn >= 0 && newRow >= 0) {
 			dragPog.setPogPosition(newColumn, newRow);
+			removeHighlightGridSquare();
 			mainDraw();
 		}
 	}
@@ -544,11 +531,12 @@ public class ScalableImage extends AbsolutePanel
 		return (gridSpacing * totalZoom);
 	}
 
-	protected void highlightGridSquare(int clientX, int clientY, boolean needFill) {
-		handleDragBox(false);
-		if (!needFill) {
-			return;
-		}
+	protected void removeHighlightGridSquare() {
+		greyOutPanel.getElement().getStyle().setBackgroundColor("grey");
+		greyOutPanel.setVisible(false);
+	}
+
+	protected void highlightGridSquare(int clientX, int clientY) {
 		double xCoord = clientX - getAbsoluteLeft();
 		double yCoord = clientY - getAbsoluteTop();
 		int selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY)) / adjustedGridSize()));
@@ -557,27 +545,31 @@ public class ScalableImage extends AbsolutePanel
 		int pogWidth = pogBeingDragged.getPogSize() - 1;
 		if (selectedColumn < 0 || selectedColumn + pogWidth >= verticalLines || selectedRow < 0
 				|| selectedRow + pogWidth >= horizontalLines) {
+			dragColumn = dragRow = -1;
+			removeHighlightGridSquare();
+			return;
+		}
+		if (dragColumn == selectedColumn && dragRow == selectedRow) {
 			return;
 		}
 		dragColumn = selectedColumn;
 		dragRow = selectedRow;
-		handleDragBox(true);
+		handleDragBox();
 	}
 
-	private void handleDragBox(boolean draw) {
+	private void handleDragBox() {
 		if (dragColumn < 0 || dragRow < 0) {
+			removeHighlightGridSquare();
 			return;
 		}
 		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
 		double size = adjustedGridSize() * pogBeingDragged.getPogSize();
-		if (!draw) {
-			context.clearRect(columnToPixel(dragColumn), rowToPixel(dragRow), size, size);
-			dragColumn = dragRow = -1;
-			mainDraw();
-		} else {
-			context.setFillStyle("grey");
-			context.fillRect(columnToPixel(dragColumn), rowToPixel(dragRow), size, size);
-		}
+		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
+		greyOutPanel.getElement().getStyle().setBackgroundColor("grey");
+		greyOutPanel.setWidth("" + size + "px");
+		greyOutPanel.setHeight("" + size + "px");
+		super.setWidgetPosition(greyOutPanel, (int) columnToPixel(dragColumn), (int) rowToPixel(dragRow));
+		greyOutPanel.setVisible(true);
 	}
 
 	@SuppressWarnings("unused")
