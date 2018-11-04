@@ -193,12 +193,13 @@ public class ScalableImage extends AbsolutePanel
 
 	}
 
-	public void addPogToCanvas(PogData pogData) {
+	public ScalablePog addPogToCanvas(PogData pogData) {
 		getRibbonBarData();
 		ScalablePog scalablePog = new ScalablePog(pogData);
 		scalablePog.setPogWidth((int) gridSpacing - 4);
 		pogs.add(scalablePog);
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
+		return(scalablePog);
 	}
 
 	private void setupDragAndDrop() {
@@ -536,7 +537,7 @@ public class ScalableImage extends AbsolutePanel
 				return (pog);
 			}
 		}
-		return null;
+		return addPogToCanvas(pogBeingDragged);
 	}
 
 	private double adjustedGridSize() {
