@@ -182,7 +182,8 @@ public class ScalableImage extends AbsolutePanel
 
 	public ScalablePog addPogToCanvas(PogData pogData) {
 		getRibbonBarData();
-		ScalablePog scalablePog = new ScalablePog(pogData);
+		PogData clonePog = pogData.clone();
+		ScalablePog scalablePog = new ScalablePog(clonePog);
 		scalablePog.setPogWidth((int) gridSpacing - 4);
 		pogs.add(scalablePog);
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));

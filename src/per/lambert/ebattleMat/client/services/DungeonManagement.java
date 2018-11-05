@@ -271,5 +271,9 @@ public class DungeonManagement implements IDungeonManagement {
 			}
 		});
 	}
+	@Override
+	public PogData	createPlayerInstance(PogData template) {
+		return(null);
+	}
 
 }

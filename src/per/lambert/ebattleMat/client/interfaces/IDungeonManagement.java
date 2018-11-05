@@ -38,4 +38,5 @@ public interface IDungeonManagement {
 	void setPogBeingDragged(PogData pogBeingDragged);
 
 	PogData getPogBeingDragged();
+	PogData	createPlayerInstance(PogData template);
 }

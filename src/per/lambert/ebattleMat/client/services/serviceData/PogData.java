@@ -1,6 +1,7 @@
 package per.lambert.ebattleMat.client.services.serviceData;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsonUtils;
 
 public class PogData extends JavaScriptObject {
 	protected PogData() {
@@ -60,4 +61,36 @@ public class PogData extends JavaScriptObject {
 	public final native void setPogSize(int pogSize) /*-{
 		this.pogSize = pogSize;
 	}-*/;
+
+	public static final native String generateUUID() /*-{
+		var d = new Date().getTime();
+		if (typeof performance !== 'undefined'
+				&& typeof performance.now === 'function') {
+			d += performance.now(); //use high-precision timer if available
+		}
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
+				function(c) {
+					var r = (d + Math.random() * 16) % 16 | 0;
+					d = Math.floor(d / 16);
+					return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+				});
+	}-*/;
+
+	public final native String getUUID() /*-{
+		if (this.uuid === undefined) {
+			this.uuid = generateUUID();
+		}
+		return (this.uuid);
+	}-*/;
+
+	public final native void setUUID(String uuid) /*-{
+		this.uuid = uuid;
+	}-*/;
+
+	public final PogData clone() {
+		String pogJson = JsonUtils.stringify(this);
+		PogData theClone = JsonUtils.<PogData>safeEval(pogJson);
+		theClone.setUUID(generateUUID());
+		return (theClone);
+	}
 }
