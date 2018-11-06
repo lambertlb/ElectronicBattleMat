@@ -180,16 +180,6 @@ public class ScalableImage extends AbsolutePanel
 		super.add(greyOutPanel, 100, 100);
 	}
 
-	public ScalablePog addPogToCanvas(PogData pogData) {
-		getRibbonBarData();
-		PogData clonePog = pogData.clone();
-		ScalablePog scalablePog = new ScalablePog(clonePog);
-		scalablePog.setPogWidth((int) gridSpacing - 4);
-		pogs.add(scalablePog);
-		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
-		return (scalablePog);
-	}
-
 	private void setupDragAndDrop() {
 		this.addDomHandler(new DragOverHandler() {
 
@@ -526,6 +516,16 @@ public class ScalableImage extends AbsolutePanel
 			}
 		}
 		return addPogToCanvas(pogBeingDragged);
+	}
+
+	public ScalablePog addPogToCanvas(PogData pogData) {
+		getRibbonBarData();
+		PogData clonePog = ServiceManagement.getDungeonManagment().createPlayerInstance(pogData);
+		ScalablePog scalablePog = new ScalablePog(clonePog);
+		scalablePog.setPogWidth((int) gridSpacing - 4);
+		pogs.add(scalablePog);
+		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
+		return (scalablePog);
 	}
 
 	private double adjustedGridSize() {

@@ -78,7 +78,7 @@ public class PogData extends JavaScriptObject {
 
 	public final native String getUUID() /*-{
 		if (this.uuid === undefined) {
-			this.uuid = generateUUID();
+			return ("");
 		}
 		return (this.uuid);
 	}-*/;
@@ -93,4 +93,15 @@ public class PogData extends JavaScriptObject {
 		theClone.setUUID(generateUUID());
 		return (theClone);
 	}
+
+	public final native boolean isThisAPlayer() /*-{
+		if (this.isPlayer === undefined) {
+			return (false);
+		}
+		return (this.isPlayer);
+	}-*/;
+
+	public final native void setThisAPlayer(boolean isAPlayer) /*-{
+		this.isPlayer = isAPlayer;
+	}-*/;
 }

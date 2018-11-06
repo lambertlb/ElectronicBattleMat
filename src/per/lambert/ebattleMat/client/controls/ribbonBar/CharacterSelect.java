@@ -17,7 +17,6 @@ import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
-import per.lambert.ebattleMat.client.services.serviceData.PogList;
 
 public class CharacterSelect extends Composite {
 
@@ -55,15 +54,14 @@ public class CharacterSelect extends Composite {
 	@UiHandler("characterSelect")
 	void characterWasSelected(ClickEvent event) {
 		int pogIndex = characterSelect.getSelectedIndex();
-		ServiceManagement.getDungeonManagment()
-				.setSelectedPog(ServiceManagement.getDungeonManagment().getPcPogs().getPogList()[pogIndex]);
+		ServiceManagement.getDungeonManagment().setSelectedPog(ServiceManagement.getDungeonManagment().getPcPogs()[pogIndex]);
 		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 
 	private void characterPogsLoaded() {
 		characterSelect.clear();
-		PogList pogList = ServiceManagement.getDungeonManagment().getPcPogs();
-		for (PogData pogData : pogList.getPogList()) {
+		PogData[] pogList = ServiceManagement.getDungeonManagment().getPcPogs();
+		for (PogData pogData : pogList) {
 			characterSelect.addItem(pogData.getPogName());
 		}
 	}

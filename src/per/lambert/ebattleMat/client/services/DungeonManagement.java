@@ -3,6 +3,7 @@ package per.lambert.ebattleMat.client.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -25,6 +26,10 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public DungeonServerError getLastError() {
 		return (lastError);
+	}
+
+	public DungeonManagement() {
+		players = (PogList) JavaScriptObject.createObject().cast();
 	}
 
 	private int token;
@@ -80,12 +85,22 @@ public class DungeonManagement implements IDungeonManagement {
 	private PogList pcPogs;
 
 	@Override
-	public PogList getPcPogs() {
-		return pcPogs;
+	public PogData[] getPcPogs() {
+		return pcPogs.getPogList();
+	}
+
+	private PogList players;
+
+	public PogData[] getPlayers() {
+		return players.getPogList();
+	}
+
+	public void addPlayer(PogData player) {
+		players.addPog(player);
 	}
 
 	private PogData selectedPog;
-	
+
 	@Override
 	public PogData getSelectedPog() {
 		return selectedPog;
@@ -219,8 +234,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 	@Override
 	public void dungeonDataChanged() {
-		ServiceManagement.getEventManager()
-				.fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
 	}
 
 	@Override
@@ -262,8 +276,7 @@ public class DungeonManagement implements IDungeonManagement {
 			@Override
 			public void onSuccess(Object sender, Object data) {
 				pcPogs = JsonUtils.<PogList>safeEval((String) data);
-				ServiceManagement.getEventManager()
-						.fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
+				ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
 			}
 
 			@Override
@@ -271,9 +284,13 @@ public class DungeonManagement implements IDungeonManagement {
 			}
 		});
 	}
+
 	@Override
-	public PogData	createPlayerInstance(PogData template) {
-		return(null);
+	public PogData createPlayerInstance(PogData template) {
+		PogData player = template.clone();
+		player.setThisAPlayer(true);
+		addPlayer(player);
+		return (player);
 	}
 
 }

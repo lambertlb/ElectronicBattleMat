@@ -7,7 +7,16 @@ public class PogList extends JavaScriptObject {
 	}
 
 	public final native PogData[] getPogList() /*-{
+		if (this.pogList === undefined) {
+			this.pogList = [];
+		}
 		return this.pogList;
 	}-*/;
 
+	public final native void addPog(PogData pogToAdd) /*-{
+		if (this.pogList === undefined) {
+			this.pogList = [];
+		}
+		this.pogList.push(pogToAdd);
+	}-*/;
 }
