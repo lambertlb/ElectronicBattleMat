@@ -40,3 +40,7 @@ h1 {
 	border-width: 1;
 	border-color: GREEN;
 }
+
+.noEvents {
+	pointer-events: none;
+}

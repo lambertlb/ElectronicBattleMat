@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
@@ -38,15 +36,15 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 /**
  * @author LLambert Class to manage a scaled image with overlays.
  */
-public class ScalableImage extends AbsolutePanel
-		implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
+public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
 
 	/**
 	 * Default zoom constant.
 	 */
 	private static final double DEFAULT_ZOOM = 1.1;
-	private static final int OVERLAYS_Z = 300;
-	private static final int GREYOUT_Z = 310;
+	private static final int OVERLAYS_Z = 1;
+	private static final int GREYOUT_Z = 3;
+	private static final int FOW_Z = 5;
 	// private static final int ROOM_OBJECTS_Z = 200;
 
 	private boolean showGrid = false;
@@ -60,17 +58,10 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	private Canvas canvas = Canvas.createIfSupported();
 	/**
-	 * Canvas context for drawing.
-	 */
-	private Context2d context = canvas.getContext2d();
-	/**
 	 * background canvas for temporary drawing.
 	 */
 	private Canvas backCanvas = Canvas.createIfSupported();
-	/**
-	 * background context for drawing.
-	 */
-	private Context2d backContext = backCanvas.getContext2d();
+	private Canvas fowCanvas = Canvas.createIfSupported();
 	/**
 	 * line style yellow.
 	 */
@@ -164,6 +155,9 @@ public class ScalableImage extends AbsolutePanel
 		canvas.addMouseDownHandler(this);
 		canvas.addMouseUpHandler(this);
 		super.add(canvas, 0, 0);
+		super.add(fowCanvas, 0, 0);
+		fowCanvas.getElement().getStyle().setZIndex(FOW_Z);
+		fowCanvas.setStyleName("noEvents");
 		LayoutPanel hidePanel = new LayoutPanel();
 		hidePanel.setVisible(false);
 		hidePanel.add(image);
@@ -178,6 +172,7 @@ public class ScalableImage extends AbsolutePanel
 	private void addGreyoutPanel() {
 		greyOutPanel = new LayoutPanel();
 		super.add(greyOutPanel, 100, 100);
+		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
 	}
 
 	private void setupDragAndDrop() {
@@ -215,15 +210,13 @@ public class ScalableImage extends AbsolutePanel
 	@Override
 	public void add(Widget w, int left, int top) {
 		super.add(w, left, top);
-		w.getElement().getStyle().setZIndex(OVERLAYS_Z);
 	}
 
 	public void loadImage() {
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		String dungeonNameForUrl = ServiceManagement.getDungeonManagment().getDungeonNameForUrl();
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
-		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?"
-				+ pictureCount++;
+		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
 		image.setUrl(imageUrl);
 	}
 
@@ -266,13 +259,18 @@ public class ScalableImage extends AbsolutePanel
 		canvas.setHeight(parentHeight + "px");
 		canvas.setCoordinateSpaceHeight(parentHeight);
 
+		fowCanvas.setWidth(parentWidth + "px");
+		fowCanvas.setCoordinateSpaceWidth(parentWidth);
+		fowCanvas.setHeight(parentHeight + "px");
+		fowCanvas.setCoordinateSpaceHeight(parentHeight);
+
 		backCanvas.setWidth(parentWidth + "px");
 		backCanvas.setCoordinateSpaceWidth(parentWidth);
 		backCanvas.setHeight(parentHeight + "px");
 		backCanvas.setCoordinateSpaceHeight(parentHeight);
 
 		calculateStartingZoom();
-		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
+		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
 		mainDraw();
 	}
 
@@ -365,26 +363,49 @@ public class ScalableImage extends AbsolutePanel
 	 */
 	public final void mainDraw() {
 		calculateDimensions();
-		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing, imageHeight + gridSpacing);
-		backContext.setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
-		backContext.drawImage(imageElement, 0, 0);
-		buffer(backContext, context);
+		backCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing, imageHeight + gridSpacing);
+		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
+		backCanvas.getContext2d().drawImage(imageElement, 0, 0);
+		buffer();
 	}
 
 	/**
-	 * This will draw the scaled image from the back canvas onto the main canvas the
-	 * redraw all the superimposed items.
-	 * 
-	 * @param back
-	 *            back canvas context
-	 * @param front
-	 *            front canvas context
+	 * Calculate numbers dependent on parent to image size and grid spacing.
 	 */
-	public final void buffer(final Context2d back, final Context2d front) {
-		front.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
-		front.drawImage(back.getCanvas(), 0, 0);
+	private void calculateDimensions() {
+		getRibbonBarData();
+		showGrid = ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid();
+		verticalLines = (int) (imageWidth / gridSpacing) + 1;
+		horizontalLines = (int) (imageHeight / gridSpacing) + 1;
+		computeFOWGrid();
+	}
+
+	private boolean[][] fowGrid = new boolean[0][0];
+
+	private void computeFOWGrid() {
+		if (fowGrid.length <= 0) {
+			fowGrid = new boolean[verticalLines + 1][horizontalLines + 1];
+			for (int i = 1; i <= verticalLines; ++i) {
+				for (int j = 1; j <= horizontalLines; ++j) {
+					fowGrid[i][j] = true;
+				}
+			}
+		}
+	}
+
+	private void getRibbonBarData() {
+		gridOffsetX = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX() * totalZoom;
+		gridOffsetY = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY() * totalZoom;
+		gridSpacing = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize();
+	}
+
+	public final void buffer() {
+		canvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
+		canvas.getContext2d().drawImage(backCanvas.getCanvasElement(), 0, 0);
+		fowCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
 		drawGridLines();
 		adjustPogs();
+		drawFogOfWar();
 	}
 
 	private void adjustPogs() {
@@ -425,15 +446,15 @@ public class ScalableImage extends AbsolutePanel
 	 *            scaled height.
 	 */
 	private void drawVerticalGridLines() {
-		context.beginPath();
-		context.setStrokeStyle(gridColor);
+		canvas.getContext2d().beginPath();
+		canvas.getContext2d().setStrokeStyle(gridColor);
 		for (int i = 0; i < verticalLines; ++i) {
 			double x = columnToPixel(i);
 			double y = rowToPixel(horizontalLines);
-			context.moveTo(x, gridOffsetY + offsetY);
-			context.lineTo(x, y);
+			canvas.getContext2d().moveTo(x, gridOffsetY + offsetY);
+			canvas.getContext2d().lineTo(x, y);
 		}
-		context.stroke();
+		canvas.getContext2d().stroke();
 	}
 
 	/**
@@ -445,15 +466,29 @@ public class ScalableImage extends AbsolutePanel
 	 *            scaled height
 	 */
 	private void drawHorizontalGridLines() {
-		context.beginPath();
-		context.setStrokeStyle(gridColor);
+		canvas.getContext2d().beginPath();
+		canvas.getContext2d().setStrokeStyle(gridColor);
 		for (int i = 0; i < horizontalLines; ++i) {
 			double y = rowToPixel(i);
 			double x = columnToPixel(verticalLines);
-			context.moveTo(gridOffsetX + offsetX, y);
-			context.lineTo(x, y);
+			canvas.getContext2d().moveTo(gridOffsetX + offsetX, y);
+			canvas.getContext2d().lineTo(x, y);
 		}
-		context.stroke();
+		canvas.getContext2d().stroke();
+	}
+
+	private void drawFogOfWar() {
+		double size = adjustedGridSize() + 2;
+		for (int i = 0; i < verticalLines; ++i) {
+			for (int j = 0; j < horizontalLines; ++j) {
+				if (fowGrid[i][j]) {
+					int x = (int) columnToPixel(i);
+					int y = (int) rowToPixel(j);
+					fowCanvas.getContext2d().setFillStyle("lightgrey");
+					fowCanvas.getContext2d().fillRect(x-1, y-1, size, size);
+				}
+			}
+		}
 	}
 
 	/**
@@ -465,12 +500,12 @@ public class ScalableImage extends AbsolutePanel
 	 *            scaled height
 	 */
 	private void outlinePicture() {
-		context.beginPath();
-		context.setStrokeStyle(gridColor);
+		canvas.getContext2d().beginPath();
+		canvas.getContext2d().setStrokeStyle(gridColor);
 		double width = (adjustedGridSize() * (verticalLines));
 		double height = (adjustedGridSize() * (horizontalLines));
-		context.rect(offsetX + gridOffsetX, offsetY + gridOffsetY, width, height);
-		context.stroke();
+		canvas.getContext2d().rect(offsetX + gridOffsetX, offsetY + gridOffsetY, width, height);
+		canvas.getContext2d().stroke();
 	}
 
 	/**
@@ -481,31 +516,27 @@ public class ScalableImage extends AbsolutePanel
 		totalZoom = 1;
 	}
 
-	/**
-	 * Calculate numbers defendant on parent to image size and grid spacing.
-	 */
-	private void calculateDimensions() {
-		getRibbonBarData();
-		showGrid = ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid();
-		verticalLines = (int) (imageWidth / gridSpacing) + 1;
-		horizontalLines = (int) (imageHeight / gridSpacing) + 1;
-	}
-
-	private void getRibbonBarData() {
-		gridOffsetX = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX() * totalZoom;
-		gridOffsetY = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY() * totalZoom;
-		gridSpacing = ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize();
-	}
-
 	private void dropPog(DropEvent event) {
 		int newColumn = dragColumn;
 		int newRow = dragRow;
+		if (underFog(newColumn, newRow)) {
+			return;
+		}
 		ScalablePog dragPog = getPogThatWasDragged();
 		if (dragPog != null && newColumn >= 0 && newRow >= 0) {
 			dragPog.setPogPosition(newColumn, newRow);
 			removeHighlightGridSquare();
 			mainDraw();
 		}
+	}
+
+	private boolean underFog(int newColumn, int newRow) {
+		if (newColumn >= 0 && newRow >= 0) {
+			if (newColumn <= verticalLines && newRow <= horizontalLines) {
+				return(fowGrid[newColumn][newRow]);
+			}
+		}
+		return true;
 	}
 
 	private ScalablePog getPogThatWasDragged() {
@@ -525,6 +556,7 @@ public class ScalableImage extends AbsolutePanel
 		scalablePog.setPogWidth((int) gridSpacing - 4);
 		pogs.add(scalablePog);
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
+		scalablePog.getElement().getStyle().setZIndex(OVERLAYS_Z);
 		return (scalablePog);
 	}
 
@@ -544,8 +576,7 @@ public class ScalableImage extends AbsolutePanel
 		int selectedRow = ((int) (((yCoord - offsetY - gridOffsetY)) / adjustedGridSize()));
 		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
 		int pogWidth = pogBeingDragged.getPogSize() - 1;
-		if (selectedColumn < 0 || selectedColumn + pogWidth >= verticalLines || selectedRow < 0
-				|| selectedRow + pogWidth >= horizontalLines) {
+		if (selectedColumn < 0 || selectedColumn + pogWidth >= verticalLines || selectedRow < 0 || selectedRow + pogWidth >= horizontalLines) {
 			dragColumn = dragRow = -1;
 			removeHighlightGridSquare();
 			return;
