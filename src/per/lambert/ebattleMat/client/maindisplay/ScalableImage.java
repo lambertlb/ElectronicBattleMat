@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
 import com.google.gwt.event.dom.client.DragOverEvent;
@@ -22,6 +24,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -29,6 +32,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.scalablePog.ScalablePog;
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
+import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -38,6 +46,10 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
  */
 public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
 
+	/**
+	 * Offset for clearing rectangle.
+	 */
+	private static final int CLEAR_OFFEST = -10;
 	/**
 	 * Default zoom constant.
 	 */
@@ -91,8 +103,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	 */
 	private double totalZoom = 1;
 	/**
-	 * Maximum zoom factor. We do not allow zooming out farther than the initial
-	 * calculated zoom that fills the parent.
+	 * Maximum zoom factor. We do not allow zooming out farther than the initial calculated zoom that fills the parent.
 	 */
 	private double maxZoom = .5;
 	/**
@@ -199,10 +210,24 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		}, DragLeaveEvent.getType());
 	}
 
+	
 	private void setupEventHandling() {
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent event) {
 				setImage();
+			}
+		});
+		IEventManager eventManager = ServiceManagement.getEventManager();
+		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+			public void onReasonForAction(final ReasonForActionEvent event) {
+				if (event.getReasonForAction() == ReasonForAction.MouseDownEventBubble) {
+					onMouseDown((MouseDownEvent)event.getData());
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.MouseDownEventBubble) {
+					onMouseUp((MouseUpEvent)event.getData());
+					return;
+				}
 			}
 		});
 	}
@@ -223,12 +248,9 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	/**
 	 * Set the image for this control.
 	 * 
-	 * @param imageToDisplay
-	 *            image to display.
-	 * @param widthOfParent
-	 *            current width of parent window.
-	 * @param heightOfParent
-	 *            current height of parent window.
+	 * @param imageToDisplay image to display.
+	 * @param widthOfParent current width of parent window.
+	 * @param heightOfParent current height of parent window.
 	 */
 	public final void setImage() {
 		totalZoom = 1;
@@ -243,10 +265,8 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	/**
 	 * Parent window size has changed.
 	 * 
-	 * @param widthOfParent
-	 *            new width of window.
-	 * @param heightOfParent
-	 *            new height of window.
+	 * @param widthOfParent new width of window.
+	 * @param heightOfParent new height of window.
 	 */
 	public final void parentWidthChanged(final int widthOfParent, final int heightOfParent) {
 		parentWidth = widthOfParent;
@@ -277,8 +297,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	/**
 	 * Handle mouse wheel.
 	 * 
-	 * @param event
-	 *            event data.
+	 * @param event event data.
 	 */
 	public final void onMouseWheel(final MouseWheelEvent event) {
 		int move = event.getDeltaY();
@@ -307,56 +326,76 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		mainDraw();
 	}
 
+	private boolean toggleFOW;
+	private boolean clearFOW;
 	/**
 	 * Handle mouse down.
 	 * 
-	 * @param event
-	 *            event data.
+	 * @param event event data.
 	 */
 	public final void onMouseDown(final MouseDownEvent event) {
-		this.mouseDown = true;
 		mouseDownXPos = event.getRelativeX(image.getElement());
 		mouseDownYPos = event.getRelativeY(image.getElement());
+		checkForFOWHandling(event.getNativeEvent());
+		this.mouseDown = !toggleFOW;
 	}
 
-	/**
-	 * Handle mouse move.
-	 * 
-	 * @param event
-	 *            event data.
-	 */
+	private void checkForFOWHandling(final NativeEvent event) {
+		toggleFOW = ServiceManagement.getDungeonManagment().getFowToggle();
+		computeSelectedColumnAndRow(event.getClientX(), event.getClientY());
+		clearFOW = ServiceManagement.getDungeonManagment().isFowSet(selectedColumn, selectedRow);
+		if (toggleFOW) {
+			handleProperFOWAtSelectedPosition();
+		}
+	}
+
 	public final void onMouseMove(final MouseMoveEvent event) {
 		if (mouseDown) {
-			double xPos = event.getRelativeX(image.getElement());
-			double yPos = event.getRelativeY(image.getElement());
-			offsetX += (xPos - mouseDownXPos);
-			offsetY += (yPos - mouseDownYPos);
-			try {
-				mainDraw();
-			} catch (Exception ex) {
-				mouseDownXPos = xPos;
-				mouseDownYPos = yPos;
-			}
+			handleMouseMove(event);
+		} else if (toggleFOW) {
+			handleFowMouseMove(event);
+		}
+	}
+
+	private void handleFowMouseMove(MouseMoveEvent event) {
+		computeSelectedColumnAndRow(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+		handleProperFOWAtSelectedPosition();
+	}
+
+	private void handleProperFOWAtSelectedPosition() {
+		boolean currentFOW = ServiceManagement.getDungeonManagment().isFowSet(selectedColumn, selectedRow);
+		if (currentFOW == !clearFOW) {
+			return;
+		}
+		ServiceManagement.getDungeonManagment().setFow(selectedColumn, selectedRow, !currentFOW);
+		drawFOW(!currentFOW,  adjustedGridSize() + 2, selectedColumn, selectedRow);
+	}
+
+	private void handleMouseMove(final MouseMoveEvent event) {
+		double xPos = event.getRelativeX(image.getElement());
+		double yPos = event.getRelativeY(image.getElement());
+		offsetX += (xPos - mouseDownXPos);
+		offsetY += (yPos - mouseDownYPos);
+		try {
+			mainDraw();
+		} catch (Exception ex) {
 			mouseDownXPos = xPos;
 			mouseDownYPos = yPos;
 		}
+		mouseDownXPos = xPos;
+		mouseDownYPos = yPos;
 	}
 
 	/**
 	 * Handle mouse up.
 	 * 
-	 * @param event
-	 *            event data.
+	 * @param event event data.
 	 */
 	public final void onMouseUp(final MouseUpEvent event) {
 		this.mouseDown = false;
+		toggleFOW = false;
 		removeHighlightGridSquare();
 	}
-
-	/**
-	 * Offset for clearing rectangle.
-	 */
-	private static final int CLEAR_OFFEST = -10;
 
 	/**
 	 * Main method for drawing image.
@@ -377,20 +416,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		showGrid = ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid();
 		verticalLines = (int) (imageWidth / gridSpacing) + 1;
 		horizontalLines = (int) (imageHeight / gridSpacing) + 1;
-		computeFOWGrid();
-	}
-
-	private boolean[][] fowGrid = new boolean[0][0];
-
-	private void computeFOWGrid() {
-		if (fowGrid.length <= 0) {
-			fowGrid = new boolean[verticalLines + 1][horizontalLines + 1];
-			for (int i = 1; i <= verticalLines; ++i) {
-				for (int j = 1; j <= horizontalLines; ++j) {
-					fowGrid[i][j] = true;
-				}
-			}
-		}
+		ServiceManagement.getDungeonManagment().setFowSize(verticalLines, horizontalLines);
 	}
 
 	private void getRibbonBarData() {
@@ -417,9 +443,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	}
 
 	/**
-	 * Draw the grid line on main canvas. THis will be done based on scale and
-	 * offset of the background image. This way the lines themselves do not get
-	 * scaled and look weird.
+	 * Draw the grid line on main canvas. THis will be done based on scale and offset of the background image. This way the lines themselves do not get scaled and look weird.
 	 */
 	private void drawGridLines() {
 		if (showGrid) {
@@ -440,10 +464,8 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	/**
 	 * Draw vertical grid lines.
 	 * 
-	 * @param scaledWidth
-	 *            scaled width.
-	 * @param scaledHeight
-	 *            scaled height.
+	 * @param scaledWidth scaled width.
+	 * @param scaledHeight scaled height.
 	 */
 	private void drawVerticalGridLines() {
 		canvas.getContext2d().beginPath();
@@ -460,10 +482,8 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	/**
 	 * Draw horizontal grid lines.
 	 * 
-	 * @param scaledWidth
-	 *            scaled width
-	 * @param scaledHeight
-	 *            scaled height
+	 * @param scaledWidth scaled width
+	 * @param scaledHeight scaled height
 	 */
 	private void drawHorizontalGridLines() {
 		canvas.getContext2d().beginPath();
@@ -478,26 +498,32 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	}
 
 	private void drawFogOfWar() {
+		IDungeonManagement dungeonManager = ServiceManagement.getDungeonManagment();
 		double size = adjustedGridSize() + 2;
+		fowCanvas.getElement().getStyle().setOpacity(0.5);
 		for (int i = 0; i < verticalLines; ++i) {
 			for (int j = 0; j < horizontalLines; ++j) {
-				if (fowGrid[i][j]) {
-					int x = (int) columnToPixel(i);
-					int y = (int) rowToPixel(j);
-					fowCanvas.getContext2d().setFillStyle("lightgrey");
-					fowCanvas.getContext2d().fillRect(x-1, y-1, size, size);
-				}
+				drawFOW(dungeonManager.isFowSet(i, j), size, i, j);
 			}
+		}
+	}
+
+	private void drawFOW(boolean isSet, double size, int i, int j) {
+		int x = (int) columnToPixel(i);
+		int y = (int) rowToPixel(j);
+		if (isSet) {
+			fowCanvas.getContext2d().setFillStyle("lightgrey");
+			fowCanvas.getContext2d().fillRect(x - 1, y - 1, size, size);
+		} else {
+			fowCanvas.getContext2d().clearRect(x - 1, y - 1, size, size);
 		}
 	}
 
 	/**
 	 * Outline the image.
 	 * 
-	 * @param scaledWidth
-	 *            scaled width
-	 * @param scaledHeight
-	 *            scaled height
+	 * @param scaledWidth scaled width
+	 * @param scaledHeight scaled height
 	 */
 	private void outlinePicture() {
 		canvas.getContext2d().beginPath();
@@ -509,8 +535,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	}
 
 	/**
-	 * Calculate the starting zoom factor so that one side of the image exactly
-	 * fills the parent.
+	 * Calculate the starting zoom factor so that one side of the image exactly fills the parent.
 	 */
 	private void calculateStartingZoom() {
 		totalZoom = 1;
@@ -519,7 +544,8 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	private void dropPog(DropEvent event) {
 		int newColumn = dragColumn;
 		int newRow = dragRow;
-		if (underFog(newColumn, newRow)) {
+		if (ServiceManagement.getDungeonManagment().isFowSet(newColumn, newRow)) {
+			removeHighlightGridSquare();
 			return;
 		}
 		ScalablePog dragPog = getPogThatWasDragged();
@@ -528,15 +554,6 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 			removeHighlightGridSquare();
 			mainDraw();
 		}
-	}
-
-	private boolean underFog(int newColumn, int newRow) {
-		if (newColumn >= 0 && newRow >= 0) {
-			if (newColumn <= verticalLines && newRow <= horizontalLines) {
-				return(fowGrid[newColumn][newRow]);
-			}
-		}
-		return true;
 	}
 
 	private ScalablePog getPogThatWasDragged() {
@@ -569,11 +586,11 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		greyOutPanel.setVisible(false);
 	}
 
+	private int selectedColumn;
+	private int selectedRow;
+	
 	protected void highlightGridSquare(int clientX, int clientY) {
-		double xCoord = clientX - getAbsoluteLeft();
-		double yCoord = clientY - getAbsoluteTop();
-		int selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY)) / adjustedGridSize()));
-		int selectedRow = ((int) (((yCoord - offsetY - gridOffsetY)) / adjustedGridSize()));
+		computeSelectedColumnAndRow(clientX, clientY);
 		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
 		int pogWidth = pogBeingDragged.getPogSize() - 1;
 		if (selectedColumn < 0 || selectedColumn + pogWidth >= verticalLines || selectedRow < 0 || selectedRow + pogWidth >= horizontalLines) {
@@ -587,6 +604,13 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		dragColumn = selectedColumn;
 		dragRow = selectedRow;
 		handleDragBox();
+	}
+
+	private void computeSelectedColumnAndRow(int clientX, int clientY) {
+		double xCoord = clientX - getAbsoluteLeft();
+		double yCoord = clientY - getAbsoluteTop();
+		selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY)) / adjustedGridSize()));
+		selectedRow = ((int) (((yCoord - offsetY - gridOffsetY)) / adjustedGridSize()));
 	}
 
 	private void handleDragBox() {

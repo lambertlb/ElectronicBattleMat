@@ -13,22 +13,26 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.HasDragStartHandlers;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
-public class ScalablePog extends Composite implements HasDragStartHandlers {
+public class ScalablePog extends Composite implements HasDragStartHandlers , MouseDownHandler, MouseUpHandler{
 
 	private static ScalablePogUiBinder uiBinder = GWT.create(ScalablePogUiBinder.class);
 
@@ -125,6 +129,10 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 		addDragStartHandler(new DragStartHandler() {
 			@Override
 			public void onDragStart(DragStartEvent event) {
+				if (ServiceManagement.getDungeonManagment().getFowToggle()) {
+					event.preventDefault();
+					return;
+				}
 				ServiceManagement.getDungeonManagment().setPogBeingDragged(pogData);
 				event.getDataTransfer().setDragImage(pogMainPanel.getElement(), 10, 120);
 			}
@@ -133,9 +141,9 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 			@Override
 			public void onDragLeave(DragLeaveEvent event) {
 				event.preventDefault();
-				event.stopPropagation();
 			}
 		});
+		canvas.addMouseDownHandler(this);
 	}
 
 	private void setupEventHandling() {
@@ -259,5 +267,19 @@ public class ScalablePog extends Composite implements HasDragStartHandlers {
 		front.setFillStyle("white");
 		front.fillRect(0, 0, parentWidth, parentHeight);
 		front.drawImage(back.getCanvas(), 0, 0);
+	}
+
+	@Override
+	public void onMouseDown(MouseDownEvent event) {
+		if (ServiceManagement.getDungeonManagment().getFowToggle()) {
+			ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
+		}
+	}
+
+	@Override
+	public void onMouseUp(MouseUpEvent event) {
+		if (ServiceManagement.getDungeonManagment().getFowToggle()) {
+			ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseUpEventBubble, event));
+		}
 	}
 }

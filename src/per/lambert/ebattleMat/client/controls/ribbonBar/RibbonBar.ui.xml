@@ -12,6 +12,7 @@
 			<ribbon:GridGroup/>
 			<ribbon:CharacterSelect/>
 			<ribbon:SelectedPog/>
+			<ribbon:DungeonOptions/>
 		</g:HorizontalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

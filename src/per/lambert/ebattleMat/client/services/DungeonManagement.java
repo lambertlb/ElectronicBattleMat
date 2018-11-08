@@ -293,4 +293,40 @@ public class DungeonManagement implements IDungeonManagement {
 		return (player);
 	}
 
+	private boolean[][] fowGrid = new boolean[0][0];
+
+	@Override
+	public void setFowSize(int columns, int rows) {
+		if (fowGrid.length <= 0) {
+			fowGrid = new boolean[columns + 1][rows + 1];
+			for (int i = 0; i <= columns; ++i) {
+				for (int j = 0; j <= rows; ++j) {
+					fowGrid[i][j] = true;
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean isFowSet(int columns, int rows) {
+		return (fowGrid[columns][rows]);
+	}
+
+	@Override
+	public void setFow(int columns, int rows, boolean value) {
+		fowGrid[columns][rows] = value;
+	}
+
+	private boolean fowToggle;
+
+	@Override
+	public boolean getFowToggle() {
+		return (fowToggle);
+	}
+
+	@Override
+	public void setFowToggle(boolean fowToggle) {
+		this.fowToggle = fowToggle;
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.ToggleFowSelected, null));
+	}
 }

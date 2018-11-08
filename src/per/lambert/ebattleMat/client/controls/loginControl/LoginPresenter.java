@@ -19,7 +19,7 @@ public class LoginPresenter {
 	}
 
 	private String username;
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -29,7 +29,7 @@ public class LoginPresenter {
 	}
 
 	private String password;
-	
+
 	public String getPassword() {
 		return password;
 	}
@@ -69,8 +69,7 @@ public class LoginPresenter {
 			public void onSuccess(final Object sender, final Object data) {
 				if (dungeonManagement.getLastError() == DungeonServerError.Succsess) {
 					view.close();
-					ServiceManagement.getEventManager()
-							.fireEvent(new ReasonForActionEvent(ReasonForAction.Login, null));
+					ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.Login, null));
 				} else
 					loginComplete("Login Fail");
 			}

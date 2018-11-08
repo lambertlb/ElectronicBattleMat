@@ -43,4 +43,12 @@ public interface IDungeonManagement {
 	PogData getPogBeingDragged();
 
 	PogData createPlayerInstance(PogData template);
+
+	void setFowSize(int columns, int rows);
+
+	boolean isFowSet(int columns, int rows);
+
+	void setFow(int columns, int rows, boolean value);
+	boolean	getFowToggle();
+	void	setFowToggle(boolean fowToggle);
 }
