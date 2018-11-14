@@ -12,7 +12,9 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DungeonSelectControl extends DialogBox {
+import per.lambert.ebattleMat.client.resizeableDialog.ResizeableDialog;
+
+public class DungeonSelectControl extends ResizeableDialog {
 
 	DungeonSelectPresenter dungeonSelectPresenter;
 
@@ -35,11 +37,10 @@ public class DungeonSelectControl extends DialogBox {
 		dungeonSelectPresenter = new DungeonSelectPresenter();
 		dungeonSelectPresenter.setView(this);
 		setWidget(uiBinder.createAndBindUi(this));
-		setAutoHideEnabled(false);
 		setGlassEnabled(true);
-		setModal(true);
 		setText("Dungeon Select");
 		center();
+		accept.getElement().setAttribute("disabled","disabled");
 	}
 
 	@UiField
@@ -48,12 +49,23 @@ public class DungeonSelectControl extends DialogBox {
 	@UiField
 	Button selectButton;
 	
+	@UiField
+	Button accept;
+
 	@UiHandler("selectButton")
-	void onClick(ClickEvent e) {
+	void onSelectButtonClick(ClickEvent e) {
+		accept.getElement().removeAttribute("disabled");
+	}
+
+	@UiHandler("accept")
+	void onAcceptClick(ClickEvent e) {
 		dungeonSelectPresenter.selectDungeon(dungeonDropdownList.getSelectedValue());
+	}
+	@UiHandler("createDungeonButton")
+	void onCreateDungeonButtonClick(ClickEvent e) {
+		dungeonSelectPresenter.createDungeon(dungeonDropdownList.getSelectedValue());
 	}
 	public void close() {
 		hide();
 	}
-
 }

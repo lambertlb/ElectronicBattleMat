@@ -1,7 +1,5 @@
 package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
-import java.util.List;
-
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 
 public class DungeonSelectPresenter {
@@ -18,5 +16,8 @@ public class DungeonSelectPresenter {
 	public void selectDungeon(String dungeonsName) {
 		view.close();
 		ServiceManagement.getDungeonManagment().selectDungeon(dungeonsName);
+	}
+
+	public void createDungeon(String selectedValue) {
 	}
 }
