@@ -1,4 +1,26 @@
-package per.lambert.ebattleMat.client.resizeableDialog;
+/*
+ * Copyright 2010 Traction Software, Inc.
+ * Copyright 2010 clazzes.org Project
+ * 
+ * Based on TractionDialogBox by Traction Software, Inc. Renamed to WindowBox and 
+ * added resize support by clazzes.org 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package per.lambert.ebattleMat.client.windowBox;
+// had to put into different package or could not get gwt to compile
+
+//package org.clazzes.gwt.extras.dialog;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -24,12 +46,39 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ResizeableDialog extends DialogBox implements HasOpenHandlers<ResizeableDialog> {
+/**
+ * Extension of the standard GWT DialogBox to provide a more "window"-like functionality. By default, the WindowBox has two control-buttons in the top right corner of the header, which allow the box to be reduced to it's header ("minimize") or the whole
+ * box to be hidden ("close"). The visiblity of these controls can be toggled seperately with {@link #setMinimizeIconVisible(boolean)} and {@link #setCloseIconVisible(boolean)} respectively. <br>
+ * <br>
+ * The WindowBox relies on the css settings of {@link DialogBox} for styling of the border and header. It also uses the following classes to style the additional elements:
+ * 
+ * <pre>
+ *  .gwt-extras-WindowBox
+ *      the box itself
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-container
+ *      the div holding the contents of the box
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-controls
+ *      the div holding the window-controls - PLEASE NOTE: on the DOM-tree, this div is located inside the center-center
+ *      cell of the windowBox table, not in the top-center (where the header-text is). Therefore the css has a negative
+ *      top-value to position the controls on the header 
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-controls a.gwt-extras-dialog-close
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-controls a.gwt-extras-dialog-close:hover
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-controls a.gwt-extras-dialog-minimize
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-controls a.gwt-extras-dialog-minimize:hover
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-controls a.gwt-extras-dialog-maximize
+ *  .gwt-extras-WindowBox .gwt-extras-dialog-controls a.gwt-extras-dialog-maximize:hover
+ *      the controls in the header. A background image sprite is used to create the mouseover- and clicking-effects.
+ *      When the window is minimized, the style-name of the corresponding control changes to "gwt-extras-dialog-maximize"
+ *      and vice-versa
+ * </pre>
+ */
+public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox> {
 
 	private static final int MIN_WIDTH = 100;
 	private static final int MIN_HEIGHT = 100;
 
 	private FlowPanel container;
+	// private FlowPanel content;
 	private FlowPanel controls;
 	private Anchor close;
 	private Anchor minimize;
@@ -41,6 +90,8 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	private int minHeight = MIN_HEIGHT;
 
 	private int dragMode;
+
+	private boolean resizable;
 
 	private boolean minimized;
 
@@ -58,8 +109,8 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 			cursor = Cursor.NW_RESIZE;
 			break;
 
-		case -2:
-			cursor = Cursor.MOVE;
+		case 1:
+			cursor = Cursor.N_RESIZE;
 			break;
 
 		case 2:
@@ -94,8 +145,82 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 		element.getStyle().setCursor(cursor);
 	}
 
-	public ResizeableDialog() {
-		super(true, true);
+	/**
+	 * Creates a DialogBoxEx which is permanent (no auto-hide), non-modal, has a "minimize"- and "close"-button in the top-right corner and is not resizeable. The dialog box should not be shown until a child widget has been added using
+	 * {@link #add(com.google.gwt.user.client.ui.IsWidget)}. <br>
+	 * <br>
+	 * This is the equivalent for calling <code>DialogBoxEx(false, false, true, false)</code>.
+	 * 
+	 * @see WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 */
+	public WindowBox() {
+		this(false, false, true, true, false);
+	}
+
+	/**
+	 * Creates a DialogBoxEx which is permanent, non-modal, has a "minimize"- and "close"-button and is optionally resizeable. The dialog box should not be shown until a child widget has been added using {@link #setWidget(Widget)}.
+	 * 
+	 * @see WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 * 
+	 * @param resizeable <code>true</code> to allow resizing by dragging the borders
+	 */
+	public WindowBox(boolean resizeable) {
+		this(false, false, true, true, resizeable);
+	}
+
+	/**
+	 * Creates a DialogBoxEx which is permanent and nonmodal, optionally resizeable and/or has a "minimize"- and "close"-button. The dialog box should not be shown until a child widget has been added using {@link #setWidget(Widget)}.
+	 * 
+	 * @see WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 * 
+	 * @param resizeable <code>true</code> to allow resizing by dragging the borders
+	 * @param showCloseIcon <code>true</code> to show "close"-icon in the top right corner of the header
+	 */
+	public WindowBox(boolean showCloseIcon, boolean resizeable) {
+		this(false, false, true, showCloseIcon, resizeable);
+	}
+
+	/**
+	 * Creates a DialogBoxEx which is permanent and nonmodal, optionally resizeable and/or has a "minimize"- and "close"-button. The dialog box should not be shown until a child widget has been added using {@link #setWidget(Widget)}.
+	 * 
+	 * @see WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 * 
+	 * @param showMinimizeIcon <code>true</code> to show "minimize"-icon int the top right corner of the header
+	 * @param resizeable <code>true</code> to allow resizing by dragging the borders
+	 * @param showCloseIcon <code>true</code> to show "close"-icon in the top right corner of the header
+	 */
+	public WindowBox(boolean showMinimizeIcon, boolean showCloseIcon, boolean resizeable) {
+		this(false, false, showMinimizeIcon, showCloseIcon, resizeable);
+	}
+
+	/**
+	 * Creates a DialogBoxEx which is permanent, optionally modal, resizeable and/or has a "minimize"- and "close"-button. The dialog box should not be shown until a child widget has been added using {@link #setWidget(Widget)}.
+	 * 
+	 * @param modal <code>true</code> if keyboard and mouse events for widgets not contained by the dialog should be ignored
+	 * @param showMinimizeIcon <code>true</code> to show "minimize"-icon int the top right corner of the header
+	 * @param resizeable <code>true</code> to allow resizing by dragging the borders
+	 * @param showCloseIcon <code>true</code> to show "close"-icon in the top right corner of the header
+	 */
+	public WindowBox(boolean modal, boolean showMinimizeIcon, boolean showCloseIcon, boolean resizeable) {
+		this(false, modal, showMinimizeIcon, showCloseIcon, resizeable);
+	}
+
+	/**
+	 * Creates an empty DialogBoxEx with all configuration options. The dialog box should not be shown until a child widget has been added using {@link #setWidget(Widget)}.
+	 * 
+	 * @see DialogBox#DialogBox()
+	 * @see DialogBox#DialogBox(boolean)
+	 * @see DialogBox#DialogBox(boolean, boolean)
+	 * @see DialogBox#DialogBox(boolean, boolean, boolean)
+	 * 
+	 * @param autoHide <code>true</code> if the dialog should be automatically hidden when the user clicks outside of it
+	 * @param modal <code>true</code> if keyboard and mouse events for widgets not contained by the dialog should be ignored
+	 * @param showMinimizeIcon <code>true</code> to show "minimize"-icon int the top right corner of the header
+	 * @param showCloseIcon <code>true</code> to show "close"-icon in the top right corner of the header
+	 * @param resizeable <code>true</code> to allow resizing by dragging the borders
+	 */
+	public WindowBox(boolean autoHide, boolean modal, boolean showMinimizeIcon, boolean showCloseIcon, boolean resizeable) {
+		super(autoHide, modal);
 
 		this.setStyleName("gwt-extras-WindowBox", true);
 
@@ -111,7 +236,7 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 				onCloseClick(event);
 			}
 		});
-		setCloseIconVisible(false);
+		setCloseIconVisible(showCloseIcon);
 
 		this.minimize = new Anchor();
 		this.minimize.setStyleName("gwt-extras-dialog-minimize");
@@ -120,7 +245,7 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 				onMinimizeClick(event);
 			}
 		});
-		setMinimizeIconVisible(true);
+		setMinimizeIconVisible(showMinimizeIcon);
 
 		Grid ctrlGrid = new Grid(1, 2);
 		ctrlGrid.setWidget(0, 0, this.minimize);
@@ -129,12 +254,9 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 		this.controls = new FlowPanel();
 		this.controls.setStyleName("gwt-extras-dialog-controls");
 		this.controls.add(ctrlGrid);
-		this.container.add(this.controls);
-		super.setWidget(this.container);
-
 		this.dragMode = -1;
 
-		setAutoHideEnabled(false);
+		this.resizable = resizeable;
 	}
 
 	/**
@@ -157,14 +279,34 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	 * @param dragMode
 	 */
 	protected void updateCursor(int dragMode) {
-		updateCursor(dragMode, this.getElement());
+		if (this.resizable) {
+			updateCursor(dragMode, this.getElement());
 
-		com.google.gwt.dom.client.Element top = this.getCellElement(0, 1);
-		updateCursor(dragMode, top);
-
-		top = Element.as(top.getFirstChild());
-		if (top != null)
+			com.google.gwt.dom.client.Element top = this.getCellElement(0, 1);
 			updateCursor(dragMode, top);
+
+			top = Element.as(top.getFirstChild());
+			if (top != null)
+				updateCursor(dragMode, top);
+		}
+	}
+
+	/**
+	 * Returns whether the dialog box is mouse-resizeable
+	 * 
+	 * @return <code>true</code> if the user can resize the dialog with the mouse
+	 */
+	public boolean isResizable() {
+		return this.resizable;
+	}
+
+	/**
+	 * Set the dialog box to be resizeable by the user
+	 * 
+	 * @param resizable <code>true</code> if the user can resize the dialog with the mouse
+	 */
+	public void setResizable(boolean resizable) {
+		this.resizable = resizable;
 	}
 
 	/*
@@ -177,33 +319,35 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 
 		// If we're not yet dragging, only trigger mouse events if the event occurs
 		// in the caption wrapper
-		switch (event.getTypeInt()) {
-		case Event.ONMOUSEDOWN:
-		case Event.ONMOUSEUP:
-		case Event.ONMOUSEMOVE:
-		case Event.ONMOUSEOVER:
-		case Event.ONMOUSEOUT:
+		if (this.resizable) {
+			switch (event.getTypeInt()) {
+			case Event.ONMOUSEDOWN:
+			case Event.ONMOUSEUP:
+			case Event.ONMOUSEMOVE:
+			case Event.ONMOUSEOVER:
+			case Event.ONMOUSEOUT:
 
-			if (this.dragMode >= 0 || calcDragMode(event.getClientX(), event.getClientY()) >= 0) {
-				// paste'n'copy from Widget.onBrowserEvent
-				switch (DOM.eventGetType(event)) {
-				case Event.ONMOUSEOVER:
-					// Only fire the mouse over event if it's coming from outside this
-					// widget.
-				case Event.ONMOUSEOUT:
-					// Only fire the mouse out event if it's leaving this
-					// widget.
-					Element related = event.getRelatedEventTarget().cast();
-					if (related != null && getElement().isOrHasChild(related)) {
-						return;
+				if (this.dragMode >= 0 || calcDragMode(event.getClientX(), event.getClientY()) >= 0) {
+					// paste'n'copy from Widget.onBrowserEvent
+					switch (DOM.eventGetType(event)) {
+					case Event.ONMOUSEOVER:
+						// Only fire the mouse over event if it's coming from outside this
+						// widget.
+					case Event.ONMOUSEOUT:
+						// Only fire the mouse out event if it's leaving this
+						// widget.
+						Element related = event.getRelatedEventTarget().cast();
+						if (related != null && getElement().isOrHasChild(related)) {
+							return;
+						}
+						break;
 					}
-					break;
+					DomEvent.fireNativeEvent(event, this, this.getElement());
+					return;
 				}
-				DomEvent.fireNativeEvent(event, this, this.getElement());
-				return;
+				if (this.dragMode < 0)
+					this.updateCursor(this.dragMode);
 			}
-			if (this.dragMode < 0)
-				this.updateCursor(this.dragMode);
 		}
 
 		super.onBrowserEvent(event);
@@ -273,7 +417,7 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 		yr = this.getRelY(resize, clientY);
 
 		if (yr >= 0 && yr < h)
-			return -2;
+			return 1;
 
 		resize = this.getCellElement(1, 0).getParentElement();
 		xr = this.getRelX(resize, clientX);
@@ -359,10 +503,10 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	protected void beginDragging(MouseDownEvent event) {
 		int dm = -1;
 
-		if (!this.minimized)
+		if (this.resizable && !this.minimized)
 			dm = this.calcDragMode(event.getClientX(), event.getClientY());
 
-		if (dm >= 0) {
+		if (this.resizable && dm >= 0) {
 			this.dragMode = dm;
 
 			DOM.setCapture(getElement());
@@ -384,7 +528,7 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	 */
 	@Override
 	protected void continueDragging(MouseMoveEvent event) {
-		if (this.dragMode >= 0) {
+		if (this.dragMode >= 0 && this.resizable) {
 			this.updateCursor(this.dragMode);
 
 			int dx = event.getClientX() - this.dragX;
@@ -411,13 +555,15 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	 */
 	@Override
 	protected void onPreviewNativeEvent(NativePreviewEvent event) {
-		// We need to preventDefault() on mouseDown events (outside of the
-		// DialogBox content) to keep text from being selected when it
-		// is dragged.
-		NativeEvent nativeEvent = event.getNativeEvent();
+		if (this.resizable) {
+			// We need to preventDefault() on mouseDown events (outside of the
+			// DialogBox content) to keep text from being selected when it
+			// is dragged.
+			NativeEvent nativeEvent = event.getNativeEvent();
 
-		if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && calcDragMode(nativeEvent.getClientX(), nativeEvent.getClientY()) >= 0) {
-			nativeEvent.preventDefault();
+			if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && calcDragMode(nativeEvent.getClientX(), nativeEvent.getClientY()) >= 0) {
+				nativeEvent.preventDefault();
+			}
 		}
 
 		super.onPreviewNativeEvent(event);
@@ -430,7 +576,7 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	 */
 	@Override
 	protected void endDragging(MouseUpEvent event) {
-		if (this.dragMode >= 0) {
+		if (this.dragMode >= 0 && this.resizable) {
 			DOM.releaseCapture(getElement());
 
 			this.dragX = event.getClientX() - this.dragX;
@@ -451,7 +597,13 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	 */
 	@Override
 	public void setWidget(Widget widget) {
-		if (this.container.getWidgetCount() > 1) {
+		if (this.container.getWidgetCount() == 0) {
+			// setup
+			this.container.add(this.controls);
+			// this.container.add(this.content);
+			super.setWidget(this.container);
+		} else {
+			// remove the old one
 			this.container.remove(1);
 		}
 		this.container.add(widget);
@@ -550,7 +702,7 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 	 * @see com.google.gwt.event.logical.shared.HasOpenHandlers#addOpenHandler(com.google.gwt.event.logical.shared.OpenHandler)
 	 */
 	@Override
-	public HandlerRegistration addOpenHandler(OpenHandler<ResizeableDialog> handler) {
+	public HandlerRegistration addOpenHandler(OpenHandler<WindowBox> handler) {
 		return addHandler(handler, OpenEvent.getType());
 	}
 
@@ -591,4 +743,5 @@ public class ResizeableDialog extends DialogBox implements HasOpenHandlers<Resiz
 
 		this.minHeight = minHeight;
 	}
+
 }

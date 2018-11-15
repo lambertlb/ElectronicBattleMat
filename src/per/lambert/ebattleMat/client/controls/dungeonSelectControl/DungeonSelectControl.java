@@ -1,20 +1,17 @@
 package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.resizeableDialog.ResizeableDialog;
+import per.lambert.ebattleMat.client.windowBox.WindowBox;
 
-public class DungeonSelectControl extends ResizeableDialog {
+public class DungeonSelectControl extends WindowBox {
 
 	DungeonSelectPresenter dungeonSelectPresenter;
 
@@ -34,13 +31,14 @@ public class DungeonSelectControl extends ResizeableDialog {
 	}
 
 	public DungeonSelectControl() {
+		super(false, true, true, false, true);
 		dungeonSelectPresenter = new DungeonSelectPresenter();
 		dungeonSelectPresenter.setView(this);
 		setWidget(uiBinder.createAndBindUi(this));
 		setGlassEnabled(true);
 		setText("Dungeon Select");
 		center();
-		accept.getElement().setAttribute("disabled","disabled");
+		accept.getElement().setAttribute("disabled", "disabled");
 	}
 
 	@UiField
@@ -48,7 +46,7 @@ public class DungeonSelectControl extends ResizeableDialog {
 
 	@UiField
 	Button selectButton;
-	
+
 	@UiField
 	Button accept;
 
@@ -61,10 +59,12 @@ public class DungeonSelectControl extends ResizeableDialog {
 	void onAcceptClick(ClickEvent e) {
 		dungeonSelectPresenter.selectDungeon(dungeonDropdownList.getSelectedValue());
 	}
+
 	@UiHandler("createDungeonButton")
 	void onCreateDungeonButtonClick(ClickEvent e) {
 		dungeonSelectPresenter.createDungeon(dungeonDropdownList.getSelectedValue());
 	}
+
 	public void close() {
 		hide();
 	}
