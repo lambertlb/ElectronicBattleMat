@@ -10,13 +10,14 @@
 		<g:center>
 			<g:FlowPanel styleName="{style.panel}">
 				<g:ListBox ui:field="dungeonDropdownList" />
-				<g:Button text="Select Dungeon" ui:field="selectButton" />
-				<g:CheckBox ui:field="asGM" text="Open as GM" />
-				<g:Button text="Create New Dungeon..." ui:field="createDungeonButton" />
+				<g:Button text="Select Template Dungeon" ui:field="selectTemplate" />
 			</g:FlowPanel>
 		</g:center>
 		<g:south size="30">
-			<g:Button ui:field="accept" text="OK" />
+			<g:FlowPanel>
+				<g:Button ui:field="accept" text="OK" />
+				<g:Button ui:field="cancel" text="Cancel" />
+			</g:FlowPanel>
 		</g:south>
 	</g:DockLayoutPanel>
 </ui:UiBinder> 

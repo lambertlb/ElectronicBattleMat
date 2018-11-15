@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.controls.dungeonCreator.DungeonCreator;
 import per.lambert.ebattleMat.client.windowBox.WindowBox;
 
 public class DungeonSelectControl extends WindowBox {
@@ -18,6 +19,10 @@ public class DungeonSelectControl extends WindowBox {
 	@Override
 	protected void onLoad() {
 		super.onLoad();
+		LoadDungeonList();
+	}
+
+	private void LoadDungeonList() {
 		String[] dungeonList = dungeonSelectPresenter.getDungeonList();
 		for (String dungeon : dungeonList) {
 			dungeonDropdownList.addItem(dungeon);
@@ -62,7 +67,9 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiHandler("createDungeonButton")
 	void onCreateDungeonButtonClick(ClickEvent e) {
-		dungeonSelectPresenter.createDungeon(dungeonDropdownList.getSelectedValue());
+		DungeonCreator dungeonCreator = new DungeonCreator();
+		dungeonCreator.show();
+		LoadDungeonList();
 	}
 
 	public void close() {
