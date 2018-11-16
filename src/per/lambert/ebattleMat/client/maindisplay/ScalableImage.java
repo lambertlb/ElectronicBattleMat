@@ -241,7 +241,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		String dungeonNameForUrl = ServiceManagement.getDungeonManagment().getDungeonNameForUrl();
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
-		String imageUrl = ElectronicBattleMat.DUNGEON_DATA_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
+		String imageUrl = ElectronicBattleMat.DUNGEONS_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
 		image.setUrl(imageUrl);
 	}
 

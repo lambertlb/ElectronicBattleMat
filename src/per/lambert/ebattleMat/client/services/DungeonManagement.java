@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
@@ -206,7 +207,7 @@ public class DungeonManagement implements IDungeonManagement {
 	public void selectDungeon(String dungeonsName) {
 		updateDungeonNameForUrl(dungeonsName);
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", dungeonNameForUrl + "/dungeonData.json");
+		parameters.put("fileName", ElectronicBattleMat.DUNGEONS_FOLDER + dungeonNameForUrl + ElectronicBattleMat.DUNGEON_DATA_FILENAME);
 		IDataRequester dataRequester = ServiceManagement.getDataRequester();
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
 
@@ -270,7 +271,7 @@ public class DungeonManagement implements IDungeonManagement {
 	private void loadCharacterPogs() {
 		IDataRequester dataRequester = ServiceManagement.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", "resources/pcPogs/characterPogs.json");
+		parameters.put("fileName", ElectronicBattleMat.DUNGEON_PCPOG_LOCATION + "characterPogs.json");
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override

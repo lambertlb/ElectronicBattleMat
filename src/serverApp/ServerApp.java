@@ -1,5 +1,7 @@
 package serverApp;
 
+import java.io.File;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -11,8 +13,8 @@ public class ServerApp {
 		webAppContext.setWar(".\\ElectronicBattleMat.war");
 		webAppContext.setParentLoaderPriority(true);
 		webAppContext.setServer(server);
+		webAppContext.setTempDirectory(new File("./ElectronicBattleMatTemp"));
 		webAppContext.setClassLoader(ClassLoader.getSystemClassLoader());
-//		webAppContext.getSessionHandler().getS.getSessionManager().setMaxInactiveInterval(10);
 		server.setHandler(webAppContext);
 		server.start();
 	}
