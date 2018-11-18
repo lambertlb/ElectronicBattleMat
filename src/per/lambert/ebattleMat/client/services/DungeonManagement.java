@@ -38,9 +38,9 @@ public class DungeonManagement implements IDungeonManagement {
 	private DungeonListData dungeonListData;
 
 	@Override
-	public String[] getDungeonList() {
+	public String[] getDungeonNames() {
 		if (dungeonListData != null) {
-			return (dungeonListData.getDungeons());
+			return (dungeonListData.getDungeonNames());
 		}
 		return null;
 	}
@@ -55,12 +55,6 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public DungeonData getSelectedDungeon() {
 		return selectedDungeon;
-	}
-
-	private String selectedDungeonsName;
-
-	public String getSelectedDungeonsName() {
-		return selectedDungeonsName;
 	}
 
 	private int currentLevel;
@@ -175,8 +169,7 @@ public class DungeonManagement implements IDungeonManagement {
 	private void getDungeonList(Object requestData, IUserCallback callback) {
 		IDataRequester dataRequester = ServiceManagement.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", "dungeonList.json");
-		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+		dataRequester.requestData("", token, "GETDUNGEONLIST", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -230,7 +223,12 @@ public class DungeonManagement implements IDungeonManagement {
 	}
 
 	private void updateDungeonNameForUrl(String dungeonsName) {
-		dungeonNameForUrl = dungeonsName.toLowerCase();
+		dungeonNameForUrl = null;
+		for (int i = 0; i < dungeonListData.getDungeonNames().length;++i ) {
+			if (dungeonListData.getDungeonNames()[i].equals(dungeonsName)) {
+				dungeonNameForUrl = dungeonListData.getDungeonDirectories()[i];
+			}
+		}
 	}
 
 	@Override
@@ -247,7 +245,8 @@ public class DungeonManagement implements IDungeonManagement {
 	private void saveCurrentDungeonData() {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
-			parameters.put("dungeonName", selectedDungeon.getDungeonName());
+			updateDungeonNameForUrl(selectedDungeon.getDungeonName());
+			parameters.put("dungeonName", dungeonNameForUrl);
 			IDataRequester dataRequester = ServiceManagement.getDataRequester();
 			String dungeonDataString = JsonUtils.stringify(selectedDungeon);
 			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {

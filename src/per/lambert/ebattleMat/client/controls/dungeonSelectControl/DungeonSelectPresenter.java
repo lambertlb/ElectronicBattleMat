@@ -10,7 +10,7 @@ public class DungeonSelectPresenter {
 	}
 
 	public String[] getDungeonList() {
-		return ServiceManagement.getDungeonManagment().getDungeonList();
+		return ServiceManagement.getDungeonManagment().getDungeonNames();
 	}
 
 	public void selectDungeon(String dungeonsName) {

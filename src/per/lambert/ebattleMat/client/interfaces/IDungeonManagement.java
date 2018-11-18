@@ -12,7 +12,7 @@ public interface IDungeonManagement {
 
 	DungeonServerError getLastError();
 
-	String[] getDungeonList();
+	String[] getDungeonNames();
 
 	void selectDungeon(String dungeonsName);
 

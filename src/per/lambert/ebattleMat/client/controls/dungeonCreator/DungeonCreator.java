@@ -35,7 +35,7 @@ public class DungeonCreator extends WindowBox {
 	}
 
 	private void LoadDungeonList() {
-		String[] dungeonList =ServiceManagement.getDungeonManagment().getDungeonList();
+		String[] dungeonList = ServiceManagement.getDungeonManagment().getDungeonNames();
 		for (String dungeon : dungeonList) {
 			dungeonDropdownList.addItem(dungeon);
 		}
