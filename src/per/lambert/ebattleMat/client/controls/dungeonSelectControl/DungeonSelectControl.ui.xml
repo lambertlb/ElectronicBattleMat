@@ -1,22 +1,52 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 	.panel {
 		background-color: ivory;
 	}
 	</ui:style>
-	<g:DockLayoutPanel width="300px" height="300px">
+	<g:DockLayoutPanel width="400px" height="300px" styleName="{style.panel}">
+		<g:north size="30">
+			<g:CheckBox ui:field="asDM" text="I am DM" />
+		</g:north>
 		<g:center>
-			<g:FlowPanel styleName="{style.panel}">
-				<g:ListBox ui:field="dungeonDropdownList" />
-				<g:Button text="Select Dungeon" ui:field="selectButton" />
-				<g:CheckBox ui:field="asGM" text="Open as GM" />
-				<g:Button text="Create New Dungeon..." ui:field="createDungeonButton" />
+			<g:FlowPanel>
+				<g:Grid ui:field="playerGrid">
+					<g:row>
+						<g:customCell>
+							<g:ListBox ui:field="sessionList" />
+						</g:customCell>
+						<g:customCell>
+							<g:Button text="Select Dungeon session" ui:field="selectSessionButton" />
+						</g:customCell>
+					</g:row>
+				</g:Grid>
+				<g:Grid ui:field="dmGrid">
+					<g:row>
+						<g:customCell>
+							<g:ListBox ui:field="dungeonDropdownList" />
+						</g:customCell>
+					</g:row>
+					<g:row>
+						<g:customCell>
+							<g:Button text="Create New Dungeon ->" ui:field="createDungeonButton" />
+						</g:customCell>
+						<g:customCell>
+							<g:TextBox text="Enter Dungeon Name" ui:field="newDungeonName" />
+						</g:customCell>
+					</g:row>
+					<g:row>
+						<g:customCell>
+							<g:Button text="Edit Dungeon" ui:field="editDungeonButton" />
+						</g:customCell>
+					</g:row>
+					<g:row>
+						<g:customCell>
+							<g:Button text="Delete Dungeon..." ui:field="deleteDungeonButton" />
+						</g:customCell>
+					</g:row>
+				</g:Grid>
 			</g:FlowPanel>
 		</g:center>
-		<g:south size="30">
-			<g:Button ui:field="accept" text="OK" />
-		</g:south>
 	</g:DockLayoutPanel>
 </ui:UiBinder> 

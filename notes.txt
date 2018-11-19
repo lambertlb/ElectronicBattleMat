@@ -1,0 +1,13 @@
+Session dialog support needed.
+
+As DM:
+1) Create a dungeon based on existing dungeon.
+2) Edit a dungeon
+3) Delete a dungeon
+4) Create a named session based on dungeon template
+5) Delete a session
+
+As Player
+1) Choose a session to join.
+2) Create/Choose an Avatar POG
+3) Join a session

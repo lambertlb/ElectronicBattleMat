@@ -116,6 +116,18 @@ public class DungeonManagement implements IDungeonManagement {
 		return (pogBeingDragged);
 	}
 
+	private boolean isDungeonMaster;
+	
+	@Override
+	public boolean isDungeonMaster() {
+		return isDungeonMaster;
+	}
+
+	@Override
+	public void setDungeonMaster(boolean isDungeonMaster) {
+		this.isDungeonMaster = isDungeonMaster;
+	}
+
 	@Override
 	public void login(final String username, final String password, IUserCallback callback) {
 		lastError = DungeonServerError.Succsess;

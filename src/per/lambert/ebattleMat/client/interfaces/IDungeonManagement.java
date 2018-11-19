@@ -10,6 +10,10 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 public interface IDungeonManagement {
 	void login(final String username, final String password, IUserCallback callback);
 
+	boolean isDungeonMaster();
+
+	void setDungeonMaster(boolean isDungeonMaster);
+
 	DungeonServerError getLastError();
 
 	String[] getDungeonNames();
@@ -49,6 +53,8 @@ public interface IDungeonManagement {
 	boolean isFowSet(int columns, int rows);
 
 	void setFow(int columns, int rows, boolean value);
-	boolean	getFowToggle();
-	void	setFowToggle(boolean fowToggle);
+
+	boolean getFowToggle();
+
+	void setFowToggle(boolean fowToggle);
 }
