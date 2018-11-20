@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CssColor;
-import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
@@ -24,13 +23,11 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.scalablePog.ScalablePog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
@@ -144,7 +141,6 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	private ShellLayout parentPanel;
 	private Image image = new Image();
 	private LayoutPanel greyOutPanel;
-	int pictureCount = 1;
 
 	private List<ScalablePog> pogs = new ArrayList<ScalablePog>();
 
@@ -239,9 +235,8 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 
 	public void loadImage() {
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
-		String dungeonNameForUrl = ServiceManagement.getDungeonManagment().getDungeonNameForUrl();
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
-		String imageUrl = ElectronicBattleMat.DUNGEONS_LOCATION + dungeonNameForUrl + "/" + dungeonPicture + "?" + pictureCount++;
+		String imageUrl = ServiceManagement.getDungeonManagment().getUrlToDungeonResource(dungeonPicture);
 		image.setUrl(imageUrl);
 	}
 

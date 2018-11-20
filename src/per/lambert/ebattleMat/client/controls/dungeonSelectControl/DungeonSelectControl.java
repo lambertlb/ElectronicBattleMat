@@ -7,8 +7,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -19,7 +17,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.controls.dungeonCreator.DungeonCreator;
 import per.lambert.ebattleMat.client.windowBox.WindowBox;
 
 public class DungeonSelectControl extends WindowBox {
@@ -49,7 +46,7 @@ public class DungeonSelectControl extends WindowBox {
 
 			@Override
 			public void onChange(ChangeEvent event) {
-				dungeonSelectPresenter.selectDungeon(dungeonDropdownList.getSelectedValue());
+				dungeonSelectPresenter.selectNewDungeonName(dungeonDropdownList.getSelectedValue());
 			}
 		});
 		newDungeonName.addChangeHandler(new ChangeHandler() {
@@ -106,6 +103,7 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiHandler("editDungeonButton")
 	void onEditDungeonButtonClick(ClickEvent e) {
+		dungeonSelectPresenter.selectDungeon();
 	}
 
 	@UiHandler("deleteDungeonButton")
@@ -119,8 +117,7 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiHandler("createDungeonButton")
 	void onCreateDungeonButtonClick(ClickEvent e) {
-		DungeonCreator dungeonCreator = new DungeonCreator();
-		dungeonCreator.show();
+		dungeonSelectPresenter.createDungeon();
 	}
 
 	public void enableWidget(Widget widget, boolean enable) {

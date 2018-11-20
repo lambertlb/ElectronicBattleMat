@@ -30,8 +30,6 @@ public interface IDungeonManagement {
 
 	DungeonLevel getCurrentLevelData();
 
-	String getDungeonNameForUrl();
-
 	void dungeonDataChanged();
 
 	void saveDungeonData();
@@ -57,4 +55,8 @@ public interface IDungeonManagement {
 	boolean getFowToggle();
 
 	void setFowToggle(boolean fowToggle);
+
+	void createNewDungeon(String templateName, String newDungeonName);
+
+	String getUrlToDungeonResource(String resourceItem);
 }

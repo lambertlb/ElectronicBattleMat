@@ -117,7 +117,7 @@ public class DungeonManagement implements IDungeonManagement {
 	}
 
 	private boolean isDungeonMaster;
-	
+
 	@Override
 	public boolean isDungeonMaster() {
 		return isDungeonMaster;
@@ -201,18 +201,11 @@ public class DungeonManagement implements IDungeonManagement {
 		callback.onSuccess(requestData, null);
 	}
 
-	private String dungeonNameForUrl;
-
-	@Override
-	public String getDungeonNameForUrl() {
-		return dungeonNameForUrl;
-	}
-
 	@Override
 	public void selectDungeon(String dungeonsName) {
-		updateDungeonNameForUrl(dungeonsName);
+		String dungeonDirectory = getDirectoryNameForDungeon(dungeonsName);
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEONS_FOLDER + dungeonNameForUrl + ElectronicBattleMat.DUNGEON_DATA_FILENAME);
+		parameters.put("fileName", ElectronicBattleMat.DUNGEONS_FOLDER + dungeonDirectory + ElectronicBattleMat.DUNGEON_DATA_FILENAME);
 		IDataRequester dataRequester = ServiceManagement.getDataRequester();
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
 
@@ -234,13 +227,17 @@ public class DungeonManagement implements IDungeonManagement {
 		dungeonDataChanged();
 	}
 
-	private void updateDungeonNameForUrl(String dungeonsName) {
-		dungeonNameForUrl = null;
-		for (int i = 0; i < dungeonListData.getDungeonNames().length;++i ) {
+	private String getDirectoryNameForDungeon(String dungeonsName) {
+		for (int i = 0; i < dungeonListData.getDungeonNames().length; ++i) {
 			if (dungeonListData.getDungeonNames()[i].equals(dungeonsName)) {
-				dungeonNameForUrl = dungeonListData.getDungeonDirectories()[i];
+				return (dungeonListData.getDungeonDirectories()[i]);
 			}
 		}
+		return (null);
+	}
+
+	private String getDirectoryForCurrentDungeon() {
+		return (getDirectoryNameForDungeon(selectedDungeon.getDungeonName()));
 	}
 
 	@Override
@@ -257,8 +254,8 @@ public class DungeonManagement implements IDungeonManagement {
 	private void saveCurrentDungeonData() {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
-			updateDungeonNameForUrl(selectedDungeon.getDungeonName());
-			parameters.put("dungeonName", dungeonNameForUrl);
+			getDirectoryNameForDungeon(selectedDungeon.getDungeonName());
+			parameters.put("dungeonName", getDirectoryForCurrentDungeon());
 			IDataRequester dataRequester = ServiceManagement.getDataRequester();
 			String dungeonDataString = JsonUtils.stringify(selectedDungeon);
 			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
@@ -340,5 +337,62 @@ public class DungeonManagement implements IDungeonManagement {
 	public void setFowToggle(boolean fowToggle) {
 		this.fowToggle = fowToggle;
 		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.ToggleFowSelected, null));
+	}
+
+	private int resourceCount = 1;
+	@Override
+	public String getUrlToDungeonResource(String resourceItem) {
+		if (resourceItem.startsWith("http")) {
+			return resourceItem;
+		}
+		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
+		String directoryForDungeon = getDirectoryForCurrentDungeon();
+		String resourceUrl = ElectronicBattleMat.DUNGEONS_LOCATION + directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
+		return(resourceUrl);
+	}
+
+	@Override
+	public void createNewDungeon(final String templateName, final String newDungeonName) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("templateName", getDirectoryNameForDungeon(templateName));
+		parameters.put("newDungeonName", newDungeonName);
+		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		dataRequester.requestData("", token, "CREATENEWDUNGEON", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+//				HandlerNewDungeonCreated(newDungeonName);
+				if (newDungeonName != "") {
+					String name  = "fred";
+				}
+				getDungeonList(null, new IUserCallback() {
+
+					@Override
+					public void onError(Object sender, IErrorInformation error) {
+					}
+
+					@Override
+					public void onSuccess(Object sender, Object data) {
+						selectDungeon(newDungeonName);
+					}});
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+				lastError = error.getError();
+			}
+		});
+	}
+	private void HandlerNewDungeonCreated(String newDungeonName) {
+		getDungeonList(null, new IUserCallback() {
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				selectDungeon(newDungeonName);
+			}});
 	}
 }

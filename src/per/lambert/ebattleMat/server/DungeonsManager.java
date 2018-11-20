@@ -16,6 +16,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
+
 import com.google.gson.Gson;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
@@ -30,6 +32,10 @@ public class DungeonsManager {
 		if (dungeonDirectoryName == null || dungeonDirectoryName.isEmpty()) {
 			return;
 		}
+		saveDungeonData(servlet, dataToWrite, dungeonDirectoryName);
+	}
+
+	private static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, String dungeonDirectoryName) throws MalformedURLException, IOException {
 		URL servletPath = servlet.getServletContext().getResource("/");
 		String directoryPath = servletPath.getPath() + dungeonLocation + dungeonDirectoryName;
 		makeSureDirectoryExists(directoryPath);
@@ -105,6 +111,12 @@ public class DungeonsManager {
 
 	private static void getDungeonName(final HttpServlet servlet, File possibleDungeon, Map<String, String> dungeonListData) throws IOException {
 		String directoryDirectoryName = possibleDungeon.getName();
+		DungeonData dungeonData = getDungeonData(servlet, directoryDirectoryName);
+		String dungeonName = dungeonData.dungeonName;
+		dungeonListData.put(dungeonName, directoryDirectoryName);
+	}
+
+	private static DungeonData getDungeonData(final HttpServlet servlet, String directoryDirectoryName) throws IOException {
 		String directoryPath = dungeonLocation + directoryDirectoryName;
 		String filePath = directoryPath + "/dungeonData.json";
 		BufferedReader br = null;
@@ -118,7 +130,19 @@ public class DungeonsManager {
 		}
 		Gson gson = new Gson();
 		DungeonData dungeonData = gson.fromJson(builder.toString(), DungeonData.class);
-		String dungeonName = dungeonData.dungeonName;
-		dungeonListData.put(dungeonName, directoryDirectoryName);
+		return dungeonData;
+	}
+	
+	public static void copyDungeon(HttpServlet servlet, String sourceDirectory, String newDungeonName) throws IOException {
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String dstDirectory = newDungeonName.replaceAll("\\s+", "_");
+		File srcDir = new File(servletPath.getPath() + dungeonLocation + sourceDirectory);
+		File destDir = new File(servletPath.getPath() + dungeonLocation + dstDirectory);
+		FileUtils.copyDirectory(srcDir, destDir);
+		DungeonData dungeonData = getDungeonData(servlet, dstDirectory);
+		dungeonData.dungeonName = newDungeonName;
+		Gson gson = new Gson();
+		String jsonData = gson.toJson(dungeonData);
+		saveDungeonData(servlet,jsonData, dstDirectory);
 	}
 }
