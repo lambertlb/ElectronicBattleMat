@@ -1,1 +1,25 @@
-{"dungeonName":"Dungeon1","dungeonLevels":[{"levelDrawing":"level1.jpg","gridSize":50,"gridOffsetX":10,"gridOffsetY":10}],"showGrid":true,"isDirty":true}
+{
+	"dungeonName": "Dungeon1",
+	"dungeonLevels": [
+		{
+			"levelDrawing": "level1.jpg",
+			"gridSize": 50,
+			"gridOffsetX": 10,
+			"gridOffsetY": 10,
+			"monsters": [
+				{
+					"pogName": "Male Kobold",
+					"pogColumn": 2,
+					"pogRow": 2
+				},
+				{
+					"pogName": "Female Kobold",
+					"pogColumn": 4,
+					"pogRow": 4
+				}
+			]
+		}
+	],
+	"showGrid": true,
+	"isDirty": true
+}

@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.Gson;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.server.serviceData.DungeonData;
 
 public class DungeonsManager {
 	private static ReentrantLock lock = new ReentrantLock();

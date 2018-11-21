@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.server;
+package per.lambert.ebattleMat.server.handlers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+
+import per.lambert.ebattleMat.server.DungeonsManager;
+import per.lambert.ebattleMat.server.IWebRequestHandler;
 
 import java.util.Map;
 

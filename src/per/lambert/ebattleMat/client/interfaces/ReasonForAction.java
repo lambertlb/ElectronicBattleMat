@@ -5,6 +5,7 @@ public enum ReasonForAction {
 	DungeonSelected,
 	DungeonDataChanged,
 	CharacterPogsLoaded,
+	MonsterPogsLoaded,
 	PogWasSelected,
 	ToggleFowSelected,
 	MouseDownEventBubble,

@@ -46,4 +46,18 @@ public class DungeonLevel extends JavaScriptObject {
 	public final native void setGridOffsetY(double offset) /*-{
 		this.gridOffsetY = offset;
 	}-*/;
+
+	public final native PogData[] getMonsters() /*-{
+		if (this.monsters === undefined) {
+			return (new PogData[0]);
+		}
+		return (this.monsters);
+	}-*/;
+
+	public final native PogData[] getRoomObjects() /*-{
+		if (this.roomObjects === undefined) {
+			return (new PogData[0]);
+		}
+		return (this.roomObjects);
+	}-*/;
 }

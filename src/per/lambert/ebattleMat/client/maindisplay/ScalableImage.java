@@ -51,8 +51,10 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	 * Default zoom constant.
 	 */
 	private static final double DEFAULT_ZOOM = 1.1;
-	private static final int OVERLAYS_Z = 1;
-	private static final int GREYOUT_Z = 3;
+	private static final int PLAYERS_Z = 5;
+	private static final int MONSTERS_Z = 3;
+	private static final int ROOMOBJECTS_Z = 1;
+	private static final int GREYOUT_Z = 7;
 	private static final int FOW_Z = 5;
 	// private static final int ROOM_OBJECTS_Z = 200;
 
@@ -211,6 +213,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent event) {
 				setImage();
+				addPogs();
 			}
 		});
 		IEventManager eventManager = ServiceManagement.getEventManager();
@@ -231,13 +234,6 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	@Override
 	public void add(Widget w, int left, int top) {
 		super.add(w, left, top);
-	}
-
-	public void loadImage() {
-		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
-		String dungeonPicture = dungeonLevel.getLevelDrawing();
-		String imageUrl = ServiceManagement.getDungeonManagment().getUrlToDungeonResource(dungeonPicture);
-		image.setUrl(imageUrl);
 	}
 
 	/**
@@ -431,7 +427,6 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 
 	private void adjustPogs() {
 		for (ScalablePog pog : pogs) {
-			pog.getElement().getStyle().setZIndex(OVERLAYS_Z);
 			this.setWidgetPosition(pog, (int) (columnToPixel(pog.getPogColumn())), (int) (rowToPixel(pog.getPogRow())));
 			pog.setPogWidth((int) adjustedGridSize());
 		}
@@ -558,17 +553,21 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 				return (pog);
 			}
 		}
-		return addPogToCanvas(pogBeingDragged);
+		return addPlayerToCanvas(pogBeingDragged);
 	}
 
-	public ScalablePog addPogToCanvas(PogData pogData) {
+	public ScalablePog addPlayerToCanvas(PogData pogData) {
 		getRibbonBarData();
 		PogData clonePog = ServiceManagement.getDungeonManagment().createPlayerInstance(pogData);
+		return addPogToCanvas(clonePog, PLAYERS_Z);
+	}
+
+	private ScalablePog addPogToCanvas(PogData clonePog, int zLevel) {
 		ScalablePog scalablePog = new ScalablePog(clonePog);
 		scalablePog.setPogWidth((int) gridSpacing - 4);
 		pogs.add(scalablePog);
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
-		scalablePog.getElement().getStyle().setZIndex(OVERLAYS_Z);
+		scalablePog.getElement().getStyle().setZIndex(zLevel);
 		return (scalablePog);
 	}
 
@@ -628,5 +627,34 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		if (parentPanel != null) {
 			parentPanel.setStatus(status);
 		}
+	}
+	
+	public void dungeonDataChanged() {
+		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
+		String dungeonPicture = dungeonLevel.getLevelDrawing();
+		String imageUrl = ServiceManagement.getDungeonManagment().getUrlToDungeonResource(dungeonPicture);
+		image.setUrl(imageUrl);
+	}
+	private void addPogs() {
+		addMonsterPogs();
+	}
+
+	public void addMonsterToCanvas(PogData pogData) {
+		getRibbonBarData();
+		PogData clonePog = ServiceManagement.getDungeonManagment().findMonsterTemplate(pogData);
+		if (clonePog != null) {
+			addPogToCanvas(clonePog, MONSTERS_Z);
+		}
+	}
+	private void addMonsterPogs() {
+		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
+		PogData[] monsters = dungeonLevel.getMonsters();
+		if (monsters == null) {
+			return;
+		}
+		for (PogData monster : monsters) {
+			addMonsterToCanvas(monster);
+		}
+		mainDraw();
 	}
 }

@@ -109,10 +109,10 @@ public class ShellLayout extends ResizeComposite {
 	public void setSelectionPanelExpanded(boolean selectionPanelExpanded) {
 	}
 	public void dungeonDataChanged() {
-		scaleImage.loadImage();
+		scaleImage.dungeonDataChanged();
 	}
 	private void doWindowResize(ResizeEvent event) {
-		scaleImage.loadImage();
+		scaleImage.dungeonDataChanged();
 	}
 	public void setStatus(String status) {
 		statusLabel.setText(status);

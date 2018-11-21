@@ -243,7 +243,12 @@ public class ScalablePog extends Composite implements HasDragStartHandlers , Mou
 
 	public void setPogImageUrl(String pogImageUrl) {
 		pogData.setPogImageUrl(pogImageUrl);
-		String imageUrl = pogImageUrl + "?" + imageCount++;
+		String imageUrl;
+		if (pogImageUrl.contains("?")) {
+			imageUrl = pogImageUrl + "," + imageCount++;
+		} else {
+			imageUrl = pogImageUrl + "?" + imageCount++;
+		}
 		image.setUrl(imageUrl);
 	}
 

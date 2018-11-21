@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.server;
+package per.lambert.ebattleMat.server.serviceData;
 
 public class DungeonData {
 	public String dungeonName;

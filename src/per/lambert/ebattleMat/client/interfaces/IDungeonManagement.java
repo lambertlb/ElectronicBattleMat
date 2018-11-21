@@ -34,7 +34,8 @@ public interface IDungeonManagement {
 
 	void saveDungeonData();
 
-	PogData[] getPcPogs();
+	PogData[] getPcTemplatePogs();
+	PogData[] getMonsterTemplatePogs();
 
 	PogData getSelectedPog();
 
@@ -63,4 +64,7 @@ public interface IDungeonManagement {
 	boolean okToDeleteThisTemplate(String dungeonsName);
 
 	void deleteTemplate(String selectedTemplate);
+
+	PogData createMonsterFromTemplate(PogData pogData);
+	PogData findMonsterTemplate(PogData pogData);
 }

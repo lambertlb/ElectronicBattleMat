@@ -9,6 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import per.lambert.ebattleMat.server.handlers.CreateNewDungeonHandler;
+import per.lambert.ebattleMat.server.handlers.DeleteDungeonHandler;
+import per.lambert.ebattleMat.server.handlers.DungeonListHandler;
+import per.lambert.ebattleMat.server.handlers.LoadJsonDataHandler;
+import per.lambert.ebattleMat.server.handlers.LoginHandler;
+import per.lambert.ebattleMat.server.handlers.SaveJsonDataHandler;
+
 public class Dungeons extends HttpServlet {
 	/**
 	 * Constructor

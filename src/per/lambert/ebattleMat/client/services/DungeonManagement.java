@@ -77,11 +77,18 @@ public class DungeonManagement implements IDungeonManagement {
 		return null;
 	}
 
-	private PogList pcPogs;
+	private PogList pcTemplatePogs;
 
 	@Override
-	public PogData[] getPcPogs() {
-		return pcPogs.getPogList();
+	public PogData[] getPcTemplatePogs() {
+		return pcTemplatePogs.getPogList();
+	}
+
+	private PogList monsterTemplatePogs;
+
+	@Override
+	public PogData[] getMonsterTemplatePogs() {
+		return monsterTemplatePogs.getPogList();
 	}
 
 	private PogList players;
@@ -274,9 +281,11 @@ public class DungeonManagement implements IDungeonManagement {
 
 	private void loadInResourceData() {
 		loadCharacterPogs();
+		loadMonsterPogs();
 	}
 
 	private void loadCharacterPogs() {
+		pcTemplatePogs = null;
 		IDataRequester dataRequester = ServiceManagement.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEON_PCPOG_LOCATION + "characterPogs.json");
@@ -284,8 +293,27 @@ public class DungeonManagement implements IDungeonManagement {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				pcPogs = JsonUtils.<PogList>safeEval((String) data);
+				pcTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
 				ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+		});
+	}
+
+	private void loadMonsterPogs() {
+		monsterTemplatePogs = null;
+		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("fileName", ElectronicBattleMat.DUNGEON_MONSTER_LOCATION + "monsterPogs.json");
+		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
+				ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
 			}
 
 			@Override
@@ -425,5 +453,26 @@ public class DungeonManagement implements IDungeonManagement {
 				dungeonDataChanged();
 			}
 		});
+	}
+
+	@Override
+	public PogData createMonsterFromTemplate(PogData pogData) {
+		PogData template = findMonsterTemplate(pogData);
+		return null;
+	}
+
+	@Override
+	public PogData findMonsterTemplate(PogData pogData) {
+		if (monsterTemplatePogs == null) {
+			return (null);
+		}
+		for (PogData template : monsterTemplatePogs.getPogList()) {
+			if (template.getPogName() == pogData.getPogName()) {
+				PogData clone = pogData.clone();
+				clone.setPogImageUrl(template.getPogImageUrl());
+				return (clone);
+			}
+		}
+		return (null);
 	}
 }
