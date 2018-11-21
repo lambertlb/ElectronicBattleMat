@@ -59,4 +59,8 @@ public interface IDungeonManagement {
 	void createNewDungeon(String templateName, String newDungeonName);
 
 	String getUrlToDungeonResource(String resourceItem);
+
+	boolean okToDeleteThisTemplate(String dungeonsName);
+
+	void deleteTemplate(String selectedTemplate);
 }

@@ -108,6 +108,7 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiHandler("deleteDungeonButton")
 	void onDeleteDungeonButtonClick(ClickEvent e) {
+		dungeonSelectPresenter.deleteTemplate();
 	}
 
 	@UiHandler("asDM")
@@ -129,6 +130,7 @@ public class DungeonSelectControl extends WindowBox {
 	}
 
 	public void close() {
+		dungeonSelectPresenter.closing();
 		hide();
 	}
 
@@ -145,7 +147,7 @@ public class DungeonSelectControl extends WindowBox {
 		dmGrid.setVisible(true);
 		enableWidget(createDungeonButton, dungeonSelectPresenter.isOkToCreateDungeon());
 		enableWidget(editDungeonButton, dungeonSelectPresenter.isTemplateSelected());
-		enableWidget(deleteDungeonButton, dungeonSelectPresenter.isTemplateSelected());
+		enableWidget(deleteDungeonButton, dungeonSelectPresenter.isOkToDelete());
 		enableWidget(newDungeonName, dungeonSelectPresenter.isTemplateSelected());
 		if (!dungeonSelectPresenter.isTemplateSelected()) {
 			newDungeonName.setText("Enter Dungeon Name");

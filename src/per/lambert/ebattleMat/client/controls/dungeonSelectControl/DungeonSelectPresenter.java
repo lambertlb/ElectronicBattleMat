@@ -1,5 +1,12 @@
 package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 
 public class DungeonSelectPresenter {
@@ -16,8 +23,7 @@ public class DungeonSelectPresenter {
 		this.isDungeonMaster = isDungeonMaster;
 		templateSelected = false;
 		okToCreateDungeon = false;
-		view.loadDungeonList();
-		view.setToDungeonMasterState();
+		refreshView();
 	}
 
 	private boolean templateSelected;
@@ -32,6 +38,36 @@ public class DungeonSelectPresenter {
 		return okToCreateDungeon;
 	}
 
+	private boolean okToDelete;
+
+	public boolean isOkToDelete() {
+		return okToDelete;
+	}
+
+	HandlerRegistration dungeonDataChangedEvent;
+
+	public DungeonSelectPresenter() {
+		IEventManager eventManager = ServiceManagement.getEventManager();
+		dungeonDataChangedEvent = eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+			public void onReasonForAction(final ReasonForActionEvent event) {
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataChanged) {
+					refreshView();
+					return;
+				}
+			}
+		});
+	}
+
+	private void refreshView() {
+		okToCreateDungeon = false;
+		okToDelete = false;
+		templateSelected = false;
+		newDungeonName = "";
+		selectedTemplate = "";
+		view.loadDungeonList();
+		view.setToDungeonMasterState();
+	}
+
 	public void setView(DungeonSelectControl dungeonSelectControl) {
 		view = dungeonSelectControl;
 	}
@@ -43,6 +79,7 @@ public class DungeonSelectPresenter {
 	public void selectNewDungeonName(String dungeonsName) {
 		templateSelected = !dungeonsName.startsWith("Select ");
 		selectedTemplate = dungeonsName;
+		okToDelete = ServiceManagement.getDungeonManagment().okToDeleteThisTemplate(dungeonsName);
 		view.setToDungeonMasterState();
 	}
 
@@ -61,5 +98,16 @@ public class DungeonSelectPresenter {
 	public void createDungeon() {
 		ServiceManagement.getDungeonManagment().createNewDungeon(selectedTemplate, newDungeonName);
 		view.close();
+	}
+
+	public void deleteTemplate() {
+		ServiceManagement.getDungeonManagment().deleteTemplate(selectedTemplate);
+	}
+
+	public void closing() {
+		if (dungeonDataChangedEvent != null) {
+			dungeonDataChangedEvent.removeHandler();
+			dungeonDataChangedEvent = null;
+		}
 	}
 }

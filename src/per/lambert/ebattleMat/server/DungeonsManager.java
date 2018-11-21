@@ -116,21 +116,34 @@ public class DungeonsManager {
 		dungeonListData.put(dungeonName, directoryDirectoryName);
 	}
 
-	private static DungeonData getDungeonData(final HttpServlet servlet, String directoryDirectoryName) throws IOException {
+	private static DungeonData getDungeonData(final HttpServlet servlet, String directoryDirectoryName) {
 		String directoryPath = dungeonLocation + directoryDirectoryName;
 		String filePath = directoryPath + "/dungeonData.json";
 		BufferedReader br = null;
 		StringBuilder builder = new StringBuilder();
-		InputStream is = servlet.getServletContext().getResourceAsStream(filePath);
-		InputStreamReader isr = new InputStreamReader(is);
-		br = new BufferedReader(isr);
-		String line;
-		while ((line = br.readLine()) != null) {
-			builder.append(line);
+		lock.lock();
+		try {
+			InputStream is = servlet.getServletContext().getResourceAsStream(filePath);
+			InputStreamReader isr = new InputStreamReader(is);
+			br = new BufferedReader(isr);
+			String line;
+			while ((line = br.readLine()) != null) {
+				builder.append(line);
+			}
+			Gson gson = new Gson();
+			DungeonData dungeonData = gson.fromJson(builder.toString(), DungeonData.class);
+			return dungeonData;
+		} catch (IOException e) {
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+				}
+			}
+			lock.unlock();
 		}
-		Gson gson = new Gson();
-		DungeonData dungeonData = gson.fromJson(builder.toString(), DungeonData.class);
-		return dungeonData;
+		return(null);
 	}
 	
 	public static void copyDungeon(HttpServlet servlet, String sourceDirectory, String newDungeonName) throws IOException {
@@ -144,5 +157,17 @@ public class DungeonsManager {
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(dungeonData);
 		saveDungeonData(servlet,jsonData, dstDirectory);
+	}
+
+	public static void deleteDungeon(HttpServlet servlet, String templateName) throws IOException {
+		deleteSessionOfTemplate(servlet, templateName);
+		URL servletPath = servlet.getServletContext().getResource("/");
+		File srcDir = new File(servletPath.getPath() + dungeonLocation + templateName);
+		FileUtils.deleteDirectory(srcDir);
+	}
+
+	private static void deleteSessionOfTemplate(HttpServlet servlet, String templateName) {
+		// TODO delete session of this template
+		
 	}
 }

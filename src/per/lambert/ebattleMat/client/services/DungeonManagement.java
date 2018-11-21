@@ -340,6 +340,7 @@ public class DungeonManagement implements IDungeonManagement {
 	}
 
 	private int resourceCount = 1;
+
 	@Override
 	public String getUrlToDungeonResource(String resourceItem) {
 		if (resourceItem.startsWith("http")) {
@@ -348,7 +349,7 @@ public class DungeonManagement implements IDungeonManagement {
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
 		String resourceUrl = ElectronicBattleMat.DUNGEONS_LOCATION + directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
-		return(resourceUrl);
+		return (resourceUrl);
 	}
 
 	@Override
@@ -361,20 +362,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-//				HandlerNewDungeonCreated(newDungeonName);
-				if (newDungeonName != "") {
-					String name  = "fred";
-				}
-				getDungeonList(null, new IUserCallback() {
-
-					@Override
-					public void onError(Object sender, IErrorInformation error) {
-					}
-
-					@Override
-					public void onSuccess(Object sender, Object data) {
-						selectDungeon(newDungeonName);
-					}});
+				handlerNewDungeonCreated(newDungeonName);
 			}
 
 			@Override
@@ -383,7 +371,8 @@ public class DungeonManagement implements IDungeonManagement {
 			}
 		});
 	}
-	private void HandlerNewDungeonCreated(String newDungeonName) {
+
+	private void handlerNewDungeonCreated(String newDungeonName) {
 		getDungeonList(null, new IUserCallback() {
 
 			@Override
@@ -393,6 +382,48 @@ public class DungeonManagement implements IDungeonManagement {
 			@Override
 			public void onSuccess(Object sender, Object data) {
 				selectDungeon(newDungeonName);
-			}});
+			}
+		});
+	}
+
+	@Override
+	public boolean okToDeleteThisTemplate(String dungeonsName) {
+		return !dungeonsName.equals("Template Dungeon");
+	}
+
+	@Override
+	public void deleteTemplate(String selectedTemplate) {
+		if (!okToDeleteThisTemplate(selectedTemplate)) {
+			return;
+		}
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("templateName", getDirectoryNameForDungeon(selectedTemplate));
+		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		dataRequester.requestData("", token, "DELETEDUNGEON", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				handlerDungeonDeleted();
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+				lastError = error.getError();
+			}
+		});
+	}
+
+	private void handlerDungeonDeleted() {
+		getDungeonList("", new IUserCallback() {
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				dungeonDataChanged();
+			}
+		});
 	}
 }
