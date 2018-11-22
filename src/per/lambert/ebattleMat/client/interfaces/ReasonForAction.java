@@ -9,5 +9,6 @@ public enum ReasonForAction {
 	PogWasSelected,
 	ToggleFowSelected,
 	MouseDownEventBubble,
-	MouseUpEventBubble
+	MouseUpEventBubble,
+	SelectNewDungeon
 }

@@ -168,4 +168,10 @@ public class DungeonSelectControl extends WindowBox {
 		playerGrid.setVisible(true);
 		dmGrid.setVisible(false);
 	}
+
+	public void setupAndShow() {
+		dungeonSelectPresenter.refreshView();
+		getElement().getStyle().setZIndex(100);
+		show();
+	}
 }

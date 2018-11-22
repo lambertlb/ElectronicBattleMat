@@ -58,7 +58,7 @@ public class DungeonSelectPresenter {
 		});
 	}
 
-	private void refreshView() {
+	public void refreshView() {
 		okToCreateDungeon = false;
 		okToDelete = false;
 		templateSelected = false;

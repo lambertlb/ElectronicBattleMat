@@ -143,6 +143,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	private ShellLayout parentPanel;
 	private Image image = new Image();
 	private LayoutPanel greyOutPanel;
+	private LayoutPanel hidePanel;
 
 	private List<ScalablePog> pogs = new ArrayList<ScalablePog>();
 
@@ -163,25 +164,26 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		canvas.addMouseMoveHandler(this);
 		canvas.addMouseDownHandler(this);
 		canvas.addMouseUpHandler(this);
-		super.add(canvas, 0, 0);
-		super.add(fowCanvas, 0, 0);
+		hidePanel = new LayoutPanel();
+		greyOutPanel = new LayoutPanel();
+		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
+		hidePanel.add(image);
+		hidePanel.setVisible(false);
 		fowCanvas.getElement().getStyle().setZIndex(FOW_Z);
 		fowCanvas.setStyleName("noEvents");
-		LayoutPanel hidePanel = new LayoutPanel();
-		hidePanel.setVisible(false);
-		hidePanel.add(image);
-		super.add(hidePanel, -1, -1);
-		addGreyoutPanel();
-
+		intializeView();
 		showGrid = false;
 		setupDragAndDrop();
 		setupEventHandling();
 	}
 
-	private void addGreyoutPanel() {
-		greyOutPanel = new LayoutPanel();
+	private void intializeView() {
+		pogs.clear();
+		super.clear();
+		super.add(canvas, 0, 0);
+		super.add(fowCanvas, 0, 0);
+		super.add(hidePanel, -1, -1);
 		super.add(greyOutPanel, 100, 100);
-		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
 	}
 
 	private void setupDragAndDrop() {
@@ -242,7 +244,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	 * @param widthOfParent current width of parent window.
 	 * @param heightOfParent current height of parent window.
 	 */
-	public final void setImage() {
+	private final void setImage() {
 		totalZoom = 1;
 		maxZoom = .5;
 		offsetX = 0;
@@ -633,6 +635,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	}
 
 	public void dungeonDataChanged() {
+		intializeView();
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
 		String imageUrl = ServiceManagement.getDungeonManagment().getUrlToDungeonResource(dungeonPicture);

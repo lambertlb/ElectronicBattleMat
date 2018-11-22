@@ -20,7 +20,9 @@ import per.lambert.ebattleMat.client.services.ServiceManagement;
  */
 public class ElectronicBattleMat implements EntryPoint {
 	private RootLayoutPanel rootLayoutPanel;
-	ShellLayout layout;
+	private ShellLayout layout;
+	private DungeonSelectControl dungeonSelectControl;
+	
 	public static String DUNGEON_DATA_LOCATION = "dungeonData/";
 	public static String DUNGEONS_FOLDER = "dungeons/";
 	public static String DUNGEONS_LOCATION = DUNGEON_DATA_LOCATION + DUNGEONS_FOLDER;
@@ -50,30 +52,22 @@ public class ElectronicBattleMat implements EntryPoint {
 					selectDungeon();
 					return;
 				}
-				if (event.getReasonForAction() == ReasonForAction.DungeonSelected) {
-					dungeonSelected();
-					return;
-				}
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataChanged) {
 					layout.dungeonDataChanged();
 					return;
 				}
-			}
+				if (event.getReasonForAction() == ReasonForAction.SelectNewDungeon) {
+					selectDungeon();
+					return;
+				}
+		}
 		});
 	}
 
 	private void selectDungeon() {
-		DungeonSelectControl dungeonSelectControl = new DungeonSelectControl();
-		dungeonSelectControl.show();
-	}
-
-	/**
-	 * Setup main display with selected dungeon
-	 */
-	private void dungeonSelected() {
-		final Label errorLabel = new Label("Error Label");
-		RootPanel loginPanel = RootPanel.get("loginControls");
-		loginPanel.getElement().getStyle().setPosition(Position.RELATIVE);
-		loginPanel.add(errorLabel);
+		if (dungeonSelectControl == null) {
+			dungeonSelectControl = new DungeonSelectControl();
+		}
+		dungeonSelectControl.setupAndShow();
 	}
 }

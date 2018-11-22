@@ -223,6 +223,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 	@Override
 	public void selectDungeon(String dungeonsName) {
+		initializeDungeonData();
 		String dungeonDirectory = getDirectoryNameForDungeon(dungeonsName);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEONS_FOLDER + dungeonDirectory + ElectronicBattleMat.DUNGEON_DATA_FILENAME);
@@ -239,6 +240,12 @@ public class DungeonManagement implements IDungeonManagement {
 			}
 		});
 		loadInResourceData();
+	}
+
+	private void initializeDungeonData() {
+		setCurrentLevel(0);
+		isDungeonMaster = false;
+		editMode = false;
 	}
 
 	private void handleDungeonData(Object data) {

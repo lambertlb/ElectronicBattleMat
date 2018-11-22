@@ -52,12 +52,13 @@ public class CharacterSelect extends Composite {
 	VerticalPanel panel;
 
 	@UiField
-	Button selectPog;
+	Button dungeonControl;
 	@UiField
 	ListBox characterSelect;
 
-	@UiHandler("selectPog")
-	void clickButton(ClickEvent event) {
+	@UiHandler("dungeonControl")
+	void dungeonControlClick(ClickEvent event) {
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SelectNewDungeon, null));
 	}
 
 	private void characterWasSelected() {
