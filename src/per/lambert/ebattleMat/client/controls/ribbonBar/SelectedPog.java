@@ -44,10 +44,10 @@ public class SelectedPog extends Composite {
 
 	private void pogSelected() {
 		PogData selectePog = ServiceManagement.getDungeonManagment().getSelectedPog();
+		pogPanel.clear();
 		if (selectePog == null) {
 			return;
 		}
-		pogPanel.clear();
 		ScalablePog scalablePog = new ScalablePog(selectePog);
 		Widget parent = hostPanel.getParent().getParent();
 		int height = parent.getOffsetHeight();

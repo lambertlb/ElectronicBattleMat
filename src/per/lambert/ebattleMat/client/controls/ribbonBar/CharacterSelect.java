@@ -1,6 +1,8 @@
 package per.lambert.ebattleMat.client.controls.ribbonBar;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -37,7 +39,14 @@ public class CharacterSelect extends Composite {
 				}
 			}
 		});
-	}
+		characterSelect.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				characterWasSelected();
+			}
+		});
+}
 
 	@UiField
 	VerticalPanel panel;
@@ -51,18 +60,18 @@ public class CharacterSelect extends Composite {
 	void clickButton(ClickEvent event) {
 	}
 
-	@UiHandler("characterSelect")
-	void characterWasSelected(ClickEvent event) {
-		int pogIndex = characterSelect.getSelectedIndex();
-		ServiceManagement.getDungeonManagment().setSelectedPog(ServiceManagement.getDungeonManagment().getPcTemplatePogs()[pogIndex]);
+	private void characterWasSelected() {
+		PogData characterPog = ServiceManagement.getDungeonManagment().findCharacterPog(characterSelect.getSelectedValue());
+		ServiceManagement.getDungeonManagment().setSelectedPog(characterPog);
 		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 
 	private void characterPogsLoaded() {
 		characterSelect.clear();
+		characterSelect.addItem("Select Character Pog", "");
 		PogData[] pogList = ServiceManagement.getDungeonManagment().getPcTemplatePogs();
 		for (PogData pogData : pogList) {
-			characterSelect.addItem(pogData.getPogName());
+			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}
 	}
 }

@@ -103,7 +103,7 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiHandler("editDungeonButton")
 	void onEditDungeonButtonClick(ClickEvent e) {
-		dungeonSelectPresenter.selectDungeon();
+		dungeonSelectPresenter.editDungeon();
 	}
 
 	@UiHandler("deleteDungeonButton")

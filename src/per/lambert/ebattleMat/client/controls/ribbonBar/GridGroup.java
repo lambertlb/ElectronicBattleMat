@@ -13,6 +13,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 
 public class GridGroup extends Composite {
@@ -25,11 +29,23 @@ public class GridGroup extends Composite {
 	public GridGroup() {
 		HTMLPanel widget = (HTMLPanel) uiBinder.createAndBindUi(this);
 		initWidget(widget);
+		panel.getElement().getStyle().setBackgroundColor("grey");
+		IEventManager eventManager = ServiceManagement.getEventManager();
+		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+			public void onReasonForAction(final ReasonForActionEvent event) {
+				if (event.getReasonForAction() == ReasonForAction.DungeonSelected) {
+					setupItems();
+					return;
+				}
+			}
+		});
+	}
+
+	private void setupItems() {
 		showGrid.setValue(ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid());
 		gridSizeBox.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize());
 		gridOffsetX.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX());
 		gridOffsetY.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY());
-		panel.getElement().getStyle().setBackgroundColor("grey");
 	}
 
 	@UiField

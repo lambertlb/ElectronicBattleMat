@@ -35,6 +35,8 @@ public class ElectronicBattleMat implements EntryPoint {
 	public void onModuleLoad() {
 		rootLayoutPanel = RootLayoutPanel.get();
 		setupEventHandler();
+		layout = new ShellLayout();
+		rootLayoutPanel.add(layout);
 		LoginControl lc = new LoginControl();
 		lc.getElement().getStyle().setZIndex(400);
 		lc.show();
@@ -46,7 +48,6 @@ public class ElectronicBattleMat implements EntryPoint {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.Login) {
 					selectDungeon();
-					startServices();
 					return;
 				}
 				if (event.getReasonForAction() == ReasonForAction.DungeonSelected) {
@@ -59,9 +60,6 @@ public class ElectronicBattleMat implements EntryPoint {
 				}
 			}
 		});
-	}
-
-	private void startServices() {
 	}
 
 	private void selectDungeon() {
@@ -77,7 +75,5 @@ public class ElectronicBattleMat implements EntryPoint {
 		RootPanel loginPanel = RootPanel.get("loginControls");
 		loginPanel.getElement().getStyle().setPosition(Position.RELATIVE);
 		loginPanel.add(errorLabel);
-		layout = new ShellLayout();
-		rootLayoutPanel.add(layout);
 	}
 }

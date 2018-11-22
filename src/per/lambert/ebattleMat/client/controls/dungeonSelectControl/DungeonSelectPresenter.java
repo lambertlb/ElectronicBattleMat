@@ -83,9 +83,10 @@ public class DungeonSelectPresenter {
 		view.setToDungeonMasterState();
 	}
 
-	public void selectDungeon() {
+	public void editDungeon() {
 		ServiceManagement.getDungeonManagment().setDungeonMaster(isDungeonMaster);
 		ServiceManagement.getDungeonManagment().selectDungeon(selectedTemplate);
+		ServiceManagement.getDungeonManagment().setEditMode(true);
 		view.close();
 	}
 

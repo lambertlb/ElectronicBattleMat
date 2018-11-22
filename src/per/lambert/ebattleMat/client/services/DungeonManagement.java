@@ -77,6 +77,7 @@ public class DungeonManagement implements IDungeonManagement {
 		return null;
 	}
 
+	Map<String, PogData> pcTemplateMap = new HashMap<String, PogData>();
 	private PogList pcTemplatePogs;
 
 	@Override
@@ -133,6 +134,18 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public void setDungeonMaster(boolean isDungeonMaster) {
 		this.isDungeonMaster = isDungeonMaster;
+	}
+
+	private boolean editMode;
+
+	@Override
+	public boolean isEditMode() {
+		return editMode;
+	}
+
+	@Override
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
 	}
 
 	@Override
@@ -293,14 +306,22 @@ public class DungeonManagement implements IDungeonManagement {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				pcTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
-				ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
+				loadCharacterPogTemplates(data);
 			}
 
 			@Override
 			public void onError(Object sender, IErrorInformation error) {
 			}
 		});
+	}
+
+	private void loadCharacterPogTemplates(Object data) {
+		pcTemplateMap.clear();
+		pcTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
+		for (PogData pcTemplate : pcTemplatePogs.getPogList()) {
+			pcTemplateMap.put(pcTemplate.getUUID(), pcTemplate);
+		}
+		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
 	}
 
 	private void loadMonsterPogs() {
@@ -346,7 +367,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 	@Override
 	public boolean isFowSet(int columns, int rows) {
-		return (fowGrid[columns][rows]);
+		return (editMode ? false : fowGrid[columns][rows]);
 	}
 
 	@Override
@@ -474,5 +495,10 @@ public class DungeonManagement implements IDungeonManagement {
 			}
 		}
 		return (null);
+	}
+
+	@Override
+	public PogData findCharacterPog(String pogUUID) {
+		return (pcTemplateMap.get(pogUUID));
 	}
 }

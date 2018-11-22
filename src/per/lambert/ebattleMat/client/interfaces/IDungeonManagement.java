@@ -12,6 +12,10 @@ public interface IDungeonManagement {
 
 	boolean isDungeonMaster();
 
+	boolean isEditMode();
+
+	void setEditMode(boolean editMode);
+
 	void setDungeonMaster(boolean isDungeonMaster);
 
 	DungeonServerError getLastError();
@@ -35,6 +39,7 @@ public interface IDungeonManagement {
 	void saveDungeonData();
 
 	PogData[] getPcTemplatePogs();
+
 	PogData[] getMonsterTemplatePogs();
 
 	PogData getSelectedPog();
@@ -66,5 +71,8 @@ public interface IDungeonManagement {
 	void deleteTemplate(String selectedTemplate);
 
 	PogData createMonsterFromTemplate(PogData pogData);
+
 	PogData findMonsterTemplate(PogData pogData);
+
+	PogData findCharacterPog(String pogUUID);
 }

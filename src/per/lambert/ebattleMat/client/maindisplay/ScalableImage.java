@@ -208,7 +208,6 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		}, DragLeaveEvent.getType());
 	}
 
-	
 	private void setupEventHandling() {
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent event) {
@@ -220,11 +219,11 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.MouseDownEventBubble) {
-					onMouseDown((MouseDownEvent)event.getData());
+					onMouseDown((MouseDownEvent) event.getData());
 					return;
 				}
 				if (event.getReasonForAction() == ReasonForAction.MouseDownEventBubble) {
-					onMouseUp((MouseUpEvent)event.getData());
+					onMouseUp((MouseUpEvent) event.getData());
 					return;
 				}
 			}
@@ -319,6 +318,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 
 	private boolean toggleFOW;
 	private boolean clearFOW;
+
 	/**
 	 * Handle mouse down.
 	 * 
@@ -359,7 +359,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 			return;
 		}
 		ServiceManagement.getDungeonManagment().setFow(selectedColumn, selectedRow, !currentFOW);
-		drawFOW(!currentFOW,  adjustedGridSize() + 2, selectedColumn, selectedRow);
+		drawFOW(!currentFOW, adjustedGridSize() + 2, selectedColumn, selectedRow);
 	}
 
 	private void handleMouseMove(final MouseMoveEvent event) {
@@ -488,6 +488,9 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 	}
 
 	private void drawFogOfWar() {
+		if (ServiceManagement.getDungeonManagment().isEditMode()) {
+			return;
+		}
 		IDungeonManagement dungeonManager = ServiceManagement.getDungeonManagment();
 		double size = adjustedGridSize() + 2;
 		fowCanvas.getElement().getStyle().setOpacity(0.5);
@@ -582,7 +585,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 
 	private int selectedColumn;
 	private int selectedRow;
-	
+
 	protected void highlightGridSquare(int clientX, int clientY) {
 		computeSelectedColumnAndRow(clientX, clientY);
 		PogData pogBeingDragged = ServiceManagement.getDungeonManagment().getPogBeingDragged();
@@ -628,13 +631,14 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 			parentPanel.setStatus(status);
 		}
 	}
-	
+
 	public void dungeonDataChanged() {
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
 		String imageUrl = ServiceManagement.getDungeonManagment().getUrlToDungeonResource(dungeonPicture);
 		image.setUrl(imageUrl);
 	}
+
 	private void addPogs() {
 		addMonsterPogs();
 	}
@@ -646,6 +650,7 @@ public class ScalableImage extends AbsolutePanel implements MouseWheelHandler, M
 			addPogToCanvas(clonePog, MONSTERS_Z);
 		}
 	}
+
 	private void addMonsterPogs() {
 		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
 		PogData[] monsters = dungeonLevel.getMonsters();
