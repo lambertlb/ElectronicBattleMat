@@ -10,7 +10,7 @@ import per.lambert.ebattleMat.client.services.ServiceManager;
 
 public class LoginPresenter {
 
-	private ILoginView view;
+	private LoginControl view;
 
 	String message = "";
 
@@ -52,7 +52,7 @@ public class LoginPresenter {
 		this.isEnabled = isEnabled;
 	}
 
-	public void setView(ILoginView view) {
+	public void setView(LoginControl view) {
 		this.view = view;
 	}
 

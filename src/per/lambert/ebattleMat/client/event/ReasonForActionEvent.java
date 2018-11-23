@@ -18,6 +18,7 @@ public class ReasonForActionEvent extends GwtEvent<ReasonForActionEventHandler> 
 	public final ReasonForAction getReasonForAction() {
 		return reason;
 	}
+
 	public final Object getData() {
 		return this.data;
 	}
@@ -35,5 +36,4 @@ public class ReasonForActionEvent extends GwtEvent<ReasonForActionEventHandler> 
 	public static Type<ReasonForActionEventHandler> getReasonForActionEventType() {
 		return reasonForActionEventType;
 	}
-
 }

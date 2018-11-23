@@ -1,24 +1,9 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-	ui:generateFormat="com.google.gwt.i18n.rebind.format.PropertiesFormat"
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:gwt="urn:import:com.google.gwt.user.client.ui" ui:generateFormat="com.google.gwt.i18n.rebind.format.PropertiesFormat"
 	ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator" ui:generateLocales="default">
-
-	<ui:style src="LoginControl.css" />
 	
-	<ui:style field="myStyle" type="per.lambert.ebattleMat.client.controls.loginControl.LoginControl.MyStyle">
+	<ui:style field="myStyle">
 	.hidden {
 		visibility: hidden;
-	}
-	
-	.borderEmpty {
-		border: 3px #999999 solid;
-	}
-	
-	.borderOk {
-		border: 3px green solid;
-	}
-	
-	.borderError {
-		border: 3px red solid;
 	}
 	
 	.flexrow {
@@ -63,18 +48,7 @@
 		display: flex;
 	}
 	
-	.inputZfs {
-		width: 100%;
-		color: black;
-		background: white;
-		height: 15px;
-		text-align: left;
-		margin-right: 50px;
-		vertical-align: middle;
-		display: flex;
-	}
-	
-	.labelZfs {
+	.loginLabel {
 		width: 100%;
 		height: 23px;
 		margin-right: 4px;
@@ -87,7 +61,7 @@
 		display: flex;
 	}
 	
-	.errorZfs {
+	.loginError {
 		color: red;
 		background-color: #cfcfcf;
 		height: 23px;
@@ -99,7 +73,7 @@
 		visibility: hidden;
 	}
 	
-	.backgroundZfs {
+	.loginBackground {
 		z-index: 0;
 		position: absolute;
 		left: 1px;
@@ -108,7 +82,7 @@
 		bottom: 0;
 	}
 	
-	.buttonZfs {
+	.loginButton {
 		z-index: 10;
 		align-self: center;
 		background: linear-gradient(#e0e0e0, #808080, #808080, #bebebe);
@@ -128,22 +102,11 @@
 		width: 80px;
 		height: 25px;
 	}
-	
-	.buttonZfs:hover {
-		background: linear-gradient(#e8e8e8, #888888, #888888, #c6c6c6);
-		cursor: pointer;
-	}
-	
-	.buttonZfs:active {
-		-webkit-box-shadow: inset 0 0 20px 0 #1d2845, 0 1px 0 white;
-		-moz-box-shadow: inset 0 0 20px 0 #1d2845, 0 1px 0 white;
-		box-shadow: inset 0 0 20px 0 #1d2845, 0 1px 0 white;
-	}
 	</ui:style>
 
 	<gwt:HTMLPanel>
 		<body>
-			<div class="{myStyle.backgroundZfs}">
+			<div class="{myStyle.loginBackground}">
 				<svg width="400" height="203">
 					<defs>
 						<linearGradient y2="100%" x2="0%" y1="0%" x1="0%" id="rect_BG_Cnew_grad">
@@ -156,8 +119,7 @@
 						</linearGradient>
 					</defs>
 					<g>
-						<rect id="rect_BG" x="0" y="0" width="347" height="203" rx="6" ry="6" stroke="#FFFFFF"
-							fill="url(#rect_BG_grad)" />
+						<rect id="rect_BG" x="0" y="0" width="347" height="203" rx="6" ry="6" stroke="#FFFFFF" fill="url(#rect_BG_grad)" />
 					</g>
 					<g transform="translate(0,80) scale(1,-1)">
 						<path
@@ -169,31 +131,28 @@
 
 			<div class="{myStyle.flexgrid}">
 				<div class="{myStyle.flexrow}">
-					<h1 class="{myStyle.dialogTitle}" style="width:80px;align-self:center" ui:field="headerTitle"></h1>
+					<h1 class="{myStyle.dialogTitle}" style="width:80px;align-self:center" ui:field="headerTitle" />
 				</div>
 				<div class="{myStyle.flexrow}">
 					<div class="{myStyle.col-0}">
-						<label class="{myStyle.labelZfs}" ui:field="labelUserName"></label>
+						<label class="{myStyle.loginLabel}" ui:field="labelUserName" />
 					</div>
 					<div class="{myStyle.col-1}">
-						<!-- <input class="{myStyle.inputZfs}" type="text"> -->
-						<gwt:TextBox ui:field="txtUserName" addStyleNames="{myStyle.borderEmpty} {myStyle.inputZfs}" />
+						<gwt:TextBox ui:field="txtUserName" />
 					</div>
 				</div>
 				<div class="{myStyle.flexrow}">
 					<div class="{myStyle.col-0}">
-						<label class="{myStyle.labelZfs}" ui:field="labelPassword"></label>
+						<label class="{myStyle.loginLabel}" ui:field="labelPassword" />
 					</div>
 					<div class="{myStyle.col-1}">
-						<!-- <input class="{myStyle.inputZfs}" type="password"> -->
-						<gwt:TextBox ui:field="txtPassword" addStyleNames="{myStyle.borderEmpty} {myStyle.inputZfs}" />
+						<gwt:TextBox ui:field="txtPassword" />
 					</div>
 				</div>
 				<div class="{myStyle.flexrow}">
-					<label class="{myStyle.errorZfs}" ui:field="loginError"></label>
+					<label class="{myStyle.loginError}" ui:field="loginError" />
 				</div>
-				<!-- <button class="{myStyle.buttonZfs}" type="button" style="width:80px;"> Login </button> -->
-				<gwt:Button ui:field="btnLogin" styleName="{myStyle.buttonZfs}"></gwt:Button>
+				<gwt:Button ui:field="btnLogin" styleName="{myStyle.loginButton}" />
 			</div>
 		</body>
 	</gwt:HTMLPanel>
