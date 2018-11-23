@@ -17,7 +17,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 public class CharacterSelect extends Composite {
@@ -30,7 +30,7 @@ public class CharacterSelect extends Composite {
 	public CharacterSelect() {
 		initWidget(uiBinder.createAndBindUi(this));
 		panel.getElement().getStyle().setBackgroundColor("grey");
-		IEventManager eventManager = ServiceManagement.getEventManager();
+		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.CharacterPogsLoaded) {
@@ -58,19 +58,19 @@ public class CharacterSelect extends Composite {
 
 	@UiHandler("dungeonControl")
 	void dungeonControlClick(ClickEvent event) {
-		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SelectNewDungeon, null));
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SelectNewDungeon, null));
 	}
 
 	private void characterWasSelected() {
-		PogData characterPog = ServiceManagement.getDungeonManagment().findCharacterPog(characterSelect.getSelectedValue());
-		ServiceManagement.getDungeonManagment().setSelectedPog(characterPog);
-		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+		PogData characterPog = ServiceManager.getDungeonManagment().findCharacterPog(characterSelect.getSelectedValue());
+		ServiceManager.getDungeonManagment().setSelectedPog(characterPog);
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 
 	private void characterPogsLoaded() {
 		characterSelect.clear();
 		characterSelect.addItem("Select Character Pog", "");
-		PogData[] pogList = ServiceManagement.getDungeonManagment().getPcTemplatePogs();
+		PogData[] pogList = ServiceManager.getDungeonManagment().getPcTemplatePogs();
 		for (PogData pogData : pogList) {
 			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}

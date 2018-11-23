@@ -7,7 +7,7 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<g:VerticalPanel ui:field="panel">
-			<g:Button ui:field="dungeonControl" text="Dungeon Control"/>
+			<g:Button ui:field="dungeonControl" text="Dungeon Select ..."/>
 			<g:ListBox ui:field="characterSelect" visibleItemCount="1">
 			</g:ListBox>
 		</g:VerticalPanel>

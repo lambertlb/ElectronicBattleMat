@@ -4,7 +4,7 @@ import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 
-public class ServiceManagement {
+public class ServiceManager {
 	private static IEventManager eventManager;
 
 	public static IEventManager getEventManager() {
@@ -18,7 +18,7 @@ public class ServiceManagement {
 
 	public static IDungeonManagement getDungeonManagment() {
 		if (dungeonManagement == null) {
-			dungeonManagement = new DungeonManagement();
+			dungeonManagement = new DungeonManager();
 		}
 		return (dungeonManagement);
 	}

@@ -6,21 +6,21 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
+import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatLayout;
 import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.controls.loginControl.LoginControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.maindisplay.ShellLayout;
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class ElectronicBattleMat implements EntryPoint {
 	private RootLayoutPanel rootLayoutPanel;
-	private ShellLayout layout;
+	private BattleMatLayout layout;
 	private DungeonSelectControl dungeonSelectControl;
 	
 	public static String DUNGEON_DATA_LOCATION = "dungeonData/";
@@ -37,7 +37,7 @@ public class ElectronicBattleMat implements EntryPoint {
 	public void onModuleLoad() {
 		rootLayoutPanel = RootLayoutPanel.get();
 		setupEventHandler();
-		layout = new ShellLayout();
+		layout = new BattleMatLayout();
 		rootLayoutPanel.add(layout);
 		LoginControl lc = new LoginControl();
 		lc.getElement().getStyle().setZIndex(400);
@@ -45,7 +45,7 @@ public class ElectronicBattleMat implements EntryPoint {
 	}
 
 	private void setupEventHandler() {
-		IEventManager eventManager = ServiceManagement.getEventManager();
+		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.Login) {

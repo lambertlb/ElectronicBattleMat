@@ -8,12 +8,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.maindisplay.ScalablePog;
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 public class SelectedPog extends Composite {
@@ -25,7 +25,7 @@ public class SelectedPog extends Composite {
 
 	public SelectedPog() {
 		initWidget(uiBinder.createAndBindUi(this));
-		IEventManager eventManager = ServiceManagement.getEventManager();
+		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.PogWasSelected) {
@@ -43,12 +43,12 @@ public class SelectedPog extends Composite {
 	HTMLPanel hostPanel;
 
 	private void pogSelected() {
-		PogData selectePog = ServiceManagement.getDungeonManagment().getSelectedPog();
+		PogData selectePog = ServiceManager.getDungeonManagment().getSelectedPog();
 		pogPanel.clear();
 		if (selectePog == null) {
 			return;
 		}
-		ScalablePog scalablePog = new ScalablePog(selectePog);
+		PogCanvas scalablePog = new PogCanvas(selectePog);
 		Widget parent = hostPanel.getParent().getParent();
 		int height = parent.getOffsetHeight();
 		scalablePog.setPogWidth(height);

@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 
 public class DungeonOptions extends Composite {
 
@@ -32,6 +32,6 @@ public class DungeonOptions extends Composite {
 
 	@UiHandler("fowToggle")
 	void onClick(ClickEvent e) {
-		ServiceManagement.getDungeonManagment().setFowToggle(fowToggle.getValue());
+		ServiceManager.getDungeonManagment().setFowToggle(fowToggle.getValue());
 	}
 }

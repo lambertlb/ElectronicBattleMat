@@ -6,7 +6,7 @@ import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 
 public class LoginPresenter {
 
@@ -59,7 +59,7 @@ public class LoginPresenter {
 	public void ok() {
 		setIsEnabled(false);
 		view.update();
-		final IDungeonManagement dungeonManagement = ServiceManagement.getDungeonManagment();
+		final IDungeonManagement dungeonManagement = ServiceManager.getDungeonManagment();
 
 		dungeonManagement.login(username, password, new IUserCallback() {
 			public void onError(final Object sender, final IErrorInformation error) {
@@ -69,7 +69,7 @@ public class LoginPresenter {
 			public void onSuccess(final Object sender, final Object data) {
 				if (dungeonManagement.getLastError() == DungeonServerError.Succsess) {
 					view.close();
-					ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.Login, null));
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.Login, null));
 				} else
 					loginComplete("Login Fail");
 			}

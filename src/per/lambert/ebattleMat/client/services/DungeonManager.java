@@ -21,7 +21,7 @@ import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
 
-public class DungeonManagement implements IDungeonManagement {
+public class DungeonManager implements IDungeonManagement {
 	private DungeonServerError lastError;
 
 	@Override
@@ -29,7 +29,7 @@ public class DungeonManagement implements IDungeonManagement {
 		return (lastError);
 	}
 
-	public DungeonManagement() {
+	public DungeonManager() {
 		players = (PogList) JavaScriptObject.createObject().cast();
 	}
 
@@ -151,7 +151,7 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public void login(final String username, final String password, IUserCallback callback) {
 		lastError = DungeonServerError.Succsess;
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("username", username);
 		parameters.put("password", password);
@@ -199,7 +199,7 @@ public class DungeonManagement implements IDungeonManagement {
 	}
 
 	private void getDungeonList(Object requestData, IUserCallback callback) {
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		dataRequester.requestData("", token, "GETDUNGEONLIST", parameters, new IUserCallback() {
 
@@ -227,7 +227,7 @@ public class DungeonManagement implements IDungeonManagement {
 		String dungeonDirectory = getDirectoryNameForDungeon(dungeonsName);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEONS_FOLDER + dungeonDirectory + ElectronicBattleMat.DUNGEON_DATA_FILENAME);
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
@@ -250,7 +250,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 	private void handleDungeonData(Object data) {
 		selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
-		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
 		dungeonDataChanged();
 	}
 
@@ -269,7 +269,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 	@Override
 	public void dungeonDataChanged() {
-		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
 	}
 
 	@Override
@@ -283,7 +283,7 @@ public class DungeonManagement implements IDungeonManagement {
 			Map<String, String> parameters = new HashMap<String, String>();
 			getDirectoryNameForDungeon(selectedDungeon.getDungeonName());
 			parameters.put("dungeonName", getDirectoryForCurrentDungeon());
-			IDataRequester dataRequester = ServiceManagement.getDataRequester();
+			IDataRequester dataRequester = ServiceManager.getDataRequester();
 			String dungeonDataString = JsonUtils.stringify(selectedDungeon);
 			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
 
@@ -306,7 +306,7 @@ public class DungeonManagement implements IDungeonManagement {
 
 	private void loadCharacterPogs() {
 		pcTemplatePogs = null;
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEON_PCPOG_LOCATION + "characterPogs.json");
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
@@ -328,12 +328,12 @@ public class DungeonManagement implements IDungeonManagement {
 		for (PogData pcTemplate : pcTemplatePogs.getPogList()) {
 			pcTemplateMap.put(pcTemplate.getUUID(), pcTemplate);
 		}
-		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
 	}
 
 	private void loadMonsterPogs() {
 		monsterTemplatePogs = null;
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEON_MONSTER_LOCATION + "monsterPogs.json");
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
@@ -341,7 +341,7 @@ public class DungeonManagement implements IDungeonManagement {
 			@Override
 			public void onSuccess(Object sender, Object data) {
 				monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
-				ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
 			}
 
 			@Override
@@ -392,7 +392,7 @@ public class DungeonManagement implements IDungeonManagement {
 	@Override
 	public void setFowToggle(boolean fowToggle) {
 		this.fowToggle = fowToggle;
-		ServiceManagement.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.ToggleFowSelected, null));
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.ToggleFowSelected, null));
 	}
 
 	private int resourceCount = 1;
@@ -402,7 +402,7 @@ public class DungeonManagement implements IDungeonManagement {
 		if (resourceItem.startsWith("http")) {
 			return resourceItem;
 		}
-		DungeonLevel dungeonLevel = ServiceManagement.getDungeonManagment().getCurrentLevelData();
+		DungeonLevel dungeonLevel = ServiceManager.getDungeonManagment().getCurrentLevelData();
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
 		String resourceUrl = ElectronicBattleMat.DUNGEONS_LOCATION + directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
 		return (resourceUrl);
@@ -413,7 +413,7 @@ public class DungeonManagement implements IDungeonManagement {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("templateName", getDirectoryNameForDungeon(templateName));
 		parameters.put("newDungeonName", newDungeonName);
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "CREATENEWDUNGEON", parameters, new IUserCallback() {
 
 			@Override
@@ -454,7 +454,7 @@ public class DungeonManagement implements IDungeonManagement {
 		}
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("templateName", getDirectoryNameForDungeon(selectedTemplate));
-		IDataRequester dataRequester = ServiceManagement.getDataRequester();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "DELETEDUNGEON", parameters, new IUserCallback() {
 
 			@Override

@@ -17,7 +17,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 
 public class GridGroup extends Composite {
 
@@ -30,7 +30,7 @@ public class GridGroup extends Composite {
 		HTMLPanel widget = (HTMLPanel) uiBinder.createAndBindUi(this);
 		initWidget(widget);
 		panel.getElement().getStyle().setBackgroundColor("grey");
-		IEventManager eventManager = ServiceManagement.getEventManager();
+		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.DungeonSelected) {
@@ -42,10 +42,10 @@ public class GridGroup extends Composite {
 	}
 
 	private void setupItems() {
-		showGrid.setValue(ServiceManagement.getDungeonManagment().getSelectedDungeon().getShowGrid());
-		gridSizeBox.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridSize());
-		gridOffsetX.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetX());
-		gridOffsetY.setValue(ServiceManagement.getDungeonManagment().getCurrentLevelData().getGridOffsetY());
+		showGrid.setValue(ServiceManager.getDungeonManagment().getSelectedDungeon().getShowGrid());
+		gridSizeBox.setValue(ServiceManager.getDungeonManagment().getCurrentLevelData().getGridSize());
+		gridOffsetX.setValue(ServiceManager.getDungeonManagment().getCurrentLevelData().getGridOffsetX());
+		gridOffsetY.setValue(ServiceManager.getDungeonManagment().getCurrentLevelData().getGridOffsetY());
 	}
 
 	@UiField
@@ -62,25 +62,25 @@ public class GridGroup extends Composite {
 
 	@UiHandler("showGrid")
 	void onClick(ClickEvent e) {
-		ServiceManagement.getDungeonManagment().getSelectedDungeon().setShowGrid(showGrid.getValue());
-		ServiceManagement.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManagment().getSelectedDungeon().setShowGrid(showGrid.getValue());
+		ServiceManager.getDungeonManagment().saveDungeonData();
 	}
 
 	@UiHandler("gridSizeBox")
 	void onValueChanged(ValueChangeEvent<Double> event) {
-		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridSize(gridSizeBox.getValue());
-		ServiceManagement.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManagment().getCurrentLevelData().setGridSize(gridSizeBox.getValue());
+		ServiceManager.getDungeonManagment().saveDungeonData();
 	}
 
 	@UiHandler("gridOffsetX")
 	void onGridOffsetXChanged(ValueChangeEvent<Double> event) {
-		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridOffsetX(gridOffsetX.getValue());
-		ServiceManagement.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManagment().getCurrentLevelData().setGridOffsetX(gridOffsetX.getValue());
+		ServiceManager.getDungeonManagment().saveDungeonData();
 	}
 
 	@UiHandler("gridOffsetY")
 	void onGridOffsetYChanged(ValueChangeEvent<Double> event) {
-		ServiceManagement.getDungeonManagment().getCurrentLevelData().setGridOffsetY(gridOffsetY.getValue());
-		ServiceManagement.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManagment().getCurrentLevelData().setGridOffsetY(gridOffsetY.getValue());
+		ServiceManager.getDungeonManagment().saveDungeonData();
 	}
 }

@@ -7,7 +7,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.services.ServiceManagement;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 
 public class DungeonSelectPresenter {
 	private DungeonSelectControl view;
@@ -47,7 +47,7 @@ public class DungeonSelectPresenter {
 	HandlerRegistration dungeonDataChangedEvent;
 
 	public DungeonSelectPresenter() {
-		IEventManager eventManager = ServiceManagement.getEventManager();
+		IEventManager eventManager = ServiceManager.getEventManager();
 		dungeonDataChangedEvent = eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataChanged) {
@@ -73,20 +73,20 @@ public class DungeonSelectPresenter {
 	}
 
 	public String[] getDungeonList() {
-		return ServiceManagement.getDungeonManagment().getDungeonNames();
+		return ServiceManager.getDungeonManagment().getDungeonNames();
 	}
 
 	public void selectNewDungeonName(String dungeonsName) {
 		templateSelected = !dungeonsName.startsWith("Select ");
 		selectedTemplate = dungeonsName;
-		okToDelete = ServiceManagement.getDungeonManagment().okToDeleteThisTemplate(dungeonsName);
+		okToDelete = ServiceManager.getDungeonManagment().okToDeleteThisTemplate(dungeonsName);
 		view.setToDungeonMasterState();
 	}
 
 	public void editDungeon() {
-		ServiceManagement.getDungeonManagment().setDungeonMaster(isDungeonMaster);
-		ServiceManagement.getDungeonManagment().selectDungeon(selectedTemplate);
-		ServiceManagement.getDungeonManagment().setEditMode(true);
+		ServiceManager.getDungeonManagment().setDungeonMaster(isDungeonMaster);
+		ServiceManager.getDungeonManagment().selectDungeon(selectedTemplate);
+		ServiceManager.getDungeonManagment().setEditMode(true);
 		view.close();
 	}
 
@@ -97,12 +97,12 @@ public class DungeonSelectPresenter {
 	}
 
 	public void createDungeon() {
-		ServiceManagement.getDungeonManagment().createNewDungeon(selectedTemplate, newDungeonName);
+		ServiceManager.getDungeonManagment().createNewDungeon(selectedTemplate, newDungeonName);
 		view.close();
 	}
 
 	public void deleteTemplate() {
-		ServiceManagement.getDungeonManagment().deleteTemplate(selectedTemplate);
+		ServiceManager.getDungeonManagment().deleteTemplate(selectedTemplate);
 	}
 
 	public void closing() {

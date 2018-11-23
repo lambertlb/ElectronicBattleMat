@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.maindisplay;
+package per.lambert.ebattleMat.client.battleMatDisplay;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -10,17 +10,15 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
-public class ShellLayout extends ResizeComposite {
+public class BattleMatLayout extends ResizeComposite {
 	/**
 	 * The LayoutPanel that is essentially this widget.
 	 */
 	DockLayoutPanel holder;
-	SelectionPanel selectionPanel;
-	PropertyPanel propertyPanel;
-	TopPanelControl topPanel;
+	RibbonBarContainer topPanel;
 	LayoutPanel statusBar;
 	SimpleLayoutPanel simplePanel;
-	ScalableImage scaleImage;
+	BattleMatCanvas battleMatCanvas;
 	Label statusLabel;
 
 	public LayoutPanel mainPanel;
@@ -38,7 +36,7 @@ public class ShellLayout extends ResizeComposite {
 	 * Sets up the widget. We create the GUI, set up event handling, and call
 	 * initWidget on the holder panel.
 	 */
-	public ShellLayout() {
+	public BattleMatLayout() {
 		// Create the GUI
 		// Note that in this setUpGui method we call the needed forceLayout
 		// method to enforce the constraints
@@ -57,19 +55,15 @@ public class ShellLayout extends ResizeComposite {
 
 		// Create some simple panels that we will color to use in the display
 		// they are "final" as we use them in an anonymous class later
-		selectionPanel = new SelectionPanel();
-		selectionPanel.setShellLayout(this);
-		topPanel = new TopPanelControl();
-		propertyPanel = new PropertyPanel();
-		propertyPanel.setShellLayout(this);
+		topPanel = new RibbonBarContainer();
 		statusBar = new LayoutPanel();
 		simplePanel = new SimpleLayoutPanel();
 		mainPanel = new LayoutPanel();
 		mainPanel.setSize("100%", "100%");
-		scaleImage = new ScalableImage();
-		scaleImage.setParentPanel(this);
+		battleMatCanvas = new BattleMatCanvas();
+		battleMatCanvas.setParentPanel(this);
 		simplePanel.clear();
-		simplePanel.add(scaleImage);
+		simplePanel.add(battleMatCanvas);
 		mainPanel.add(simplePanel);
 
 		// Add the panels to the holder
@@ -92,8 +86,6 @@ public class ShellLayout extends ResizeComposite {
 		// This would normally be done in a CSS style sheet, but we use GWT's
 		// DOM handling
 		// methods here for visibility of what we are doing.
-		selectionPanel.getElement().getStyle().setBackgroundColor("lightblue");
-		propertyPanel.getElement().getStyle().setBackgroundColor("lightblue");
 		statusBar.getElement().getStyle().setBackgroundColor("lightgray");
 
 		Window.addResizeHandler(new ResizeHandler() {
@@ -104,13 +96,11 @@ public class ShellLayout extends ResizeComposite {
 
 		return holder;
 	}
-	public void setSelectionPanelExpanded(boolean selectionPanelExpanded) {
-	}
 	public void dungeonDataChanged() {
-		scaleImage.dungeonDataChanged();
+		battleMatCanvas.dungeonDataChanged();
 	}
 	private void doWindowResize(ResizeEvent event) {
-		scaleImage.dungeonDataChanged();
+		battleMatCanvas.dungeonDataChanged();
 	}
 	public void setStatus(String status) {
 		statusLabel.setText(status);
