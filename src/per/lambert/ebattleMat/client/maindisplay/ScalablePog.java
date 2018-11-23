@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.scalablePog;
+package per.lambert.ebattleMat.client.maindisplay;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;

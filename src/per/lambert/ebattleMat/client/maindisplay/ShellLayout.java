@@ -10,8 +10,6 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
-import per.lambert.ebattleMat.client.controls.topPanel.TopPanelControl;
-
 public class ShellLayout extends ResizeComposite {
 	/**
 	 * The LayoutPanel that is essentially this widget.

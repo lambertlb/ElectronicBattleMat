@@ -8,11 +8,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.controls.scalablePog.ScalablePog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.maindisplay.ScalablePog;
 import per.lambert.ebattleMat.client.services.ServiceManagement;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
