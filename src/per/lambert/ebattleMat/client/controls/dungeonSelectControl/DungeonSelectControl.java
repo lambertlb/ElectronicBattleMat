@@ -1,6 +1,7 @@
 package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,13 +13,14 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.Window;
 
 import per.lambert.ebattleMat.client.windowBox.WindowBox;
 
@@ -45,6 +47,11 @@ public class DungeonSelectControl extends WindowBox {
 		setGlassEnabled(true);
 		setText("Dungeon Select");
 		center();
+		Element element = dmGrid.getCellFormatter().getElement(0, 0);
+		element.setAttribute("colspan", "3");
+		Element element2 = dmGrid.getCellFormatter().getElement(5, 0);
+		element2.setAttribute("colspan", "3");
+		
 		dungeonDropdownList.addChangeHandler(new ChangeHandler() {
 
 			@Override
@@ -111,6 +118,12 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiField
 	TextBox newDungeonName;
+
+	@UiField
+	Label sessionLabel;
+
+	@UiField
+	Label templateLabel;
 
 	@UiHandler("editDungeonButton")
 	void onEditDungeonButtonClick(ClickEvent e) {
@@ -184,5 +197,16 @@ public class DungeonSelectControl extends WindowBox {
 		dungeonSelectPresenter.refreshView();
 		getElement().getStyle().setZIndex(100);
 		show();
+	}
+	
+	public void loadSessionList() {
+		return;
+//		sessionList.clear();
+//		sessionList.addItem("Select a Dungeon for Operations");
+//		String[] sessionNames = dungeonSelectPresenter.getSessionList();
+//		for (String session : sessionNames) {
+//			sessionList.addItem(session);
+//		}
+//		sessionList.setVisibleItemCount(1);
 	}
 }

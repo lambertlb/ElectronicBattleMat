@@ -65,6 +65,7 @@ public class DungeonSelectPresenter {
 		newDungeonName = "";
 		selectedTemplate = "";
 		view.loadDungeonList();
+		view.loadSessionList();
 		view.setToDungeonMasterState();
 	}
 
@@ -74,6 +75,9 @@ public class DungeonSelectPresenter {
 
 	public String[] getDungeonList() {
 		return ServiceManager.getDungeonManagment().getDungeonNames();
+	}
+	public String[] getSessionList() {
+		return ServiceManager.getDungeonManagment().getSessionNames();
 	}
 
 	public void selectNewDungeonName(String dungeonsName) {

@@ -75,4 +75,6 @@ public interface IDungeonManagement {
 	PogData findMonsterTemplate(PogData pogData);
 
 	PogData findCharacterPog(String pogUUID);
+
+	String[] getSessionNames();
 }

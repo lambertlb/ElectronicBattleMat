@@ -508,4 +508,9 @@ public class DungeonManager implements IDungeonManagement {
 	public PogData findCharacterPog(String pogUUID) {
 		return (pcTemplateMap.get(pogUUID));
 	}
+
+	@Override
+	public String[] getSessionNames() {
+		return null;
+	}
 }
