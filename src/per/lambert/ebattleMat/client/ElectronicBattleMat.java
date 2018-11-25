@@ -22,10 +22,12 @@ public class ElectronicBattleMat implements EntryPoint {
 	private RootLayoutPanel rootLayoutPanel;
 	private BattleMatLayout layout;
 	private DungeonSelectControl dungeonSelectControl;
-	
+
 	public static String DUNGEON_DATA_LOCATION = "dungeonData/";
 	public static String DUNGEONS_FOLDER = "dungeons/";
+	public static String SESSIONS_FOLDER = "sessions/";
 	public static String DUNGEONS_LOCATION = DUNGEON_DATA_LOCATION + DUNGEONS_FOLDER;
+	public static String SESSIONS_LOCATION = DUNGEON_DATA_LOCATION + DUNGEONS_FOLDER + SESSIONS_FOLDER;
 	public static String DUNGEON_RESOURCE_LOCATION = "resources/";
 	public static String DUNGEON_PCPOG_LOCATION = DUNGEON_RESOURCE_LOCATION + "pcPogs/";
 	public static String DUNGEON_MONSTER_LOCATION = DUNGEON_RESOURCE_LOCATION + "monsters/";
@@ -60,7 +62,7 @@ public class ElectronicBattleMat implements EntryPoint {
 					selectDungeon();
 					return;
 				}
-		}
+			}
 		});
 	}
 

@@ -51,7 +51,7 @@ public class DungeonSelectControl extends WindowBox {
 		element.setAttribute("colspan", "3");
 		Element element2 = dmGrid.getCellFormatter().getElement(5, 0);
 		element2.setAttribute("colspan", "3");
-		
+
 		dungeonDropdownList.addChangeHandler(new ChangeHandler() {
 
 			@Override
@@ -94,6 +94,9 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiField
 	ListBox sessionList;
+
+	@UiField
+	ListBox sessionDropdownList;
 
 	@UiField
 	Button editDungeonButton;
@@ -198,15 +201,14 @@ public class DungeonSelectControl extends WindowBox {
 		getElement().getStyle().setZIndex(100);
 		show();
 	}
-	
+
 	public void loadSessionList() {
-		return;
-//		sessionList.clear();
-//		sessionList.addItem("Select a Dungeon for Operations");
-//		String[] sessionNames = dungeonSelectPresenter.getSessionList();
-//		for (String session : sessionNames) {
-//			sessionList.addItem(session);
-//		}
-//		sessionList.setVisibleItemCount(1);
+		sessionDropdownList.clear();
+		sessionDropdownList.addItem("Select a Dungeon to DM");
+		// String[] sessionNames = dungeonSelectPresenter.getSessionList();
+		// for (String session : sessionNames) {
+		// sessionList.addItem(session);
+		// }
+		sessionDropdownList.setVisibleItemCount(1);
 	}
 }

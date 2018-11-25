@@ -22,11 +22,13 @@ import com.google.gson.Gson;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.server.serviceData.DungeonData;
+import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 
 public class DungeonsManager {
 	private static ReentrantLock lock = new ReentrantLock();
 	private final static String fileLocation = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
 	private final static String dungeonLocation = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
+	private final static String sessionsLocation = "/" + ElectronicBattleMat.SESSIONS_LOCATION;
 
 	public static void saveDungeonData(final HttpServletRequest request, final HttpServlet servlet, final String dataToWrite) throws IOException {
 		String dungeonDirectoryName = request.getParameter("dungeonName");
@@ -63,33 +65,6 @@ public class DungeonsManager {
 		}
 	}
 
-	public static String getFileAsString(final HttpServlet servlet, final String fileName) {
-		BufferedReader br = null;
-		lock.lock();
-		try {
-			StringBuilder builder = new StringBuilder();
-			String filePath = fileLocation + fileName;
-			InputStream is = servlet.getServletContext().getResourceAsStream(filePath);
-			InputStreamReader isr = new InputStreamReader(is);
-			br = new BufferedReader(isr);
-			String line;
-			while ((line = br.readLine()) != null) {
-				builder.append(line);
-			}
-			return (builder.toString());
-		} catch (IOException e) {
-			return ("");
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-				}
-			}
-			lock.unlock();
-		}
-	}
-
 	public static Map<String, String> getDungeonListData(final HttpServlet servlet) {
 		Map<String, String> dungeonListData = new HashMap<String, String>();
 		lock.lock();
@@ -120,33 +95,13 @@ public class DungeonsManager {
 	private static DungeonData getDungeonData(final HttpServlet servlet, String directoryDirectoryName) {
 		String directoryPath = dungeonLocation + directoryDirectoryName;
 		String filePath = directoryPath + "/dungeonData.json";
-		BufferedReader br = null;
-		StringBuilder builder = new StringBuilder();
-		lock.lock();
-		try {
-			InputStream is = servlet.getServletContext().getResourceAsStream(filePath);
-			InputStreamReader isr = new InputStreamReader(is);
-			br = new BufferedReader(isr);
-			String line;
-			while ((line = br.readLine()) != null) {
-				builder.append(line);
-			}
-			Gson gson = new Gson();
-			DungeonData dungeonData = gson.fromJson(builder.toString(), DungeonData.class);
-			return dungeonData;
-		} catch (IOException e) {
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-				}
-			}
-			lock.unlock();
-		}
-		return(null);
+
+		String jsonData = readJsonDataFromFile(servlet, filePath);
+		Gson gson = new Gson();
+		DungeonData dungeonData = gson.fromJson(jsonData, DungeonData.class);
+		return (dungeonData);
 	}
-	
+
 	public static void copyDungeon(HttpServlet servlet, String sourceDirectory, String newDungeonName) throws IOException {
 		URL servletPath = servlet.getServletContext().getResource("/");
 		String dstDirectory = newDungeonName.replaceAll("\\s+", "_");
@@ -157,7 +112,7 @@ public class DungeonsManager {
 		dungeonData.dungeonName = newDungeonName;
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(dungeonData);
-		saveDungeonData(servlet,jsonData, dstDirectory);
+		saveDungeonData(servlet, jsonData, dstDirectory);
 	}
 
 	public static void deleteDungeon(HttpServlet servlet, String templateName) throws IOException {
@@ -169,6 +124,83 @@ public class DungeonsManager {
 
 	private static void deleteSessionOfTemplate(HttpServlet servlet, String templateName) {
 		// TODO delete session of this template
-		
+
+	}
+
+	public static Map<String, String> getSessionListData(HttpServlet servlet, String dungeonName) {
+		Map<String, String> sessionListData = new HashMap<String, String>();
+		lock.lock();
+		try {
+			URL servletPath = servlet.getServletContext().getResource("/");
+			String directoryPath = servletPath.getPath() + sessionsLocation;
+			makeSureDirectoryExists(directoryPath);
+			File directory = new File(directoryPath);
+			for (File possibleDungeon : directory.listFiles()) {
+				if (possibleDungeon.isDirectory() && possibleDungeon.getName() == dungeonName) {
+					getSessionList(servlet, possibleDungeon, sessionListData);
+					break;
+				}
+			}
+		} catch (MalformedURLException e) {
+		} catch (IOException e) {
+		} finally {
+			lock.unlock();
+		}
+		return sessionListData;
+	}
+
+	private static void getSessionList(HttpServlet servlet, File possibleDungeon, Map<String, String> sessionListData) throws IOException {
+		for (File possibleSession : possibleDungeon.listFiles()) {
+			if (possibleSession.isDirectory()) {
+				getSessionName(servlet, possibleSession, sessionListData);
+			}
+		}
+	}
+
+	private static void getSessionName(final HttpServlet servlet, File possibleSession, Map<String, String> sessionListData) throws IOException {
+		String directoryName = possibleSession.getName();
+		DungeonSessionData dungeonData = getSessionData(servlet, directoryName);
+		String dungeonName = dungeonData.sessionName;
+		sessionListData.put(dungeonName, directoryName);
+	}
+
+	private static DungeonSessionData getSessionData(final HttpServlet servlet, String directoryDirectoryName) {
+		String directoryPath = dungeonLocation + directoryDirectoryName;
+		String filePath = directoryPath + "/sessionData.json";
+		String jsonData = readJsonDataFromFile(servlet, filePath);
+		Gson gson = new Gson();
+		DungeonSessionData sessionData = gson.fromJson(jsonData, DungeonSessionData.class);
+		return sessionData;
+	}
+
+	private static String readJsonDataFromFile(final HttpServlet servlet, String filePath) {
+		BufferedReader br = null;
+		StringBuilder builder = new StringBuilder();
+		lock.lock();
+		try {
+			InputStream is = servlet.getServletContext().getResourceAsStream(filePath);
+			InputStreamReader isr = new InputStreamReader(is);
+			br = new BufferedReader(isr);
+			String line;
+			while ((line = br.readLine()) != null) {
+				builder.append(line);
+			}
+			return builder.toString();
+		} catch (IOException e) {
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+				}
+			}
+			lock.unlock();
+		}
+		return ("");
+	}
+
+	public static String getFileAsString(final HttpServlet servlet, final String fileName) {
+		String filePath = fileLocation + fileName;
+		return (readJsonDataFromFile(servlet, filePath));
 	}
 }

@@ -6,6 +6,17 @@ public class SessionListData extends JavaScriptObject {
 	protected SessionListData() {
 	}
 
+	public final native String getDungeonName() /*-{
+		if (this.dungeonName === undefined) {
+			this.dungeonName = "";
+		}
+		return (this.dungeonName);
+	}-*/;
+
+	public final native void setDungeonName(String dungeonName) /*-{
+		this.dungeonName = dungeonName;
+	}-*/;
+
 	public final native String[] getSessionNames() /*-{
 		return this.sessionNames;
 	}-*/;

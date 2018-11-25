@@ -7,6 +7,17 @@ public class SessionData extends JavaScriptObject {
 	protected SessionData() {
 	}
 
+	public final native String getSessionName() /*-{
+		if (this.sessionName === undefined) {
+			this.sessionName = "";
+		}
+		return (this.sessionName);
+	}-*/;
+
+	public final native void setSessionName(String sessionName) /*-{
+		this.sessionName = sessionName;
+	}-*/;
+
 	public final native String getTemplateDungeonName() /*-{
 		if (this.templateDungeonName === undefined) {
 			this.templateDungeonName = "";

@@ -110,9 +110,9 @@ public class DungeonSelectPresenter {
 	}
 
 	public void closing() {
-		if (dungeonDataChangedEvent != null) {
-			dungeonDataChangedEvent.removeHandler();
-			dungeonDataChangedEvent = null;
-		}
+//		if (dungeonDataChangedEvent != null) {
+//			dungeonDataChangedEvent.removeHandler();
+//			dungeonDataChangedEvent = null;
+//		}
 	}
 }

@@ -20,6 +20,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonListData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
+import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 public class DungeonManager implements IDungeonManagement {
 	private DungeonServerError lastError;
@@ -41,6 +42,16 @@ public class DungeonManager implements IDungeonManagement {
 	public String[] getDungeonNames() {
 		if (dungeonListData != null) {
 			return (dungeonListData.getDungeonNames());
+		}
+		return null;
+	}
+
+	SessionListData sessionListData;
+
+	@Override
+	public String[] getSessionNames() {
+		if (sessionListData != null) {
+			return (sessionListData.getSessionNames());
 		}
 		return null;
 	}
@@ -509,8 +520,26 @@ public class DungeonManager implements IDungeonManagement {
 		return (pcTemplateMap.get(pogUUID));
 	}
 
-	@Override
-	public String[] getSessionNames() {
-		return null;
+	public void getSessionList(String dungeonName) {
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("dungeonName", dungeonName);
+		dataRequester.requestData("", token, "GETSESSIONLIST", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				handleSuccessfulSessionList("", data);
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+				lastError = error.getError();
+			}
+		});
+	}
+
+	private void handleSuccessfulSessionList(String string, Object data) {
+		sessionListData = JsonUtils.<SessionListData>safeEval((String) data);
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionListChanged, null));
 	}
 }

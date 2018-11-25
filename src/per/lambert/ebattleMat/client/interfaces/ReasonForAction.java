@@ -10,5 +10,7 @@ public enum ReasonForAction {
 	ToggleFowSelected,
 	MouseDownEventBubble,
 	MouseUpEventBubble,
-	SelectNewDungeon
+	SelectNewDungeon,
+	SessionListChanged
+
 }
