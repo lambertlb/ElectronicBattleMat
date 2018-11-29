@@ -10,7 +10,7 @@ import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
-import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
+import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
@@ -22,7 +22,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
-public class DungeonManager implements IDungeonManagement {
+public class DungeonManager implements IDungeonManager {
 	private DungeonServerError lastError;
 
 	@Override
@@ -413,7 +413,7 @@ public class DungeonManager implements IDungeonManagement {
 		if (resourceItem.startsWith("http")) {
 			return resourceItem;
 		}
-		DungeonLevel dungeonLevel = ServiceManager.getDungeonManagment().getCurrentLevelData();
+		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
 		String resourceUrl = ElectronicBattleMat.DUNGEONS_LOCATION + directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
 		return (resourceUrl);
@@ -523,7 +523,7 @@ public class DungeonManager implements IDungeonManagement {
 	public void getSessionList(String dungeonName) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("dungeonName", dungeonName);
+		parameters.put("dungeonName", getDirectoryNameForDungeon(dungeonName));
 		dataRequester.requestData("", token, "GETSESSIONLIST", parameters, new IUserCallback() {
 
 			@Override

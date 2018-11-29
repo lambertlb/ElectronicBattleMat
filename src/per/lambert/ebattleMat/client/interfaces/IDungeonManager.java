@@ -7,7 +7,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 /**
  * @author LLambert Interface to user management services
  */
-public interface IDungeonManagement {
+public interface IDungeonManager {
 	void login(final String username, final String password, IUserCallback callback);
 
 	boolean isDungeonMaster();
@@ -77,4 +77,6 @@ public interface IDungeonManagement {
 	PogData findCharacterPog(String pogUUID);
 
 	String[] getSessionNames();
+
+	void getSessionList(String dungeonName);
 }

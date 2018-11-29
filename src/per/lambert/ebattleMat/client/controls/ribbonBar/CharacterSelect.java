@@ -62,15 +62,15 @@ public class CharacterSelect extends Composite {
 	}
 
 	private void characterWasSelected() {
-		PogData characterPog = ServiceManager.getDungeonManagment().findCharacterPog(characterSelect.getSelectedValue());
-		ServiceManager.getDungeonManagment().setSelectedPog(characterPog);
+		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(characterSelect.getSelectedValue());
+		ServiceManager.getDungeonManager().setSelectedPog(characterPog);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 
 	private void characterPogsLoaded() {
 		characterSelect.clear();
 		characterSelect.addItem("Select Character Pog", "");
-		PogData[] pogList = ServiceManager.getDungeonManagment().getPcTemplatePogs();
+		PogData[] pogList = ServiceManager.getDungeonManager().getPcTemplatePogs();
 		for (PogData pogData : pogList) {
 			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}

@@ -28,7 +28,6 @@ public class DungeonsManager {
 	private static ReentrantLock lock = new ReentrantLock();
 	private final static String fileLocation = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
 	private final static String dungeonLocation = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
-	private final static String sessionsLocation = "/" + ElectronicBattleMat.SESSIONS_LOCATION;
 
 	public static void saveDungeonData(final HttpServletRequest request, final HttpServlet servlet, final String dataToWrite) throws IOException {
 		String dungeonDirectoryName = request.getParameter("dungeonName");
@@ -132,13 +131,13 @@ public class DungeonsManager {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String directoryPath = servletPath.getPath() + sessionsLocation;
+			String sessionsPath = dungeonLocation + dungeonName + ElectronicBattleMat.SESSIONS_FOLDER;
+			String directoryPath = servletPath.getPath() + sessionsPath;
 			makeSureDirectoryExists(directoryPath);
 			File directory = new File(directoryPath);
-			for (File possibleDungeon : directory.listFiles()) {
-				if (possibleDungeon.isDirectory() && possibleDungeon.getName() == dungeonName) {
-					getSessionList(servlet, possibleDungeon, sessionListData);
-					break;
+			for (File possibleSession : directory.listFiles()) {
+				if (possibleSession.isDirectory()) {
+					getSessionName(servlet, sessionsPath, possibleSession, sessionListData);
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -149,24 +148,15 @@ public class DungeonsManager {
 		return sessionListData;
 	}
 
-	private static void getSessionList(HttpServlet servlet, File possibleDungeon, Map<String, String> sessionListData) throws IOException {
-		for (File possibleSession : possibleDungeon.listFiles()) {
-			if (possibleSession.isDirectory()) {
-				getSessionName(servlet, possibleSession, sessionListData);
-			}
-		}
-	}
-
-	private static void getSessionName(final HttpServlet servlet, File possibleSession, Map<String, String> sessionListData) throws IOException {
-		String directoryName = possibleSession.getName();
-		DungeonSessionData dungeonData = getSessionData(servlet, directoryName);
+	private static void getSessionName(final HttpServlet servlet, String sessionsPath, File possibleSession, Map<String, String> sessionListData) throws IOException {
+		String resourcePath = sessionsPath + possibleSession.getName();
+		DungeonSessionData dungeonData = getSessionData(servlet, resourcePath);
 		String dungeonName = dungeonData.sessionName;
-		sessionListData.put(dungeonName, directoryName);
+		sessionListData.put(dungeonName, possibleSession.getName());
 	}
 
-	private static DungeonSessionData getSessionData(final HttpServlet servlet, String directoryDirectoryName) {
-		String directoryPath = dungeonLocation + directoryDirectoryName;
-		String filePath = directoryPath + "/sessionData.json";
+	private static DungeonSessionData getSessionData(final HttpServlet servlet, String resourcePath) {
+		String filePath = resourcePath + "/sessionData.json";
 		String jsonData = readJsonDataFromFile(servlet, filePath);
 		Gson gson = new Gson();
 		DungeonSessionData sessionData = gson.fromJson(jsonData, DungeonSessionData.class);

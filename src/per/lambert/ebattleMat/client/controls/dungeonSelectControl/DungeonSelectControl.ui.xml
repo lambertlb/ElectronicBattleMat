@@ -81,15 +81,15 @@
 					</g:row>
 					<g:row>
 						<g:customCell>
-							<g:Button text="Create New Session ->" ui:field="createSessionButton" />
-						</g:customCell>
-						<g:customCell>
-							<g:TextBox text="Enter Session Name" ui:field="newSessionName" />
+							<g:Button text="Delete Session..." ui:field="deleteSessionButton" />
 						</g:customCell>
 					</g:row>
 					<g:row>
 						<g:customCell>
-							<g:Button text="Delete Session..." ui:field="deleteSessionButton" />
+							<g:Button text="Create New Session ->" ui:field="createSessionButton" />
+						</g:customCell>
+						<g:customCell>
+							<g:TextBox text="Enter Session Name" ui:field="newSessionName" />
 						</g:customCell>
 					</g:row>
 				</g:Grid>

@@ -32,6 +32,6 @@ public class DungeonOptions extends Composite {
 
 	@UiHandler("fowToggle")
 	void onClick(ClickEvent e) {
-		ServiceManager.getDungeonManagment().setFowToggle(fowToggle.getValue());
+		ServiceManager.getDungeonManager().setFowToggle(fowToggle.getValue());
 	}
 }

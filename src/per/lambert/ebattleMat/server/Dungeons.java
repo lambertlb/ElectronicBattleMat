@@ -15,6 +15,7 @@ import per.lambert.ebattleMat.server.handlers.DungeonListHandler;
 import per.lambert.ebattleMat.server.handlers.LoadJsonDataHandler;
 import per.lambert.ebattleMat.server.handlers.LoginHandler;
 import per.lambert.ebattleMat.server.handlers.SaveJsonDataHandler;
+import per.lambert.ebattleMat.server.handlers.SessionListHandler;
 
 public class Dungeons extends HttpServlet {
 	/**
@@ -28,6 +29,7 @@ public class Dungeons extends HttpServlet {
 		webServices.put("GETDUNGEONLIST", new DungeonListHandler());
 		webServices.put("CREATENEWDUNGEON", new CreateNewDungeonHandler());
 		webServices.put("DELETEDUNGEON", new DeleteDungeonHandler());
+		webServices.put("GETSESSIONLIST", new SessionListHandler());
 	}
 
 	@Override

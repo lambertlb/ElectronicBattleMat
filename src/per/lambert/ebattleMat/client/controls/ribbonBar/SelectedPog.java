@@ -43,7 +43,7 @@ public class SelectedPog extends Composite {
 	HTMLPanel hostPanel;
 
 	private void pogSelected() {
-		PogData selectePog = ServiceManager.getDungeonManagment().getSelectedPog();
+		PogData selectePog = ServiceManager.getDungeonManager().getSelectedPog();
 		pogPanel.clear();
 		if (selectePog == null) {
 			return;

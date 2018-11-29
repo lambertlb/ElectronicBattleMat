@@ -44,6 +44,40 @@ public class DungeonSelectPresenter {
 		return okToDelete;
 	}
 
+	public boolean isOkToShowSessions() {
+		return isValidDungeonForSessions && ServiceManager.getDungeonManager().getSessionNames() != null;
+	}
+
+	private boolean isValidDungeonForSessions;
+
+	public boolean isValidDungeonForSessions() {
+		return isValidDungeonForSessions;
+	}
+
+	private boolean isOkToCreateSession;
+
+	public boolean isOkToCreateSession() {
+		return isOkToCreateSession;
+	}
+
+	private boolean isSessionSelected;
+
+	public boolean isSessionSelected() {
+		return isSessionSelected;
+	}
+
+	private boolean isOkToDeleteSession;
+
+	public boolean isOkToDeleteSession() {
+		return isOkToDeleteSession;
+	}
+
+	private boolean isOkToDMSession;
+
+	public boolean isOkToDMSession() {
+		return isOkToDMSession;
+	}
+
 	HandlerRegistration dungeonDataChangedEvent;
 
 	public DungeonSelectPresenter() {
@@ -54,19 +88,44 @@ public class DungeonSelectPresenter {
 					refreshView();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.SessionListChanged) {
+					refreshSessionData();
+					return;
+				}
 			}
 		});
 	}
 
 	public void refreshView() {
+		resetDungeonLogic();
+		view.loadDungeonList();
+		view.setToDungeonMasterState();
+		refreshSession();
+	}
+
+	private void resetDungeonLogic() {
 		okToCreateDungeon = false;
 		okToDelete = false;
 		templateSelected = false;
 		newDungeonName = "";
 		selectedTemplate = "";
-		view.loadDungeonList();
+	}
+
+	private void refreshSession() {
+		resetSessionLogic();
+		refreshSessionData();
+	}
+
+	private void resetSessionLogic() {
+		isValidDungeonForSessions = false;
+		isOkToCreateSession = false;
+		isSessionSelected = false;
+		isOkToDeleteSession = false;
+		isOkToDMSession = false;
+	}
+	
+	protected void refreshSessionData() {
 		view.loadSessionList();
-		view.setToDungeonMasterState();
 	}
 
 	public void setView(DungeonSelectControl dungeonSelectControl) {
@@ -74,23 +133,35 @@ public class DungeonSelectPresenter {
 	}
 
 	public String[] getDungeonList() {
-		return ServiceManager.getDungeonManagment().getDungeonNames();
-	}
-	public String[] getSessionList() {
-		return ServiceManager.getDungeonManagment().getSessionNames();
+		return ServiceManager.getDungeonManager().getDungeonNames();
 	}
 
-	public void selectNewDungeonName(String dungeonsName) {
-		templateSelected = !dungeonsName.startsWith("Select ");
-		selectedTemplate = dungeonsName;
-		okToDelete = ServiceManager.getDungeonManagment().okToDeleteThisTemplate(dungeonsName);
+	public String[] getSessionList() {
+		return ServiceManager.getDungeonManager().getSessionNames();
+	}
+
+	public void selectNewDungeonName(String dungeonName) {
+		resetDungeonLogic();
+		templateSelected = !dungeonName.startsWith("Select ");
+		selectedTemplate = dungeonName;
+		if (templateSelected) {
+			okToDelete = ServiceManager.getDungeonManager().okToDeleteThisTemplate(dungeonName);
+			isValdidDungeonTemplateForSessions(dungeonName);
+		}
+		if (isValidDungeonForSessions) {
+			ServiceManager.getDungeonManager().getSessionList(dungeonName);
+		}
 		view.setToDungeonMasterState();
 	}
 
+	private void isValdidDungeonTemplateForSessions(String dungeonName) {
+		isValidDungeonForSessions = !dungeonName.startsWith("Select ") && !dungeonName.startsWith("Template ");
+	}
+
 	public void editDungeon() {
-		ServiceManager.getDungeonManagment().setDungeonMaster(isDungeonMaster);
-		ServiceManager.getDungeonManagment().selectDungeon(selectedTemplate);
-		ServiceManager.getDungeonManagment().setEditMode(true);
+		ServiceManager.getDungeonManager().setDungeonMaster(isDungeonMaster);
+		ServiceManager.getDungeonManager().selectDungeon(selectedTemplate);
+		ServiceManager.getDungeonManager().setEditMode(true);
 		view.close();
 	}
 
@@ -101,18 +172,18 @@ public class DungeonSelectPresenter {
 	}
 
 	public void createDungeon() {
-		ServiceManager.getDungeonManagment().createNewDungeon(selectedTemplate, newDungeonName);
+		ServiceManager.getDungeonManager().createNewDungeon(selectedTemplate, newDungeonName);
 		view.close();
 	}
 
 	public void deleteTemplate() {
-		ServiceManager.getDungeonManagment().deleteTemplate(selectedTemplate);
+		ServiceManager.getDungeonManager().deleteTemplate(selectedTemplate);
 	}
 
 	public void closing() {
-//		if (dungeonDataChangedEvent != null) {
-//			dungeonDataChangedEvent.removeHandler();
-//			dungeonDataChangedEvent = null;
-//		}
+		// if (dungeonDataChangedEvent != null) {
+		// dungeonDataChangedEvent.removeHandler();
+		// dungeonDataChangedEvent = null;
+		// }
 	}
 }

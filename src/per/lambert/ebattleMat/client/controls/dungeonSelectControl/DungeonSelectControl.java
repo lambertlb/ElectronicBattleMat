@@ -105,10 +105,19 @@ public class DungeonSelectControl extends WindowBox {
 	Button deleteDungeonButton;
 
 	@UiField
+	Button deleteSessionButton;
+
+	@UiField
 	Button selectSessionButton;
 
 	@UiField
 	Button createDungeonButton;
+
+	@UiField
+	Button createSessionButton;
+	
+	@UiField
+	Button dmSessionButton;
 
 	@UiField
 	CheckBox asDM;
@@ -121,6 +130,9 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiField
 	TextBox newDungeonName;
+
+	@UiField
+	TextBox newSessionName;
 
 	@UiField
 	Label sessionLabel;
@@ -179,6 +191,7 @@ public class DungeonSelectControl extends WindowBox {
 		if (!dungeonSelectPresenter.isTemplateSelected()) {
 			newDungeonName.setText("Enter Dungeon Name");
 		}
+		setupSessionDisplayForDungeonMaster();
 	}
 
 	public void loadDungeonList() {
@@ -202,13 +215,30 @@ public class DungeonSelectControl extends WindowBox {
 		show();
 	}
 
+	private void setupSessionDisplayForDungeonMaster() {
+		enableWidget(sessionDropdownList, dungeonSelectPresenter.isOkToShowSessions());
+		enableWidget(createSessionButton, dungeonSelectPresenter.isOkToCreateSession());
+		enableWidget(deleteSessionButton, dungeonSelectPresenter.isOkToDeleteSession());
+		enableWidget(dmSessionButton, dungeonSelectPresenter.isOkToDMSession());
+		enableWidget(newSessionName, dungeonSelectPresenter.isOkToDelete());
+		if (!dungeonSelectPresenter.isOkToDelete()) {
+			newSessionName.setText("Enter Session Name");
+		}
+	}
+
 	public void loadSessionList() {
+		setupSessionDisplayForDungeonMaster();
 		sessionDropdownList.clear();
-		sessionDropdownList.addItem("Select a Dungeon to DM");
-		// String[] sessionNames = dungeonSelectPresenter.getSessionList();
-		// for (String session : sessionNames) {
-		// sessionList.addItem(session);
-		// }
+		sessionDropdownList.addItem("Select a Session to DM");
 		sessionDropdownList.setVisibleItemCount(1);
+		if (!dungeonSelectPresenter.isOkToShowSessions()) {
+			return;
+		}
+		String[] sessionNames = dungeonSelectPresenter.getSessionList();
+		if (sessionNames != null) {
+			for (String session : sessionNames) {
+				sessionDropdownList.addItem(session);
+			}
+		}
 	}
 }

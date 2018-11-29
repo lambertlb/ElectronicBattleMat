@@ -42,10 +42,10 @@ public class GridGroup extends Composite {
 	}
 
 	private void setupItems() {
-		showGrid.setValue(ServiceManager.getDungeonManagment().getSelectedDungeon().getShowGrid());
-		gridSizeBox.setValue(ServiceManager.getDungeonManagment().getCurrentLevelData().getGridSize());
-		gridOffsetX.setValue(ServiceManager.getDungeonManagment().getCurrentLevelData().getGridOffsetX());
-		gridOffsetY.setValue(ServiceManager.getDungeonManagment().getCurrentLevelData().getGridOffsetY());
+		showGrid.setValue(ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid());
+		gridSizeBox.setValue(ServiceManager.getDungeonManager().getCurrentLevelData().getGridSize());
+		gridOffsetX.setValue(ServiceManager.getDungeonManager().getCurrentLevelData().getGridOffsetX());
+		gridOffsetY.setValue(ServiceManager.getDungeonManager().getCurrentLevelData().getGridOffsetY());
 	}
 
 	@UiField
@@ -62,25 +62,25 @@ public class GridGroup extends Composite {
 
 	@UiHandler("showGrid")
 	void onClick(ClickEvent e) {
-		ServiceManager.getDungeonManagment().getSelectedDungeon().setShowGrid(showGrid.getValue());
-		ServiceManager.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManager().getSelectedDungeon().setShowGrid(showGrid.getValue());
+		ServiceManager.getDungeonManager().saveDungeonData();
 	}
 
 	@UiHandler("gridSizeBox")
 	void onValueChanged(ValueChangeEvent<Double> event) {
-		ServiceManager.getDungeonManagment().getCurrentLevelData().setGridSize(gridSizeBox.getValue());
-		ServiceManager.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManager().getCurrentLevelData().setGridSize(gridSizeBox.getValue());
+		ServiceManager.getDungeonManager().saveDungeonData();
 	}
 
 	@UiHandler("gridOffsetX")
 	void onGridOffsetXChanged(ValueChangeEvent<Double> event) {
-		ServiceManager.getDungeonManagment().getCurrentLevelData().setGridOffsetX(gridOffsetX.getValue());
-		ServiceManager.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManager().getCurrentLevelData().setGridOffsetX(gridOffsetX.getValue());
+		ServiceManager.getDungeonManager().saveDungeonData();
 	}
 
 	@UiHandler("gridOffsetY")
 	void onGridOffsetYChanged(ValueChangeEvent<Double> event) {
-		ServiceManager.getDungeonManagment().getCurrentLevelData().setGridOffsetY(gridOffsetY.getValue());
-		ServiceManager.getDungeonManagment().saveDungeonData();
+		ServiceManager.getDungeonManager().getCurrentLevelData().setGridOffsetY(gridOffsetY.getValue());
+		ServiceManager.getDungeonManager().saveDungeonData();
 	}
 }

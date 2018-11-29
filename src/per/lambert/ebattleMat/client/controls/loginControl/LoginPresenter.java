@@ -2,7 +2,7 @@ package per.lambert.ebattleMat.client.controls.loginControl;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
-import per.lambert.ebattleMat.client.interfaces.IDungeonManagement;
+import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
@@ -59,7 +59,7 @@ public class LoginPresenter {
 	public void ok() {
 		setIsEnabled(false);
 		view.update();
-		final IDungeonManagement dungeonManagement = ServiceManager.getDungeonManagment();
+		final IDungeonManager dungeonManagement = ServiceManager.getDungeonManager();
 
 		dungeonManagement.login(username, password, new IUserCallback() {
 			public void onError(final Object sender, final IErrorInformation error) {

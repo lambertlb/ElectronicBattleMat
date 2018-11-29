@@ -129,11 +129,11 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		addDragStartHandler(new DragStartHandler() {
 			@Override
 			public void onDragStart(DragStartEvent event) {
-				if (ServiceManager.getDungeonManagment().getFowToggle()) {
+				if (ServiceManager.getDungeonManager().getFowToggle()) {
 					event.preventDefault();
 					return;
 				}
-				ServiceManager.getDungeonManagment().setPogBeingDragged(pogData);
+				ServiceManager.getDungeonManager().setPogBeingDragged(pogData);
 				event.getDataTransfer().setDragImage(pogMainPanel.getElement(), 10, 120);
 			}
 		});
@@ -276,14 +276,14 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 
 	@Override
 	public void onMouseDown(MouseDownEvent event) {
-		if (ServiceManager.getDungeonManagment().getFowToggle()) {
+		if (ServiceManager.getDungeonManager().getFowToggle()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
 		}
 	}
 
 	@Override
 	public void onMouseUp(MouseUpEvent event) {
-		if (ServiceManager.getDungeonManagment().getFowToggle()) {
+		if (ServiceManager.getDungeonManager().getFowToggle()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseUpEventBubble, event));
 		}
 	}
