@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import per.lambert.ebattleMat.server.handlers.CreateNewDungeonHandler;
+import per.lambert.ebattleMat.server.handlers.CreateNewSessionHandler;
 import per.lambert.ebattleMat.server.handlers.DeleteDungeonHandler;
 import per.lambert.ebattleMat.server.handlers.DungeonListHandler;
 import per.lambert.ebattleMat.server.handlers.LoadJsonDataHandler;
@@ -30,6 +31,7 @@ public class Dungeons extends HttpServlet {
 		webServices.put("CREATENEWDUNGEON", new CreateNewDungeonHandler());
 		webServices.put("DELETEDUNGEON", new DeleteDungeonHandler());
 		webServices.put("GETSESSIONLIST", new SessionListHandler());
+		webServices.put("CREATENEWSESSION", new CreateNewSessionHandler());
 	}
 
 	@Override

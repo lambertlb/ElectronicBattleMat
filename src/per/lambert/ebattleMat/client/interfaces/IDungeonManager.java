@@ -79,4 +79,8 @@ public interface IDungeonManager {
 	String[] getSessionNames();
 
 	void getSessionList(String dungeonName);
+
+	boolean isNameValidForNewSession(String newSessionName);
+
+	void createNewSession(String selectedTemplate, String newSessionName);
 }

@@ -542,4 +542,56 @@ public class DungeonManager implements IDungeonManager {
 		sessionListData = JsonUtils.<SessionListData>safeEval((String) data);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionListChanged, null));
 	}
+
+	@Override
+	public boolean isNameValidForNewSession(String newSessionName) {
+		boolean isValidSessionName = !newSessionName.startsWith("Enter ") && newSessionName.length() > 4;
+		boolean isInCurrentSessionNames = false;
+		boolean isInCurrentSessionDirectories = false;
+		if (isValidSessionName) {
+			isInCurrentSessionNames = isInCurrentSessionNames(newSessionName);
+			isInCurrentSessionDirectories = isInCurrentSessionDirectories(newSessionName);
+		}
+		return isValidSessionName && !isInCurrentSessionNames && !isInCurrentSessionDirectories;
+	}
+
+	private boolean isInCurrentSessionDirectories(String newSessionName) {
+		for (String sessionName : sessionListData.getSessionNames()) {
+			if (sessionName.equals(newSessionName)) {
+				return (true);
+			}
+		}
+		return false;
+	}
+
+	private boolean isInCurrentSessionNames(String newSessionName) {
+		String directoryName = newSessionName.replaceAll("\\s+", "_");
+		for (String directory : sessionListData.getSessionDirectories()) {
+			if (directory.equals(directoryName)) {
+				return (true);
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void createNewSession(String selectedTemplate, String newSessionName) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		String templateDirectory = getDirectoryNameForDungeon(selectedTemplate);
+		parameters.put("templateName", templateDirectory);
+		parameters.put("newSessionName", newSessionName);
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		dataRequester.requestData("", token, "CREATENEWSESSION", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				getSessionList(selectedTemplate);
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+				lastError = error.getError();
+			}
+		});
+	}
 }

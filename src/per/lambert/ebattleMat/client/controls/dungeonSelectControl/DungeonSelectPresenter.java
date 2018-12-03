@@ -14,6 +14,7 @@ public class DungeonSelectPresenter {
 	private boolean isDungeonMaster;
 	private String newDungeonName;
 	private String selectedTemplate;
+	private String newSessionName;
 
 	public boolean isDungeonMaster() {
 		return isDungeonMaster;
@@ -54,28 +55,28 @@ public class DungeonSelectPresenter {
 		return isValidDungeonForSessions;
 	}
 
-	private boolean isOkToCreateSession;
+	private boolean okToCreateSession;
 
 	public boolean isOkToCreateSession() {
-		return isOkToCreateSession;
+		return okToCreateSession;
 	}
 
-	private boolean isSessionSelected;
+	private boolean sessionSelected;
 
 	public boolean isSessionSelected() {
-		return isSessionSelected;
+		return sessionSelected;
 	}
 
-	private boolean isOkToDeleteSession;
+	private boolean okToDeleteSession;
 
 	public boolean isOkToDeleteSession() {
-		return isOkToDeleteSession;
+		return okToDeleteSession;
 	}
 
-	private boolean isOkToDMSession;
+	private boolean okToDMSession;
 
 	public boolean isOkToDMSession() {
-		return isOkToDMSession;
+		return okToDMSession;
 	}
 
 	HandlerRegistration dungeonDataChangedEvent;
@@ -118,12 +119,12 @@ public class DungeonSelectPresenter {
 
 	private void resetSessionLogic() {
 		isValidDungeonForSessions = false;
-		isOkToCreateSession = false;
-		isSessionSelected = false;
-		isOkToDeleteSession = false;
-		isOkToDMSession = false;
+		okToCreateSession = false;
+		sessionSelected = false;
+		okToDeleteSession = false;
+		okToDMSession = false;
 	}
-	
+
 	protected void refreshSessionData() {
 		view.loadSessionList();
 	}
@@ -141,6 +142,7 @@ public class DungeonSelectPresenter {
 	}
 
 	public void selectNewDungeonName(String dungeonName) {
+		resetSessionLogic();
 		resetDungeonLogic();
 		templateSelected = !dungeonName.startsWith("Select ");
 		selectedTemplate = dungeonName;
@@ -151,6 +153,12 @@ public class DungeonSelectPresenter {
 		if (isValidDungeonForSessions) {
 			ServiceManager.getDungeonManager().getSessionList(dungeonName);
 		}
+		view.setToDungeonMasterState();
+	}
+
+	public void selectSessionName(String selectedValue) {
+		okToDeleteSession = true;
+		okToDMSession = true;
 		view.setToDungeonMasterState();
 	}
 
@@ -171,9 +179,19 @@ public class DungeonSelectPresenter {
 		view.setToDungeonMasterState();
 	}
 
+	public void newSessionNameText(String newSessionName) {
+		okToCreateSession = ServiceManager.getDungeonManager().isNameValidForNewSession(newSessionName);
+		this.newSessionName = newSessionName;
+		view.setToDungeonMasterState();
+	}
+
 	public void createDungeon() {
 		ServiceManager.getDungeonManager().createNewDungeon(selectedTemplate, newDungeonName);
 		view.close();
+	}
+
+	public void createSession() {
+		ServiceManager.getDungeonManager().createNewSession(selectedTemplate, newSessionName);
 	}
 
 	public void deleteTemplate() {

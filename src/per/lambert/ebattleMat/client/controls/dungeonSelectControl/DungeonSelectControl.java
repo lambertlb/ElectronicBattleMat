@@ -79,6 +79,26 @@ public class DungeonSelectControl extends WindowBox {
 				newDungeonName.selectAll();
 			}
 		});
+		sessionDropdownList.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				dungeonSelectPresenter.selectSessionName(sessionDropdownList.getSelectedValue());
+			}
+		});
+		newSessionName.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				newSessionName.selectAll();
+			}
+		});
+		newSessionName.addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				dungeonSelectPresenter.newSessionNameText(newSessionName.getValue());
+			}
+		});
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
 			public void onResize(ResizeEvent event) {
@@ -115,7 +135,7 @@ public class DungeonSelectControl extends WindowBox {
 
 	@UiField
 	Button createSessionButton;
-	
+
 	@UiField
 	Button dmSessionButton;
 
@@ -158,6 +178,11 @@ public class DungeonSelectControl extends WindowBox {
 	@UiHandler("createDungeonButton")
 	void onCreateDungeonButtonClick(ClickEvent e) {
 		dungeonSelectPresenter.createDungeon();
+	}
+
+	@UiHandler("createSessionButton")
+	void onCreateSessionButtonClick(ClickEvent e) {
+		dungeonSelectPresenter.createSession();
 	}
 
 	public void enableWidget(Widget widget, boolean enable) {

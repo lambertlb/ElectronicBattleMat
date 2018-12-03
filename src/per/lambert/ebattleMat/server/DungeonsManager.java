@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.server.serviceData.DungeonData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
+import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 
 public class DungeonsManager {
 	private static ReentrantLock lock = new ReentrantLock();
@@ -42,6 +43,10 @@ public class DungeonsManager {
 		String directoryPath = servletPath.getPath() + dungeonLocation + dungeonDirectoryName;
 		makeSureDirectoryExists(directoryPath);
 		String filePath = directoryPath + "/dungeonData.json";
+		saveJsonFile(dataToWrite, filePath);
+	}
+
+	private static void saveJsonFile(final String dataToWrite, String filePath) throws IOException {
 		BufferedWriter output = null;
 		try {
 			lock.lock();
@@ -192,5 +197,32 @@ public class DungeonsManager {
 	public static String getFileAsString(final HttpServlet servlet, final String fileName) {
 		String filePath = fileLocation + fileName;
 		return (readJsonDataFromFile(servlet, filePath));
+	}
+
+	public static void createSession(HttpServlet servlet, String templateName, String newSessionName) throws IOException {
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String templateDirectory = servletPath.getPath() + dungeonLocation + templateName.replaceAll("\\s+", "_");
+		String sessionDirectory = templateDirectory + ElectronicBattleMat.SESSIONS_FOLDER + newSessionName.replaceAll("\\s+", "_");
+		makeSureDirectoryExists(sessionDirectory);
+		DungeonData dungeonData = getDungeonData(servlet, templateName);
+		DungeonSessionData sessionData = createSessionData(servlet, sessionDirectory, templateName, newSessionName, dungeonData);
+		Gson gson = new Gson();
+		String sessionJson = gson.toJson(sessionData);
+		String filePath = sessionDirectory + "/" + "sessionData.json";
+		saveJsonFile(sessionJson, filePath);
+	}
+
+	private static DungeonSessionData createSessionData(HttpServlet servlet, String sessionDirectory, String templateName, String newSessionName, DungeonData dungeonData) {
+		DungeonSessionData newSessionData = new DungeonSessionData(newSessionName,templateName);
+		newSessionData.sessionLevels = new DungeonSessionLevel[dungeonData.dungeonLevels.length];
+		for (int i = 0; i < dungeonData.dungeonLevels.length; ++i) {
+			newSessionData.sessionLevels[i] = getSessionLevel(i, dungeonData, newSessionData);
+		}
+		return (newSessionData);
+	}
+
+	private static DungeonSessionLevel getSessionLevel(int i, DungeonData dungeonData, DungeonSessionData newSessionData) {
+		DungeonSessionLevel sessionLevel = new DungeonSessionLevel(dungeonData.dungeonLevels[i]);
+		return(sessionLevel);
 	}
 }
