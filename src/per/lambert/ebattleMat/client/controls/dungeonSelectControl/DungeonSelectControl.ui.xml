@@ -1,6 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style field="myStyle">
+	<ui:style field="myStyle" type="per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl.MyStyle">
 	.panel {
 		background-color: ivory;
 	}
@@ -25,18 +25,8 @@
 		</g:north>
 		<g:center>
 			<g:FlowPanel>
-				<g:Grid ui:field="playerGrid">
-					<g:row>
-						<g:customCell>
-							<g:ListBox ui:field="sessionList" />
-						</g:customCell>
-						<g:customCell>
-							<g:Button text="Select Dungeon session" ui:field="selectSessionButton" />
-						</g:customCell>
-					</g:row>
-				</g:Grid>
 				<g:Grid ui:field="dmGrid">
-					<g:row>
+<!-- 					<g:row>
 						<g:customCell>
 							<g:Label text="Dungeon Template Management" styleName="{myStyle.sessionLabel}" ui:field="templateLabel" />
 						</g:customCell>
@@ -92,7 +82,7 @@
 							<g:TextBox text="Enter Session Name" ui:field="newSessionName" />
 						</g:customCell>
 					</g:row>
-				</g:Grid>
+ -->				</g:Grid>
 			</g:FlowPanel>
 		</g:center>
 	</g:DockLayoutPanel>
