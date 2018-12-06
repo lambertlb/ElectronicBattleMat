@@ -13,7 +13,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -40,6 +39,7 @@ public class DungeonSelectControl extends WindowBox {
 	private Button createDungeonButton;
 	private Button createSessionButton;
 	private Button dmSessionButton;
+	private Button joinASessionButton;
 	private TextBox newDungeonName;
 	private TextBox newSessionName;
 	private Label sessionLabel;
@@ -81,6 +81,7 @@ public class DungeonSelectControl extends WindowBox {
 		createDungeonButton = new Button("Create New Dungeon ->");
 		createSessionButton = new Button("Create New Session ->");
 		dmSessionButton = new Button("DM the Session");
+		joinASessionButton = new Button("Join A Session");
 		newDungeonName = new TextBox();
 		newDungeonName.setText("Enter Dungeon Name");
 		newSessionName = new TextBox();
@@ -118,6 +119,12 @@ public class DungeonSelectControl extends WindowBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				dungeonSelectPresenter.createSession();
+			}
+		});
+		joinASessionButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dungeonSelectPresenter.joinSession();
 			}
 		});
 		dungeonDropdownList.addChangeHandler(new ChangeHandler() {
@@ -205,6 +212,8 @@ public class DungeonSelectControl extends WindowBox {
 
 	private void populatePlayerView() {
 		populateCommon();
+		dmGrid.setWidget(2, 0, sessionDropdownList);
+		dmGrid.setWidget(3, 0, joinASessionButton);
 	}
 
 	private void populateCommon() {
@@ -273,6 +282,8 @@ public class DungeonSelectControl extends WindowBox {
 	}
 
 	private void setupDisplayForPlayer() {
+		enableWidget(sessionDropdownList, dungeonSelectPresenter.isOkToShowSessions());
+		enableWidget(joinASessionButton, dungeonSelectPresenter.isOkToJoinSession());
 	}
 
 	public void setupAndShow() {

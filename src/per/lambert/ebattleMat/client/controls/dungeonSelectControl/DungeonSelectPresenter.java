@@ -1,6 +1,5 @@
 package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
-import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -79,6 +78,12 @@ public class DungeonSelectPresenter {
 		return okToDMSession;
 	}
 
+	private boolean okToJoinSession;
+
+	public boolean isOkToJoinSession() {
+		return okToJoinSession;
+	}
+
 	HandlerRegistration dungeonDataChangedEvent;
 
 	public DungeonSelectPresenter() {
@@ -123,6 +128,7 @@ public class DungeonSelectPresenter {
 		sessionSelected = false;
 		okToDeleteSession = false;
 		okToDMSession = false;
+		okToJoinSession = false;
 	}
 
 	protected void refreshSessionData() {
@@ -159,6 +165,7 @@ public class DungeonSelectPresenter {
 	public void selectSessionName(String selectedValue) {
 		okToDeleteSession = true;
 		okToDMSession = true;
+		okToJoinSession = true;
 		view.setToDungeonMasterState();
 	}
 
@@ -196,6 +203,9 @@ public class DungeonSelectPresenter {
 
 	public void deleteTemplate() {
 		ServiceManager.getDungeonManager().deleteTemplate(selectedTemplate);
+	}
+
+	public void joinSession() {
 	}
 
 	public void closing() {
