@@ -96,6 +96,7 @@ public class DungeonManager implements IDungeonManager {
 		return pcTemplatePogs.getPogList();
 	}
 
+	Map<String, PogData> monsterTemplateMap = new HashMap<String, PogData>();
 	private PogList monsterTemplatePogs;
 
 	@Override
@@ -273,6 +274,7 @@ public class DungeonManager implements IDungeonManager {
 		}
 		return (null);
 	}
+
 	private String getDirectoryNameForSession(String newSessionName) {
 		for (int i = 0; i < sessionListData.getSessionNames().length; ++i) {
 			if (sessionListData.getSessionNames()[i].equals(newSessionName)) {
@@ -359,14 +361,22 @@ public class DungeonManager implements IDungeonManager {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
-				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
+				loadMonsterPogTemplates(data);
 			}
 
 			@Override
 			public void onError(Object sender, IErrorInformation error) {
 			}
 		});
+	}
+
+	private void loadMonsterPogTemplates(Object data) {
+		monsterTemplateMap.clear();
+		monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
+		for (PogData monsterTemplate : monsterTemplatePogs.getPogList()) {
+			monsterTemplateMap.put(monsterTemplate.getUUID(), monsterTemplate);
+		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
 	}
 
 	@Override
@@ -502,26 +512,20 @@ public class DungeonManager implements IDungeonManager {
 		});
 	}
 
-	@Override
-	public PogData createMonsterFromTemplate(PogData pogData) {
-		PogData template = findMonsterTemplate(pogData);
-		return null;
+	public PogData findMonsterTemplate(String pogUUID) {
+		return (monsterTemplateMap.get(pogUUID));
 	}
 
 	@Override
-	public PogData findMonsterTemplate(PogData pogData) {
-		if (monsterTemplatePogs == null) {
+	public PogData fullCLoneMonster(PogData pogData) {
+		PogData template = findMonsterTemplate(pogData.getUUID());
+		if (template == null) {
 			return (null);
 		}
-		for (PogData template : monsterTemplatePogs.getPogList()) {
-			if (template.getUUID() == pogData.getUUID()) {
-				PogData clone = template.clone();
-				clone.setPogColumn(pogData.getPogColumn());
-				clone.setPogRow(pogData.getPogRow());
-				return (clone);
-			}
-		}
-		return (null);
+		PogData clone = template.clone();
+		clone.setPogColumn(pogData.getPogColumn());
+		clone.setPogRow(pogData.getPogRow());
+		return (clone);
 	}
 
 	@Override

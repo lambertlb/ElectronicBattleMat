@@ -647,7 +647,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	public void addMonsterToCanvas(PogData pogData) {
 		getRibbonBarData();
-		PogData clonePog = ServiceManager.getDungeonManager().findMonsterTemplate(pogData);
+		PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(pogData);
 		if (clonePog != null) {
 			addPogToCanvas(clonePog, MONSTERS_Z);
 		}

@@ -70,9 +70,7 @@ public interface IDungeonManager {
 
 	void deleteTemplate(String selectedTemplate);
 
-	PogData createMonsterFromTemplate(PogData pogData);
-
-	PogData findMonsterTemplate(PogData pogData);
+	PogData fullCLoneMonster(PogData pogData);
 
 	PogData findCharacterPog(String pogUUID);
 
