@@ -120,15 +120,9 @@ public class DungeonsManager {
 	}
 
 	public static void deleteDungeon(HttpServlet servlet, String templateName) throws IOException {
-		deleteSessionOfTemplate(servlet, templateName);
 		URL servletPath = servlet.getServletContext().getResource("/");
 		File srcDir = new File(servletPath.getPath() + dungeonLocation + templateName);
 		FileUtils.deleteDirectory(srcDir);
-	}
-
-	private static void deleteSessionOfTemplate(HttpServlet servlet, String templateName) {
-		// TODO delete session of this template
-
 	}
 
 	public static Map<String, String> getSessionListData(HttpServlet servlet, String dungeonName) {
@@ -213,7 +207,7 @@ public class DungeonsManager {
 	}
 
 	private static DungeonSessionData createSessionData(HttpServlet servlet, String sessionDirectory, String templateName, String newSessionName, DungeonData dungeonData) {
-		DungeonSessionData newSessionData = new DungeonSessionData(newSessionName,templateName);
+		DungeonSessionData newSessionData = new DungeonSessionData(newSessionName, templateName);
 		newSessionData.sessionLevels = new DungeonSessionLevel[dungeonData.dungeonLevels.length];
 		for (int i = 0; i < dungeonData.dungeonLevels.length; ++i) {
 			newSessionData.sessionLevels[i] = getSessionLevel(i, dungeonData, newSessionData);
@@ -223,6 +217,14 @@ public class DungeonsManager {
 
 	private static DungeonSessionLevel getSessionLevel(int i, DungeonData dungeonData, DungeonSessionData newSessionData) {
 		DungeonSessionLevel sessionLevel = new DungeonSessionLevel(dungeonData.dungeonLevels[i]);
-		return(sessionLevel);
+		return (sessionLevel);
+	}
+
+	public static void deleteSession(HttpServlet servlet, String templateName, String sessionName) throws IOException {
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String templateDirectory = servletPath.getPath() + dungeonLocation + templateName;
+		String sessionDirectory = templateDirectory + ElectronicBattleMat.SESSIONS_FOLDER + sessionName;
+		File srcDir = new File(sessionDirectory);
+		FileUtils.deleteDirectory(srcDir);
 	}
 }

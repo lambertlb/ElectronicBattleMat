@@ -8,12 +8,12 @@
 			"gridOffsetY": 10,
 			"monsters": [
 				{
-					"pogName": "Male Kobold",
+					"uuid": "Male-Kobold",
 					"pogColumn": 2,
 					"pogRow": 2
 				},
 				{
-					"pogName": "Female Kobold",
+					"uuid": "Female-Kobold",
 					"pogColumn": 4,
 					"pogRow": 4
 				}

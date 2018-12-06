@@ -163,9 +163,10 @@ public class DungeonSelectPresenter {
 	}
 
 	public void selectSessionName(String selectedValue) {
-		okToDeleteSession = true;
-		okToDMSession = true;
-		okToJoinSession = true;
+		newSessionName = selectedValue;
+		okToDeleteSession = !newSessionName.startsWith("Select ");
+		okToDMSession = okToDeleteSession;
+		okToJoinSession = okToDeleteSession;
 		view.setToDungeonMasterState();
 	}
 
@@ -206,6 +207,11 @@ public class DungeonSelectPresenter {
 	}
 
 	public void joinSession() {
+		ServiceManager.getDungeonManager().joinSession(newSessionName);
+	}
+
+	public void deleteSession() {
+		ServiceManager.getDungeonManager().deleteSession(selectedTemplate, newSessionName);
 	}
 
 	public void closing() {

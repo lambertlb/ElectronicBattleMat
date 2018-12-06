@@ -83,4 +83,8 @@ public interface IDungeonManager {
 	boolean isNameValidForNewSession(String newSessionName);
 
 	void createNewSession(String selectedTemplate, String newSessionName);
+
+	void joinSession(String newSessionName);
+
+	void deleteSession(String selectedTemplate, String newSessionName2);
 }

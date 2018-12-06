@@ -109,6 +109,12 @@ public class DungeonSelectControl extends WindowBox {
 				dungeonSelectPresenter.deleteTemplate();
 			}
 		});
+		deleteSessionButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dungeonSelectPresenter.deleteSession();
+			}
+		});
 		createDungeonButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

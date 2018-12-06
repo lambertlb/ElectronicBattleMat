@@ -11,13 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
-public class DeleteDungeonHandler implements IWebRequestHandler {
+public class DeleteSessionHandler implements IWebRequestHandler {
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
 		String templateName = request.getParameter("templateName");
+		String sessionName = request.getParameter("sessionName");
 		PrintWriter out = resp.getWriter();
-		DungeonsManager.deleteDungeon(servlet, templateName);
+		DungeonsManager.deleteSession(servlet, templateName, sessionName);
 		out.print("");
 		out.flush();
 	}

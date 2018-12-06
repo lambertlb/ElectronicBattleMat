@@ -273,6 +273,14 @@ public class DungeonManager implements IDungeonManager {
 		}
 		return (null);
 	}
+	private String getDirectoryNameForSession(String newSessionName) {
+		for (int i = 0; i < sessionListData.getSessionNames().length; ++i) {
+			if (sessionListData.getSessionNames()[i].equals(newSessionName)) {
+				return (sessionListData.getSessionDirectories()[i]);
+			}
+		}
+		return (null);
+	}
 
 	private String getDirectoryForCurrentDungeon() {
 		return (getDirectoryNameForDungeon(selectedDungeon.getDungeonName()));
@@ -506,9 +514,10 @@ public class DungeonManager implements IDungeonManager {
 			return (null);
 		}
 		for (PogData template : monsterTemplatePogs.getPogList()) {
-			if (template.getPogName() == pogData.getPogName()) {
-				PogData clone = pogData.clone();
-				clone.setPogImageUrl(template.getPogImageUrl());
+			if (template.getUUID() == pogData.getUUID()) {
+				PogData clone = template.clone();
+				clone.setPogColumn(pogData.getPogColumn());
+				clone.setPogRow(pogData.getPogRow());
 				return (clone);
 			}
 		}
@@ -594,4 +603,30 @@ public class DungeonManager implements IDungeonManager {
 			}
 		});
 	}
+
+	@Override
+	public void deleteSession(String selectedTemplate, String newSessionName) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		String dungeonDirectory = getDirectoryNameForDungeon(selectedTemplate);
+		parameters.put("templateName", dungeonDirectory);
+		parameters.put("sessionName", getDirectoryNameForSession(newSessionName));
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		dataRequester.requestData("", token, "DELETESESSION", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				getSessionList(selectedTemplate);
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+				lastError = error.getError();
+			}
+		});
+	}
+
+	@Override
+	public void joinSession(String newSessionName) {
+	}
+
 }

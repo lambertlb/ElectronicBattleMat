@@ -90,7 +90,6 @@ public class PogData extends JavaScriptObject {
 	public final PogData clone() {
 		String pogJson = JsonUtils.stringify(this);
 		PogData theClone = JsonUtils.<PogData>safeEval(pogJson);
-		theClone.setUUID(generateUUID());
 		return (theClone);
 	}
 
