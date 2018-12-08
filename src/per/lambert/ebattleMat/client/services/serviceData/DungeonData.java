@@ -7,6 +7,17 @@ public class DungeonData extends JavaScriptObject {
 	protected DungeonData() {
 	}
 
+	public final native String getUUID() /*-{
+		if (this.uuid === undefined) {
+			this.uuid = "";
+		}
+		return (this.uuid);
+	}-*/;
+
+	public final native void setUUID(String uuid) /*-{
+		this.uuid = uuid;
+	}-*/;
+
 	public final native String getDungeonName() /*-{
 		if (this.dungeonName === undefined) {
 			this.dungeonName = "";

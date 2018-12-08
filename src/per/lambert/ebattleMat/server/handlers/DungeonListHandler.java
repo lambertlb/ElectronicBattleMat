@@ -2,6 +2,7 @@ package per.lambert.ebattleMat.server.handlers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,14 +20,23 @@ public class DungeonListHandler implements IWebRequestHandler{
 
 	public class DungeonListResponseData {
 		public String[] dungeonNames;
+		public String[] dungeonUUIDS;
 		public String[] dungeonDirectories;
-		public DungeonListResponseData(Map<String,String> dungeonListData) {
+		public String serverPath;
+		public DungeonListResponseData(Map<String,String> dungeonListData, Map<String,String> dungeonDirectoryData, String serverPath) {
+			this.serverPath = serverPath;
 			dungeonNames = new String[dungeonListData.size()];
+			dungeonUUIDS = new String[dungeonListData.size()];
 			dungeonDirectories = new String[dungeonListData.size()];
 			int i = 0;
 			for (Map.Entry<String, String> entry : dungeonListData.entrySet()) {
-				dungeonNames[i] = entry.getKey();
-				dungeonDirectories[i] =  entry.getValue();
+				dungeonNames[i] = entry.getValue();
+				dungeonUUIDS[i] =  entry.getKey();
+				++i;
+			}
+			i = 0;
+			for (Map.Entry<String, String> entry : dungeonDirectoryData.entrySet()) {
+				dungeonDirectories[i] = entry.getValue();
 				++i;
 			}
 		}
@@ -34,7 +44,9 @@ public class DungeonListHandler implements IWebRequestHandler{
 	
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
-		DungeonListResponseData dungeonListResponseData = new DungeonListResponseData(DungeonsManager.getDungeonListData(servlet));
+		DungeonsManager.getDungeonListData(servlet);
+		URL servletPath = servlet.getServletContext().getResource("/");
+		DungeonListResponseData dungeonListResponseData = new DungeonListResponseData(DungeonsManager.getDungeonNameToUUIDMap(), DungeonsManager.getUuidTemplatePathMap(), servletPath.getPath());
 		Gson gson = new Gson();
 		String responseDataString = gson.toJson(dungeonListResponseData);
 

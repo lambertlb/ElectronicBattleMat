@@ -6,15 +6,15 @@ public class SessionListData extends JavaScriptObject {
 	protected SessionListData() {
 	}
 
-	public final native String getDungeonName() /*-{
-		if (this.dungeonName === undefined) {
-			this.dungeonName = "";
+	public final native String getDungeonUUID() /*-{
+		if (this.dungeonUUID === undefined) {
+			this.dungeonUUID = "";
 		}
-		return (this.dungeonName);
+		return (this.dungeonUUID);
 	}-*/;
 
-	public final native void setDungeonName(String dungeonName) /*-{
-		this.dungeonName = dungeonName;
+	public final native void setDungeonUUID(String dungeonUUID) /*-{
+		this.dungeonUUID = dungeonUUID;
 	}-*/;
 
 	public final native String[] getSessionNames() /*-{

@@ -15,9 +15,9 @@ public class CreateNewSessionHandler implements IWebRequestHandler {
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
-		String templateName = request.getParameter("templateName");
+		String dungeonUUID = request.getParameter("dungeonUUID");
 		String newSessionName = request.getParameter("newSessionName");
-		DungeonsManager.createSession(servlet, templateName, newSessionName);
+		DungeonsManager.createSession(servlet, dungeonUUID, newSessionName);
 		PrintWriter out = resp.getWriter();
 		out.print("");
 		out.flush();

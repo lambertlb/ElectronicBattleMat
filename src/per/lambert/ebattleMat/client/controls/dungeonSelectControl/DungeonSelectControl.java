@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -137,7 +139,7 @@ public class DungeonSelectControl extends WindowBox {
 
 			@Override
 			public void onChange(ChangeEvent event) {
-				dungeonSelectPresenter.selectNewDungeonName(dungeonDropdownList.getSelectedValue());
+				dungeonSelectPresenter.selectNewDungeonName(dungeonDropdownList.getSelectedItemText(), dungeonDropdownList.getSelectedValue());
 			}
 		});
 		newDungeonName.addChangeHandler(new ChangeHandler() {
@@ -280,9 +282,9 @@ public class DungeonSelectControl extends WindowBox {
 	public void loadDungeonList() {
 		dungeonDropdownList.clear();
 		dungeonDropdownList.addItem("Select a Dungeon for Operations");
-		String[] dungeonList = dungeonSelectPresenter.getDungeonList();
-		for (String dungeon : dungeonList) {
-			dungeonDropdownList.addItem(dungeon);
+		Map<String,String> dungeonNameToUUIDMap = dungeonSelectPresenter.getDungeonToUUIDMap();
+		for (Map.Entry<String, String> entry : dungeonNameToUUIDMap.entrySet()) {
+			dungeonDropdownList.addItem(entry.getKey(), entry.getValue());
 		}
 		dungeonDropdownList.setVisibleItemCount(1);
 	}

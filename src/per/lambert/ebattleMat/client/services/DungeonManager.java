@@ -36,16 +36,6 @@ public class DungeonManager implements IDungeonManager {
 
 	private int token;
 
-	private DungeonListData dungeonListData;
-
-	@Override
-	public String[] getDungeonNames() {
-		if (dungeonListData != null) {
-			return (dungeonListData.getDungeonNames());
-		}
-		return null;
-	}
-
 	SessionListData sessionListData;
 
 	@Override
@@ -82,7 +72,7 @@ public class DungeonManager implements IDungeonManager {
 
 	@Override
 	public DungeonLevel getCurrentLevelData() {
-		if (currentLevel < selectedDungeon.getDungeonlevels().length) {
+		if (selectedDungeon != null && currentLevel < selectedDungeon.getDungeonlevels().length) {
 			return (selectedDungeon.getDungeonlevels()[currentLevel]);
 		}
 		return null;
@@ -160,6 +150,17 @@ public class DungeonManager implements IDungeonManager {
 		this.editMode = editMode;
 	}
 
+	private Map<String, String> dungeonToUUIDMap = new HashMap<String, String>();
+
+	@Override
+	public Map<String, String> getDungeonToUUIDMap() {
+		return dungeonToUUIDMap;
+	}
+
+	private Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
+
+	private String uuidOfMasterTemplate;
+	
 	@Override
 	public void login(final String username, final String password, IUserCallback callback) {
 		lastError = DungeonServerError.Succsess;
@@ -228,17 +229,33 @@ public class DungeonManager implements IDungeonManager {
 		});
 	}
 
+	private String serverPath;
+	
+	public String getServerPath() {
+		return serverPath;
+	}
+
 	private void handleSuccessfulDungeonList(Object requestData, IUserCallback callback, Object data) {
-		dungeonListData = JsonUtils.<DungeonListData>safeEval((String) data);
+		dungeonToUUIDMap.clear();
+		uuidTemplatePathMap.clear();
+		uuidOfMasterTemplate = null;
+		DungeonListData dungeonListData = JsonUtils.<DungeonListData>safeEval((String) data);
+		serverPath = dungeonListData.getServerPath();
+		for (int i = 0; i < dungeonListData.getDungeonNames().length; ++i) {
+			dungeonToUUIDMap.put(dungeonListData.getDungeonNames()[i], dungeonListData.getDungeonUUIDS()[i]);
+			uuidTemplatePathMap.put(dungeonListData.getDungeonUUIDS()[i], dungeonListData.getDungeonDirectories()[i]);
+			if (dungeonListData.getDungeonNames()[i].equals("Template Dungeon")) {
+				uuidOfMasterTemplate = dungeonListData.getDungeonUUIDS()[i];
+			}
+		}
 		callback.onSuccess(requestData, null);
 	}
 
 	@Override
-	public void selectDungeon(String dungeonsName) {
+	public void selectDungeon(String dungeonUUID) {
 		initializeDungeonData();
-		String dungeonDirectory = getDirectoryNameForDungeon(dungeonsName);
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEONS_FOLDER + dungeonDirectory + ElectronicBattleMat.DUNGEON_DATA_FILENAME);
+		parameters.put("dungeonUUID", dungeonUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
 
@@ -266,15 +283,6 @@ public class DungeonManager implements IDungeonManager {
 		dungeonDataChanged();
 	}
 
-	private String getDirectoryNameForDungeon(String dungeonsName) {
-		for (int i = 0; i < dungeonListData.getDungeonNames().length; ++i) {
-			if (dungeonListData.getDungeonNames()[i].equals(dungeonsName)) {
-				return (dungeonListData.getDungeonDirectories()[i]);
-			}
-		}
-		return (null);
-	}
-
 	private String getDirectoryNameForSession(String newSessionName) {
 		for (int i = 0; i < sessionListData.getSessionNames().length; ++i) {
 			if (sessionListData.getSessionNames()[i].equals(newSessionName)) {
@@ -282,10 +290,6 @@ public class DungeonManager implements IDungeonManager {
 			}
 		}
 		return (null);
-	}
-
-	private String getDirectoryForCurrentDungeon() {
-		return (getDirectoryNameForDungeon(selectedDungeon.getDungeonName()));
 	}
 
 	@Override
@@ -302,8 +306,7 @@ public class DungeonManager implements IDungeonManager {
 	private void saveCurrentDungeonData() {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
-			getDirectoryNameForDungeon(selectedDungeon.getDungeonName());
-			parameters.put("dungeonName", getDirectoryForCurrentDungeon());
+			parameters.put("dungeonUUID", selectedDungeon.getUUID());
 			IDataRequester dataRequester = ServiceManager.getDataRequester();
 			String dungeonDataString = JsonUtils.stringify(selectedDungeon);
 			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
@@ -426,21 +429,28 @@ public class DungeonManager implements IDungeonManager {
 
 	private int resourceCount = 1;
 
+	private String getDirectoryForCurrentDungeon() {
+		return (uuidTemplatePathMap.get(selectedDungeon.getUUID()));
+	}
+
+	private String getDirectoryNameForDungeon(String dungeonUUID) {
+		return (uuidTemplatePathMap.get(dungeonUUID));
+	}
+
 	@Override
 	public String getUrlToDungeonResource(String resourceItem) {
 		if (resourceItem.startsWith("http")) {
 			return resourceItem;
 		}
-		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
-		String resourceUrl = ElectronicBattleMat.DUNGEONS_LOCATION + directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
+		String resourceUrl = "/" + directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
 		return (resourceUrl);
 	}
 
 	@Override
-	public void createNewDungeon(final String templateName, final String newDungeonName) {
+	public void createNewDungeon(final String dungeonUUID, final String newDungeonName) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("templateName", getDirectoryNameForDungeon(templateName));
+		parameters.put("dungeonUUID", dungeonUUID);
 		parameters.put("newDungeonName", newDungeonName);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "CREATENEWDUNGEON", parameters, new IUserCallback() {
@@ -466,23 +476,23 @@ public class DungeonManager implements IDungeonManager {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				selectDungeon(newDungeonName);
+				dungeonDataChanged();
 			}
 		});
 	}
 
 	@Override
-	public boolean okToDeleteThisTemplate(String dungeonsName) {
-		return !dungeonsName.equals("Template Dungeon");
+	public boolean okToDeleteThisTemplate(String dungeonUUID) {
+		return !dungeonUUID.equals(uuidOfMasterTemplate);
 	}
 
 	@Override
-	public void deleteTemplate(String selectedTemplate) {
-		if (!okToDeleteThisTemplate(selectedTemplate)) {
+	public void deleteTemplate(String dungeonUUID) {
+		if (!okToDeleteThisTemplate(dungeonUUID)) {
 			return;
 		}
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("templateName", getDirectoryNameForDungeon(selectedTemplate));
+		parameters.put("dungeonUUID", dungeonUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "DELETEDUNGEON", parameters, new IUserCallback() {
 
@@ -533,10 +543,10 @@ public class DungeonManager implements IDungeonManager {
 		return (pcTemplateMap.get(pogUUID));
 	}
 
-	public void getSessionList(String dungeonName) {
+	public void getSessionList(String dungeonUUID) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("dungeonName", getDirectoryNameForDungeon(dungeonName));
+		parameters.put("dungeonUUID", dungeonUUID);
 		dataRequester.requestData("", token, "GETSESSIONLIST", parameters, new IUserCallback() {
 
 			@Override
@@ -588,17 +598,16 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
-	public void createNewSession(String selectedTemplate, String newSessionName) {
+	public void createNewSession(String dungeonUUID, String newSessionName) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		String templateDirectory = getDirectoryNameForDungeon(selectedTemplate);
-		parameters.put("templateName", templateDirectory);
+		parameters.put("dungeonUUID", dungeonUUID);
 		parameters.put("newSessionName", newSessionName);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "CREATENEWSESSION", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				getSessionList(selectedTemplate);
+				getSessionList(dungeonUUID);
 			}
 
 			@Override
@@ -632,5 +641,4 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public void joinSession(String newSessionName) {
 	}
-
 }

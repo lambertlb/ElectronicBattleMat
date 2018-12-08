@@ -18,11 +18,11 @@ import java.util.Map;
 public class SessionListHandler implements IWebRequestHandler{
 
 	public class SessionListResponseData {
-		public String dungeonName;
+		public String dungeonUUID;
 		public String[] sessionNames;
 		public String[] sessionDirectories;
-		public SessionListResponseData(Map<String,String> dungeonListData, String dungeonName) {
-			this.dungeonName = dungeonName;
+		public SessionListResponseData(Map<String,String> dungeonListData, String dungeonUUID) {
+			this.dungeonUUID = dungeonUUID;
 			sessionNames = new String[dungeonListData.size()];
 			sessionDirectories = new String[dungeonListData.size()];
 			int i = 0;
@@ -36,8 +36,8 @@ public class SessionListHandler implements IWebRequestHandler{
 	
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
-		String dungeonName = request.getParameter("dungeonName");
-		SessionListResponseData sessionListResponseData = new SessionListResponseData(DungeonsManager.getSessionListData(servlet, dungeonName), dungeonName);
+		String dungeonUUID = request.getParameter("dungeonUUID");
+		SessionListResponseData sessionListResponseData = new SessionListResponseData(DungeonsManager.getSessionListData(servlet, dungeonUUID), dungeonUUID);
 		Gson gson = new Gson();
 		String responseDataString = gson.toJson(sessionListResponseData);
 

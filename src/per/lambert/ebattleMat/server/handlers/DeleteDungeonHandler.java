@@ -15,9 +15,9 @@ public class DeleteDungeonHandler implements IWebRequestHandler {
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
-		String templateName = request.getParameter("templateName");
+		String dungeonUUID = request.getParameter("dungeonUUID");
 		PrintWriter out = resp.getWriter();
-		DungeonsManager.deleteDungeon(servlet, templateName);
+		DungeonsManager.deleteDungeon(servlet, dungeonUUID);
 		out.print("");
 		out.flush();
 	}

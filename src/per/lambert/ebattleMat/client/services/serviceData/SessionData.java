@@ -18,15 +18,15 @@ public class SessionData extends JavaScriptObject {
 		this.sessionName = sessionName;
 	}-*/;
 
-	public final native String getTemplateDungeonName() /*-{
-		if (this.templateDungeonName === undefined) {
-			this.templateDungeonName = "";
+	public final native String getDungeonUUID() /*-{
+		if (this.dungeonUUID === undefined) {
+			this.dungeonUUID = "";
 		}
-		return (this.templateDungeonName);
+		return (this.dungeonUUID);
 	}-*/;
 
-	public final native void setTemplateDungeonName(String templateDungeonName) /*-{
-		this.templateDungeonName = templateDungeonName;
+	public final native void setDungeonUUID(String dungeonUUID) /*-{
+		this.dungeonUUID = dungeonUUID;
 	}-*/;
 
 	public final native SessionLevel[] getSessionLevels() /*-{

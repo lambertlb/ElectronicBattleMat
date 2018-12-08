@@ -15,9 +15,9 @@ public class CreateNewDungeonHandler implements IWebRequestHandler {
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
-		String templateName = request.getParameter("templateName");
+		String dungeonUUID = request.getParameter("dungeonUUID");
 		String newDungeonName = request.getParameter("newDungeonName");
-		DungeonsManager.copyDungeon(servlet, templateName, newDungeonName);
+		DungeonsManager.copyDungeon(servlet, dungeonUUID, newDungeonName);
 		PrintWriter out = resp.getWriter();
 		out.print("");
 		out.flush();

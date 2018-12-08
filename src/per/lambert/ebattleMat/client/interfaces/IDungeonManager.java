@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.client.interfaces;
 
+import java.util.Map;
+
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -20,9 +22,9 @@ public interface IDungeonManager {
 
 	DungeonServerError getLastError();
 
-	String[] getDungeonNames();
+	Map<String, String> getDungeonToUUIDMap();
 
-	void selectDungeon(String dungeonsName);
+	void selectDungeon(String dungeonUUID);
 
 	DungeonData getSelectedDungeon();
 
@@ -62,13 +64,13 @@ public interface IDungeonManager {
 
 	void setFowToggle(boolean fowToggle);
 
-	void createNewDungeon(String templateName, String newDungeonName);
+	void createNewDungeon(String dungeonUUID, String newDungeonName);
 
 	String getUrlToDungeonResource(String resourceItem);
 
 	boolean okToDeleteThisTemplate(String dungeonsName);
 
-	void deleteTemplate(String selectedTemplate);
+	void deleteTemplate(String dungeonUUID);
 
 	PogData fullCLoneMonster(PogData pogData);
 

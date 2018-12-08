@@ -636,6 +636,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	public void dungeonDataChanged() {
 		intializeView();
 		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
+		if (dungeonLevel == null) {
+			return;
+		}
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
 		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(dungeonPicture);
 		image.setUrl(imageUrl);

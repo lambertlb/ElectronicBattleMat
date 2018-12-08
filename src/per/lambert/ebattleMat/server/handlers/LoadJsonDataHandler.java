@@ -14,11 +14,16 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
 public class LoadJsonDataHandler implements IWebRequestHandler {
 
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet,
-			String jsonData) throws ServletException, IOException {
+	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
 		String fileName = request.getParameter("fileName");
+		String dungeonUUID = request.getParameter("dungeonUUID");
 		PrintWriter out = resp.getWriter();
-		out.print(DungeonsManager.getFileAsString(servlet, fileName));
+		if (dungeonUUID != null) {
+			out.print(DungeonsManager.getDungeonDataAsString(servlet, dungeonUUID));
+			
+		} else {
+			out.print(DungeonsManager.getFileAsString(servlet, fileName));
+		}
 		out.flush();
 	}
 
