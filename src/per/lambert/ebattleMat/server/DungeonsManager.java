@@ -168,6 +168,7 @@ public class DungeonsManager {
 		File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID));
 		File destDir = new File(servletPath.getPath() + dungeonLocation + dstDirectory);
 		FileUtils.copyDirectory(srcDir, destDir);
+		deleteAnyOldSessions(destDir);
 		DungeonData dungeonData = getDungeonData(servlet, dstDirectory);
 		dungeonData.dungeonName = newDungeonName;
 		UUID uuid = UUID.randomUUID();
@@ -178,6 +179,12 @@ public class DungeonsManager {
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(dungeonData);
 		saveDungeonData(servlet, jsonData, uuidString);
+	}
+
+	private static void deleteAnyOldSessions(File destDir) throws IOException {
+		String sessionsPath = destDir.getPath()+ "/" + ElectronicBattleMat.SESSIONS_FOLDER;
+		File sessions = new File(sessionsPath);
+		FileUtils.deleteDirectory(sessions);
 	}
 
 	public static void deleteDungeon(HttpServlet servlet, String dungeonUUID) throws IOException {
