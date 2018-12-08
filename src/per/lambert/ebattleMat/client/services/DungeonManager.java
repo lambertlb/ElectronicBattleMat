@@ -443,7 +443,7 @@ public class DungeonManager implements IDungeonManager {
 			return resourceItem;
 		}
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
-		String resourceUrl = "/" + directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
+		String resourceUrl = directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
 		return (resourceUrl);
 	}
 
