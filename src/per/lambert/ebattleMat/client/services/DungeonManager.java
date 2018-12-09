@@ -43,6 +43,8 @@ public class DungeonManager implements IDungeonManager {
 		return sessionListData;
 	}
 
+	private String selectedDungeonUUID;
+
 	private DungeonData selectedDungeon;
 
 	@Override
@@ -157,7 +159,12 @@ public class DungeonManager implements IDungeonManager {
 	private Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
 
 	private String uuidOfMasterTemplate;
-	
+	private String serverPath;
+
+	public String getServerPath() {
+		return serverPath;
+	}
+
 	@Override
 	public void login(final String username, final String password, IUserCallback callback) {
 		lastError = DungeonServerError.Succsess;
@@ -226,12 +233,6 @@ public class DungeonManager implements IDungeonManager {
 		});
 	}
 
-	private String serverPath;
-	
-	public String getServerPath() {
-		return serverPath;
-	}
-
 	private void handleSuccessfulDungeonList(Object requestData, IUserCallback callback, Object data) {
 		dungeonToUUIDMap.clear();
 		uuidTemplatePathMap.clear();
@@ -250,48 +251,46 @@ public class DungeonManager implements IDungeonManager {
 
 	@Override
 	public void selectDungeon(String dungeonUUID) {
+		selectedDungeonUUID = dungeonUUID;
+	}
+
+	@Override
+	public void editSelectedDungeon() {
+		loadSelectedDungeon();
+	}
+
+	private void loadSelectedDungeon() {
 		initializeDungeonData();
+		loadInResourceData();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("dungeonUUID", dungeonUUID);
+		parameters.put("dungeonUUID", selectedDungeonUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				handleDungeonData(data);
+				selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
+				if (!editMode) {
+					loadSessionData();
+				} else {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToEdit, null));
+				}
 			}
 
 			@Override
 			public void onError(Object sender, IErrorInformation error) {
 			}
 		});
-		loadInResourceData();
 	}
 
 	private void initializeDungeonData() {
 		setCurrentLevel(0);
-		isDungeonMaster = false;
-		editMode = false;
-	}
-
-	private void handleDungeonData(Object data) {
-		selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
-		dungeonDataChanged();
-	}
-
-	@Override
-	public void dungeonDataChanged() {
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataChanged, null));
 	}
 
 	@Override
 	public void saveDungeonData() {
-		saveCurrentDungeonData();
-		dungeonDataChanged();
-	}
-
-	private void saveCurrentDungeonData() {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
 			parameters.put("dungeonUUID", selectedDungeon.getUUID());
@@ -301,6 +300,7 @@ public class DungeonManager implements IDungeonManager {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataSaved, null));
 				}
 
 				@Override
@@ -421,10 +421,6 @@ public class DungeonManager implements IDungeonManager {
 		return (uuidTemplatePathMap.get(selectedDungeon.getUUID()));
 	}
 
-	private String getDirectoryNameForDungeon(String dungeonUUID) {
-		return (uuidTemplatePathMap.get(dungeonUUID));
-	}
-
 	@Override
 	public String getUrlToDungeonResource(String resourceItem) {
 		if (resourceItem.startsWith("http")) {
@@ -464,7 +460,7 @@ public class DungeonManager implements IDungeonManager {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				dungeonDataChanged();
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataCreated, null));
 			}
 		});
 	}
@@ -505,7 +501,7 @@ public class DungeonManager implements IDungeonManager {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				dungeonDataChanged();
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataDeleted, null));
 			}
 		});
 	}
@@ -612,6 +608,9 @@ public class DungeonManager implements IDungeonManager {
 				lastError = error.getError();
 			}
 		});
+	}
+
+	private void loadSessionData() {
 	}
 
 	@Override

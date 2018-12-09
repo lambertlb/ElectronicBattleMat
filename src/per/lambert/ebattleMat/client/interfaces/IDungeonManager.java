@@ -26,6 +26,7 @@ public interface IDungeonManager {
 	Map<String, String> getDungeonToUUIDMap();
 
 	void selectDungeon(String dungeonUUID);
+	void editSelectedDungeon();
 
 	DungeonData getSelectedDungeon();
 
@@ -36,8 +37,6 @@ public interface IDungeonManager {
 	void setCurrentLevel(int currentLevel);
 
 	DungeonLevel getCurrentLevelData();
-
-	void dungeonDataChanged();
 
 	void saveDungeonData();
 

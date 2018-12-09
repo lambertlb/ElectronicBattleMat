@@ -94,7 +94,15 @@ public class DungeonSelectPresenter {
 		IEventManager eventManager = ServiceManager.getEventManager();
 		dungeonDataChangedEvent = eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
-				if (event.getReasonForAction() == ReasonForAction.DungeonDataChanged) {
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataDeleted) {
+					refreshView();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataLoaded) {
+					refreshView();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataCreated) {
 					refreshView();
 					return;
 				}
@@ -183,6 +191,7 @@ public class DungeonSelectPresenter {
 		ServiceManager.getDungeonManager().setDungeonMaster(isDungeonMaster);
 		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
 		ServiceManager.getDungeonManager().setEditMode(true);
+		ServiceManager.getDungeonManager().editSelectedDungeon();
 		view.close();
 	}
 
@@ -213,11 +222,15 @@ public class DungeonSelectPresenter {
 	}
 
 	public void joinSession() {
+		ServiceManager.getDungeonManager().setDungeonMaster(isDungeonMaster);
+		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
+		ServiceManager.getDungeonManager().setEditMode(false);
 		ServiceManager.getDungeonManager().joinSession(newSessionUUID);
 	}
 
 	public void deleteSession() {
 		ServiceManager.getDungeonManager().deleteSession(selectedDungeonUUID, newSessionUUID);
+		okToDeleteSession = false;
 	}
 
 	public void closing() {
