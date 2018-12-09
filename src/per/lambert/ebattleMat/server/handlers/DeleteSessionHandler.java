@@ -15,10 +15,10 @@ public class DeleteSessionHandler implements IWebRequestHandler {
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
-		String templateName = request.getParameter("templateName");
-		String sessionName = request.getParameter("sessionName");
+		String dungeonUUID = request.getParameter("dungeonUUID");
+		String sessionUUID = request.getParameter("sessionUUID");
 		PrintWriter out = resp.getWriter();
-		DungeonsManager.deleteSession(servlet, templateName, sessionName);
+		DungeonsManager.deleteSession(servlet, dungeonUUID, sessionUUID);
 		out.print("");
 		out.flush();
 	}

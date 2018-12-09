@@ -36,14 +36,11 @@ public class DungeonManager implements IDungeonManager {
 
 	private int token;
 
-	SessionListData sessionListData;
+	private SessionListData sessionListData;
 
 	@Override
-	public String[] getSessionNames() {
-		if (sessionListData != null) {
-			return (sessionListData.getSessionNames());
-		}
-		return null;
+	public SessionListData getSessionListData() {
+		return sessionListData;
 	}
 
 	private DungeonData selectedDungeon;
@@ -281,15 +278,6 @@ public class DungeonManager implements IDungeonManager {
 		selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
 		dungeonDataChanged();
-	}
-
-	private String getDirectoryNameForSession(String newSessionName) {
-		for (int i = 0; i < sessionListData.getSessionNames().length; ++i) {
-			if (sessionListData.getSessionNames()[i].equals(newSessionName)) {
-				return (sessionListData.getSessionDirectories()[i]);
-			}
-		}
-		return (null);
 	}
 
 	@Override
@@ -573,24 +561,13 @@ public class DungeonManager implements IDungeonManager {
 		boolean isInCurrentSessionDirectories = false;
 		if (isValidSessionName) {
 			isInCurrentSessionNames = isInCurrentSessionNames(newSessionName);
-			isInCurrentSessionDirectories = isInCurrentSessionDirectories(newSessionName);
 		}
 		return isValidSessionName && !isInCurrentSessionNames && !isInCurrentSessionDirectories;
 	}
 
-	private boolean isInCurrentSessionDirectories(String newSessionName) {
+	private boolean isInCurrentSessionNames(String newSessionName) {
 		for (String sessionName : sessionListData.getSessionNames()) {
 			if (sessionName.equals(newSessionName)) {
-				return (true);
-			}
-		}
-		return false;
-	}
-
-	private boolean isInCurrentSessionNames(String newSessionName) {
-		String directoryName = newSessionName.replaceAll("\\s+", "_");
-		for (String directory : sessionListData.getSessionDirectories()) {
-			if (directory.equals(directoryName)) {
 				return (true);
 			}
 		}
@@ -618,17 +595,16 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
-	public void deleteSession(String selectedTemplate, String newSessionName) {
+	public void deleteSession(String dungeonUUID, String sessionUUID) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		String dungeonDirectory = getDirectoryNameForDungeon(selectedTemplate);
-		parameters.put("templateName", dungeonDirectory);
-		parameters.put("sessionName", getDirectoryNameForSession(newSessionName));
+		parameters.put("dungeonUUID", dungeonUUID);
+		parameters.put("sessionUUID", sessionUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "DELETESESSION", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				getSessionList(selectedTemplate);
+				getSessionList(dungeonUUID);
 			}
 
 			@Override

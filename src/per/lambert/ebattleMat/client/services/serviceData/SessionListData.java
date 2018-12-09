@@ -21,7 +21,7 @@ public class SessionListData extends JavaScriptObject {
 		return this.sessionNames;
 	}-*/;
 
-	public final native String[] getSessionDirectories() /*-{
-		return this.sessionDirectories;
+	public final native String[] getSessionUUIDs() /*-{
+		return this.sessionUUIDs;
 	}-*/;
 }

@@ -182,7 +182,7 @@ public class DungeonsManager {
 	}
 
 	private static void deleteAnyOldSessions(File destDir) throws IOException {
-		String sessionsPath = destDir.getPath()+ "/" + ElectronicBattleMat.SESSIONS_FOLDER;
+		String sessionsPath = destDir.getPath() + "/" + ElectronicBattleMat.SESSIONS_FOLDER;
 		File sessions = new File(sessionsPath);
 		FileUtils.deleteDirectory(sessions);
 	}
@@ -218,7 +218,7 @@ public class DungeonsManager {
 
 	private static void getSessionName(final HttpServlet servlet, String sessionsPath, File possibleSession, Map<String, String> sessionListData) throws IOException {
 		DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
-		sessionListData.put(sessionData.sessionName, sessionsPath + possibleSession.getName());
+		sessionListData.put(sessionData.sessionName, sessionData.sessionUUID);
 	}
 
 	private static DungeonSessionData getSessionData(final HttpServlet servlet, String resourcePath) throws IOException {
@@ -263,7 +263,9 @@ public class DungeonsManager {
 	}
 
 	private static DungeonSessionData createSessionData(HttpServlet servlet, String sessionDirectory, String dungeonUUID, String newSessionName, DungeonData dungeonData) {
-		DungeonSessionData newSessionData = new DungeonSessionData(newSessionName, dungeonUUID);
+		UUID uuid = UUID.randomUUID();
+		String uuidString = uuid.toString();
+		DungeonSessionData newSessionData = new DungeonSessionData(newSessionName, dungeonUUID, uuidString);
 		newSessionData.sessionLevels = new DungeonSessionLevel[dungeonData.dungeonLevels.length];
 		for (int i = 0; i < dungeonData.dungeonLevels.length; ++i) {
 			newSessionData.sessionLevels[i] = getSessionLevel(i, dungeonData, newSessionData);
@@ -276,11 +278,24 @@ public class DungeonsManager {
 		return (sessionLevel);
 	}
 
-	public static void deleteSession(HttpServlet servlet, String templateName, String sessionName) throws IOException {
+	public static void deleteSession(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
 		URL servletPath = servlet.getServletContext().getResource("/");
-		String templateDirectory = servletPath.getPath() + dungeonLocation + templateName;
-		String sessionDirectory = templateDirectory + ElectronicBattleMat.SESSIONS_FOLDER + sessionName;
-		File srcDir = new File(sessionDirectory);
-		FileUtils.deleteDirectory(srcDir);
+		String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
+		String directoryPath = servletPath.getPath() + sessionsPath;
+		File sessionsDirectory = new File(directoryPath);
+		for (File possibleSession : sessionsDirectory.listFiles()) {
+			if (possibleSession.isDirectory()) {
+				String possibleSessionUUID = getSessionUUID(servlet, possibleSession);
+				if (possibleSessionUUID.equals(sessionUUID)) {
+					FileUtils.deleteDirectory(possibleSession);
+					return;
+				}
+			}
+		}
+	}
+
+	private static String getSessionUUID(HttpServlet servlet, File possibleSession) throws IOException {
+		DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
+		return (sessionData.sessionUUID);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 /**
  * @author LLambert Interface to user management services
@@ -76,7 +77,7 @@ public interface IDungeonManager {
 
 	PogData findCharacterPog(String pogUUID);
 
-	String[] getSessionNames();
+	SessionListData getSessionListData();
 
 	void getSessionList(String dungeonName);
 

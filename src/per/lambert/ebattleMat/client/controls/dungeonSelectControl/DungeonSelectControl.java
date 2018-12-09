@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 import per.lambert.ebattleMat.client.windowBox.WindowBox;
 
 public class DungeonSelectControl extends WindowBox {
@@ -166,7 +167,7 @@ public class DungeonSelectControl extends WindowBox {
 
 			@Override
 			public void onChange(ChangeEvent event) {
-				dungeonSelectPresenter.selectSessionName(sessionDropdownList.getSelectedValue());
+				dungeonSelectPresenter.selectSessionName(sessionDropdownList.getSelectedItemText(), sessionDropdownList.getSelectedValue());
 			}
 		});
 		newSessionName.addClickHandler(new ClickHandler() {
@@ -307,10 +308,13 @@ public class DungeonSelectControl extends WindowBox {
 		enableWidget(dmSessionButton, dungeonSelectPresenter.isOkToDMSession());
 		enableWidget(newSessionName, dungeonSelectPresenter.isOkToDelete());
 		if (!dungeonSelectPresenter.isOkToDelete()) {
-			newSessionName.setText("Enter Session Name");
+			resetNewSessionText();
 		}
 	}
 
+	public void resetNewSessionText() {
+		newSessionName.setText("Enter Session Name");		
+	}
 	public void loadSessionList() {
 		setupSessionDisplayForDungeonMaster();
 		sessionDropdownList.clear();
@@ -319,10 +323,10 @@ public class DungeonSelectControl extends WindowBox {
 		if (!dungeonSelectPresenter.isOkToShowSessions()) {
 			return;
 		}
-		String[] sessionNames = dungeonSelectPresenter.getSessionList();
-		if (sessionNames != null) {
-			for (String session : sessionNames) {
-				sessionDropdownList.addItem(session);
+		SessionListData getSessionListData = dungeonSelectPresenter.getSessionListData();
+		if (getSessionListData != null) {
+			for (int i = 0; i < getSessionListData.getSessionNames().length; ++i) {
+				sessionDropdownList.addItem(getSessionListData.getSessionNames()[i], getSessionListData.getSessionUUIDs()[i]);
 			}
 		}
 	}

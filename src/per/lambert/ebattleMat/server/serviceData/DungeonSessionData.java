@@ -3,10 +3,14 @@ package per.lambert.ebattleMat.server.serviceData;
 public class DungeonSessionData {
 	public String sessionName;
 	public String dungeonUUID;
+	public String sessionUUID;
 	public DungeonSessionLevel[] sessionLevels;
+	public transient String testField;
 
-	public DungeonSessionData(String newSessionName, String dungeonUUID) {
+	public DungeonSessionData(String newSessionName, String dungeonUUID, String sessionUUID) {
 		sessionName = newSessionName;
 		this.dungeonUUID = dungeonUUID;
+		this.sessionUUID = sessionUUID;
+		testField = "testing";
 	}
 }

@@ -20,15 +20,15 @@ public class SessionListHandler implements IWebRequestHandler{
 	public class SessionListResponseData {
 		public String dungeonUUID;
 		public String[] sessionNames;
-		public String[] sessionDirectories;
+		public String[] sessionUUIDs;
 		public SessionListResponseData(Map<String,String> dungeonListData, String dungeonUUID) {
 			this.dungeonUUID = dungeonUUID;
 			sessionNames = new String[dungeonListData.size()];
-			sessionDirectories = new String[dungeonListData.size()];
+			sessionUUIDs = new String[dungeonListData.size()];
 			int i = 0;
 			for (Map.Entry<String, String> entry : dungeonListData.entrySet()) {
 				sessionNames[i] = entry.getKey();
-				sessionDirectories[i] =  entry.getValue();
+				sessionUUIDs[i] =  entry.getValue();
 				++i;
 			}
 		}

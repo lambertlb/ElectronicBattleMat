@@ -9,6 +9,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
+import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 public class DungeonSelectPresenter {
 	private DungeonSelectControl view;
@@ -16,6 +17,7 @@ public class DungeonSelectPresenter {
 	private String newDungeonName;
 	private String selectedDungeonUUID;
 	private String newSessionName;
+	private String newSessionUUID;
 
 	public boolean isDungeonMaster() {
 		return isDungeonMaster;
@@ -47,7 +49,7 @@ public class DungeonSelectPresenter {
 	}
 
 	public boolean isOkToShowSessions() {
-		return isValidDungeonForSessions && ServiceManager.getDungeonManager().getSessionNames() != null;
+		return isValidDungeonForSessions && ServiceManager.getDungeonManager().getSessionListData() != null;
 	}
 
 	private boolean isValidDungeonForSessions;
@@ -145,8 +147,8 @@ public class DungeonSelectPresenter {
 		return ServiceManager.getDungeonManager().getDungeonToUUIDMap();
 	}
 
-	public String[] getSessionList() {
-		return ServiceManager.getDungeonManager().getSessionNames();
+	public SessionListData getSessionListData() {
+		return ServiceManager.getDungeonManager().getSessionListData();
 	}
 
 	public void selectNewDungeonName(String dungeonName, String dungeonUUID) {
@@ -164,8 +166,9 @@ public class DungeonSelectPresenter {
 		view.setToDungeonMasterState();
 	}
 
-	public void selectSessionName(String selectedValue) {
-		newSessionName = selectedValue;
+	public void selectSessionName(String sessionName, String sessionUUID) {
+		newSessionName = sessionName;
+		newSessionUUID = sessionUUID;
 		okToDeleteSession = !newSessionName.startsWith("Select ");
 		okToDMSession = okToDeleteSession;
 		okToJoinSession = okToDeleteSession;
@@ -201,6 +204,8 @@ public class DungeonSelectPresenter {
 
 	public void createSession() {
 		ServiceManager.getDungeonManager().createNewSession(selectedDungeonUUID, newSessionName);
+		okToCreateSession = false;
+		view.resetNewSessionText();
 	}
 
 	public void deleteTemplate() {
@@ -208,11 +213,11 @@ public class DungeonSelectPresenter {
 	}
 
 	public void joinSession() {
-		ServiceManager.getDungeonManager().joinSession(newSessionName);
+		ServiceManager.getDungeonManager().joinSession(newSessionUUID);
 	}
 
 	public void deleteSession() {
-		ServiceManager.getDungeonManager().deleteSession(selectedDungeonUUID, newSessionName);
+		ServiceManager.getDungeonManager().deleteSession(selectedDungeonUUID, newSessionUUID);
 	}
 
 	public void closing() {
