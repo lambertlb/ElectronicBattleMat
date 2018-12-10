@@ -495,7 +495,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		IDungeonManager dungeonManager = ServiceManager.getDungeonManager();
 		double size = adjustedGridSize() + 2;
-		fowCanvas.getElement().getStyle().setOpacity(0.5);
+		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+			fowCanvas.getElement().getStyle().setOpacity(0.5);
+		} else {
+			fowCanvas.getElement().getStyle().setOpacity(1.0);	
+		}
 		for (int i = 0; i < verticalLines; ++i) {
 			for (int j = 0; j < horizontalLines; ++j) {
 				drawFOW(dungeonManager.isFowSet(i, j), size, i, j);
@@ -537,7 +541,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	private void dropPog(DropEvent event) {
-		if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
+		if (!ServiceManager.getDungeonManager().isDungeonMaster() && ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
 			removeHighlightGridSquare();
 			return;
 		}
@@ -663,8 +667,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	private void addMonsterPogs() {
-		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
-		PogDataLite[] monsters = dungeonLevel.getMonsters();
+		PogDataLite[] monsters = ServiceManager.getDungeonManager().getMonstersForCurrentLevel();
 		if (monsters == null) {
 			return;
 		}

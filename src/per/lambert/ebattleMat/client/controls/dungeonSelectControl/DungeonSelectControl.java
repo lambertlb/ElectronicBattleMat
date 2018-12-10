@@ -136,6 +136,12 @@ public class DungeonSelectControl extends WindowBox {
 				dungeonSelectPresenter.joinSession();
 			}
 		});
+		dmSessionButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dungeonSelectPresenter.dmSession();
+			}
+		});
 		dungeonDropdownList.addChangeHandler(new ChangeHandler() {
 
 			@Override

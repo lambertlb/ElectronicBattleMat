@@ -29,6 +29,13 @@ public class SessionData extends JavaScriptObject {
 		this.dungeonUUID = dungeonUUID;
 	}-*/;
 
+	public final native String getSessionUUID() /*-{
+		if (this.sessionUUID === undefined) {
+			this.sessionUUID = "";
+		}
+		return (this.sessionUUID);
+	}-*/;
+
 	public final native SessionLevel[] getSessionLevels() /*-{
 		if (this.sessionLevels === undefined) {
 			sessionLevels = null;

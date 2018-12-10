@@ -8,28 +8,35 @@ public class SessionLevel extends JavaScriptObject {
 
 	public final native boolean[][] getFOW() /*-{
 		if (this.fogOfWar === undefined) {
-			this.fogOfWar = [[]];
+			this.fogOfWar = [ [] ];
 		}
 		return (this.fogOfWar);
 	}-*/;
 
-	public final native PogData[] getPlayers() /*-{
+	public final native PogDataLite[] getPlayers() /*-{
 		if (this.players === undefined) {
-			return (new PogData[0]);
+			return (new PogDataLite[0]);
 		}
 		return (this.players);
 	}-*/;
 
-	public final native PogData[] getMonsters() /*-{
+	public final native PogDataLite[] getMonsters() /*-{
 		if (this.monsters === undefined) {
-			return (new PogData[0]);
+			return (new PogDataLite[0]);
 		}
 		return (this.monsters);
 	}-*/;
 
-	public final native PogData[] getRoomObjects() /*-{
+	public final native void addMonsters(PogDataLite monster) /*-{
+		if (this.monsters === undefined) {
+			this.monsters = new PogDataLite[0];
+		}
+		this.monsters.push(monster);
+	}-*/;
+
+	public final native PogDataLite[] getRoomObjects() /*-{
 		if (this.roomObjects === undefined) {
-			return (new PogData[0]);
+			return (new PogDataLite[0]);
 		}
 		return (this.roomObjects);
 	}-*/;

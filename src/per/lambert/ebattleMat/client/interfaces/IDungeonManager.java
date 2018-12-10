@@ -94,4 +94,6 @@ public interface IDungeonManager {
 	void updatePogDataOnLevel(PogData pog);
 
 	void addPogDataToLevel(PogData clonePog);
+
+	PogDataLite[] getMonstersForCurrentLevel();
 }

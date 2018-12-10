@@ -222,10 +222,19 @@ public class DungeonSelectPresenter {
 	}
 
 	public void joinSession() {
-		ServiceManager.getDungeonManager().setDungeonMaster(isDungeonMaster);
+		ServiceManager.getDungeonManager().setDungeonMaster(false);
 		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
 		ServiceManager.getDungeonManager().setEditMode(false);
 		ServiceManager.getDungeonManager().joinSession(newSessionUUID);
+		view.close();
+	}
+
+	public void dmSession() {
+		ServiceManager.getDungeonManager().setDungeonMaster(true);
+		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
+		ServiceManager.getDungeonManager().setEditMode(false);
+		ServiceManager.getDungeonManager().joinSession(newSessionUUID);
+		view.close();
 	}
 
 	public void deleteSession() {
@@ -239,4 +248,5 @@ public class DungeonSelectPresenter {
 		// dungeonDataChangedEvent = null;
 		// }
 	}
+
 }

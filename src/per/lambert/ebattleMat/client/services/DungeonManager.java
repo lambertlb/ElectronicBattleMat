@@ -21,6 +21,8 @@ import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
+import per.lambert.ebattleMat.client.services.serviceData.SessionData;
+import per.lambert.ebattleMat.client.services.serviceData.SessionLevel;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 public class DungeonManager implements IDungeonManager {
@@ -45,6 +47,7 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private String selectedDungeonUUID;
+	private String selectedSessionUUID;
 
 	private DungeonData selectedDungeon;
 
@@ -58,6 +61,8 @@ public class DungeonManager implements IDungeonManager {
 		return selectedDungeon;
 	}
 
+	private SessionData selectedSession;
+	
 	private int currentLevel;
 
 	@Override
@@ -74,6 +79,13 @@ public class DungeonManager implements IDungeonManager {
 	public DungeonLevel getCurrentLevelData() {
 		if (selectedDungeon != null && currentLevel < selectedDungeon.getDungeonlevels().length) {
 			return (selectedDungeon.getDungeonlevels()[currentLevel]);
+		}
+		return null;
+	}
+
+	public SessionLevel getCurrentSessionLevelData() {
+		if (selectedSession != null && currentLevel < selectedSession.getSessionLevels().length) {
+			return (selectedSession.getSessionLevels()[currentLevel]);
 		}
 		return null;
 	}
@@ -617,14 +629,41 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private void loadSessionData() {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("dungeonUUID", selectedDungeonUUID);
+		parameters.put("sessionUUID", selectedSessionUUID);
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				selectedSession = JsonUtils.<SessionData>safeEval((String) data);
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToJoin, null));
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+		});
 	}
 
 	@Override
-	public void joinSession(String newSessionName) {
+	public void joinSession(String sessionUUID) {
+		selectedSessionUUID = sessionUUID;
+		loadSelectedDungeon();
 	}
 
 	@Override
 	public void updatePogDataOnLevel(PogData pog) {
+		if (editMode) {
+			updateTemplateLevel(pog);
+		}
+		if (isDungeonMaster) {
+			updateSessionLevel(pog);
+		}
+	}
+
+	private void updateTemplateLevel(PogData pog) {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (dungeonLevel == null) {
 			return;
@@ -639,8 +678,54 @@ public class DungeonManager implements IDungeonManager {
 		}
 	}
 
+	private void updateSessionLevel(PogData pog) {
+		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return;
+		}
+		for (PogDataLite pogData : sessionLevel.getMonsters()) {
+			if (pog.getUUID().equals(pogData.getUUID())) {
+				pogData.setPogColumn(pog.getPogColumn());
+				pogData.setPogRow(pog.getPogRow());
+				saveSessionData();
+				break;
+			}
+		}
+	}
+
+	private void saveSessionData() {
+		if (selectedDungeon != null) {
+			Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("dungeonUUID", selectedDungeon.getUUID());
+			parameters.put("sessionUUID", selectedSession.getSessionUUID());
+			IDataRequester dataRequester = ServiceManager.getDataRequester();
+			String dungeonDataString = JsonUtils.stringify(selectedSession);
+			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
+
+				@Override
+				public void onSuccess(Object sender, Object data) {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+				}
+
+				@Override
+				public void onError(Object sender, IErrorInformation error) {
+					lastError = error.getError();
+				}
+			});
+		}
+	}
+
 	@Override
 	public void addPogDataToLevel(PogData pog) {
+		if (editMode) {
+			addTemplateLevel(pog);
+		}
+		if (isDungeonMaster) {
+			addToSessionLevel(pog);
+		}
+	}
+
+	private void addTemplateLevel(PogData pog) {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (dungeonLevel == null) {
 			return;
@@ -648,5 +733,33 @@ public class DungeonManager implements IDungeonManager {
 		PogDataLite clone = pog.cloneLite();
 		dungeonLevel.addMonster(clone);
 		saveDungeonData();
+	}
+
+	private void addToSessionLevel(PogData pog) {
+		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel != null) {
+			sessionLevel.addMonsters(pog.cloneLite());
+			saveSessionData();
+		}
+	}
+
+	@Override
+	public PogDataLite[] getMonstersForCurrentLevel() {
+		if (selectedDungeon == null) {
+			return null;
+		}
+		if (editMode) {
+			DungeonLevel currentLevel = getCurrentLevelData();
+			if (currentLevel == null) {
+				return null;
+			}
+			return(currentLevel.getMonsters());
+		}
+		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return null;
+		}
+		PogDataLite[] mobs = sessionLevel.getMonsters();
+		return mobs;
 	}
 }

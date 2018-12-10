@@ -17,9 +17,14 @@ public class LoadJsonDataHandler implements IWebRequestHandler {
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
 		String fileName = request.getParameter("fileName");
 		String dungeonUUID = request.getParameter("dungeonUUID");
+		String sessionUUID = request.getParameter("sessionUUID");
 		PrintWriter out = resp.getWriter();
 		if (dungeonUUID != null) {
-			out.print(DungeonsManager.getDungeonDataAsString(servlet, dungeonUUID));
+			if (sessionUUID != null) {
+				out.print(DungeonsManager.getSessionDataAsString(servlet, dungeonUUID, sessionUUID));
+			} else {
+				out.print(DungeonsManager.getDungeonDataAsString(servlet, dungeonUUID));
+			}
 			
 		} else {
 			out.print(DungeonsManager.getFileAsString(servlet, fileName));

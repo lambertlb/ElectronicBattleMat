@@ -298,4 +298,44 @@ public class DungeonsManager {
 		DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
 		return (sessionData.sessionUUID);
 	}
+
+	public static String getSessionDataAsString(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
+		String directoryPath = servletPath.getPath() + sessionsPath;
+		File sessionsDirectory = new File(directoryPath);
+		for (File possibleSession : sessionsDirectory.listFiles()) {
+			if (possibleSession.isDirectory()) {
+				DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
+				String possibleSessionUUID = sessionData.sessionUUID;
+				if (possibleSessionUUID.equals(sessionUUID)) {
+					String filePath = possibleSession.getPath() + "/sessionData.json";
+					return (readJsonFile(filePath));
+				}
+			}
+		}
+		return "";
+	}
+
+	public static void saveSessionDataData(HttpServletRequest request, HttpServlet servlet, String jsonData, String sessionUUID) throws IOException {
+		String dungeonUUID = request.getParameter("dungeonUUID");
+		if (dungeonUUID == null || dungeonUUID.isEmpty()) {
+			return;
+		}
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
+		String directoryPath = servletPath.getPath() + sessionsPath;
+		File sessionsDirectory = new File(directoryPath);
+		for (File possibleSession : sessionsDirectory.listFiles()) {
+			if (possibleSession.isDirectory()) {
+				DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
+				String possibleSessionUUID = sessionData.sessionUUID;
+				if (possibleSessionUUID.equals(sessionUUID)) {
+					String filePath = possibleSession.getPath() + "/sessionData.json";
+					saveJsonFile(jsonData, filePath);
+					break;
+				}
+			}
+		}
+	}
 }
