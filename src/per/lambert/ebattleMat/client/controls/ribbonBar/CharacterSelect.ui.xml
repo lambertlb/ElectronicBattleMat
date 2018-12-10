@@ -8,8 +8,8 @@
 	<g:HTMLPanel>
 		<g:VerticalPanel ui:field="panel">
 			<g:Button ui:field="dungeonControl" text="Dungeon Select ..."/>
-			<g:ListBox ui:field="characterSelect" visibleItemCount="1">
-			</g:ListBox>
+			<g:ListBox ui:field="characterSelect" visibleItemCount="1"/>
+			<g:ListBox ui:field="monsterSelect" visibleItemCount="1"/>
 		</g:VerticalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

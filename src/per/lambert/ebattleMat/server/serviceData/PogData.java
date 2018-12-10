@@ -1,26 +1,20 @@
 package per.lambert.ebattleMat.server.serviceData;
 
-public class PogData {
+public class PogData extends PogDataLite {
 	public String pogName;
-	public int pogColumn;
-	public int pogRow;
-	public String uuid;
+	public String pogImageUrl;
+	public int pogSize;
+	public boolean isPlayer;
 
 	public PogData() {
 	}
 
 	public PogData(PogData pogData) {
+		super(pogData);
 		pogName = pogData.pogName;
-		pogColumn = pogData.pogColumn;
-		pogRow = pogData.pogRow;
-		uuid = pogData.uuid;
+		pogImageUrl = pogData.pogImageUrl;
+		pogSize = pogData.pogSize;
+		isPlayer = pogData.isPlayer;
 	}
 
-	public PogData minimalClone() {
-		PogData clone = new PogData();
-		clone.uuid = uuid;
-		clone.pogColumn = pogColumn;
-		clone.pogRow = pogRow;
-		return (clone);
-	}
 }

@@ -36,6 +36,7 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 
 /**
  * @author LLambert Class to manage a scaled image with overlays.
@@ -536,15 +537,15 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	private void dropPog(DropEvent event) {
-		int newColumn = dragColumn;
-		int newRow = dragRow;
-		if (ServiceManager.getDungeonManager().isFowSet(newColumn, newRow)) {
+		if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
 			removeHighlightGridSquare();
 			return;
 		}
+		if (dragColumn < 0 || dragRow < 0) {
+			return;
+		}
 		PogCanvas dragPog = getPogThatWasDragged();
-		if (dragPog != null && newColumn >= 0 && newRow >= 0) {
-			dragPog.setPogPosition(newColumn, newRow);
+		if (dragPog != null) {
 			removeHighlightGridSquare();
 			mainDraw();
 		}
@@ -554,6 +555,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
 		for (PogCanvas pog : pogs) {
 			if (pog.getPogData() == pogBeingDragged) {
+				pog.setPogPosition(dragColumn, dragRow);
+				ServiceManager.getDungeonManager().updatePogDataOnLevel(pogBeingDragged);
 				return (pog);
 			}
 		}
@@ -563,6 +566,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	public PogCanvas addPlayerToCanvas(PogData pogData) {
 		getRibbonBarData();
 		PogData clonePog = ServiceManager.getDungeonManager().createPlayerInstance(pogData);
+		clonePog.setPogColumn(dragColumn);
+		clonePog.setPogRow(dragRow);
+		ServiceManager.getDungeonManager().addPogDataToLevel(clonePog);
 		return addPogToCanvas(clonePog, PLAYERS_Z);
 	}
 
@@ -648,7 +654,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		addMonsterPogs();
 	}
 
-	public void addMonsterToCanvas(PogData pogData) {
+	public void addMonsterToCanvas(PogDataLite pogData) {
 		getRibbonBarData();
 		PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(pogData);
 		if (clonePog != null) {
@@ -658,11 +664,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	private void addMonsterPogs() {
 		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
-		PogData[] monsters = dungeonLevel.getMonsters();
+		PogDataLite[] monsters = dungeonLevel.getMonsters();
 		if (monsters == null) {
 			return;
 		}
-		for (PogData monster : monsters) {
+		for (PogDataLite monster : monsters) {
 			addMonsterToCanvas(monster);
 		}
 		mainDraw();

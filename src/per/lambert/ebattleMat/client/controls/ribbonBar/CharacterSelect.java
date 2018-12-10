@@ -37,6 +37,10 @@ public class CharacterSelect extends Composite {
 					characterPogsLoaded();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.MonsterPogsLoaded) {
+					monsterPogsLoaded();
+					return;
+				}
 			}
 		});
 		characterSelect.addChangeHandler(new ChangeHandler() {
@@ -46,7 +50,14 @@ public class CharacterSelect extends Composite {
 				characterWasSelected();
 			}
 		});
-}
+		monsterSelect.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				monsterWasSelected();
+			}
+		});
+	}
 
 	@UiField
 	VerticalPanel panel;
@@ -55,6 +66,8 @@ public class CharacterSelect extends Composite {
 	Button dungeonControl;
 	@UiField
 	ListBox characterSelect;
+	@UiField
+	ListBox monsterSelect;
 
 	@UiHandler("dungeonControl")
 	void dungeonControlClick(ClickEvent event) {
@@ -73,6 +86,20 @@ public class CharacterSelect extends Composite {
 		PogData[] pogList = ServiceManager.getDungeonManager().getPcTemplatePogs();
 		for (PogData pogData : pogList) {
 			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
+		}
+	}
+	protected void monsterWasSelected() {
+		PogData monsterPog = ServiceManager.getDungeonManager().findMonsterPog(monsterSelect.getSelectedValue());
+		ServiceManager.getDungeonManager().setSelectedPog(monsterPog);
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+	}
+
+	protected void monsterPogsLoaded() {
+		monsterSelect.clear();
+		monsterSelect.addItem("Select Monster Pog", "");
+		PogData[] pogList = ServiceManager.getDungeonManager().getMonsterTemplatePogs();
+		for (PogData pogData : pogList) {
+			monsterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}
 	}
 }

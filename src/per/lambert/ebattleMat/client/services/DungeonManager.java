@@ -19,6 +19,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
@@ -511,7 +512,7 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
-	public PogData fullCLoneMonster(PogData pogData) {
+	public PogData fullCLoneMonster(PogDataLite pogData) {
 		PogData template = findMonsterTemplate(pogData.getUUID());
 		if (template == null) {
 			return (null);
@@ -525,6 +526,11 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public PogData findCharacterPog(String pogUUID) {
 		return (pcTemplateMap.get(pogUUID));
+	}
+
+	@Override
+	public PogData findMonsterPog(String pogUUID) {
+		return (monsterTemplateMap.get(pogUUID));
 	}
 
 	public void getSessionList(String dungeonUUID) {
@@ -615,5 +621,32 @@ public class DungeonManager implements IDungeonManager {
 
 	@Override
 	public void joinSession(String newSessionName) {
+	}
+
+	@Override
+	public void updatePogDataOnLevel(PogData pog) {
+		DungeonLevel dungeonLevel = getCurrentLevelData();
+		if (dungeonLevel == null) {
+			return;
+		}
+		for (PogDataLite pogData : dungeonLevel.getMonsters()) {
+			if (pog.getUUID().equals(pogData.getUUID())) {
+				pogData.setPogColumn(pog.getPogColumn());
+				pogData.setPogRow(pog.getPogRow());
+				saveDungeonData();
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void addPogDataToLevel(PogData pog) {
+		DungeonLevel dungeonLevel = getCurrentLevelData();
+		if (dungeonLevel == null) {
+			return;
+		}
+		PogDataLite clone = pog.cloneLite();
+		dungeonLevel.addMonster(clone);
+		saveDungeonData();
 	}
 }

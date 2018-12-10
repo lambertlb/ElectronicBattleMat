@@ -6,23 +6,23 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	protected DungeonSessionLevel() {
 	}
 
-	public final native PogData[] getPCPogs() /*-{
+	public final native PogDataLite[] getPCPogs() /*-{
 		if (this.pcPogs === undefined) {
-			return (new PogData[0]);
+			return (new PogDataLite[0]);
 		}
 		return (this.pcPogs);
 	}-*/;
 
-	public final native PogData[] getMonsters() /*-{
+	public final native PogDataLite[] getMonsters() /*-{
 		if (this.monsters === undefined) {
-			return (new PogData[0]);
+			return (new PogDataLite[0]);
 		}
 		return (this.monsters);
 	}-*/;
 
-	public final native PogData[] getRoomObjects() /*-{
+	public final native PogDataLite[] getRoomObjects() /*-{
 		if (this.roomObjects === undefined) {
-			return (new PogData[0]);
+			return (new PogDataLite[0]);
 		}
 		return (this.roomObjects);
 	}-*/;
