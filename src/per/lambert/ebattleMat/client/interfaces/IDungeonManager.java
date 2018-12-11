@@ -58,6 +58,8 @@ public interface IDungeonManager {
 
 	void setFowSize(int columns, int rows);
 
+	void saveFow();
+
 	boolean isFowSet(int columns, int rows);
 
 	void setFow(int columns, int rows, boolean value);

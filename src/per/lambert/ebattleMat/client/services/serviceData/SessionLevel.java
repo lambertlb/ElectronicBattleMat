@@ -8,9 +8,13 @@ public class SessionLevel extends JavaScriptObject {
 
 	public final native boolean[][] getFOW() /*-{
 		if (this.fogOfWar === undefined) {
-			this.fogOfWar = [ [] ];
+			return (null);
 		}
 		return (this.fogOfWar);
+	}-*/;
+
+	public final native void setFOW(boolean[][] fogOfWar) /*-{
+		this.fogOfWar = fogOfWar;
 	}-*/;
 
 	public final native PogDataLite[] getPlayers() /*-{

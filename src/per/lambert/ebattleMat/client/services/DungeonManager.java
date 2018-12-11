@@ -62,7 +62,7 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private SessionData selectedSession;
-	
+
 	private int currentLevel;
 
 	@Override
@@ -391,28 +391,61 @@ public class DungeonManager implements IDungeonManager {
 		return (player);
 	}
 
-	private boolean[][] fowGrid = new boolean[0][0];
-
 	@Override
 	public void setFowSize(int columns, int rows) {
-		if (fowGrid.length <= 0) {
-			fowGrid = new boolean[columns + 1][rows + 1];
-			for (int i = 0; i <= columns; ++i) {
-				for (int j = 0; j <= rows; ++j) {
-					fowGrid[i][j] = true;
-				}
+		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (!isDungeonMaster || sessionLevel == null) {
+			return;
+		}
+		boolean[][] fowGrid = sessionLevel.getFOW();
+		if (fowGrid != null && fowGrid.length == (columns + 1) && fowGrid[0].length == (rows + 1)) {
+			return;
+		}
+
+		fowGrid = new boolean[columns + 1][rows + 1];
+		for (int i = 0; i <= columns; ++i) {
+			for (int j = 0; j <= rows; ++j) {
+				fowGrid[i][j] = true;
 			}
 		}
+		sessionLevel.setFOW(fowGrid);
+		saveFow();
 	}
 
 	@Override
 	public boolean isFowSet(int columns, int rows) {
-		return (editMode ? false : fowGrid[columns][rows]);
+		if (editMode) {
+			return (false);
+		}
+		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return (false);
+		}
+		boolean[][] fowGrid = sessionLevel.getFOW();
+		if (fowGrid == null) {
+			return (false);
+		}
+		return (fowGrid[columns][rows]);
 	}
 
 	@Override
 	public void setFow(int columns, int rows, boolean value) {
+		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (!isDungeonMaster || sessionLevel == null) {
+			return;
+		}
+		boolean[][] fowGrid = sessionLevel.getFOW();
+		if (fowGrid == null) {
+			return;
+		}
 		fowGrid[columns][rows] = value;
+	}
+
+	@Override
+	public void saveFow() {
+		if (isDungeonMaster) {
+			saveSessionData();
+		}
 	}
 
 	private boolean fowToggle;
@@ -753,7 +786,7 @@ public class DungeonManager implements IDungeonManager {
 			if (currentLevel == null) {
 				return null;
 			}
-			return(currentLevel.getMonsters());
+			return (currentLevel.getMonsters());
 		}
 		SessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {

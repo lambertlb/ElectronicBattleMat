@@ -15,6 +15,8 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -32,7 +34,7 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
-public class PogCanvas extends Composite implements HasDragStartHandlers , MouseDownHandler, MouseUpHandler{
+public class PogCanvas extends Composite implements HasDragStartHandlers , MouseDownHandler {
 
 	private static ScalablePogUiBinder uiBinder = GWT.create(ScalablePogUiBinder.class);
 
@@ -152,6 +154,24 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 				setImage();
 			}
 		});
+		pogDrawPanel.addDomHandler(new MouseUpHandler() {
+			
+			@Override
+			public void onMouseUp(MouseUpEvent event) {
+				if (ServiceManager.getDungeonManager().getFowToggle()) {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseUpEventBubble, event));
+				}
+			}
+		}, MouseUpEvent.getType());
+		pogDrawPanel.addDomHandler(new MouseMoveHandler() {
+			
+			@Override
+			public void onMouseMove(MouseMoveEvent event) {
+				if (ServiceManager.getDungeonManager().getFowToggle()) {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseMoveEventBubble, event));
+				}
+			}
+		}, MouseMoveEvent.getType());
 	}
 
 	public HandlerRegistration addDragStartHandler(DragStartHandler handler) {
@@ -278,13 +298,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 	public void onMouseDown(MouseDownEvent event) {
 		if (ServiceManager.getDungeonManager().getFowToggle()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
-		}
-	}
-
-	@Override
-	public void onMouseUp(MouseUpEvent event) {
-		if (ServiceManager.getDungeonManager().getFowToggle()) {
-			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseUpEventBubble, event));
 		}
 	}
 }
