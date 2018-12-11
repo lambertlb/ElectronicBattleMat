@@ -21,6 +21,10 @@ public class DungeonLevel extends JavaScriptObject {
 		return this.gridSize;
 	}-*/;
 
+	public final native String getLevelName() /*-{
+		return this.levelName;
+	}-*/;
+
 	public final native void setGridSize(double gridSize) /*-{
 		this.gridSize = gridSize;
 	}-*/;

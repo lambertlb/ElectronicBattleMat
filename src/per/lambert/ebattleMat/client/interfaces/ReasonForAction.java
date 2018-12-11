@@ -9,6 +9,7 @@ public enum ReasonForAction {
 	DungeonDataReadyToJoin,
 	DungeonDataCreated,
 	DungeonDataDeleted,
+	DungeonLevelChanged,
 	CharacterPogsLoaded,
 	MonsterPogsLoaded,
 	PogWasSelected,
@@ -19,5 +20,4 @@ public enum ReasonForAction {
 	SelectNewDungeon,
 	SessionListChanged,
 	SessionDataSaved,
-
 }

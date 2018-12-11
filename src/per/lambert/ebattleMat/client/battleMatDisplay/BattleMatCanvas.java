@@ -232,6 +232,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 					onMouseMove((MouseMoveEvent) event.getData());
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonLevelChanged) {
+					dungeonDataChanged();
+					return;
+				}
 			}
 		});
 	}

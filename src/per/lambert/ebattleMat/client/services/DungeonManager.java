@@ -73,6 +73,7 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public void setCurrentLevel(int currentLevel) {
 		this.currentLevel = currentLevel;
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonLevelChanged, null));
 	}
 
 	@Override
@@ -299,7 +300,11 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private void initializeDungeonData() {
-		setCurrentLevel(0);
+		currentLevel = 0;
+		selectedDungeon = null;
+		selectedSession = null;
+		selectedPog = null;
+		pogBeingDragged = null;
 	}
 
 	@Override
@@ -794,5 +799,18 @@ public class DungeonManager implements IDungeonManager {
 		}
 		PogDataLite[] mobs = sessionLevel.getMonsters();
 		return mobs;
+	}
+
+	@Override
+	public String[] getDungeonLevelNames() {
+		if (selectedDungeon == null) {
+			return(new String[0]);
+		}
+		DungeonLevel[] levels = selectedDungeon.getDungeonlevels();
+		String[] levelNames = new String[levels.length];
+		for (int i = 0; i < levels.length; ++i) {
+			levelNames[i] = levels[i].getLevelName();
+		}
+		return(levelNames);
 	}
 }

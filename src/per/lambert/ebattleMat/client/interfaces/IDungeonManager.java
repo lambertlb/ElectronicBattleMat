@@ -28,6 +28,7 @@ public interface IDungeonManager {
 	Map<String, String> getDungeonToUUIDMap();
 
 	void selectDungeon(String dungeonUUID);
+
 	void editSelectedDungeon();
 
 	DungeonData getSelectedDungeon();
@@ -79,6 +80,7 @@ public interface IDungeonManager {
 	PogData fullCLoneMonster(PogDataLite pogData);
 
 	PogData findCharacterPog(String pogUUID);
+
 	PogData findMonsterPog(String pogUUID);
 
 	SessionListData getSessionListData();
@@ -98,4 +100,6 @@ public interface IDungeonManager {
 	void addPogDataToLevel(PogData clonePog);
 
 	PogDataLite[] getMonstersForCurrentLevel();
+
+	String[] getDungeonLevelNames();
 }

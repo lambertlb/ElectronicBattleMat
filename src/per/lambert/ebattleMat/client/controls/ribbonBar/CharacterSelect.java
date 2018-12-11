@@ -41,6 +41,10 @@ public class CharacterSelect extends Composite {
 					monsterPogsLoaded();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataLoaded) {
+					dungeonDataLoaded();
+					return;
+				}
 			}
 		});
 		characterSelect.addChangeHandler(new ChangeHandler() {
@@ -57,6 +61,13 @@ public class CharacterSelect extends Composite {
 				monsterWasSelected();
 			}
 		});
+		levelSelect.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				levelWasSelected();
+			}
+		});
 	}
 
 	@UiField
@@ -68,7 +79,9 @@ public class CharacterSelect extends Composite {
 	ListBox characterSelect;
 	@UiField
 	ListBox monsterSelect;
-
+	@UiField
+	ListBox levelSelect;
+	
 	@UiHandler("dungeonControl")
 	void dungeonControlClick(ClickEvent event) {
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SelectNewDungeon, null));
@@ -101,5 +114,15 @@ public class CharacterSelect extends Composite {
 		for (PogData pogData : pogList) {
 			monsterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}
+	}
+	protected void dungeonDataLoaded() {
+		levelSelect.clear();
+		String[] levelNames = ServiceManager.getDungeonManager().getDungeonLevelNames();
+		for (String levelName : levelNames) {
+			levelSelect.addItem(levelName);
+		}
+	}
+	protected void levelWasSelected() {
+		ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
 	}
 }

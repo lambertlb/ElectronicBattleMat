@@ -4,6 +4,7 @@
 	"dungeonLevels": [
 		{
 			"levelDrawing": "level1.jpg",
+			"levelName": "level 1",
 			"gridSize": 50,
 			"gridOffsetX": 10,
 			"gridOffsetY": 10,
@@ -22,6 +23,25 @@
 					"uuid": "Female-Kobold",
 					"pogColumn": 4,
 					"pogRow": 1
+				}
+			]
+		},
+		{
+			"levelDrawing": "level2.jpg",
+			"levelName": "Deep Dark (2)",
+			"gridSize": 50,
+			"gridOffsetX": 0,
+			"gridOffsetY": 0,
+			"monsters": [
+				{
+					"uuid": "Male-Kobold",
+					"pogColumn": 1,
+					"pogRow": 1
+				},
+				{
+					"uuid": "Female-Kobold",
+					"pogColumn": 2,
+					"pogRow": 2
 				}
 			]
 		}
