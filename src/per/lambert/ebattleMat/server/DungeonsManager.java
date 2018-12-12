@@ -30,6 +30,7 @@ public class DungeonsManager {
 	private final static String fileLocation = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
 	private final static String dungeonLocation = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
 	private static Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
+	private static Map<String, SessionInformation> sessionCache = new HashMap<String, SessionInformation>();
 
 	public static Map<String, String> getUuidTemplatePathMap() {
 		return uuidTemplatePathMap;
@@ -53,57 +54,6 @@ public class DungeonsManager {
 		String filePath = uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
 		URL servletPath = servlet.getServletContext().getResource("/");
 		saveJsonFile(dataToWrite, servletPath.getPath() + filePath);
-	}
-
-	private static void saveJsonFile(final String dataToWrite, String filePath) throws IOException {
-		BufferedWriter output = null;
-		try {
-			lock.lock();
-			File file = new File(filePath);
-			file.delete();
-			output = new BufferedWriter(new FileWriter(file));
-			output.write(dataToWrite);
-		} catch (IOException e) {
-			if (output != null) {
-				output.close();
-			}
-		} finally {
-			if (output != null) {
-				output.close();
-			}
-			lock.unlock();
-		}
-	}
-
-	private static String readJsonFile(String filePath) {
-		StringBuilder builder = new StringBuilder();
-		BufferedReader input = null;
-		try {
-			lock.lock();
-			File file = new File(filePath);
-			input = new BufferedReader(new FileReader(file));
-			String line;
-			while ((line = input.readLine()) != null) {
-				builder.append(line);
-			}
-		} catch (IOException e) {
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-				}
-			}
-			lock.unlock();
-		}
-		return builder.toString();
-	}
-
-	private static void makeSureDirectoryExists(String dungeonDirectoryPath) {
-		File path = new File(dungeonDirectoryPath);
-		if (!path.exists()) {
-			path.mkdir();
-		}
 	}
 
 	private static void rebuildDungeonList(final HttpServlet servlet) {
@@ -139,8 +89,17 @@ public class DungeonsManager {
 		DungeonData dungeonData = getDungeonData(servlet, directoryDirectoryName);
 		String dungeonName = dungeonData.dungeonName;
 		String uuid = dungeonData.uuid;
-		uuidTemplatePathMap.put(uuid, dungeonLocation + directoryDirectoryName);
-		dungeonNameToUUIDMap.put(uuid, dungeonName);
+		addToDungeonCache(directoryDirectoryName, dungeonName, uuid);
+	}
+
+	private static void addToDungeonCache(String directoryDirectoryName, String dungeonName, String uuid) {
+		lock.lock();
+		try {
+			uuidTemplatePathMap.put(uuid, dungeonLocation + directoryDirectoryName);
+			dungeonNameToUUIDMap.put(uuid, dungeonName);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	private static DungeonData getDungeonData(final HttpServlet servlet, String directoryDirectoryName) throws IOException {
@@ -174,17 +133,10 @@ public class DungeonsManager {
 		UUID uuid = UUID.randomUUID();
 		String uuidString = uuid.toString();
 		dungeonData.uuid = uuidString;
-		uuidTemplatePathMap.put(uuidString, dungeonLocation + dstDirectory);
-		dungeonNameToUUIDMap.put(uuidString, newDungeonName);
+		addToDungeonCache(dstDirectory, newDungeonName, uuidString);
 		Gson gson = new Gson();
 		String jsonData = gson.toJson(dungeonData);
 		saveDungeonData(servlet, jsonData, uuidString);
-	}
-
-	private static void deleteAnyOldSessions(File destDir) throws IOException {
-		String sessionsPath = destDir.getPath() + "/" + ElectronicBattleMat.SESSIONS_FOLDER;
-		File sessions = new File(sessionsPath);
-		FileUtils.deleteDirectory(sessions);
 	}
 
 	public static void deleteDungeon(HttpServlet servlet, String dungeonUUID) throws IOException {
@@ -192,6 +144,15 @@ public class DungeonsManager {
 		File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID));
 		FileUtils.deleteDirectory(srcDir);
 		rebuildDungeonList(servlet);
+	}
+
+	public static String getDungeonDataAsString(HttpServlet servlet, String dungeonUUID) throws IOException {
+		if (!uuidTemplatePathMap.containsKey(dungeonUUID)) {
+			return (null);
+		}
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String filePath = servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
+		return (readJsonFile(filePath));
 	}
 
 	public static Map<String, String> getSessionListData(HttpServlet servlet, String dungeonUUID) {
@@ -205,7 +166,7 @@ public class DungeonsManager {
 			File directory = new File(directoryPath);
 			for (File possibleSession : directory.listFiles()) {
 				if (possibleSession.isDirectory()) {
-					getSessionName(servlet, sessionsPath, possibleSession, sessionListData);
+					putSessionNameInCache(servlet, sessionsPath, possibleSession, sessionListData);
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -216,37 +177,10 @@ public class DungeonsManager {
 		return sessionListData;
 	}
 
-	private static void getSessionName(final HttpServlet servlet, String sessionsPath, File possibleSession, Map<String, String> sessionListData) throws IOException {
-		DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
+	private static void putSessionNameInCache(final HttpServlet servlet, String sessionsPath, File possibleSession, Map<String, String> sessionListData) throws IOException {
+		SessionInformation sessionInformation = loadSessionInformation(possibleSession);
+		DungeonSessionData sessionData = sessionInformation.getSessionData();
 		sessionListData.put(sessionData.sessionName, sessionData.sessionUUID);
-	}
-
-	private static DungeonSessionData getSessionData(final HttpServlet servlet, String resourcePath) throws IOException {
-		String filePath = resourcePath + "/sessionData.json";
-		String jsonData = readJsonFile(filePath);
-		Gson gson = new Gson();
-		DungeonSessionData sessionData = gson.fromJson(jsonData, DungeonSessionData.class);
-		return sessionData;
-	}
-
-	/*
-	 * private static String readJsonDataFromFile(final HttpServlet servlet, String filePath) { BufferedReader br = null; StringBuilder builder = new StringBuilder(); lock.lock(); try { InputStream is =
-	 * servlet.getServletContext().getResourceAsStream(filePath); InputStreamReader isr = new InputStreamReader(is); br = new BufferedReader(isr); String line; while ((line = br.readLine()) != null) { builder.append(line); } return builder.toString(); } catch
-	 * (IOException e) { } finally { if (br != null) { try { br.close(); } catch (IOException e) { } } lock.unlock(); } return (""); }
-	 */
-	public static String getFileAsString(final HttpServlet servlet, final String fileName) throws MalformedURLException {
-		URL servletPath = servlet.getServletContext().getResource("/");
-		String filePath = servletPath.getPath() + fileLocation + fileName;
-		return (readJsonFile(filePath));
-	}
-
-	public static String getDungeonDataAsString(HttpServlet servlet, String dungeonUUID) throws IOException {
-		if (!uuidTemplatePathMap.containsKey(dungeonUUID)) {
-			return (null);
-		}
-		URL servletPath = servlet.getServletContext().getResource("/");
-		String filePath = servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
-		return (readJsonFile(filePath));
 	}
 
 	public static void createSession(HttpServlet servlet, String dungeonUUID, String newSessionName) throws IOException {
@@ -256,10 +190,9 @@ public class DungeonsManager {
 		makeSureDirectoryExists(sessionDirectory);
 		DungeonData dungeonData = getDungeonDataFromUUID(servlet, dungeonUUID);
 		DungeonSessionData sessionData = createSessionData(servlet, sessionDirectory, dungeonUUID, newSessionName, dungeonData);
-		Gson gson = new Gson();
-		String sessionJson = gson.toJson(sessionData);
 		String filePath = sessionDirectory + "/" + "sessionData.json";
-		saveJsonFile(sessionJson, filePath);
+		SessionInformation sessionInformation = new SessionInformation(sessionData, filePath, sessionDirectory);
+		sessionInformation.save();
 	}
 
 	private static DungeonSessionData createSessionData(HttpServlet servlet, String sessionDirectory, String dungeonUUID, String newSessionName, DungeonData dungeonData) {
@@ -279,42 +212,89 @@ public class DungeonsManager {
 	}
 
 	public static void deleteSession(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
-		URL servletPath = servlet.getServletContext().getResource("/");
-		String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
-		String directoryPath = servletPath.getPath() + sessionsPath;
-		File sessionsDirectory = new File(directoryPath);
-		for (File possibleSession : sessionsDirectory.listFiles()) {
-			if (possibleSession.isDirectory()) {
-				String possibleSessionUUID = getSessionUUID(servlet, possibleSession);
-				if (possibleSessionUUID.equals(sessionUUID)) {
-					FileUtils.deleteDirectory(possibleSession);
-					return;
-				}
+		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+		if (sessionInformation != null) {
+			removeSessionFromCache(sessionUUID);
+			File possibleSession = new File(sessionInformation.getSessionDirectory());
+			lock.lock();
+			try {
+				FileUtils.deleteDirectory(possibleSession);
+			} finally {
+				lock.unlock();
 			}
 		}
 	}
 
-	private static String getSessionUUID(HttpServlet servlet, File possibleSession) throws IOException {
-		DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
-		return (sessionData.sessionUUID);
+	private static SessionInformation getSessionInformation(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
+		SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
+		if (sessionInformation != null) {
+			return (sessionInformation);
+		}
+		lock.lock();
+		try {
+			URL servletPath = servlet.getServletContext().getResource("/");
+			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
+			String directoryPath = servletPath.getPath() + sessionsPath;
+			File sessionsDirectory = new File(directoryPath);
+			for (File possibleSession : sessionsDirectory.listFiles()) {
+				if (possibleSession.isDirectory()) {
+					SessionInformation possibleSessionInformation = loadSessionInformation(possibleSession);
+					if (sessionUUID.equals(possibleSessionInformation.getUUID())) {
+						addSessionToCache(possibleSessionInformation);
+						return (possibleSessionInformation);
+					}
+				}
+			}
+		} finally {
+			lock.unlock();
+		}
+		return null;
+	}
+
+	private static SessionInformation loadSessionInformation(File possibleSession) throws IOException {
+		SessionInformation possibleSessionInformation = new SessionInformation();
+		possibleSessionInformation.load(possibleSession.getPath() + "/sessionData.json", possibleSession.getPath());
+		return possibleSessionInformation;
+	}
+
+	private static SessionInformation getSessionFromCache(String sessionUUID) {
+		lock.lock();
+		try {
+			return (sessionCache.get(sessionUUID));
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private static void removeSessionFromCache(String sessionUUID) {
+		lock.lock();
+		try {
+			if (sessionCache.containsKey(sessionUUID)) {
+				sessionCache.remove(sessionUUID);
+			}
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private static void addSessionToCache(SessionInformation sessionInformation) {
+		lock.lock();
+		try {
+			if (sessionCache.containsKey(sessionInformation.getUUID())) {
+				sessionCache.remove(sessionInformation.getUUID());
+			}
+			sessionCache.put(sessionInformation.getUUID(), sessionInformation);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public static String getSessionDataAsString(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
-		URL servletPath = servlet.getServletContext().getResource("/");
-		String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
-		String directoryPath = servletPath.getPath() + sessionsPath;
-		File sessionsDirectory = new File(directoryPath);
-		for (File possibleSession : sessionsDirectory.listFiles()) {
-			if (possibleSession.isDirectory()) {
-				DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
-				String possibleSessionUUID = sessionData.sessionUUID;
-				if (possibleSessionUUID.equals(sessionUUID)) {
-					String filePath = possibleSession.getPath() + "/sessionData.json";
-					return (readJsonFile(filePath));
-				}
-			}
+		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+		if (sessionInformation != null) {
+			return (sessionInformation.toJson());
 		}
-		return "";
+		return ("");
 	}
 
 	public static void saveSessionDataData(HttpServletRequest request, HttpServlet servlet, String jsonData, String sessionUUID) throws IOException {
@@ -322,20 +302,78 @@ public class DungeonsManager {
 		if (dungeonUUID == null || dungeonUUID.isEmpty()) {
 			return;
 		}
+		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+		if (sessionInformation != null) {
+			sessionInformation.fromJson(jsonData);
+			sessionInformation.save();
+		}
+	}
+
+	public static String getFileAsString(final HttpServlet servlet, final String fileName) throws IOException {
 		URL servletPath = servlet.getServletContext().getResource("/");
-		String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
-		String directoryPath = servletPath.getPath() + sessionsPath;
-		File sessionsDirectory = new File(directoryPath);
-		for (File possibleSession : sessionsDirectory.listFiles()) {
-			if (possibleSession.isDirectory()) {
-				DungeonSessionData sessionData = getSessionData(servlet, possibleSession.getPath());
-				String possibleSessionUUID = sessionData.sessionUUID;
-				if (possibleSessionUUID.equals(sessionUUID)) {
-					String filePath = possibleSession.getPath() + "/sessionData.json";
-					saveJsonFile(jsonData, filePath);
-					break;
+		String filePath = servletPath.getPath() + fileLocation + fileName;
+		return (readJsonFile(filePath));
+	}
+
+	public static void saveJsonFile(final String dataToWrite, String filePath) throws IOException {
+		BufferedWriter output = null;
+		try {
+			lock.lock();
+			File file = new File(filePath);
+			file.delete();
+			output = new BufferedWriter(new FileWriter(file));
+			output.write(dataToWrite);
+		} catch (IOException e) {
+			if (output != null) {
+				output.close();
+			}
+		} finally {
+			if (output != null) {
+				output.close();
+			}
+			lock.unlock();
+		}
+	}
+
+	public static String readJsonFile(String filePath) {
+		StringBuilder builder = new StringBuilder();
+		BufferedReader input = null;
+		try {
+			lock.lock();
+			File file = new File(filePath);
+			input = new BufferedReader(new FileReader(file));
+			String line;
+			while ((line = input.readLine()) != null) {
+				builder.append(line);
+			}
+		} catch (IOException e) {
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
 				}
 			}
+			lock.unlock();
+		}
+		return builder.toString();
+	}
+
+	private static void deleteAnyOldSessions(File destDir) throws IOException {
+		String sessionsPath = destDir.getPath() + "/" + ElectronicBattleMat.SESSIONS_FOLDER;
+		File sessions = new File(sessionsPath);
+		lock.lock();
+		try {
+			FileUtils.deleteDirectory(sessions);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private static void makeSureDirectoryExists(String dungeonDirectoryPath) {
+		File path = new File(dungeonDirectoryPath);
+		if (!path.exists()) {
+			path.mkdir();
 		}
 	}
 }
