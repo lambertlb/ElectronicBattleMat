@@ -52,12 +52,28 @@ public class PogDataLite extends JavaScriptObject {
 	public final native void setUUID(String uuid) /*-{
 		this.uuid = uuid;
 	}-*/;
-	
+
+	public final native String getTemplateUUID() /*-{
+		if (this.templateUUID === undefined) {
+			return ("");
+		}
+		return (this.templateUUID);
+	}-*/;
+
+	public final native void setTemplateUUID(String templateUUID) /*-{
+		this.templateUUID = templateUUID;
+	}-*/;
+
 	public final PogDataLite cloneLite() {
-		PogDataLite clone = (PogDataLite)JavaScriptObject.createObject().cast();
+		PogDataLite clone = (PogDataLite) JavaScriptObject.createObject().cast();
+		getRequiredData(clone);
+		clone.setTemplateUUID(getTemplateUUID());
+		return (clone);
+	}
+
+	public final void getRequiredData(PogDataLite clone) {
 		clone.setUUID(getUUID());
 		clone.setPogColumn(getPogColumn());
 		clone.setPogRow(getPogRow());
-		return(clone);
 	}
 }

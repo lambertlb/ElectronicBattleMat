@@ -51,24 +51,51 @@ public class DungeonLevel extends JavaScriptObject {
 		this.gridOffsetY = offset;
 	}-*/;
 
-	public final native PogDataLite[] getMonsters() /*-{
+	public final PogDataLite[] getMonsters() {
+		PogDataLite[] monsters = getMonstersNative();
+		if (monsters == null) {
+			setMonstersNative(new PogDataLite[0]);
+		}
+		return (monsters);
+	};
+
+	private final native PogDataLite[] getMonstersNative() /*-{
 		if (this.monsters === undefined) {
-			return (new PogDataLite[0]);
+			return (null);
 		}
 		return (this.monsters);
 	}-*/;
 
-	public final native void addMonster(PogDataLite monster) /*-{
-		if (this.monsters === undefined) {
-			this.monsters = new PogDataLite[0];
-		}
+	private final native void setMonstersNative(PogDataLite[] monsters) /*-{
+		this.monsters = monsters;
+	}-*/;
+
+	public final void addMonster(PogDataLite monster) {
+		getMonsters();
+		addMonsterNative(monster);
+	};
+
+	private final native void addMonsterNative(PogDataLite monster) /*-{
 		this.monsters.push(monster);
 	}-*/;
 
-	public final native PogDataLite[] getRoomObjects() /*-{
+	public final PogDataLite[] getRoomObjects() {
+		PogDataLite[] roomObjects = getMonstersNative();
+		if (roomObjects == null) {
+			setMonstersNative(new PogDataLite[0]);
+		}
+		return (roomObjects);
+	};
+
+	private final native PogDataLite[] getRoomObjectsNative() /*-{
 		if (this.roomObjects === undefined) {
-			return (new PogDataLite[0]);
+			return (null);
 		}
 		return (this.roomObjects);
 	}-*/;
+
+	private final native void setRoomObjects(PogDataLite[] roomObjects) /*-{
+		this.roomObjects = roomObjects;
+	}-*/;
+
 }

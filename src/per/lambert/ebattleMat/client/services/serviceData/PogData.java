@@ -28,7 +28,6 @@ public class PogData extends PogDataLite {
 		this.pogImageUrl = pogImageUrl;
 	}-*/;
 
-
 	public final native int getPogSize() /*-{
 		if (this.pogSize === undefined) {
 			this.pogSize = 1;
@@ -40,10 +39,10 @@ public class PogData extends PogDataLite {
 		this.pogSize = pogSize;
 	}-*/;
 
-
 	public final PogData clone() {
 		String pogJson = JsonUtils.stringify(this);
 		PogData theClone = JsonUtils.<PogData>safeEval(pogJson);
+		theClone.setUUID(generateUUID());
 		return (theClone);
 	}
 

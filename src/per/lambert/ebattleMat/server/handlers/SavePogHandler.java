@@ -11,16 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
-public class LoadSessionHandler implements IWebRequestHandler {
+public class SavePogHandler implements IWebRequestHandler{
 
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		String sessionUUID = request.getParameter("sessionUUID");
-		String sessionJson = DungeonsManager.getSessionDataAsString(servlet, dungeonUUID, sessionUUID);
+		int currentLevel = Integer.parseInt(request.getParameter("currentLevel"));
+		boolean needToAdd = Boolean.parseBoolean(request.getParameter("needToAdd"));
+		DungeonsManager.savePog(servlet, dungeonUUID, sessionUUID, currentLevel, needToAdd, jsonData);
 		PrintWriter out = resp.getWriter();
-		out.print(sessionJson);
+		out.print("");
 		out.flush();
 	}
-
 }

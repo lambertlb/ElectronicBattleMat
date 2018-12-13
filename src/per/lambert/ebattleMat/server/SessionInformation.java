@@ -8,12 +8,24 @@ import java.io.IOException;
 import com.google.gson.Gson;
 
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
+import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
+import per.lambert.ebattleMat.server.serviceData.PogDataLite;
 
 public class SessionInformation {
 	private int version;
 
 	public int getVersion() {
 		return version;
+	}
+
+	private boolean dirty;
+
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
 	}
 
 	public void setVersion(int version) {
@@ -107,5 +119,30 @@ public class SessionInformation {
 		Gson gson = new Gson();
 		String sessionJson = gson.toJson(sessionData);
 		DungeonsManager.saveJsonFile(sessionJson, sessionPath);
+	}
+
+	public void savePog(PogDataLite pogData, int currentLevel, boolean needToAdd) {
+		++version;
+		dirty = true;
+		DungeonSessionLevel sessionLevel = sessionData.sessionLevels[currentLevel];
+		if (!needToAdd) {
+			updatePog(sessionLevel, pogData, currentLevel);
+			return;
+		}
+		PogDataLite[] newPogs = new PogDataLite[sessionLevel.monsters.length + 1];
+		for (int i = 0; i < sessionLevel.monsters.length; ++i) {
+			newPogs[i] = sessionLevel.monsters[i];
+		}
+		newPogs[newPogs.length - 1] = pogData;
+		sessionLevel.monsters = newPogs;
+	}
+
+	private void updatePog(DungeonSessionLevel sessionLevel, PogDataLite pogData, int currentLevel) {
+		for (PogDataLite pog : sessionLevel.monsters) {
+			if (pog.uuid.equals(pogData.uuid)) {
+				pog.pogColumn = pogData.pogColumn;
+				pog.pogRow = pogData.pogRow;
+			}
+		}
 	}
 }

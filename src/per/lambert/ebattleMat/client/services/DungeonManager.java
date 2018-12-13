@@ -389,11 +389,12 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
-	public PogData createPlayerInstance(PogData template) {
-		PogData player = template.clone();
-		player.setThisAPlayer(true);
-		addPlayer(player);
-		return (player);
+	public PogData createPogInstance(PogData template) {
+		PogData pog = template.clone();
+		if (template.isThisAPlayer()) {
+			addPlayer(pog);
+		}
+		return (pog);
 	}
 
 	@Override
@@ -563,13 +564,12 @@ public class DungeonManager implements IDungeonManager {
 
 	@Override
 	public PogData fullCLoneMonster(PogDataLite pogData) {
-		PogData template = findMonsterTemplate(pogData.getUUID());
+		PogData template = findMonsterTemplate(pogData.getTemplateUUID());
 		if (template == null) {
 			return (null);
 		}
 		PogData clone = template.clone();
-		clone.setPogColumn(pogData.getPogColumn());
-		clone.setPogRow(pogData.getPogRow());
+		pogData.getRequiredData(clone);
 		return (clone);
 	}
 
@@ -671,7 +671,7 @@ public class DungeonManager implements IDungeonManager {
 		parameters.put("dungeonUUID", selectedDungeonUUID);
 		parameters.put("sessionUUID", selectedSessionUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+		dataRequester.requestData("", token, "LOADSESSION", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -694,14 +694,14 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public void updatePogDataOnLevel(PogData pog) {
 		if (editMode) {
-			updateTemplateLevel(pog);
+			updatePogDataInTemplateLevel(pog);
 		}
 		if (isDungeonMaster) {
-			updateSessionLevel(pog);
+			updatePodDataInSessionLevel(pog);
 		}
 	}
 
-	private void updateTemplateLevel(PogData pog) {
+	private void updatePogDataInTemplateLevel(PogData pog) {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (dungeonLevel == null) {
 			return;
@@ -716,7 +716,7 @@ public class DungeonManager implements IDungeonManager {
 		}
 	}
 
-	private void updateSessionLevel(PogData pog) {
+	private void updatePodDataInSessionLevel(PogData pog) {
 		SessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return;
@@ -725,7 +725,7 @@ public class DungeonManager implements IDungeonManager {
 			if (pog.getUUID().equals(pogData.getUUID())) {
 				pogData.setPogColumn(pog.getPogColumn());
 				pogData.setPogRow(pog.getPogRow());
-				saveSessionData();
+				savePogToSessionData(pogData, false);
 				break;
 			}
 		}
@@ -739,6 +739,30 @@ public class DungeonManager implements IDungeonManager {
 			IDataRequester dataRequester = ServiceManager.getDataRequester();
 			String dungeonDataString = JsonUtils.stringify(selectedSession);
 			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
+
+				@Override
+				public void onSuccess(Object sender, Object data) {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+				}
+
+				@Override
+				public void onError(Object sender, IErrorInformation error) {
+					lastError = error.getError();
+				}
+			});
+		}
+	}
+
+	private void savePogToSessionData(PogDataLite pogData, boolean needToAdd) {
+		if (selectedDungeon != null) {
+			Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("dungeonUUID", selectedDungeon.getUUID());
+			parameters.put("sessionUUID", selectedSession.getSessionUUID());
+			parameters.put("currentLevel", "" + currentLevel);
+			parameters.put("needToAdd", "" + needToAdd);
+			IDataRequester dataRequester = ServiceManager.getDataRequester();
+			String pogDataString = JsonUtils.stringify(pogData);
+			dataRequester.requestData(pogDataString, token, "SAVEPOGTOSESSION", parameters, new IUserCallback() {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {
@@ -776,8 +800,9 @@ public class DungeonManager implements IDungeonManager {
 	private void addToSessionLevel(PogData pog) {
 		SessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel != null) {
-			sessionLevel.addMonsters(pog.cloneLite());
-			saveSessionData();
+			PogDataLite clone = pog.cloneLite();
+			sessionLevel.addMonsters(clone);
+			savePogToSessionData(clone, true);
 		}
 	}
 

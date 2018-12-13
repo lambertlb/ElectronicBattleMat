@@ -77,6 +77,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * line style yellow.
 	 */
 	private final CssColor gridColor = CssColor.make("grey");
+	private final String fogOfWarColor = "black";
+
 	/**
 	 * Width of actual image.
 	 */
@@ -523,7 +525,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		int x = (int) columnToPixel(i);
 		int y = (int) rowToPixel(j);
 		if (isSet) {
-			fowCanvas.getContext2d().setFillStyle("lightgrey");
+			fowCanvas.getContext2d().setFillStyle(fogOfWarColor);
 			// fowCanvas.getContext2d().fillRect(x - 1, y - 1, size, size);
 			fowCanvas.getContext2d().fillRect(x, y, size, size);
 		} else {
@@ -555,9 +557,15 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	private void dropPog(DropEvent event) {
-		if (!ServiceManager.getDungeonManager().isDungeonMaster() && ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
-			removeHighlightGridSquare();
-			return;
+		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
+		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
+		boolean forSetOnGridElement = ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow);
+		boolean isPlayer = pogBeingDragged.isThisAPlayer();
+		if (!isDM) {
+			if (forSetOnGridElement || !isPlayer) {
+				removeHighlightGridSquare();
+				return;
+			}
 		}
 		if (dragColumn < 0 || dragRow < 0) {
 			return;
@@ -578,24 +586,24 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				return (pog);
 			}
 		}
-		return addPlayerToCanvas(pogBeingDragged);
+		return addPogToCanvas(pogBeingDragged);
 	}
 
-	public PogCanvas addPlayerToCanvas(PogData pogData) {
+	public PogCanvas addPogToCanvas(PogData pogData) {
 		getRibbonBarData();
-		PogData clonePog = ServiceManager.getDungeonManager().createPlayerInstance(pogData);
+		PogData clonePog = ServiceManager.getDungeonManager().createPogInstance(pogData);
 		clonePog.setPogColumn(dragColumn);
 		clonePog.setPogRow(dragRow);
 		ServiceManager.getDungeonManager().addPogDataToLevel(clonePog);
-		return addPogToCanvas(clonePog, PLAYERS_Z);
+		return addPogToCanvas(clonePog, MONSTERS_Z);
 	}
 
 	private PogCanvas addPogToCanvas(PogData clonePog, int zLevel) {
 		PogCanvas scalablePog = new PogCanvas(clonePog);
 		scalablePog.setPogWidth((int) gridSpacing - 10);
 		pogs.add(scalablePog);
-		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
 		scalablePog.getElement().getStyle().setZIndex(zLevel);
+		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
 		return (scalablePog);
 	}
 
@@ -677,6 +685,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(pogData);
 		if (clonePog != null) {
 			addPogToCanvas(clonePog, MONSTERS_Z);
+			mainDraw();
 		}
 	}
 

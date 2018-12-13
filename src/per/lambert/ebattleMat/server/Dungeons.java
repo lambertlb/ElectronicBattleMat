@@ -18,6 +18,7 @@ import per.lambert.ebattleMat.server.handlers.LoadJsonDataHandler;
 import per.lambert.ebattleMat.server.handlers.LoadSessionHandler;
 import per.lambert.ebattleMat.server.handlers.LoginHandler;
 import per.lambert.ebattleMat.server.handlers.SaveJsonDataHandler;
+import per.lambert.ebattleMat.server.handlers.SavePogHandler;
 import per.lambert.ebattleMat.server.handlers.SessionListHandler;
 
 public class Dungeons extends HttpServlet {
@@ -36,6 +37,7 @@ public class Dungeons extends HttpServlet {
 		webServices.put("CREATENEWSESSION", new CreateNewSessionHandler());
 		webServices.put("DELETESESSION", new DeleteSessionHandler());
 		webServices.put("LOADSESSION", new LoadSessionHandler());
+		webServices.put("SAVEPOGTOSESSION", new SavePogHandler());
 	}
 
 	@Override

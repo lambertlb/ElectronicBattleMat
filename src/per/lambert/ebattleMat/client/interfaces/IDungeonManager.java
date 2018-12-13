@@ -55,7 +55,7 @@ public interface IDungeonManager {
 
 	PogData getPogBeingDragged();
 
-	PogData createPlayerInstance(PogData template);
+	PogData createPogInstance(PogData template);
 
 	void setFowSize(int columns, int rows);
 
