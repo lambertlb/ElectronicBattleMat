@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -32,6 +34,8 @@ public class DungeonsManager {
 	private final static String dungeonLocation = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
 	private static Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
 	private static Map<String, SessionInformation> sessionCache = new HashMap<String, SessionInformation>();
+	private static boolean initialized = initializeDungeonManager();
+	private static Timer timer;
 
 	public static Map<String, String> getUuidTemplatePathMap() {
 		return uuidTemplatePathMap;
@@ -41,6 +45,35 @@ public class DungeonsManager {
 
 	public static Map<String, String> getDungeonNameToUUIDMap() {
 		return dungeonNameToUUIDMap;
+	}
+
+	private static boolean initializeDungeonManager() {
+		TimerTask repeatedTask = new TimerTask() {
+			public void run() {
+				DungeonsManager.periodicTimer();
+			}
+		};
+		timer = new Timer("Timer");
+
+		long delay = 5000L;
+		long period = 5000L;
+		timer.scheduleAtFixedRate(repeatedTask, delay, period);
+		return true;
+	}
+
+	protected static void periodicTimer() {
+		lock.lock();
+		try {
+			checkIfTimeToSaveSessionData();
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private static void checkIfTimeToSaveSessionData() {
+		for (SessionInformation sessionInformation : sessionCache.values()) {
+			sessionInformation.saveIfDirty();
+		}
 	}
 
 	public static void saveDungeonData(final HttpServletRequest request, final HttpServlet servlet, final String dataToWrite) throws IOException {
@@ -356,7 +389,6 @@ public class DungeonsManager {
 			Gson gson = new Gson();
 			PogDataLite pogData = gson.fromJson(pogJsonData, PogDataLite.class);
 			sessionInformation.savePog(pogData, currentLevel, needToAdd);
-			sessionInformation.save();
 		} finally {
 			lock.unlock();
 		}

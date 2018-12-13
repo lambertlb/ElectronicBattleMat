@@ -21,8 +21,8 @@ import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
-import per.lambert.ebattleMat.client.services.serviceData.SessionData;
-import per.lambert.ebattleMat.client.services.serviceData.SessionLevel;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 public class DungeonManager implements IDungeonManager {
@@ -61,7 +61,7 @@ public class DungeonManager implements IDungeonManager {
 		return selectedDungeon;
 	}
 
-	private SessionData selectedSession;
+	private DungeonSessionData selectedSession;
 
 	private int currentLevel;
 
@@ -84,7 +84,7 @@ public class DungeonManager implements IDungeonManager {
 		return null;
 	}
 
-	public SessionLevel getCurrentSessionLevelData() {
+	public DungeonSessionLevel getCurrentSessionLevelData() {
 		if (selectedSession != null && currentLevel < selectedSession.getSessionLevels().length) {
 			return (selectedSession.getSessionLevels()[currentLevel]);
 		}
@@ -399,7 +399,7 @@ public class DungeonManager implements IDungeonManager {
 
 	@Override
 	public void setFowSize(int columns, int rows) {
-		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (!isDungeonMaster || sessionLevel == null) {
 			return;
 		}
@@ -423,7 +423,7 @@ public class DungeonManager implements IDungeonManager {
 		if (editMode) {
 			return (false);
 		}
-		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return (false);
 		}
@@ -436,7 +436,7 @@ public class DungeonManager implements IDungeonManager {
 
 	@Override
 	public void setFow(int columns, int rows, boolean value) {
-		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (!isDungeonMaster || sessionLevel == null) {
 			return;
 		}
@@ -675,7 +675,7 @@ public class DungeonManager implements IDungeonManager {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				selectedSession = JsonUtils.<SessionData>safeEval((String) data);
+				selectedSession = JsonUtils.<DungeonSessionData>safeEval((String) data);
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToJoin, null));
 			}
 
@@ -717,7 +717,7 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private void updatePodDataInSessionLevel(PogData pog) {
-		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return;
 		}
@@ -782,7 +782,7 @@ public class DungeonManager implements IDungeonManager {
 		if (editMode) {
 			addTemplateLevel(pog);
 		}
-		if (isDungeonMaster) {
+		if (isDungeonMaster || pog.isThisAPlayer()) {
 			addToSessionLevel(pog);
 		}
 	}
@@ -798,10 +798,14 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private void addToSessionLevel(PogData pog) {
-		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel != null) {
 			PogDataLite clone = pog.cloneLite();
-			sessionLevel.addMonsters(clone);
+			if (pog.isThisAPlayer()) {
+				sessionLevel.addPlayer(clone);
+			} else {
+				sessionLevel.addMonster(clone);
+			}
 			savePogToSessionData(clone, true);
 		}
 	}
@@ -818,7 +822,7 @@ public class DungeonManager implements IDungeonManager {
 			}
 			return (currentLevel.getMonsters());
 		}
-		SessionLevel sessionLevel = getCurrentSessionLevelData();
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return null;
 		}

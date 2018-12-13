@@ -3,6 +3,7 @@ package per.lambert.ebattleMat.client.services.serviceData;
 import com.google.gwt.core.client.JavaScriptObject;
 
 public class DungeonSessionData extends JavaScriptObject {
+
 	protected DungeonSessionData() {
 	}
 
@@ -17,21 +18,36 @@ public class DungeonSessionData extends JavaScriptObject {
 		this.sessionName = sessionName;
 	}-*/;
 
-	public final native String getTemplateDungeon() /*-{
-		if (this.templateDungeon === undefined) {
-			this.templateDungeon = "";
+	public final native String getDungeonUUID() /*-{
+		if (this.dungeonUUID === undefined) {
+			this.dungeonUUID = "";
 		}
-		return (this.templateDungeon);
+		return (this.dungeonUUID);
 	}-*/;
 
-	public final native void setTemplateDungeon(String templateDungeon) /*-{
-		this.templateDungeon = templateDungeon;
+	public final native void setDungeonUUID(String dungeonUUID) /*-{
+		this.dungeonUUID = dungeonUUID;
 	}-*/;
 
-	public final native DungeonSessionLevel[] getSessionlevels() /*-{
+	public final native String getSessionUUID() /*-{
+		if (this.sessionUUID === undefined) {
+			this.sessionUUID = "";
+		}
+		return (this.sessionUUID);
+	}-*/;
+
+	public final native DungeonSessionLevel[] getSessionLevels() /*-{
 		if (this.sessionLevels === undefined) {
-			sessionLevels = new DungeonSessionLevel[0];
+			sessionLevels = null;
 		}
 		return this.sessionLevels;
 	}-*/;
+
+	public final native boolean getIsDirty() /*-{
+		if (this.isDirty === undefined) {
+			this.isDirty = false;
+		}
+		return this.isDirty;
+	}-*/;
+
 }

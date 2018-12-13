@@ -105,6 +105,7 @@ public class SessionInformation {
 		this.sessionDirectory = sessionDirectory;
 		String jsonData = DungeonsManager.readJsonFile(sessionPath);
 		fromJson(jsonData);
+		++version;
 	}
 
 	public void fromJson(String jsonData) {
@@ -116,6 +117,7 @@ public class SessionInformation {
 	}
 
 	public void save() throws IOException {
+		dirty = false;
 		Gson gson = new Gson();
 		String sessionJson = gson.toJson(sessionData);
 		DungeonsManager.saveJsonFile(sessionJson, sessionPath);
@@ -142,6 +144,15 @@ public class SessionInformation {
 			if (pog.uuid.equals(pogData.uuid)) {
 				pog.pogColumn = pogData.pogColumn;
 				pog.pogRow = pogData.pogRow;
+			}
+		}
+	}
+
+	public void saveIfDirty() {
+		if (dirty) {
+			try {
+				save();
+			} catch (IOException e) {
 			}
 		}
 	}

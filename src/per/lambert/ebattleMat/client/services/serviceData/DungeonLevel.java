@@ -1,8 +1,6 @@
 package per.lambert.ebattleMat.client.services.serviceData;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
-public class DungeonLevel extends JavaScriptObject {
+public class DungeonLevel extends DungeonSessionLevel {
 	protected DungeonLevel() {
 	}
 
@@ -49,53 +47,6 @@ public class DungeonLevel extends JavaScriptObject {
 
 	public final native void setGridOffsetY(double offset) /*-{
 		this.gridOffsetY = offset;
-	}-*/;
-
-	public final PogDataLite[] getMonsters() {
-		PogDataLite[] monsters = getMonstersNative();
-		if (monsters == null) {
-			setMonstersNative(new PogDataLite[0]);
-		}
-		return (monsters);
-	};
-
-	private final native PogDataLite[] getMonstersNative() /*-{
-		if (this.monsters === undefined) {
-			return (null);
-		}
-		return (this.monsters);
-	}-*/;
-
-	private final native void setMonstersNative(PogDataLite[] monsters) /*-{
-		this.monsters = monsters;
-	}-*/;
-
-	public final void addMonster(PogDataLite monster) {
-		getMonsters();
-		addMonsterNative(monster);
-	};
-
-	private final native void addMonsterNative(PogDataLite monster) /*-{
-		this.monsters.push(monster);
-	}-*/;
-
-	public final PogDataLite[] getRoomObjects() {
-		PogDataLite[] roomObjects = getMonstersNative();
-		if (roomObjects == null) {
-			setMonstersNative(new PogDataLite[0]);
-		}
-		return (roomObjects);
-	};
-
-	private final native PogDataLite[] getRoomObjectsNative() /*-{
-		if (this.roomObjects === undefined) {
-			return (null);
-		}
-		return (this.roomObjects);
-	}-*/;
-
-	private final native void setRoomObjects(PogDataLite[] roomObjects) /*-{
-		this.roomObjects = roomObjects;
 	}-*/;
 
 }
