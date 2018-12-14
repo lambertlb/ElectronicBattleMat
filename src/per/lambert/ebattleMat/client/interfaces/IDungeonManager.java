@@ -2,7 +2,6 @@ package per.lambert.ebattleMat.client.interfaces;
 
 import java.util.Map;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -100,6 +99,8 @@ public interface IDungeonManager {
 	void addPogDataToLevel(PogData clonePog);
 
 	PogDataLite[] getMonstersForCurrentLevel();
+
+	PogData[] getPlayersForCurrentSessionLevel();
 
 	String[] getDungeonLevelNames();
 }

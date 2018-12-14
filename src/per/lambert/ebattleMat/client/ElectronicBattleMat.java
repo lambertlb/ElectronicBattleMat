@@ -1,10 +1,7 @@
 package per.lambert.ebattleMat.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatLayout;
 import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
@@ -31,6 +28,9 @@ public class ElectronicBattleMat implements EntryPoint {
 	public static String DUNGEON_PCPOG_LOCATION = DUNGEON_RESOURCE_LOCATION + "pcPogs/";
 	public static String DUNGEON_MONSTER_LOCATION = DUNGEON_RESOURCE_LOCATION + "monsters/";
 	public static String DUNGEON_DATA_FILENAME = "/dungeonData.json";
+	public static String POG_TYPE_MONSTER = "MONSTER";
+	public static String POG_TYPE_PLAYER = "PLAYER";
+	public static String POG_TYPE_ROOMOBJECT = "ROOMOBJECT";
 
 	/**
 	 * This is the entry point method.

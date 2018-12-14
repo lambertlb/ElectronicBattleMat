@@ -2,6 +2,8 @@ package per.lambert.ebattleMat.client.services.serviceData;
 
 import com.google.gwt.core.client.JsonUtils;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
+
 public class PogData extends PogDataLite {
 	protected PogData() {
 	}
@@ -28,6 +30,17 @@ public class PogData extends PogDataLite {
 		this.pogImageUrl = pogImageUrl;
 	}-*/;
 
+	public final native String getPogType() /*-{
+		if (this.pogType === undefined) {
+			this.pogType = "";
+		}
+		return (this.pogType);
+	}-*/;
+
+	public final native void setPogType(String pogType) /*-{
+		this.pogType = pogType;
+	}-*/;
+
 	public final native int getPogSize() /*-{
 		if (this.pogSize === undefined) {
 			this.pogSize = 1;
@@ -46,14 +59,8 @@ public class PogData extends PogDataLite {
 		return (theClone);
 	}
 
-	public final native boolean isThisAPlayer() /*-{
-		if (this.isPlayer === undefined) {
-			return (false);
-		}
-		return (this.isPlayer);
-	}-*/;
-
-	public final native void setThisAPlayer(boolean isAPlayer) /*-{
-		this.isPlayer = isAPlayer;
-	}-*/;
+	public final boolean isThisAPlayer() {
+		String type = getPogType();
+		return(type.equals(ElectronicBattleMat.POG_TYPE_PLAYER));
+	}
 }

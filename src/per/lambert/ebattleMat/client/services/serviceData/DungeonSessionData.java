@@ -38,7 +38,7 @@ public class DungeonSessionData extends JavaScriptObject {
 
 	public final native DungeonSessionLevel[] getSessionLevels() /*-{
 		if (this.sessionLevels === undefined) {
-			sessionLevels = null;
+			this.sessionLevels = [];
 		}
 		return this.sessionLevels;
 	}-*/;

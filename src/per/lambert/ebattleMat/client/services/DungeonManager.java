@@ -725,7 +725,7 @@ public class DungeonManager implements IDungeonManager {
 			if (pog.getUUID().equals(pogData.getUUID())) {
 				pogData.setPogColumn(pog.getPogColumn());
 				pogData.setPogRow(pog.getPogRow());
-				savePogToSessionData(pogData, false);
+				savePogToSessionData(pog, false);
 				break;
 			}
 		}
@@ -753,7 +753,7 @@ public class DungeonManager implements IDungeonManager {
 		}
 	}
 
-	private void savePogToSessionData(PogDataLite pogData, boolean needToAdd) {
+	private void savePogToSessionData(PogData pogData, boolean needToAdd) {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
 			parameters.put("dungeonUUID", selectedDungeon.getUUID());
@@ -800,13 +800,13 @@ public class DungeonManager implements IDungeonManager {
 	private void addToSessionLevel(PogData pog) {
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel != null) {
-			PogDataLite clone = pog.cloneLite();
 			if (pog.isThisAPlayer()) {
-				sessionLevel.addPlayer(clone);
+				sessionLevel.addPlayer(pog);
 			} else {
+				PogDataLite clone = pog.cloneLite();
 				sessionLevel.addMonster(clone);
 			}
-			savePogToSessionData(clone, true);
+			savePogToSessionData(pog, true);
 		}
 	}
 
@@ -831,15 +831,28 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
+	public PogData[] getPlayersForCurrentSessionLevel() {
+		if (editMode || selectedDungeon == null) {
+			return null;
+		}
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return null;
+		}
+		PogData[] players = sessionLevel.getPlayers();
+		return players;
+	}
+
+	@Override
 	public String[] getDungeonLevelNames() {
 		if (selectedDungeon == null) {
-			return(new String[0]);
+			return (new String[0]);
 		}
 		DungeonLevel[] levels = selectedDungeon.getDungeonlevels();
 		String[] levelNames = new String[levels.length];
 		for (int i = 0; i < levels.length; ++i) {
 			levelNames[i] = levels[i].getLevelName();
 		}
-		return(levelNames);
+		return (levelNames);
 	}
 }

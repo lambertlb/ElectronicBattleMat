@@ -3,8 +3,8 @@ package per.lambert.ebattleMat.server.serviceData;
 public class PogData extends PogDataLite {
 	public String pogName;
 	public String pogImageUrl;
+	public String pogType;
 	public int pogSize;
-	public boolean isPlayer;
 
 	public PogData() {
 	}
@@ -13,8 +13,8 @@ public class PogData extends PogDataLite {
 		super(pogData);
 		pogName = pogData.pogName;
 		pogImageUrl = pogData.pogImageUrl;
+		pogType = pogData.pogType;
 		pogSize = pogData.pogSize;
-		isPlayer = pogData.isPlayer;
 	}
 
 }

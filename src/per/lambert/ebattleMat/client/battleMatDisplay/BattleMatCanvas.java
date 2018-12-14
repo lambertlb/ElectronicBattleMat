@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
@@ -589,13 +590,23 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		return addPogToCanvas(pogBeingDragged);
 	}
 
-	public PogCanvas addPogToCanvas(PogData pogData) {
+	private int getPogZ(PogData pogData) {
+		if (pogData.getPogType().equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+			return(MONSTERS_Z);
+		}
+		if (pogData.getPogType().equals(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+			return(PLAYERS_Z);
+		}
+		return(ROOMOBJECTS_Z);
+	}
+	
+	private PogCanvas addPogToCanvas(PogData pogData) {
 		getRibbonBarData();
 		PogData clonePog = ServiceManager.getDungeonManager().createPogInstance(pogData);
 		clonePog.setPogColumn(dragColumn);
 		clonePog.setPogRow(dragRow);
 		ServiceManager.getDungeonManager().addPogDataToLevel(clonePog);
-		return addPogToCanvas(clonePog, MONSTERS_Z);
+		return addPogToCanvas(clonePog, getPogZ(pogData));
 	}
 
 	private PogCanvas addPogToCanvas(PogData clonePog, int zLevel) {
@@ -677,16 +688,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	private void addPogs() {
-		addMonsterPogs();
-	}
-
-	public void addMonsterToCanvas(PogDataLite pogData) {
 		getRibbonBarData();
-		PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(pogData);
-		if (clonePog != null) {
-			addPogToCanvas(clonePog, MONSTERS_Z);
-			mainDraw();
-		}
+		addMonsterPogs();
+		addPlayerPogs();
+		mainDraw();
 	}
 
 	private void addMonsterPogs() {
@@ -697,6 +702,21 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		for (PogDataLite monster : monsters) {
 			addMonsterToCanvas(monster);
 		}
-		mainDraw();
+	}
+	public void addMonsterToCanvas(PogDataLite pogData) {
+		PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(pogData);
+		if (clonePog != null) {
+			addPogToCanvas(clonePog, MONSTERS_Z);
+		}
+	}
+
+	private void addPlayerPogs() {
+		PogData[] players = ServiceManager.getDungeonManager().getPlayersForCurrentSessionLevel();
+		if (players == null) {
+			return;
+		}
+		for (PogData player : players) {
+			addPogToCanvas(player, PLAYERS_Z);
+		}
 	}
 }

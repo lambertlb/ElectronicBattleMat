@@ -1,14 +1,12 @@
 package per.lambert.ebattleMat.server;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import com.google.gson.Gson;
 
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
+import per.lambert.ebattleMat.server.serviceData.PogData;
 import per.lambert.ebattleMat.server.serviceData.PogDataLite;
 
 public class SessionInformation {
@@ -69,26 +67,24 @@ public class SessionInformation {
 		return (null);
 	}
 
-	public SessionInformation(DungeonSessionData sessionData, String sessionPath, String sessionDirectory) {
+	public SessionInformation() {
 		version = 1;
+		this.sessionData = null;
+		this.sessionPath = null;
+		this.sessionDirectory = null;
+	}
+
+	public SessionInformation(DungeonSessionData sessionData, String sessionPath, String sessionDirectory) {
+		this();
 		this.sessionData = sessionData;
 		this.sessionPath = sessionPath;
 		this.sessionDirectory = sessionDirectory;
 	}
 
 	public SessionInformation(String sessionPath, String sessionDirectory) {
-		version = 1;
-		this.sessionData = null;
-		;
+		this();
 		this.sessionPath = sessionPath;
 		this.sessionDirectory = sessionDirectory;
-	}
-
-	public SessionInformation() {
-		version = 1;
-		this.sessionData = null;
-		this.sessionPath = null;
-		this.sessionDirectory = null;
 	}
 
 	public String toJson() {
@@ -117,33 +113,59 @@ public class SessionInformation {
 	}
 
 	public void save() throws IOException {
-		dirty = false;
 		Gson gson = new Gson();
 		String sessionJson = gson.toJson(sessionData);
 		DungeonsManager.saveJsonFile(sessionJson, sessionPath);
+		dirty = false;
 	}
 
-	public void savePog(PogDataLite pogData, int currentLevel, boolean needToAdd) {
+	public void saveMonsterPog(PogDataLite pogData, int currentLevel, boolean needToAdd) {
+		DungeonSessionLevel sessionLevel = sessionData.sessionLevels[currentLevel];
+		sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.monsters);
+	}
+
+	public void savePlayerPog(PogData pogData, int currentLevel, boolean needToAdd) {
+		DungeonSessionLevel sessionLevel = sessionData.sessionLevels[currentLevel];
 		++version;
 		dirty = true;
-		DungeonSessionLevel sessionLevel = sessionData.sessionLevels[currentLevel];
 		if (!needToAdd) {
-			updatePog(sessionLevel, pogData, currentLevel);
+			updatePogCollection(sessionLevel.players, pogData);
 			return;
 		}
-		PogDataLite[] newPogs = new PogDataLite[sessionLevel.monsters.length + 1];
-		for (int i = 0; i < sessionLevel.monsters.length; ++i) {
-			newPogs[i] = sessionLevel.monsters[i];
+		PogData[] newPogs = new PogData[sessionLevel.players.length + 1];
+		for (int i = 0; i < sessionLevel.players.length; ++i) {
+			newPogs[i] = sessionLevel.players[i];
 		}
 		newPogs[newPogs.length - 1] = pogData;
-		sessionLevel.monsters = newPogs;
+		sessionLevel.players = newPogs;
 	}
 
-	private void updatePog(DungeonSessionLevel sessionLevel, PogDataLite pogData, int currentLevel) {
-		for (PogDataLite pog : sessionLevel.monsters) {
+	public PogDataLite[] savePogToProperCollection(PogDataLite pogData, boolean needToAdd, PogDataLite[] pogCollection) {
+		++version;
+		dirty = true;
+		if (!needToAdd) {
+			updatePogCollection(pogCollection, pogData);
+			return(pogCollection);
+		}
+		PogDataLite[] newPogs = expandCollectionAndAddPog(pogCollection, pogData);
+		return(newPogs);
+	}
+
+	private PogDataLite[] expandCollectionAndAddPog(PogDataLite[] pogCollection, PogDataLite pogData) {
+		PogDataLite[] newPogs = new PogDataLite[pogCollection.length + 1];
+		for (int i = 0; i < pogCollection.length; ++i) {
+			newPogs[i] = pogCollection[i];
+		}
+		newPogs[newPogs.length - 1] = pogData;
+		return newPogs;
+	}
+
+	private void updatePogCollection(PogDataLite[] pogCollection, PogDataLite pogData) {
+		for (PogDataLite pog : pogCollection) {
 			if (pog.uuid.equals(pogData.uuid)) {
 				pog.pogColumn = pogData.pogColumn;
 				pog.pogRow = pogData.pogRow;
+				break;
 			}
 		}
 	}

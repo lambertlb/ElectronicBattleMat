@@ -5,14 +5,14 @@
 			"templateUUID": "Male_Dwarf_Fighter",
 			"pogName": "Male Dwarf Fighter",
 			"pogImageUrl": "dungeonData/resources/pcPogs/dwarf.jpeg",
-			"isPlayer": true
+			"pogType" : "PLAYER"
 		},
 		{
 			"uuid": "Female_Dwarf_Fighter",
 			"templateUUID": "Female_Dwarf_Fighter",
 			"pogName": "Female Dwarf Fighter",
 			"pogImageUrl": "https://img.fireden.net/tg/image/1457/64/1457647101877.jpg",
-			"isPlayer": true
+			"pogType" : "PLAYER"
 		}
 	]
 }

@@ -17,53 +17,28 @@ public class DungeonSessionLevel extends JavaScriptObject {
 		this.fogOfWar = fogOfWar;
 	}-*/;
 
-	public final PogDataLite[] getPlayers() {
-		PogDataLite[] players = getgetPlayersNative();
-		if (players == null) {
-			players = new PogDataLite[0];
-			setPlayersNative(players);
-		}
-		return (players);
-	};
 
-	private final native PogDataLite[] getgetPlayersNative() /*-{
+	public final native PogData[] getPlayers() /*-{
 		if (this.players === undefined) {
-			return (null);
+			this.players = [];
 		}
 		return (this.players);
 	}-*/;
 
-	private final native void setPlayersNative(PogDataLite[] players) /*-{
-		this.players = players;
-	}-*/;
-
-	public final void addPlayer(PogDataLite player) {
+	public final void addPlayer(PogData player) {
 		getPlayers();
 		addPlayerNative(player);
 	}
 
-	public final native void addPlayerNative(PogDataLite player) /*-{
+	public final native void addPlayerNative(PogData player) /*-{
 		this.players.push(player);
 	}-*/;
 
-	public final PogDataLite[] getMonsters() {
-		PogDataLite[] monsters = getMonstersNative();
-		if (monsters == null) {
-			monsters = new PogDataLite[0];
-			setMonstersNative(monsters);
-		}
-		return (monsters);
-	};
-
-	public final native PogDataLite[] getMonstersNative() /*-{
+	public final native PogDataLite[] getMonsters() /*-{
 		if (this.monsters === undefined) {
-			return (null);
+			this.monsters = [];
 		}
 		return (this.monsters);
-	}-*/;
-
-	private final native void setMonstersNative(PogDataLite[] monsters) /*-{
-		this.monsters = monsters;
 	}-*/;
 
 	public final void addMonster(PogDataLite monster) {
@@ -75,24 +50,11 @@ public class DungeonSessionLevel extends JavaScriptObject {
 		this.monsters.push(monster);
 	}-*/;
 
-	public final PogDataLite[] getRoomObjects() {
-		PogDataLite[] roomObjects = getMonstersNative();
-		if (roomObjects == null) {
-			roomObjects = new PogDataLite[0];
-			setMonstersNative(roomObjects);
-		}
-		return (roomObjects);
-	};
-
-	public final native PogDataLite[] getRoomObjectsNative() /*-{
+	public final native PogDataLite[] getRoomObjects() /*-{
 		if (this.roomObjects === undefined) {
-			return (null);
+			this.roomObjects = [];
 		}
 		return (this.roomObjects);
-	}-*/;
-
-	private final native void setRoomObjectsNative(PogDataLite[] roomObjects) /*-{
-		this.roomObjects = roomObjects;
 	}-*/;
 
 	public final void addRoomObject(PogDataLite roomObject) {

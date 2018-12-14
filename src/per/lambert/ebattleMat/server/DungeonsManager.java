@@ -26,7 +26,7 @@ import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.server.serviceData.DungeonData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
-import per.lambert.ebattleMat.server.serviceData.PogDataLite;
+import per.lambert.ebattleMat.server.serviceData.PogData;
 
 public class DungeonsManager {
 	private static ReentrantLock lock = new ReentrantLock();
@@ -34,6 +34,7 @@ public class DungeonsManager {
 	private final static String dungeonLocation = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
 	private static Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
 	private static Map<String, SessionInformation> sessionCache = new HashMap<String, SessionInformation>();
+	@SuppressWarnings("unused")
 	private static boolean initialized = initializeDungeonManager();
 	private static Timer timer;
 
@@ -387,8 +388,12 @@ public class DungeonsManager {
 				return;
 			}
 			Gson gson = new Gson();
-			PogDataLite pogData = gson.fromJson(pogJsonData, PogDataLite.class);
-			sessionInformation.savePog(pogData, currentLevel, needToAdd);
+			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
+			if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+				sessionInformation.saveMonsterPog(pogData, currentLevel, needToAdd);
+			} else if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+				sessionInformation.savePlayerPog(pogData, currentLevel, needToAdd);
+			}
 		} finally {
 			lock.unlock();
 		}
