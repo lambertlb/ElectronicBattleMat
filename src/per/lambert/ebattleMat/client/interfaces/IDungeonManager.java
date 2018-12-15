@@ -56,7 +56,7 @@ public interface IDungeonManager {
 
 	PogData createPogInstance(PogData template);
 
-	void setFowSize(int columns, int rows);
+	void setSessionLevelSize(int columns, int rows);
 
 	void saveFow();
 
@@ -100,7 +100,7 @@ public interface IDungeonManager {
 
 	PogDataLite[] getMonstersForCurrentLevel();
 
-	PogData[] getPlayersForCurrentSessionLevel();
+	PogData[] getPlayersForCurrentSession();
 
 	String[] getDungeonLevelNames();
 }

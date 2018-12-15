@@ -125,19 +125,18 @@ public class SessionInformation {
 	}
 
 	public void savePlayerPog(PogData pogData, int currentLevel, boolean needToAdd) {
-		DungeonSessionLevel sessionLevel = sessionData.sessionLevels[currentLevel];
 		++version;
 		dirty = true;
 		if (!needToAdd) {
-			updatePogCollection(sessionLevel.players, pogData);
+			updatePogCollection(sessionData.players, pogData);
 			return;
 		}
-		PogData[] newPogs = new PogData[sessionLevel.players.length + 1];
-		for (int i = 0; i < sessionLevel.players.length; ++i) {
-			newPogs[i] = sessionLevel.players[i];
+		PogData[] newPogs = new PogData[sessionData.players.length + 1];
+		for (int i = 0; i < sessionData.players.length; ++i) {
+			newPogs[i] = sessionData.players[i];
 		}
 		newPogs[newPogs.length - 1] = pogData;
-		sessionLevel.players = newPogs;
+		sessionData.players = newPogs;
 	}
 
 	public PogDataLite[] savePogToProperCollection(PogDataLite pogData, boolean needToAdd, PogDataLite[] pogCollection) {

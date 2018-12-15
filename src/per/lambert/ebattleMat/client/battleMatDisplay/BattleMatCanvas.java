@@ -423,7 +423,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		showGrid = ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid();
 		verticalLines = (int) (imageWidth / gridSpacing) + 1;
 		horizontalLines = (int) (imageHeight / gridSpacing) + 1;
-		ServiceManager.getDungeonManager().setFowSize(verticalLines, horizontalLines);
+		ServiceManager.getDungeonManager().setSessionLevelSize(verticalLines, horizontalLines);
 	}
 
 	private void getRibbonBarData() {
@@ -711,12 +711,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	private void addPlayerPogs() {
-		PogData[] players = ServiceManager.getDungeonManager().getPlayersForCurrentSessionLevel();
+		PogData[] players = ServiceManager.getDungeonManager().getPlayersForCurrentSession();
 		if (players == null) {
 			return;
 		}
 		for (PogData player : players) {
-			addPogToCanvas(player, PLAYERS_Z);
+			if (player != null) {
+				addPogToCanvas(player, PLAYERS_Z);
+			}
 		}
 	}
 }

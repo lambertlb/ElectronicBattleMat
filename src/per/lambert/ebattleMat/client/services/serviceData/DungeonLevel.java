@@ -49,4 +49,25 @@ public class DungeonLevel extends DungeonSessionLevel {
 		this.gridOffsetY = offset;
 	}-*/;
 
+	public final native int getColumns() /*-{
+		if (this.columns === undefined) {
+			return (0);
+		}
+		return this.columns;
+	}-*/;
+
+	public final native void setColumns(int columns) /*-{
+		this.columns = columns;
+	}-*/;
+
+	public final native int getRows() /*-{
+		if (this.rows === undefined) {
+			return (0);
+		}
+		return this.rows;
+	}-*/;
+
+	public final native void setRows(int rows) /*-{
+		this.rows = rows;
+	}-*/;
 }

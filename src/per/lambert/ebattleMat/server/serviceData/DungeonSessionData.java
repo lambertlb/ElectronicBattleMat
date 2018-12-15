@@ -4,6 +4,7 @@ public class DungeonSessionData {
 	public String sessionName;
 	public String dungeonUUID;
 	public String sessionUUID;
+	public PogData[] players = new PogData[0];
 	public DungeonSessionLevel[] sessionLevels;
 
 	public DungeonSessionData(String newSessionName, String dungeonUUID, String sessionUUID) {

@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -398,24 +399,17 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
-	public void setFowSize(int columns, int rows) {
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (!isDungeonMaster || sessionLevel == null) {
+	public void setSessionLevelSize(int columns, int rows) {
+		DungeonLevel dungeonLevel = getCurrentLevelData();
+		if (!isDungeonMaster || dungeonLevel == null) {
 			return;
 		}
-		boolean[][] fowGrid = sessionLevel.getFOW();
-		if (fowGrid != null && fowGrid.length == (columns + 1) && fowGrid[0].length == (rows + 1)) {
+		if (dungeonLevel.getColumns() == columns && dungeonLevel.getRows() == rows) {
 			return;
 		}
-
-		fowGrid = new boolean[columns + 1][rows + 1];
-		for (int i = 0; i <= columns; ++i) {
-			for (int j = 0; j <= rows; ++j) {
-				fowGrid[i][j] = true;
-			}
-		}
-		sessionLevel.setFOW(fowGrid);
-		saveFow();
+		dungeonLevel.setColumns(columns);
+		dungeonLevel.setRows(rows);
+		saveDungeonData();
 	}
 
 	@Override
@@ -783,7 +777,7 @@ public class DungeonManager implements IDungeonManager {
 			addTemplateLevel(pog);
 		}
 		if (isDungeonMaster || pog.isThisAPlayer()) {
-			addToSessionLevel(pog);
+			addToSession(pog);
 		}
 	}
 
@@ -797,14 +791,18 @@ public class DungeonManager implements IDungeonManager {
 		saveDungeonData();
 	}
 
-	private void addToSessionLevel(PogData pog) {
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (sessionLevel != null) {
+	private void addToSession(PogData pog) {
+		DungeonSessionData sessionData = selectedSession;
+		if (sessionData != null) {
 			if (pog.isThisAPlayer()) {
-				sessionLevel.addPlayer(pog);
+				pog.setDungeonLevel(currentLevel);
+				sessionData.addPlayer(pog);
 			} else {
-				PogDataLite clone = pog.cloneLite();
-				sessionLevel.addMonster(clone);
+				DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+				if (sessionLevel != null) {
+					PogDataLite clone = pog.cloneLite();
+					sessionLevel.addMonster(clone);
+				}
 			}
 			savePogToSessionData(pog, true);
 		}
@@ -831,16 +829,18 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
-	public PogData[] getPlayersForCurrentSessionLevel() {
-		if (editMode || selectedDungeon == null) {
+	public PogData[] getPlayersForCurrentSession() {
+		if (editMode || selectedDungeon == null || selectedSession == null) {
 			return null;
 		}
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (sessionLevel == null) {
-			return null;
+		int currentLevel = ServiceManager.getDungeonManager().getCurrentLevel();
+		ArrayList<PogData>	playersOnLevel = new ArrayList<PogData>();
+		for (PogData player : selectedSession.getPlayers()) {
+			if (player.getDungeonLevel() == currentLevel) {
+				playersOnLevel.add(player);
+			}
 		}
-		PogData[] players = sessionLevel.getPlayers();
-		return players;
+		return (PogData[]) playersOnLevel.toArray(new PogData[playersOnLevel.size()]);
 	}
 
 	@Override

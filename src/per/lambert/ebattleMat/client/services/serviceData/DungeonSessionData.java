@@ -36,6 +36,22 @@ public class DungeonSessionData extends JavaScriptObject {
 		return (this.sessionUUID);
 	}-*/;
 
+	public final native PogData[] getPlayers() /*-{
+		if (this.players === undefined) {
+			this.players = [];
+		}
+		return (this.players);
+	}-*/;
+
+	public final void addPlayer(PogData player) {
+		getPlayers();
+		addPlayerNative(player);
+	}
+
+	public final native void addPlayerNative(PogData player) /*-{
+		this.players.push(player);
+	}-*/;
+
 	public final native DungeonSessionLevel[] getSessionLevels() /*-{
 		if (this.sessionLevels === undefined) {
 			this.sessionLevels = [];

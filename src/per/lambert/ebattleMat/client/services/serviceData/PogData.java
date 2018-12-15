@@ -52,6 +52,17 @@ public class PogData extends PogDataLite {
 		this.pogSize = pogSize;
 	}-*/;
 
+	public final native int getDungeonLevel() /*-{
+		if (this.dungeonLevel === undefined) {
+			this.dungeonLevel = 0;
+		}
+		return (this.dungeonLevel);
+	}-*/;
+
+	public final native void setDungeonLevel(int dungeonLevel) /*-{
+		this.dungeonLevel = dungeonLevel;
+	}-*/;
+
 	public final PogData clone() {
 		String pogJson = JsonUtils.stringify(this);
 		PogData theClone = JsonUtils.<PogData>safeEval(pogJson);
@@ -61,6 +72,6 @@ public class PogData extends PogDataLite {
 
 	public final boolean isThisAPlayer() {
 		String type = getPogType();
-		return(type.equals(ElectronicBattleMat.POG_TYPE_PLAYER));
+		return (type.equals(ElectronicBattleMat.POG_TYPE_PLAYER));
 	}
 }

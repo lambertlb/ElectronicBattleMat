@@ -18,22 +18,6 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	}-*/;
 
 
-	public final native PogData[] getPlayers() /*-{
-		if (this.players === undefined) {
-			this.players = [];
-		}
-		return (this.players);
-	}-*/;
-
-	public final void addPlayer(PogData player) {
-		getPlayers();
-		addPlayerNative(player);
-	}
-
-	public final native void addPlayerNative(PogData player) /*-{
-		this.players.push(player);
-	}-*/;
-
 	public final native PogDataLite[] getMonsters() /*-{
 		if (this.monsters === undefined) {
 			this.monsters = [];
