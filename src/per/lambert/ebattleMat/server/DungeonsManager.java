@@ -399,6 +399,19 @@ public class DungeonsManager {
 		}
 	}
 
+	public static void updateFOW(HttpServlet servlet, String sessionUUID, int currentLevel, boolean[][] fogOfWar) {
+		lock.lock();
+		try {
+			SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
+			if (sessionInformation == null) {
+				return;
+			}
+			sessionInformation.updateFOW(fogOfWar, currentLevel);
+		} finally {
+			lock.unlock();
+		}
+	}
+
 	public static String getFileAsString(final HttpServlet servlet, final String fileName) throws IOException {
 		lock.lock();
 		try {

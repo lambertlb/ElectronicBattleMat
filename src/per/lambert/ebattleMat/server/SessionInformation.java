@@ -87,6 +87,13 @@ public class SessionInformation {
 		this.sessionDirectory = sessionDirectory;
 	}
 
+	public DungeonSessionLevel getSessionLevel(int currentLevel) {
+		if (currentLevel < 0 || currentLevel >= sessionData.sessionLevels.length) {
+			return (null);
+		}
+		return (sessionData.sessionLevels[currentLevel]);
+	}
+
 	public String toJson() {
 		if (sessionData != null) {
 			Gson gson = new Gson();
@@ -120,8 +127,10 @@ public class SessionInformation {
 	}
 
 	public void saveMonsterPog(PogDataLite pogData, int currentLevel, boolean needToAdd) {
-		DungeonSessionLevel sessionLevel = sessionData.sessionLevels[currentLevel];
-		sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.monsters);
+		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
+		if (sessionLevel != null) {
+			sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.monsters);
+		}
 	}
 
 	public void savePlayerPog(PogData pogData, int currentLevel, boolean needToAdd) {
@@ -144,10 +153,10 @@ public class SessionInformation {
 		dirty = true;
 		if (!needToAdd) {
 			updatePogCollection(pogCollection, pogData);
-			return(pogCollection);
+			return (pogCollection);
 		}
 		PogDataLite[] newPogs = expandCollectionAndAddPog(pogCollection, pogData);
-		return(newPogs);
+		return (newPogs);
 	}
 
 	private PogDataLite[] expandCollectionAndAddPog(PogDataLite[] pogCollection, PogDataLite pogData) {
@@ -176,5 +185,14 @@ public class SessionInformation {
 			} catch (IOException e) {
 			}
 		}
+	}
+
+	public void updateFOW(boolean[][] fowData, int currentLevel) {
+		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
+		if (sessionLevel == null) {
+			return;
+		}
+		sessionLevel.updateFOW(fowData);
+		dirty = true;
 	}
 }

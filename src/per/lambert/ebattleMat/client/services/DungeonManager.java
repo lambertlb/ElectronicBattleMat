@@ -24,6 +24,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
+import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 public class DungeonManager implements IDungeonManager {
@@ -35,7 +36,6 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	public DungeonManager() {
-		players = (PogList) JavaScriptObject.createObject().cast();
 	}
 
 	private int token;
@@ -106,16 +106,6 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public PogData[] getMonsterTemplatePogs() {
 		return monsterTemplatePogs.getPogList();
-	}
-
-	private PogList players;
-
-	public PogData[] getPlayers() {
-		return players.getPogList();
-	}
-
-	public void addPlayer(PogData player) {
-		players.addPog(player);
 	}
 
 	private PogData selectedPog;
@@ -392,9 +382,6 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public PogData createPogInstance(PogData template) {
 		PogData pog = template.clone();
-		if (template.isThisAPlayer()) {
-			addPlayer(pog);
-		}
 		return (pog);
 	}
 
@@ -421,31 +408,26 @@ public class DungeonManager implements IDungeonManager {
 		if (sessionLevel == null) {
 			return (false);
 		}
-		boolean[][] fowGrid = sessionLevel.getFOW();
-		if (fowGrid == null) {
-			return (false);
-		}
-		return (fowGrid[columns][rows]);
+		return (sessionLevel.isFowSet(columns, rows));
 	}
+
+	private boolean fowDirty;
 
 	@Override
 	public void setFow(int columns, int rows, boolean value) {
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (!isDungeonMaster || sessionLevel == null) {
-			return;
+		if (isDungeonMaster && sessionLevel != null) {
+			sessionLevel.updateFOW(columns, rows, value);
+			fowDirty = true;
 		}
-		boolean[][] fowGrid = sessionLevel.getFOW();
-		if (fowGrid == null) {
-			return;
-		}
-		fowGrid[columns][rows] = value;
 	}
 
 	@Override
 	public void saveFow() {
-		if (isDungeonMaster) {
-			saveSessionData();
+		if (isDungeonMaster && fowDirty) {
+			updateFogOfWar();
 		}
+		fowDirty = false;
 	}
 
 	private boolean fowToggle;
@@ -725,14 +707,17 @@ public class DungeonManager implements IDungeonManager {
 		}
 	}
 
-	private void saveSessionData() {
+	private void updateFogOfWar() {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
-			parameters.put("dungeonUUID", selectedDungeon.getUUID());
 			parameters.put("sessionUUID", selectedSession.getSessionUUID());
+			parameters.put("currentLevel", "" + currentLevel);
+			DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+			FogOfWarData fogOfWarData = (FogOfWarData) JavaScriptObject.createObject().cast();
+			fogOfWarData.setFOW(sessionLevel.getFOW());
+			String fowDataString = JsonUtils.stringify(fogOfWarData);
 			IDataRequester dataRequester = ServiceManager.getDataRequester();
-			String dungeonDataString = JsonUtils.stringify(selectedSession);
-			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
+			dataRequester.requestData(fowDataString, token, "UPDATEFOW", parameters, new IUserCallback() {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {
@@ -834,7 +819,7 @@ public class DungeonManager implements IDungeonManager {
 			return null;
 		}
 		int currentLevel = ServiceManager.getDungeonManager().getCurrentLevel();
-		ArrayList<PogData>	playersOnLevel = new ArrayList<PogData>();
+		ArrayList<PogData> playersOnLevel = new ArrayList<PogData>();
 		for (PogData player : selectedSession.getPlayers()) {
 			if (player.getDungeonLevel() == currentLevel) {
 				playersOnLevel.add(player);

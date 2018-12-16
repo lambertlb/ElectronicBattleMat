@@ -17,6 +17,21 @@ public class DungeonSessionLevel extends JavaScriptObject {
 		this.fogOfWar = fogOfWar;
 	}-*/;
 
+	public final void updateFOW(int columns, int rows, boolean value) {
+		boolean[][] fowGrid = getFOW();
+		if (fowGrid == null) {
+			return;
+		}
+		fowGrid[columns][rows] = value;
+	}
+
+	public final boolean isFowSet(int columns, int rows) {
+		boolean[][] fowGrid = getFOW();
+		if (fowGrid == null) {
+			return (false);
+		}
+		return (fowGrid[columns][rows]);
+	}
 
 	public final native PogDataLite[] getMonsters() /*-{
 		if (this.monsters === undefined) {

@@ -1,7 +1,7 @@
 package per.lambert.ebattleMat.server.serviceData;
 
 public class DungeonSessionLevel {
-	boolean fogOfWar[][] = new boolean[0][0];
+	public boolean fogOfWar[][] = new boolean[0][0];
 	public PogDataLite[] monsters = new PogDataLite[0];
 	public PogDataLite[] roomObjects = new PogDataLite[0];
 
@@ -31,6 +31,11 @@ public class DungeonSessionLevel {
 			for (int j= 0; j < dungeonLevel.rows ;++j) {
 				fogOfWar[i][j] = true;
 			}
+		}
+	}
+	public void updateFOW(boolean[][] fowData) {
+		if (fowData != null) {
+			fogOfWar = fowData;
 		}
 	}
 }
