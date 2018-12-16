@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -26,12 +27,19 @@ public class DungeonOptions extends Composite {
 
 	@UiField
 	VerticalPanel panel;
-	
+
 	@UiField
 	CheckBox fowToggle;
+	@UiField
+	Button updateSession;
 
 	@UiHandler("fowToggle")
 	void onClick(ClickEvent e) {
 		ServiceManager.getDungeonManager().setFowToggle(fowToggle.getValue());
+	}
+
+	@UiHandler("updateSession")
+	void onUpdateSession(ClickEvent e) {
+		ServiceManager.getDungeonManager().doTimedTasks();
 	}
 }

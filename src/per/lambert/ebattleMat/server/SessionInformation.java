@@ -10,12 +10,6 @@ import per.lambert.ebattleMat.server.serviceData.PogData;
 import per.lambert.ebattleMat.server.serviceData.PogDataLite;
 
 public class SessionInformation {
-	private int version;
-
-	public int getVersion() {
-		return version;
-	}
-
 	private boolean dirty;
 
 	public boolean isDirty() {
@@ -24,10 +18,6 @@ public class SessionInformation {
 
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
 	}
 
 	private String sessionDirectory;
@@ -68,7 +58,6 @@ public class SessionInformation {
 	}
 
 	public SessionInformation() {
-		version = 1;
 		this.sessionData = null;
 		this.sessionPath = null;
 		this.sessionDirectory = null;
@@ -108,7 +97,6 @@ public class SessionInformation {
 		this.sessionDirectory = sessionDirectory;
 		String jsonData = DungeonsManager.readJsonFile(sessionPath);
 		fromJson(jsonData);
-		++version;
 	}
 
 	public void fromJson(String jsonData) {
@@ -134,7 +122,7 @@ public class SessionInformation {
 	}
 
 	public void savePlayerPog(PogData pogData, int currentLevel, boolean needToAdd) {
-		++version;
+		sessionData.increamentVersion();
 		dirty = true;
 		if (!needToAdd) {
 			updatePogCollection(sessionData.players, pogData);
@@ -149,7 +137,7 @@ public class SessionInformation {
 	}
 
 	public PogDataLite[] savePogToProperCollection(PogDataLite pogData, boolean needToAdd, PogDataLite[] pogCollection) {
-		++version;
+		sessionData.increamentVersion();
 		dirty = true;
 		if (!needToAdd) {
 			updatePogCollection(pogCollection, pogData);
@@ -193,6 +181,7 @@ public class SessionInformation {
 			return;
 		}
 		sessionLevel.updateFOW(fowData);
+		sessionData.increamentVersion();
 		dirty = true;
 	}
 }

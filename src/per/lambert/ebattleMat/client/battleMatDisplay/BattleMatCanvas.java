@@ -592,14 +592,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	private int getPogZ(PogData pogData) {
 		if (pogData.getPogType().equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
-			return(MONSTERS_Z);
+			return (MONSTERS_Z);
 		}
 		if (pogData.getPogType().equals(ElectronicBattleMat.POG_TYPE_PLAYER)) {
-			return(PLAYERS_Z);
+			return (PLAYERS_Z);
 		}
-		return(ROOMOBJECTS_Z);
+		return (ROOMOBJECTS_Z);
 	}
-	
+
 	private PogCanvas addPogToCanvas(PogData pogData) {
 		getRibbonBarData();
 		PogData clonePog = ServiceManager.getDungeonManager().createPogInstance(pogData);
@@ -687,6 +687,18 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		image.setUrl(imageUrl);
 	}
 
+	public void dungeonDataUpdated() {
+		removePogs();
+		addPogs();
+	}
+
+	private void removePogs() {
+		for (PogCanvas pog : pogs) {
+			this.remove(pog);
+		}
+		pogs.clear();
+	}
+
 	private void addPogs() {
 		getRibbonBarData();
 		addMonsterPogs();
@@ -703,6 +715,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			addMonsterToCanvas(monster);
 		}
 	}
+
 	public void addMonsterToCanvas(PogDataLite pogData) {
 		PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(pogData);
 		if (clonePog != null) {

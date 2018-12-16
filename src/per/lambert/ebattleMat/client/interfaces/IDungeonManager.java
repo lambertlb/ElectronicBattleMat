@@ -103,4 +103,6 @@ public interface IDungeonManager {
 	PogData[] getPlayersForCurrentSession();
 
 	String[] getDungeonLevelNames();
+
+	void doTimedTasks();
 }

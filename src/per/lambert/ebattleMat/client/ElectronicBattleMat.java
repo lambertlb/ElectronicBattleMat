@@ -1,6 +1,7 @@
 package per.lambert.ebattleMat.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatLayout;
@@ -19,6 +20,7 @@ public class ElectronicBattleMat implements EntryPoint {
 	private RootLayoutPanel rootLayoutPanel;
 	private BattleMatLayout layout;
 	private DungeonSelectControl dungeonSelectControl;
+	private Timer taskTimer;
 
 	public static String DUNGEON_DATA_LOCATION = "dungeonData/";
 	public static String DUNGEONS_FOLDER = "dungeons/";
@@ -43,6 +45,15 @@ public class ElectronicBattleMat implements EntryPoint {
 		LoginControl lc = new LoginControl();
 		lc.getElement().getStyle().setZIndex(400);
 		lc.show();
+
+		taskTimer = new Timer() {
+			@Override
+			public void run() {
+				ServiceManager.getDungeonManager().doTimedTasks();
+			}
+		};
+
+		taskTimer.scheduleRepeating(1000);
 	}
 
 	private void setupEventHandler() {
@@ -63,6 +74,10 @@ public class ElectronicBattleMat implements EntryPoint {
 				}
 				if (event.getReasonForAction() == ReasonForAction.SelectNewDungeon) {
 					selectDungeon();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.SessionDataChanged) {
+					layout.dungeonDataUpdated();
 					return;
 				}
 			}

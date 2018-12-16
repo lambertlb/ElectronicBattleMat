@@ -7,6 +7,13 @@ public class DungeonSessionData extends JavaScriptObject {
 	protected DungeonSessionData() {
 	}
 
+	public final native int getVersion() /*-{
+		if (this.version === undefined) {
+			this.version = 0;
+		}
+		return (this.version);
+	}-*/;
+
 	public final native String getSessionName() /*-{
 		if (this.sessionName === undefined) {
 			this.sessionName = "";

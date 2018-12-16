@@ -33,8 +33,7 @@ public class BattleMatLayout extends ResizeComposite {
 	final double STATUS_BAR_SIZE = 30;
 
 	/**
-	 * Sets up the widget. We create the GUI, set up event handling, and call
-	 * initWidget on the holder panel.
+	 * Sets up the widget. We create the GUI, set up event handling, and call initWidget on the holder panel.
 	 */
 	public BattleMatLayout() {
 		// Create the GUI
@@ -69,8 +68,8 @@ public class BattleMatLayout extends ResizeComposite {
 		// Add the panels to the holder
 		holder.addNorth(topPanel, RIBBON_BAR_SIZE);
 		holder.addSouth(statusBar, STATUS_BAR_SIZE);
-//		holder.addWest(selectionPanel, SELECTION_PANEL_SIZE);
-//		holder.addEast(propertyPanel, PROPERTY_PANEL_SIZE);
+		// holder.addWest(selectionPanel, SELECTION_PANEL_SIZE);
+		// holder.addEast(propertyPanel, PROPERTY_PANEL_SIZE);
 		holder.add(mainPanel);
 
 		// MUST CALL THIS METHOD to set the constraints; if you don't not much
@@ -96,12 +95,19 @@ public class BattleMatLayout extends ResizeComposite {
 
 		return holder;
 	}
+
 	public void dungeonDataChanged() {
 		battleMatCanvas.dungeonDataChanged();
 	}
+
+	public void dungeonDataUpdated() {
+		battleMatCanvas.dungeonDataUpdated();
+	}
+
 	private void doWindowResize(ResizeEvent event) {
 		battleMatCanvas.dungeonDataChanged();
 	}
+
 	public void setStatus(String status) {
 		statusLabel.setText(status);
 	}

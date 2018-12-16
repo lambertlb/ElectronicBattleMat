@@ -349,11 +349,16 @@ public class DungeonsManager {
 		}
 	}
 
-	public static String getSessionDataAsString(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
+	public static String getSessionDataAsString(HttpServlet servlet, String dungeonUUID, String sessionUUID, int version) throws IOException {
 		lock.lock();
 		try {
-			SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
-			if (sessionInformation != null) {
+			SessionInformation sessionInformation;
+			if (version != -1) {
+				sessionInformation = getSessionFromCache(sessionUUID);
+			} else {
+				sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+			}
+			if (sessionInformation != null && sessionInformation.getSessionData().getVersion() != version) {
 				return (sessionInformation.toJson());
 			}
 			return ("");

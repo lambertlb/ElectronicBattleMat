@@ -9,6 +9,7 @@
 	<g:HTMLPanel>
 		<g:VerticalPanel ui:field="panel" height="100%">
 		<g:CheckBox ui:field="fowToggle" text= "Toggle FOW" />
+		<g:Button ui:field="updateSession" text= "Update Session" />
 		</g:VerticalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

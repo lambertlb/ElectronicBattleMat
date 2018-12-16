@@ -17,7 +17,8 @@ public class LoadSessionHandler implements IWebRequestHandler {
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		String sessionUUID = request.getParameter("sessionUUID");
-		String sessionJson = DungeonsManager.getSessionDataAsString(servlet, dungeonUUID, sessionUUID);
+		int version = Integer.parseInt(request.getParameter("version"));
+		String sessionJson = DungeonsManager.getSessionDataAsString(servlet, dungeonUUID, sessionUUID, version);
 		PrintWriter out = resp.getWriter();
 		out.print(sessionJson);
 		out.flush();

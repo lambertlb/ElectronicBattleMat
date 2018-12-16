@@ -20,4 +20,5 @@ public enum ReasonForAction {
 	SelectNewDungeon,
 	SessionListChanged,
 	SessionDataSaved,
+	SessionDataChanged
 }

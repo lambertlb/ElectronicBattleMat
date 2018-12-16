@@ -278,7 +278,7 @@ public class DungeonManager implements IDungeonManager {
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
 				if (!editMode) {
-					loadSessionData();
+					loadSessionData(-1);
 				} else {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToEdit, null));
 				}
@@ -642,17 +642,26 @@ public class DungeonManager implements IDungeonManager {
 		});
 	}
 
-	private void loadSessionData() {
+	private void loadSessionData(final int versionToTest) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", selectedDungeonUUID);
 		parameters.put("sessionUUID", selectedSessionUUID);
+		parameters.put("version", "" + versionToTest);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", token, "LOADSESSION", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
-				selectedSession = JsonUtils.<DungeonSessionData>safeEval((String) data);
-				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToJoin, null));
+				String jsonData = (String) data;
+				if (!jsonData.isEmpty()) {
+					selectedSession = JsonUtils.<DungeonSessionData>safeEval(jsonData);
+					if (versionToTest == -1) {
+						ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToJoin, null));
+					}
+					else {
+						ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
+					}
+				}
 			}
 
 			@Override
@@ -693,11 +702,30 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private void updatePodDataInSessionLevel(PogData pog) {
+		if (pog.isThisAPlayer()) {
+			updatePlayerInSession(pog);
+		} else {
+			updateMonsterInSession(pog);
+		}
+	}
+
+	private void updateMonsterInSession(PogData pog) {
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return;
 		}
 		for (PogDataLite pogData : sessionLevel.getMonsters()) {
+			if (pog.getUUID().equals(pogData.getUUID())) {
+				pogData.setPogColumn(pog.getPogColumn());
+				pogData.setPogRow(pog.getPogRow());
+				savePogToSessionData(pog, false);
+				break;
+			}
+		}
+	}
+
+	private void updatePlayerInSession(PogData pog) {
+		for (PogData pogData : selectedSession.getPlayers()) {
 			if (pog.getUUID().equals(pogData.getUUID())) {
 				pogData.setPogColumn(pog.getPogColumn());
 				pogData.setPogRow(pog.getPogRow());
@@ -839,5 +867,12 @@ public class DungeonManager implements IDungeonManager {
 			levelNames[i] = levels[i].getLevelName();
 		}
 		return (levelNames);
+	}
+
+	@Override
+	public void doTimedTasks() {
+		if (selectedSession != null) {
+			loadSessionData(selectedSession.getVersion());
+		}
 	}
 }
