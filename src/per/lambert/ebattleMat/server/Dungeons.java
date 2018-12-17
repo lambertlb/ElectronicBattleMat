@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.server;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,23 @@ import per.lambert.ebattleMat.server.handlers.SessionListHandler;
 import per.lambert.ebattleMat.server.handlers.UpdateFOWHander;
 
 public class Dungeons extends HttpServlet {
+	private static boolean initialized = initializeDungeons();
+
+	private static boolean initializeDungeons() {
+  		return true;
+	}
+
+	public static void logToFile(String message) {
+		FileWriter writer = null;
+	       try {
+				writer = new FileWriter("DungeonsManager.log", true);
+				writer.write(message);
+				writer.write("\n");
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+			}
+	}
 	/**
 	 * Constructor
 	 */
@@ -40,14 +58,14 @@ public class Dungeons extends HttpServlet {
 		webServices.put("LOADSESSION", new LoadSessionHandler());
 		webServices.put("SAVEPOGTOSESSION", new SavePogHandler());
 		webServices.put("UPDATEFOW", new UpdateFOWHander());
-		
+
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// first, set the "content type" header of the response
 		response.setContentType("application/xml");
+		logToFile("got post");
 		ServletUtils.handlePostRequest(request, response, webServices, this);
 	}
 

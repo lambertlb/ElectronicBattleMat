@@ -304,6 +304,7 @@ public class DungeonSelectControl extends WindowBox {
 	public void setupAndShow() {
 		dungeonSelectPresenter.refreshView();
 		getElement().getStyle().setZIndex(100);
+		center();
 		show();
 	}
 

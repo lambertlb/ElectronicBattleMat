@@ -662,11 +662,20 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
 		double size = adjustedGridSize() * pogBeingDragged.getPogSize();
 		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
-		greyOutPanel.getElement().getStyle().setBackgroundColor("grey");
+		greyOutPanel.getElement().getStyle().setBackgroundColor(computeDragColor());
 		greyOutPanel.setWidth("" + size + "px");
 		greyOutPanel.setHeight("" + size + "px");
 		super.setWidgetPosition(greyOutPanel, (int) columnToPixel(dragColumn), (int) rowToPixel(dragRow));
 		greyOutPanel.setVisible(true);
+	}
+
+	private String computeDragColor() {
+		if (!ServiceManager.getDungeonManager().isDungeonMaster()) {
+			if ( ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
+				return("red");
+			}
+		}
+		return("grey");
 	}
 
 	@SuppressWarnings("unused")

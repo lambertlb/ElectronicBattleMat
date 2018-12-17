@@ -81,6 +81,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 	 */
 	private double totalZoom = 1;
 	private PogData pogData;
+	private boolean isPlayer;
 
 	public PogData getPogData() {
 		return pogData;
@@ -111,6 +112,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 	public PogCanvas(PogData pogData) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.pogData = pogData;
+		isPlayer = pogData.isThisAPlayer();
 		initialize();
 		if (pogData.getPogImageUrl() != "") {
 			setPogImageUrl(pogData.getPogImageUrl());
@@ -131,7 +133,8 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		addDragStartHandler(new DragStartHandler() {
 			@Override
 			public void onDragStart(DragStartEvent event) {
-				if (ServiceManager.getDungeonManager().getFowToggle()) {
+				boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
+				if (ServiceManager.getDungeonManager().getFowToggle() || (!isDM && !isPlayer)) {
 					event.preventDefault();
 					return;
 				}
