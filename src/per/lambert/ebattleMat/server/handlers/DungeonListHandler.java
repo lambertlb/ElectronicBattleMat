@@ -47,15 +47,11 @@ public class DungeonListHandler implements IWebRequestHandler{
 	
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
-		Dungeons.logToFile("Start DungeonListHandler");
 		DungeonsManager.getDungeonListData(servlet);
 		URL servletPath = servlet.getServletContext().getResource("/");
-		Dungeons.logToFile("Convert DungeonListResponseData");
 		DungeonListResponseData dungeonListResponseData = new DungeonListResponseData(DungeonsManager.getDungeonNameToUUIDMap(), DungeonsManager.getUuidTemplatePathMap(), servletPath.getPath());
 		Gson gson = new Gson();
-		Dungeons.logToFile("Convert DungeonListResponseData to String");
 		String responseDataString = gson.toJson(dungeonListResponseData);
-		Dungeons.logToFile("DungeonListResponseData = " + responseDataString);
 
 		PrintWriter out = resp.getWriter();
 		out.print(responseDataString);
