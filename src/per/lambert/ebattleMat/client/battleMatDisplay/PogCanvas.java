@@ -19,6 +19,12 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchMoveEvent;
+import com.google.gwt.event.dom.client.TouchMoveHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -34,7 +40,7 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
-public class PogCanvas extends Composite implements HasDragStartHandlers , MouseDownHandler {
+public class PogCanvas extends Composite implements HasDragStartHandlers , MouseDownHandler, TouchStartHandler, TouchMoveHandler, TouchEndHandler {
 
 	private static ScalablePogUiBinder uiBinder = GWT.create(ScalablePogUiBinder.class);
 
@@ -302,5 +308,20 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		if (ServiceManager.getDungeonManager().getFowToggle()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
 		}
+	}
+
+	@Override
+	public void onTouchEnd(TouchEndEvent event) {
+		event.preventDefault();
+	}
+
+	@Override
+	public void onTouchMove(TouchMoveEvent event) {
+		event.preventDefault();
+	}
+
+	@Override
+	public void onTouchStart(TouchStartEvent event) {
+		event.preventDefault();
 	}
 }

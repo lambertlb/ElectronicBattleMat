@@ -24,10 +24,10 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.resizeableDialog.ResizableDialog;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
-import per.lambert.ebattleMat.client.windowBox.WindowBox;
 
-public class DungeonSelectControl extends WindowBox {
+public class DungeonSelectControl extends ResizableDialog {
 
 	interface MyStyle extends CssResource {
 		String sessionLabel();
@@ -65,7 +65,6 @@ public class DungeonSelectControl extends WindowBox {
 	}
 
 	public DungeonSelectControl() {
-		super(false, true, true, false, true);
 		createGridItems();
 		dungeonSelectPresenter = new DungeonSelectPresenter();
 		dungeonSelectPresenter.setView(this);

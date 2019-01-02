@@ -23,6 +23,12 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchMoveEvent;
+import com.google.gwt.event.dom.client.TouchMoveHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -42,7 +48,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 /**
  * @author LLambert Class to manage a scaled image with overlays.
  */
-public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
+public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler, TouchStartHandler, TouchMoveHandler, TouchEndHandler {
 
 	/**
 	 * Offset for clearing rectangle.
@@ -742,5 +748,20 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				addPogToCanvas(player, PLAYERS_Z);
 			}
 		}
+	}
+
+	@Override
+	public void onTouchEnd(TouchEndEvent event) {
+		event.preventDefault();
+	}
+
+	@Override
+	public void onTouchMove(TouchMoveEvent event) {
+		event.preventDefault();
+	}
+
+	@Override
+	public void onTouchStart(TouchStartEvent event) {
+		event.preventDefault();
 	}
 }
