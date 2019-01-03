@@ -1,1 +1,98 @@
-{"uuid":"dungeon1-template","dungeonName":"Dungeon1","dungeonLevels":[{"levelDrawing":"level1.jpg","levelName":"level 1","gridSize":50,"gridOffsetX":10,"gridOffsetY":10,"monsters":[{"uuid":"de6152d4-e4af-4207-b72d-fd05ff68b75c","pogColumn":4,"pogRow":0,"templateUUID":"Male-Kobold"},{"uuid":"8ffe953b-d919-4372-a66c-f01e2dddf37f","pogColumn":3,"pogRow":3,"templateUUID":"Female-Kobold"}],"columns":31,"rows":31},{"levelDrawing":"level2.jpg","levelName":"Deep Dark (2)","gridSize":50,"gridOffsetX":0,"gridOffsetY":0,"monsters":[{"uuid":"7ac82f40-f486-495b-b5eb-3d519a653eb2","pogColumn":2,"pogRow":1,"templateUUID":"Male-Kobold"},{"uuid":"e2d2fead-4ee3-4cda-a56e-590c64e7f421","pogColumn":4,"pogRow":2,"templateUUID":"Female-Kobold"}],"columns":39,"rows":22}],"showGrid":true,"isDirty":true}
+{
+	"uuid": "dungeon1-template",
+	"dungeonName": "Dungeon1",
+	"dungeonLevels": [
+		{
+			"levelDrawing": "level1.jpg",
+			"levelName": "level 1",
+			"gridSize": 50,
+			"gridOffsetX": 11,
+			"gridOffsetY": 11,
+			"monsters": [
+				{
+					"uuid": "de6152d4-e4af-4207-b72d-fd05ff68b75c",
+					"pogColumn": 5,
+					"pogRow": 3,
+					"templateUUID": "Male-Kobold"
+				},
+				{
+					"uuid": "8ffe953b-d919-4372-a66c-f01e2dddf37f",
+					"pogColumn": 6,
+					"pogRow": 3,
+					"templateUUID": "Female-Kobold"
+				},
+				{
+					"uuid": "abf9292e-402b-44b0-b641-3a28b2fcaf80",
+					"pogColumn": 5,
+					"pogRow": 3,
+					"templateUUID": "Male_Dwarf_Fighter"
+				},
+				{
+					"uuid": "f9f75937-1b4d-451f-b54f-9a406f4c0044",
+					"pogColumn": 5,
+					"pogRow": 2,
+					"templateUUID": "Secret_Door_Top"
+				},
+				{
+					"uuid": "f332b2e2-6a8f-48e6-9ad2-4b7897857b39",
+					"pogColumn": 6,
+					"pogRow": 1,
+					"templateUUID": "Secret_Door_Right"
+				},
+				{
+					"uuid": "1ff13e32-fdb9-4cff-ac72-048fef32ce0e",
+					"pogColumn": 5,
+					"pogRow": 2,
+					"templateUUID": "Secret_Door_Top"
+				},
+				{
+					"uuid": "ce1dcb41-d765-4940-ad3b-7cb2aed2a015",
+					"pogColumn": 5,
+					"pogRow": 2,
+					"templateUUID": "Secret_Door_Right"
+				},
+				{
+					"uuid": "563841ea-1e88-4572-b984-e1d5f330ab07",
+					"pogColumn": 5,
+					"pogRow": 1,
+					"templateUUID": "Secret_Door_Top"
+				}
+			],
+			"columns": 31,
+			"rows": 31,
+			"roomObjects": [
+				{
+					"uuid": "db3b6cc2-25a4-411f-9b68-c604b430fcb8",
+					"pogColumn": 5,
+					"pogRow": 1,
+					"templateUUID": "Secret_Door_Right"
+				}
+			]
+		},
+		{
+			"levelDrawing": "level2.jpg",
+			"levelName": "Deep Dark (2)",
+			"gridSize": 50,
+			"gridOffsetX": 0,
+			"gridOffsetY": 0,
+			"monsters": [
+				{
+					"uuid": "7ac82f40-f486-495b-b5eb-3d519a653eb2",
+					"pogColumn": 2,
+					"pogRow": 1,
+					"templateUUID": "Male-Kobold"
+				},
+				{
+					"uuid": "e2d2fead-4ee3-4cda-a56e-590c64e7f421",
+					"pogColumn": 4,
+					"pogRow": 2,
+					"templateUUID": "Female-Kobold"
+				}
+			],
+			"columns": 39,
+			"rows": 22
+		}
+	],
+	"showGrid": true,
+	"isDirty": true
+}

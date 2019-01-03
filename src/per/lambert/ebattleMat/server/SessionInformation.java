@@ -120,6 +120,12 @@ public class SessionInformation {
 			sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.monsters);
 		}
 	}
+	public void saveRoomObjectPog(PogData pogData, int currentLevel, boolean needToAdd) {
+		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
+		if (sessionLevel != null) {
+			sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.roomObjects);
+		}
+	}
 
 	public void savePlayerPog(PogData pogData, int currentLevel, boolean needToAdd) {
 		sessionData.increamentVersion();

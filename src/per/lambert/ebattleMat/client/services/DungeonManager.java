@@ -108,6 +108,14 @@ public class DungeonManager implements IDungeonManager {
 		return monsterTemplatePogs.getPogList();
 	}
 
+	Map<String, PogData> roomObjectTemplateMap = new HashMap<String, PogData>();
+	private PogList roomObjectTemplatePogs;
+
+	@Override
+	public PogData[] getRoomObjectTemplatePogs() {
+		return roomObjectTemplatePogs.getPogList();
+	}
+
 	private PogData selectedPog;
 
 	@Override
@@ -323,6 +331,7 @@ public class DungeonManager implements IDungeonManager {
 	private void loadInResourceData() {
 		loadCharacterPogs();
 		loadMonsterPogs();
+		loadRoomObjectPogs();
 	}
 
 	private void loadCharacterPogs() {
@@ -377,6 +386,33 @@ public class DungeonManager implements IDungeonManager {
 			monsterTemplateMap.put(monsterTemplate.getUUID(), monsterTemplate);
 		}
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
+	}
+
+	private void loadRoomObjectPogs() {
+		roomObjectTemplatePogs = null;
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("fileName", ElectronicBattleMat.DUNGEON_ROOMOBJECT_LOCATION + "roomPogs.json");
+		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+				loadRoomPogTemplates(data);
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+		});
+	}
+
+	private void loadRoomPogTemplates(Object data) {
+		roomObjectTemplateMap.clear();
+		roomObjectTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
+		for (PogData roomObjectTemplate : roomObjectTemplatePogs.getPogList()) {
+			roomObjectTemplateMap.put(roomObjectTemplate.getUUID(), roomObjectTemplate);
+		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.RoomObjectPogsLoaded, null));
 	}
 
 	@Override
@@ -549,6 +585,21 @@ public class DungeonManager implements IDungeonManager {
 		return (clone);
 	}
 
+	public PogData findRoomObjectTemplate(String pogUUID) {
+		return (roomObjectTemplateMap.get(pogUUID));
+	}
+
+	@Override
+	public PogData fullCLoneRoomObject(PogDataLite pogData) {
+		PogData template = findRoomObjectTemplate(pogData.getTemplateUUID());
+		if (template == null) {
+			return (null);
+		}
+		PogData clone = template.clone();
+		pogData.getRequiredData(clone);
+		return (clone);
+	}
+
 	@Override
 	public PogData findCharacterPog(String pogUUID) {
 		return (pcTemplateMap.get(pogUUID));
@@ -557,6 +608,11 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public PogData findMonsterPog(String pogUUID) {
 		return (monsterTemplateMap.get(pogUUID));
+	}
+
+	@Override
+	public PogData findRoomObjectPog(String pogUUID) {
+		return (roomObjectTemplateMap.get(pogUUID));
 	}
 
 	public void getSessionList(String dungeonUUID) {
@@ -657,8 +713,7 @@ public class DungeonManager implements IDungeonManager {
 					selectedSession = JsonUtils.<DungeonSessionData>safeEval(jsonData);
 					if (versionToTest == -1) {
 						ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToJoin, null));
-					}
-					else {
+					} else {
 						ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
 					}
 				}
@@ -691,7 +746,16 @@ public class DungeonManager implements IDungeonManager {
 		if (dungeonLevel == null) {
 			return;
 		}
-		for (PogDataLite pogData : dungeonLevel.getMonsters()) {
+		if (pog.isThisAMonster()) {
+			updatePogListInLevel(pog, dungeonLevel.getMonsters());
+		}
+		if (pog.isThisARoomObject()) {
+			updatePogListInLevel(pog, dungeonLevel.getRoomObjects());
+		}
+	}
+
+	private void updatePogListInLevel(PogData pog, PogDataLite[] poglist) {
+		for (PogDataLite pogData : poglist) {
 			if (pog.getUUID().equals(pogData.getUUID())) {
 				pogData.setPogColumn(pog.getPogColumn());
 				pogData.setPogRow(pog.getPogRow());
@@ -702,30 +766,21 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private void updatePodDataInSessionLevel(PogData pog) {
-		if (pog.isThisAPlayer()) {
-			updatePlayerInSession(pog);
-		} else {
-			updateMonsterInSession(pog);
-		}
-	}
-
-	private void updateMonsterInSession(PogData pog) {
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return;
 		}
-		for (PogDataLite pogData : sessionLevel.getMonsters()) {
-			if (pog.getUUID().equals(pogData.getUUID())) {
-				pogData.setPogColumn(pog.getPogColumn());
-				pogData.setPogRow(pog.getPogRow());
-				savePogToSessionData(pog, false);
-				break;
-			}
+		if (pog.isThisAPlayer()) {
+			updatePogInSession(pog, selectedSession.getPlayers());
+		} else if (pog.isThisAMonster()) {
+			updatePogInSession(pog, sessionLevel.getMonsters());
+		} else if (pog.isThisARoomObject()) {
+			updatePogInSession(pog, sessionLevel.getRoomObjects());
 		}
 	}
 
-	private void updatePlayerInSession(PogData pog) {
-		for (PogData pogData : selectedSession.getPlayers()) {
+	private void updatePogInSession(PogData pog, PogDataLite[] poglist) {
+		for (PogDataLite pogData : poglist) {
 			if (pog.getUUID().equals(pogData.getUUID())) {
 				pogData.setPogColumn(pog.getPogColumn());
 				pogData.setPogRow(pog.getPogRow());
@@ -800,7 +855,11 @@ public class DungeonManager implements IDungeonManager {
 			return;
 		}
 		PogDataLite clone = pog.cloneLite();
-		dungeonLevel.addMonster(clone);
+		if (pog.isThisAMonster()) {
+			dungeonLevel.addMonster(clone);
+		} else {
+			dungeonLevel.addRoomObject(clone);
+		}
 		saveDungeonData();
 	}
 
@@ -814,7 +873,11 @@ public class DungeonManager implements IDungeonManager {
 				DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 				if (sessionLevel != null) {
 					PogDataLite clone = pog.cloneLite();
-					sessionLevel.addMonster(clone);
+					if (pog.isThisAMonster()) {
+						sessionLevel.addMonster(clone);
+					} else {
+						sessionLevel.addRoomObject(clone);
+					}
 				}
 			}
 			savePogToSessionData(pog, true);
@@ -838,6 +901,26 @@ public class DungeonManager implements IDungeonManager {
 			return null;
 		}
 		PogDataLite[] mobs = sessionLevel.getMonsters();
+		return mobs;
+	}
+
+	@Override
+	public PogDataLite[] getRoomObjectsForCurrentLevel() {
+		if (selectedDungeon == null) {
+			return null;
+		}
+		if (editMode) {
+			DungeonLevel currentLevel = getCurrentLevelData();
+			if (currentLevel == null) {
+				return null;
+			}
+			return (currentLevel.getRoomObjects());
+		}
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return null;
+		}
+		PogDataLite[] mobs = sessionLevel.getRoomObjects();
 		return mobs;
 	}
 

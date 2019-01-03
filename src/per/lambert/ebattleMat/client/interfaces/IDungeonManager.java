@@ -105,4 +105,12 @@ public interface IDungeonManager {
 	String[] getDungeonLevelNames();
 
 	void doTimedTasks();
+
+	PogData findRoomObjectPog(String selectedValue);
+
+	PogData[] getRoomObjectTemplatePogs();
+
+	PogDataLite[] getRoomObjectsForCurrentLevel();
+
+	PogData fullCLoneRoomObject(PogDataLite roomObject);
 }

@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.PogFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -134,6 +135,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		hidePanel.add(image);
 		pogDrawPanel.add(hidePanel, -1, -1);
 		pogDrawPanel.add(canvas, 0, 0);
+//		pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
+//		backCanvas.getElement().getStyle().setBackgroundColor("transparent");
+//		canvas.getElement().getStyle().setBackgroundColor("transparent");
 		setupEventHandling();
 		getElement().setDraggable(Element.DRAGGABLE_TRUE);
 		addDragStartHandler(new DragStartHandler() {
@@ -262,7 +266,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 	}
 
 	public void setPogWidth(int width) {
-		int scaledWidth = (width - 2) * pogData.getPogSize();
+		int scaledWidth = width * pogData.getPogSize();
 		pogMainPanel.setWidth(scaledWidth + "px");
 		pogMainPanel.setHeight(scaledWidth + "px");
 		mainDraw();
@@ -298,8 +302,15 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 	}
 
 	public final void buffer(final Context2d back, final Context2d front) {
-		front.setFillStyle("white");
-		front.fillRect(0, 0, parentWidth, parentHeight);
+		if (!pogData.isPogFlagSet(PogFlag.TRANSPARENT)) {
+			front.setFillStyle("white");
+			front.fillRect(0, 0, parentWidth, parentHeight);
+		}
+		double opacity = 1.0;
+		if (!ServiceManager.getDungeonManager().isEditMode() && pogData.isPogFlagSet(PogFlag.INVISIBLE)) {
+			opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
+		}
+		pogDrawPanel.getElement().getStyle().setOpacity(opacity);
 		front.drawImage(back.getCanvas(), 0, 0);
 	}
 

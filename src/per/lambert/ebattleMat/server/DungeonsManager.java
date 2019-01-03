@@ -390,7 +390,6 @@ public class DungeonsManager {
 	public static void savePog(HttpServlet servlet, String dungeonUUID, String sessionUUID, int currentLevel, boolean needToAdd, String pogJsonData) throws IOException {
 		lock.lock();
 		try {
-
 			SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
 			if (sessionInformation == null) {
 				return;
@@ -399,6 +398,8 @@ public class DungeonsManager {
 			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
 			if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
 				sessionInformation.saveMonsterPog(pogData, currentLevel, needToAdd);
+			} else if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
+				sessionInformation.saveRoomObjectPog(pogData, currentLevel, needToAdd);
 			} else if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_PLAYER)) {
 				sessionInformation.savePlayerPog(pogData, currentLevel, needToAdd);
 			}

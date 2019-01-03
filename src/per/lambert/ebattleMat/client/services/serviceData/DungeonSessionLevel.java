@@ -57,7 +57,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	}-*/;
 
 	public final void addRoomObject(PogDataLite roomObject) {
-		getMonsters();
+		getRoomObjects();
 		addRoomObjectsNative(roomObject);
 	}
 

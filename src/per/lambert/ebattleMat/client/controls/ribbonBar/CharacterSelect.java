@@ -41,6 +41,10 @@ public class CharacterSelect extends Composite {
 					monsterPogsLoaded();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.RoomObjectPogsLoaded) {
+					roomObjectPogsLoaded();
+					return;
+				}
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataLoaded) {
 					dungeonDataLoaded();
 					return;
@@ -61,6 +65,13 @@ public class CharacterSelect extends Composite {
 				monsterWasSelected();
 			}
 		});
+		roomObjectSelect.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				roomObjectWasSelected();
+			}
+		});
 		levelSelect.addChangeHandler(new ChangeHandler() {
 
 			@Override
@@ -74,18 +85,13 @@ public class CharacterSelect extends Composite {
 	VerticalPanel panel;
 
 	@UiField
-	Button dungeonControl;
-	@UiField
 	ListBox characterSelect;
 	@UiField
 	ListBox monsterSelect;
 	@UiField
+	ListBox roomObjectSelect;
+	@UiField
 	ListBox levelSelect;
-	
-	@UiHandler("dungeonControl")
-	void dungeonControlClick(ClickEvent event) {
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SelectNewDungeon, null));
-	}
 
 	private void characterWasSelected() {
 		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(characterSelect.getSelectedValue());
@@ -101,6 +107,7 @@ public class CharacterSelect extends Composite {
 			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}
 	}
+
 	protected void monsterWasSelected() {
 		PogData monsterPog = ServiceManager.getDungeonManager().findMonsterPog(monsterSelect.getSelectedValue());
 		ServiceManager.getDungeonManager().setSelectedPog(monsterPog);
@@ -115,6 +122,22 @@ public class CharacterSelect extends Composite {
 			monsterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}
 	}
+
+	protected void roomObjectPogsLoaded() {
+		roomObjectSelect.clear();
+		roomObjectSelect.addItem("Select Room Object Pog", "");
+		PogData[] pogList = ServiceManager.getDungeonManager().getRoomObjectTemplatePogs();
+		for (PogData pogData : pogList) {
+			roomObjectSelect.addItem(pogData.getPogName(), pogData.getUUID());
+		}
+	}
+
+	protected void roomObjectWasSelected() {
+		PogData roomObjectPog = ServiceManager.getDungeonManager().findRoomObjectPog(roomObjectSelect.getSelectedValue());
+		ServiceManager.getDungeonManager().setSelectedPog(roomObjectPog);
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+	}
+
 	protected void dungeonDataLoaded() {
 		levelSelect.clear();
 		String[] levelNames = ServiceManager.getDungeonManager().getDungeonLevelNames();
@@ -122,6 +145,7 @@ public class CharacterSelect extends Composite {
 			levelSelect.addItem(levelName);
 		}
 	}
+
 	protected void levelWasSelected() {
 		ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
 	}

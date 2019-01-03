@@ -39,6 +39,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PogFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
@@ -449,8 +450,15 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	private void adjustPogs() {
 		for (PogCanvas pog : pogs) {
-			this.setWidgetPosition(pog, (int) (columnToPixel(pog.getPogColumn())), (int) (rowToPixel(pog.getPogRow())));
-			pog.setPogWidth((int) adjustedGridSize() - 3);
+			int x = (int) (columnToPixel(pog.getPogColumn()));
+			int y = (int) (rowToPixel(pog.getPogRow()));
+			if (pog.getPogData().isPogFlagSet(PogFlag.SHIFT_RIGHT)) {
+				x += (adjustedGridSize() / 2);
+			} else if (pog.getPogData().isPogFlagSet(PogFlag.SHIFT_TOP)) {
+				y -= (adjustedGridSize() / 2);
+			}
+			this.setWidgetPosition(pog, x, y);
+			pog.setPogWidth((int) adjustedGridSize());
 		}
 	}
 
@@ -533,10 +541,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		int y = (int) rowToPixel(j);
 		if (isSet) {
 			fowCanvas.getContext2d().setFillStyle(fogOfWarColor);
-			// fowCanvas.getContext2d().fillRect(x - 1, y - 1, size, size);
 			fowCanvas.getContext2d().fillRect(x, y, size, size);
 		} else {
-			// fowCanvas.getContext2d().clearRect(x - 1, y - 1, size, size);
 			fowCanvas.getContext2d().clearRect(x, y, size, size);
 		}
 	}
@@ -718,6 +724,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		getRibbonBarData();
 		addMonsterPogs();
 		addPlayerPogs();
+		addRoomPogs();
 		mainDraw();
 	}
 
@@ -727,14 +734,23 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		for (PogDataLite monster : monsters) {
-			addMonsterToCanvas(monster);
+			PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(monster);
+			if (clonePog != null) {
+				addPogToCanvas(clonePog, MONSTERS_Z);
+			}
 		}
 	}
 
-	public void addMonsterToCanvas(PogDataLite pogData) {
-		PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(pogData);
-		if (clonePog != null) {
-			addPogToCanvas(clonePog, MONSTERS_Z);
+	private void addRoomPogs() {
+		PogDataLite[] roomObjects = ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel();
+		if (roomObjects == null) {
+			return;
+		}
+		for (PogDataLite roomObject : roomObjects) {
+			PogData clonePog = ServiceManager.getDungeonManager().fullCLoneRoomObject(roomObject);
+			if (clonePog != null) {
+				addPogToCanvas(clonePog, ROOMOBJECTS_Z);
+			}
 		}
 	}
 

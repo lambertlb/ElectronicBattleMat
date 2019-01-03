@@ -21,7 +21,7 @@ public class DungeonSessionLevel {
 	private void copyRoomObjects(DungeonLevel dungeonLevel) {
 		roomObjects = new PogDataLite[dungeonLevel.roomObjects.length];
 		for (int i = 0; i < dungeonLevel.roomObjects.length; ++i) {
-			monsters[i] = dungeonLevel.roomObjects[i].minimalClone();
+			roomObjects[i] = dungeonLevel.roomObjects[i].minimalClone();
 		}
 	}
 

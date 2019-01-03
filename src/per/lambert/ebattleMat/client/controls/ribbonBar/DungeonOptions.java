@@ -11,6 +11,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 
 public class DungeonOptions extends Composite {
@@ -32,6 +34,8 @@ public class DungeonOptions extends Composite {
 	CheckBox fowToggle;
 	@UiField
 	Button updateSession;
+	@UiField
+	Button dungeonControl;
 
 	@UiHandler("fowToggle")
 	void onClick(ClickEvent e) {
@@ -41,5 +45,10 @@ public class DungeonOptions extends Composite {
 	@UiHandler("updateSession")
 	void onUpdateSession(ClickEvent e) {
 		ServiceManager.getDungeonManager().doTimedTasks();
+	}
+
+	@UiHandler("dungeonControl")
+	void dungeonControlClick(ClickEvent event) {
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SelectNewDungeon, null));
 	}
 }

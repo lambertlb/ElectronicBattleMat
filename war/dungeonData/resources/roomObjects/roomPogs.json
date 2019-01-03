@@ -1,4 +1,20 @@
 {
 	"pogList": [
+		{
+			"pogName": "Secret Door Right",
+			"pogImageUrl": "dungeonData/resources/roomObjects/SecretDoor.png",
+			"pogType": "ROOMOBJECT",
+			"uuid": "Secret_Door_Right",
+			"templateUUID": "Secret_Door_Right",
+			"pogFlags": 13
+		},
+		{
+			"pogName": "Secret Door Top",
+			"pogImageUrl": "dungeonData/resources/roomObjects/SecretDoorTop.png",
+			"pogType": "ROOMOBJECT",
+			"uuid": "Secret_Door_Top",
+			"templateUUID": "Secret_Door_Top",
+			"pogFlags": 11
+		}
 	]
 }
