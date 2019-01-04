@@ -7,10 +7,10 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<g:VerticalPanel ui:field="panel">
-			<g:ListBox ui:field="characterSelect" visibleItemCount="1"/>
-			<g:ListBox ui:field="monsterSelect" visibleItemCount="1"/>
-			<g:ListBox ui:field="roomObjectSelect" visibleItemCount="1"/>
-			<g:ListBox ui:field="levelSelect" visibleItemCount="1"/>
-		</g:VerticalPanel>
+			<g:ListBox ui:field="characterSelect" visibleItemCount="1" styleName="ribbonBarLabel" />
+			<g:ListBox ui:field="monsterSelect" visibleItemCount="1" styleName="ribbonBarLabel" />
+<!-- 			<g:ListBox ui:field="roomObjectSelect" visibleItemCount="1" styleName="ribbonBarLabel" />
+			<g:ListBox ui:field="levelSelect" visibleItemCount="1" styleName="ribbonBarLabel" />
+ -->		</g:VerticalPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

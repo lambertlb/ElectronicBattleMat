@@ -65,20 +65,20 @@ public class CharacterSelect extends Composite {
 				monsterWasSelected();
 			}
 		});
-		roomObjectSelect.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				roomObjectWasSelected();
-			}
-		});
-		levelSelect.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				levelWasSelected();
-			}
-		});
+//		roomObjectSelect.addChangeHandler(new ChangeHandler() {
+//
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				roomObjectWasSelected();
+//			}
+//		});
+//		levelSelect.addChangeHandler(new ChangeHandler() {
+//
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				levelWasSelected();
+//			}
+//		});
 	}
 
 	@UiField
@@ -88,10 +88,10 @@ public class CharacterSelect extends Composite {
 	ListBox characterSelect;
 	@UiField
 	ListBox monsterSelect;
-	@UiField
-	ListBox roomObjectSelect;
-	@UiField
-	ListBox levelSelect;
+//	@UiField
+//	ListBox roomObjectSelect;
+//	@UiField
+//	ListBox levelSelect;
 
 	private void characterWasSelected() {
 		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(characterSelect.getSelectedValue());
@@ -124,29 +124,29 @@ public class CharacterSelect extends Composite {
 	}
 
 	protected void roomObjectPogsLoaded() {
-		roomObjectSelect.clear();
-		roomObjectSelect.addItem("Select Room Object Pog", "");
-		PogData[] pogList = ServiceManager.getDungeonManager().getRoomObjectTemplatePogs();
-		for (PogData pogData : pogList) {
-			roomObjectSelect.addItem(pogData.getPogName(), pogData.getUUID());
-		}
+//		roomObjectSelect.clear();
+//		roomObjectSelect.addItem("Select Room Object Pog", "");
+//		PogData[] pogList = ServiceManager.getDungeonManager().getRoomObjectTemplatePogs();
+//		for (PogData pogData : pogList) {
+//			roomObjectSelect.addItem(pogData.getPogName(), pogData.getUUID());
+//		}
 	}
 
 	protected void roomObjectWasSelected() {
-		PogData roomObjectPog = ServiceManager.getDungeonManager().findRoomObjectPog(roomObjectSelect.getSelectedValue());
-		ServiceManager.getDungeonManager().setSelectedPog(roomObjectPog);
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+//		PogData roomObjectPog = ServiceManager.getDungeonManager().findRoomObjectPog(roomObjectSelect.getSelectedValue());
+//		ServiceManager.getDungeonManager().setSelectedPog(roomObjectPog);
+//		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 
 	protected void dungeonDataLoaded() {
-		levelSelect.clear();
-		String[] levelNames = ServiceManager.getDungeonManager().getDungeonLevelNames();
-		for (String levelName : levelNames) {
-			levelSelect.addItem(levelName);
-		}
+//		levelSelect.clear();
+//		String[] levelNames = ServiceManager.getDungeonManager().getDungeonLevelNames();
+//		for (String levelName : levelNames) {
+//			levelSelect.addItem(levelName);
+//		}
 	}
 
 	protected void levelWasSelected() {
-		ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
+//		ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
 	}
 }

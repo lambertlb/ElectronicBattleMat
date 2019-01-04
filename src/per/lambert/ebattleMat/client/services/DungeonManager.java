@@ -148,6 +148,7 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public void setDungeonMaster(boolean isDungeonMaster) {
 		this.isDungeonMaster = isDungeonMaster;
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DMStateChange, null));
 	}
 
 	private boolean editMode;

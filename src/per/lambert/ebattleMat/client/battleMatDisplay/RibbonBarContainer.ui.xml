@@ -5,7 +5,7 @@ xmlns:ribbon="urn:import:per.lambert.ebattleMat.client.controls.ribbonBar"
 	<ui:style>
 		.topPanel {
 			background:linear-gradient(#2F2F2F 5%, #545454,#989898 90%);
-			height: 95px;
+			height:100%;
 			display:flex;
 			flex-direction:column;
 		  	width: 100%;
@@ -13,8 +13,8 @@ xmlns:ribbon="urn:import:per.lambert.ebattleMat.client.controls.ribbonBar"
 		}
 	</ui:style>
 	<g:HTMLPanel>
-	 <div class="{style.topPanel}">
-	 	<ribbon:RibbonBar/>
+	 <div ui:field="topPanel" class="{style.topPanel}">
+	 	<ribbon:RibbonBar height="100%"/>
 	 </div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

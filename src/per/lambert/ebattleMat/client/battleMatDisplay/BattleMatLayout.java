@@ -29,7 +29,7 @@ public class BattleMatLayout extends ResizeComposite {
 	final double PROPERTY_PANEL_SIZE = 20;
 	final double MAX_PROPERTY_PANEL_SIZE = 200;
 	final int MIN_PROPERTY_PANEL_SIZE = 45;
-	final double RIBBON_BAR_SIZE = 95;
+	final double RIBBON_BAR_SIZE = 50;
 	final double STATUS_BAR_SIZE = 30;
 
 	/**

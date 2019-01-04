@@ -13,34 +13,14 @@ h1 {
 	width: 400px;
 }
 
-.dialogVPanel {
-	margin: 5px;
-}
-
-.ribbonGroupLabel {
-	color: white;
-}
-
-.doubleboxstyle {
-	height:12px;
-	width: 20px;
-	text-align: center;
-}
-
-.candrag {
-	border: thin solid grey;
-}
-
-.dropping {
-	border: thin solid blue;
-}
-
-.bordered {
-	border-style: solid;
-	border-width: 1;
-	border-color: GREEN;
+.ribbonBarLabel {
+	align-self: center;
+	font-family: arial;
+	font-size: 8pt;
+	text-decoration: none;
 }
 
 .noEvents {
 	pointer-events: none;
 }
+

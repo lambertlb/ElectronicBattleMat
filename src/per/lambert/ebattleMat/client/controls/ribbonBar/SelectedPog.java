@@ -6,6 +6,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
@@ -23,8 +24,20 @@ public class SelectedPog extends Composite {
 	interface SelectedPogUiBinder extends UiBinder<Widget, SelectedPog> {
 	}
 
+	@UiField
+	FlowPanel pogPanel;
+
+	@UiField
+	HTMLPanel hostPanel;
+
 	public SelectedPog() {
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		unselectedPogLook();
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
@@ -35,12 +48,11 @@ public class SelectedPog extends Composite {
 			}
 		});
 	}
-
-	@UiField
-	FlowPanel pogPanel;
-
-	@UiField
-	HTMLPanel hostPanel;
+	private void unselectedPogLook() {
+		Widget parent = hostPanel.getParent().getParent();
+		int height = parent.getOffsetHeight();
+		pogPanel.setWidth("" + height + "px");
+	}
 
 	private void pogSelected() {
 		PogData selectePog = ServiceManager.getDungeonManager().getSelectedPog();
