@@ -2,6 +2,8 @@ package per.lambert.ebattleMat.client.services.serviceData;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
+import per.lambert.ebattleMat.client.interfaces.PogFlag;
+
 public class PogDataLite extends JavaScriptObject {
 	protected PogDataLite() {
 	}
@@ -75,5 +77,33 @@ public class PogDataLite extends JavaScriptObject {
 		clone.setUUID(getUUID());
 		clone.setPogColumn(getPogColumn());
 		clone.setPogRow(getPogRow());
+		clone.setPogFlagsNative(getPogFlags());
 	}
+
+	public final boolean isPogFlagSet(PogFlag flagToCheck) {
+		return ((getPogFlags() & flagToCheck.getValue()) != 0);
+	}
+
+	private final native int getPogFlags() /*-{
+		if (this.pogFlags === undefined) {
+			this.pogFlags = 0;
+		}
+		return (this.pogFlags);
+	}-*/;
+
+	public final void setPogFlags(PogFlag flagToSet) {
+		int flags = getPogFlags();
+		flags |= flagToSet.getValue();
+		setPogFlagsNative(flags);
+	}
+
+	public final void clearPogFlags(PogFlag flagToClear) {
+		int flags = getPogFlags();
+		flags &= ~flagToClear.getValue();
+		setPogFlagsNative(flags);
+	}
+
+	public final native void setPogFlagsNative(int flags) /*-{
+		this.pogFlags = flags;
+	}-*/;
 }

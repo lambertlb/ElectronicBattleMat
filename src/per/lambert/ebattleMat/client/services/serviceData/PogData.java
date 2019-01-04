@@ -3,7 +3,6 @@ package per.lambert.ebattleMat.client.services.serviceData;
 import com.google.gwt.core.client.JsonUtils;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
-import per.lambert.ebattleMat.client.interfaces.PogFlag;
 
 public class PogData extends PogDataLite {
 	protected PogData() {
@@ -85,31 +84,4 @@ public class PogData extends PogDataLite {
 		String type = getPogType();
 		return (type.equals(ElectronicBattleMat.POG_TYPE_ROOMOBJECT));
 	}
-
-	public final boolean isPogFlagSet(PogFlag flagToCheck) {
-		return ((getPogFlags() & flagToCheck.getValue()) != 0);
-	}
-
-	private final native int getPogFlags() /*-{
-		if (this.pogFlags === undefined) {
-			this.pogFlags = 0;
-		}
-		return (this.pogFlags);
-	}-*/;
-
-	public final void setPogFlags(PogFlag flagToSet) {
-		int flags = getPogFlags();
-		flags |= flagToSet.getValue();
-		setPogFlagsNative(flags);
-	}
-
-	public final void clearPogFlags(PogFlag flagToClear) {
-		int flags = getPogFlags();
-		flags &= ~flagToClear.getValue();
-		setPogFlagsNative(flags);
-	}
-
-	public final native void setPogFlagsNative(int flags) /*-{
-		this.pogFlags = flags;
-	}-*/;
 }

@@ -6,7 +6,6 @@ public class PogData extends PogDataLite {
 	public String pogType;
 	public int pogSize;
 	public int dungeonLevel;
-	public int pogFlags;
 
 	public PogData() {
 	}
@@ -18,7 +17,6 @@ public class PogData extends PogDataLite {
 		pogType = pogData.pogType;
 		pogSize = pogData.pogSize;
 		dungeonLevel = pogData.dungeonLevel;
-		pogFlags = pogData.pogFlags;
 	}
 
 }

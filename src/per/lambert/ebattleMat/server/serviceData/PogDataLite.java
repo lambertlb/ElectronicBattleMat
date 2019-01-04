@@ -5,6 +5,7 @@ public class PogDataLite {
 	public int pogRow;
 	public String uuid;
 	public String templateUUID;
+	public int pogFlags;
 
 	public PogDataLite() {
 	}
@@ -14,6 +15,7 @@ public class PogDataLite {
 		pogRow = pogData.pogRow;
 		uuid = pogData.uuid;
 		templateUUID = pogData.templateUUID;
+		pogFlags = pogData.pogFlags;
 	}
 	public PogDataLite minimalClone() {
 		PogDataLite clone = new PogDataLite();
@@ -21,6 +23,7 @@ public class PogDataLite {
 		clone.pogColumn = pogColumn;
 		clone.pogRow = pogRow;
 		clone.templateUUID = templateUUID;
+		clone.pogFlags = pogFlags;
 		return (clone);
 	}
 }

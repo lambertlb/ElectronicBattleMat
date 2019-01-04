@@ -123,7 +123,7 @@ public class SessionInformation {
 	public void saveRoomObjectPog(PogData pogData, int currentLevel, boolean needToAdd) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel != null) {
-			sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.roomObjects);
+			sessionLevel.roomObjects = savePogToProperCollection(pogData, needToAdd, sessionLevel.roomObjects);
 		}
 	}
 
