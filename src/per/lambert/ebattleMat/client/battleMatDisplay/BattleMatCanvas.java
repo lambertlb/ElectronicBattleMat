@@ -37,9 +37,10 @@ import com.google.gwt.user.client.ui.Widget;
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
-import per.lambert.ebattleMat.client.interfaces.PogFlag;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
@@ -452,9 +453,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		for (PogCanvas pog : pogs) {
 			int x = (int) (columnToPixel(pog.getPogColumn()));
 			int y = (int) (rowToPixel(pog.getPogRow()));
-			if (pog.getPogData().isPogFlagSet(PogFlag.SHIFT_RIGHT)) {
+			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_RIGHT)) {
 				x += (adjustedGridSize() / 2);
-			} else if (pog.getPogData().isPogFlagSet(PogFlag.SHIFT_TOP)) {
+			} else if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_TOP)) {
 				y -= (adjustedGridSize() / 2);
 			}
 			this.setWidgetPosition(pog, x, y);

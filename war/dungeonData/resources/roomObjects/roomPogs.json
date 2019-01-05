@@ -6,7 +6,7 @@
 			"pogType": "ROOMOBJECT",
 			"uuid": "Secret_Door_Right",
 			"templateUUID": "Secret_Door_Right",
-			"pogFlags": 13
+			"dungeonMasterFlags": 7
 		},
 		{
 			"pogName": "Secret Door Top",
@@ -14,7 +14,7 @@
 			"pogType": "ROOMOBJECT",
 			"uuid": "Secret_Door_Top",
 			"templateUUID": "Secret_Door_Top",
-			"pogFlags": 11
+			"dungeonMasterFlags": 11
 		}
 	]
 }

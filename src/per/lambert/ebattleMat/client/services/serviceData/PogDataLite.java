@@ -2,7 +2,8 @@ package per.lambert.ebattleMat.client.services.serviceData;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-import per.lambert.ebattleMat.client.interfaces.PogFlag;
+import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 
 public class PogDataLite extends JavaScriptObject {
 	protected PogDataLite() {
@@ -77,33 +78,69 @@ public class PogDataLite extends JavaScriptObject {
 		clone.setUUID(getUUID());
 		clone.setPogColumn(getPogColumn());
 		clone.setPogRow(getPogRow());
-		clone.setPogFlagsNative(getPogFlags());
+		clone.setPlayerFlagsNative(getPlayerFlags());
+		clone.setDungeonMasterFlagsNative(getDungeonMasterFlags());
 	}
 
-	public final boolean isPogFlagSet(PogFlag flagToCheck) {
-		return ((getPogFlags() & flagToCheck.getValue()) != 0);
+	public final boolean isFlagSet(DungeonMasterFlag transparent) {
+		return ((getDungeonMasterFlags() & transparent.getValue()) != 0);
 	}
 
-	private final native int getPogFlags() /*-{
-		if (this.pogFlags === undefined) {
-			this.pogFlags = 0;
+	public final boolean isFlagSet(PlayerFlag transparent) {
+		return ((getPlayerFlags() & transparent.getValue()) != 0);
+	}
+
+	public final native void clearPlayerFlags() /*-{
+		this.playerFlags = 0;
+	}-*/;
+
+	public final native void clearDungeonMasterFlags() /*-{
+		this.dungeonMasterFlags = 0;
+	}-*/;
+
+	public final native void setPlayerFlagsNative(int flags) /*-{
+		this.playerFlags = flags;
+	}-*/;
+
+	public final native void setDungeonMasterFlagsNative(int flags) /*-{
+		this.dungeonMasterFlags = flags;
+	}-*/;
+
+	private final native int getPlayerFlags() /*-{
+		if (this.playerFlags === undefined) {
+			this.playerFlags = 0;
 		}
-		return (this.pogFlags);
+		return (this.playerFlags);
 	}-*/;
 
-	public final void setPogFlags(PogFlag flagToSet) {
-		int flags = getPogFlags();
+	private final native int getDungeonMasterFlags() /*-{
+		if (this.dungeonMasterFlags === undefined) {
+			this.dungeonMasterFlags = 0;
+		}
+		return (this.dungeonMasterFlags);
+	}-*/;
+
+	public final void setFlags(PlayerFlag flagToSet) {
+		int flags = getPlayerFlags();
 		flags |= flagToSet.getValue();
-		setPogFlagsNative(flags);
+		setPlayerFlagsNative(flags);
 	}
 
-	public final void clearPogFlags(PogFlag flagToClear) {
-		int flags = getPogFlags();
+	public final void setFlags(DungeonMasterFlag flagToSet) {
+		int flags = getDungeonMasterFlags();
+		flags |= flagToSet.getValue();
+		setDungeonMasterFlagsNative(flags);
+	}
+
+	public final void clearFlags(PlayerFlag flagToClear) {
+		int flags = getPlayerFlags();
 		flags &= ~flagToClear.getValue();
-		setPogFlagsNative(flags);
+		setPlayerFlagsNative(flags);
 	}
 
-	public final native void setPogFlagsNative(int flags) /*-{
-		this.pogFlags = flags;
-	}-*/;
+	public final void clearFlags(DungeonMasterFlag flagToClear) {
+		int flags = getDungeonMasterFlags();
+		flags &= ~flagToClear.getValue();
+		setDungeonMasterFlagsNative(flags);
+	}
 }

@@ -36,7 +36,8 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
-import per.lambert.ebattleMat.client.interfaces.PogFlag;
+import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -302,12 +303,12 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 	}
 
 	public final void buffer(final Context2d back, final Context2d front) {
-		if (!pogData.isPogFlagSet(PogFlag.TRANSPARENT)) {
+		if (!pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
 			front.setFillStyle("white");
 			front.fillRect(0, 0, parentWidth, parentHeight);
 		}
 		double opacity = 1.0;
-		if (!ServiceManager.getDungeonManager().isEditMode() && pogData.isPogFlagSet(PogFlag.INVISIBLE)) {
+		if (!ServiceManager.getDungeonManager().isEditMode() && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER))) {
 			opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
 		}
 		pogDrawPanel.getElement().getStyle().setOpacity(opacity);

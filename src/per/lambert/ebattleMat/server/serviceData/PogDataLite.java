@@ -5,7 +5,8 @@ public class PogDataLite {
 	public int pogRow;
 	public String uuid;
 	public String templateUUID;
-	public int pogFlags;
+	public int playerFlags;
+	public int dungeonMasterFlags;
 
 	public PogDataLite() {
 	}
@@ -15,15 +16,18 @@ public class PogDataLite {
 		pogRow = pogData.pogRow;
 		uuid = pogData.uuid;
 		templateUUID = pogData.templateUUID;
-		pogFlags = pogData.pogFlags;
+		playerFlags = pogData.playerFlags;
+		dungeonMasterFlags = pogData.dungeonMasterFlags;
 	}
+
 	public PogDataLite minimalClone() {
 		PogDataLite clone = new PogDataLite();
 		clone.uuid = uuid;
 		clone.pogColumn = pogColumn;
 		clone.pogRow = pogRow;
 		clone.templateUUID = templateUUID;
-		clone.pogFlags = pogFlags;
+		clone.playerFlags = playerFlags;
+		clone.dungeonMasterFlags = dungeonMasterFlags;
 		return (clone);
 	}
 }
