@@ -6,6 +6,6 @@
 	}
 	</ui:style>
 	<g:HTMLPanel>
-		<g:HorizontalPanel ui:field="panel" height="100%" />
+		<g:HorizontalPanel ui:field="panel" height="100%" styleName="ribbonBarLabel"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

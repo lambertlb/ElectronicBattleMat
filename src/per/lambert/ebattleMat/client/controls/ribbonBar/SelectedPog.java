@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatLayout;
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
@@ -48,9 +49,8 @@ public class SelectedPog extends Composite {
 			}
 		});
 	}
-	private void unselectedPogLook() {
-		Widget parent = hostPanel.getParent().getParent();
-		int height = parent.getOffsetHeight();
+	public void unselectedPogLook() {
+		int height = (int)BattleMatLayout.RIBBON_BAR_SIZE;
 		pogPanel.setWidth("" + height + "px");
 	}
 

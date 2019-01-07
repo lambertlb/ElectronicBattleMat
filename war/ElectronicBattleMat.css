@@ -16,7 +16,7 @@ h1 {
 .ribbonBarLabel {
 	align-self: center;
 	font-family: arial;
-	font-size: 8pt;
+	font-size: 8pt !important;
 	text-decoration: none;
 }
 
@@ -24,3 +24,7 @@ h1 {
 	pointer-events: none;
 }
 
+.v-gridlayout-spacing-on {
+    width: 1px;
+    height: 1px;
+}
