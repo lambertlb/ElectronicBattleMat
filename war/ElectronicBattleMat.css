@@ -18,6 +18,7 @@ h1 {
 	font-family: arial;
 	font-size: 8pt !important;
 	text-decoration: none;
+	vertical-align: middle;
 }
 
 .noEvents {
@@ -25,6 +26,6 @@ h1 {
 }
 
 .v-gridlayout-spacing-on {
-    width: 1px;
-    height: 1px;
+	width: 1px;
+	height: 1px;
 }

@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.controls.levelOptionsControl.LevelOptionsControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
@@ -36,6 +37,7 @@ public class RibbonBar extends Composite {
 	private ListBox levelSelect;
 	private Button levelOptions;
 	private Button dungeonOptions;
+	private LevelOptionsControl levelOptionsControl;
 
 	public RibbonBar() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -61,6 +63,7 @@ public class RibbonBar extends Composite {
 	private void createDMControls() {
 		fowToggle = new CheckBox("Toggle FOW");
 		fowToggle.addStyleName("ribbonBarLabel");
+		fowToggle.getElement().getStyle().setBackgroundColor("white");
 		fowToggle.setTitle("Toggle Fog of War");
 		fowToggle.addClickHandler(new ClickHandler() {
 
@@ -70,6 +73,16 @@ public class RibbonBar extends Composite {
 			}
 		});
 		levelOptions = new Button("Level Options");
+		levelOptions.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (levelOptionsControl == null) {
+					levelOptionsControl = new LevelOptionsControl();
+				}
+				levelOptionsControl.show();
+			}
+		});
 		levelOptions.addStyleName("ribbonBarLabel");
 		dungeonOptions = new Button("Dungeon Options");
 		dungeonOptions.addStyleName("ribbonBarLabel");

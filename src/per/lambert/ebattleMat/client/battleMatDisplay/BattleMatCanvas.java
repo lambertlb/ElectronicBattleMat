@@ -65,7 +65,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private static final int ROOMOBJECTS_Z = 1;
 	private static final int GREYOUT_Z = 7;
 	private static final int FOW_Z = 5;
-	// private static final int ROOM_OBJECTS_Z = 200;
+	public static final int DIALOG_Z = 10;
 
 	private boolean showGrid = false;
 
@@ -243,7 +243,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 					onMouseMove((MouseMoveEvent) event.getData());
 					return;
 				}
-				if (event.getReasonForAction() == ReasonForAction.DungeonLevelChanged) {
+				if (event.getReasonForAction() == ReasonForAction.DungeonSelectedLevelChanged) {
 					dungeonDataChanged();
 					return;
 				}

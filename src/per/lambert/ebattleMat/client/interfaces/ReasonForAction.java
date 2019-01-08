@@ -9,7 +9,7 @@ public enum ReasonForAction {
 	DungeonDataReadyToJoin,
 	DungeonDataCreated,
 	DungeonDataDeleted,
-	DungeonLevelChanged,
+	DungeonSelectedLevelChanged,
 	CharacterPogsLoaded,
 	MonsterPogsLoaded,
 	RoomObjectPogsLoaded,

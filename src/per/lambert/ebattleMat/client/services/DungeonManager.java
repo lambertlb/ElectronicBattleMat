@@ -74,7 +74,7 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public void setCurrentLevel(int currentLevel) {
 		this.currentLevel = currentLevel;
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonLevelChanged, null));
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelectedLevelChanged, null));
 	}
 
 	@Override
