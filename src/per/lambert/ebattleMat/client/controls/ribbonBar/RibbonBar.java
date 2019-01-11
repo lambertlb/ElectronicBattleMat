@@ -118,6 +118,10 @@ public class RibbonBar extends Composite {
 					dungeonDataLoaded();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataSaved) {
+					dungeonDataLoaded();
+					return;
+				}
 			}
 		});
 	}

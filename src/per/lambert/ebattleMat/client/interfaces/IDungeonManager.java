@@ -113,4 +113,10 @@ public interface IDungeonManager {
 	PogDataLite[] getRoomObjectsForCurrentLevel();
 
 	PogData fullCLoneRoomObject(PogDataLite roomObject);
+
+	void downloadDungeonFile(String fileName);
+
+	String getUrlToDungeonData();
+
+	int getToken();
 }

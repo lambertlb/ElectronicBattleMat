@@ -19,14 +19,9 @@ import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 public class DataRequester implements IDataRequester {
 
 	@Override
-	public void requestData(final String requestData, final int token, final String requestType,
+	public void requestData(final String requestData, final String requestType,
 			final Map<String, String> parameters, final IUserCallback callback) {
-		parameters.put("token", "" + token);
-		parameters.put("request", "" + requestType);
-		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("electronicbattlemat/dungeons");
-		addParametersToURL(parameters, urlBuilder);
-		String url = urlBuilder.buildString();
+		String url = buildUrl(requestType, parameters);
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
 		try {
 			builder.sendRequest(requestData, new RequestCallback() {
@@ -49,6 +44,16 @@ public class DataRequester implements IDataRequester {
 		} catch (RequestException e) {
 			handleCallbackError(DungeonServerError.Undefined1, e, callback);
 		}
+	}
+
+	public static String buildUrl(final String requestType, final Map<String, String> parameters) {
+		parameters.put("token", "" + ServiceManager.getDungeonManager().getToken());
+		parameters.put("request", "" + requestType);
+		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+		urlBuilder.setPath("electronicbattlemat/dungeons");
+		addParametersToURL(parameters, urlBuilder);
+		String url = urlBuilder.buildString();
+		return url;
 	}
 
 	protected void handleCallbackError(final DungeonServerError dungeonError, final Throwable exception,
@@ -75,7 +80,7 @@ public class DataRequester implements IDataRequester {
 		});
 	}
 
-	private void addParametersToURL(final Map<String, String> parameters, final UrlBuilder urlBuilder) {
+	public static void addParametersToURL(final Map<String, String> parameters, final UrlBuilder urlBuilder) {
 		if (parameters != null) {
 			Iterator<Map.Entry<String, String>> contactIterator = parameters.entrySet().iterator();
 			while (contactIterator.hasNext()) {

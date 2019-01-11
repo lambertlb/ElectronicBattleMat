@@ -26,6 +26,8 @@
 			<g:FlowPanel>
 				<g:Grid ui:field="dmGrid">
 				</g:Grid>
+				<g:HorizontalPanel ui:field="uploadPanel" styleName="{style.panel}">
+				</g:HorizontalPanel>
 			</g:FlowPanel>
 		</g:center>
 		<g:south size="30">

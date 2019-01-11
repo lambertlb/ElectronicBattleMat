@@ -25,14 +25,17 @@ public final class ServletUtils {
 	public static void handlePostRequest(final HttpServletRequest request, final HttpServletResponse response,
 			final Map<String, IWebRequestHandler> webServices, final HttpServlet servlet)
 			throws ServletException, IOException {
+		String contentType = request.getContentType();
 		StringBuffer jb = new StringBuffer();
-		String line = null;
-		try {
-			BufferedReader reader = request.getReader();
-			while ((line = reader.readLine()) != null)
-				jb.append(line);
-		} catch (Exception e) {
-			throw new ServletException();
+		if (contentType.startsWith("text")) {
+			String line = null;
+			try {
+				BufferedReader reader = request.getReader();
+				while ((line = reader.readLine()) != null)
+					jb.append(line);
+			} catch (Exception e) {
+				throw new ServletException();
+			}
 		}
 
 		String command = request.getParameter("request");

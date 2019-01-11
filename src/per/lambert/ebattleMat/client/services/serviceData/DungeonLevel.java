@@ -23,6 +23,10 @@ public class DungeonLevel extends DungeonSessionLevel {
 		return this.levelName;
 	}-*/;
 
+	public final native void setLevelName(String levelName) /*-{
+		this.levelName = levelName;
+	}-*/;
+
 	public final native void setGridSize(double gridSize) /*-{
 		this.gridSize = gridSize;
 	}-*/;

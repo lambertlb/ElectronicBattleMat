@@ -6,6 +6,9 @@ import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Anchor;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -39,6 +42,11 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private int token;
+
+	@Override
+	public int getToken() {
+		return token;
+	}
 
 	private SessionListData sessionListData;
 
@@ -186,7 +194,7 @@ public class DungeonManager implements IDungeonManager {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("username", username);
 		parameters.put("password", password);
-		dataRequester.requestData("", token, "LOGIN", parameters, new IUserCallback() {
+		dataRequester.requestData("", "LOGIN", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -232,7 +240,7 @@ public class DungeonManager implements IDungeonManager {
 	private void getDungeonList(Object requestData, IUserCallback callback) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		dataRequester.requestData("", token, "GETDUNGEONLIST", parameters, new IUserCallback() {
+		dataRequester.requestData("", "GETDUNGEONLIST", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -279,7 +287,7 @@ public class DungeonManager implements IDungeonManager {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", selectedDungeonUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -314,7 +322,7 @@ public class DungeonManager implements IDungeonManager {
 			parameters.put("dungeonUUID", selectedDungeon.getUUID());
 			IDataRequester dataRequester = ServiceManager.getDataRequester();
 			String dungeonDataString = JsonUtils.stringify(selectedDungeon);
-			dataRequester.requestData(dungeonDataString, token, "SAVEJSONFILE", parameters, new IUserCallback() {
+			dataRequester.requestData(dungeonDataString, "SAVEJSONFILE", parameters, new IUserCallback() {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {
@@ -340,7 +348,7 @@ public class DungeonManager implements IDungeonManager {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEON_PCPOG_LOCATION + "characterPogs.json");
-		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -367,7 +375,7 @@ public class DungeonManager implements IDungeonManager {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEON_MONSTER_LOCATION + "monsterPogs.json");
-		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -394,7 +402,7 @@ public class DungeonManager implements IDungeonManager {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("fileName", ElectronicBattleMat.DUNGEON_ROOMOBJECT_LOCATION + "roomPogs.json");
-		dataRequester.requestData("", token, "LOADJSONFILE", parameters, new IUserCallback() {
+		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -491,8 +499,14 @@ public class DungeonManager implements IDungeonManager {
 		if (resourceItem.startsWith("http")) {
 			return resourceItem;
 		}
+		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + resourceCount++;
+		return (resourceUrl);
+	}
+
+	@Override
+	public String getUrlToDungeonData() {
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
-		String resourceUrl = directoryForDungeon + "/" + resourceItem + "?" + resourceCount++;
+		String resourceUrl = directoryForDungeon + "/";
 		return (resourceUrl);
 	}
 
@@ -502,7 +516,7 @@ public class DungeonManager implements IDungeonManager {
 		parameters.put("dungeonUUID", dungeonUUID);
 		parameters.put("newDungeonName", newDungeonName);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData("", token, "CREATENEWDUNGEON", parameters, new IUserCallback() {
+		dataRequester.requestData("", "CREATENEWDUNGEON", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -543,7 +557,7 @@ public class DungeonManager implements IDungeonManager {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", dungeonUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData("", token, "DELETEDUNGEON", parameters, new IUserCallback() {
+		dataRequester.requestData("", "DELETEDUNGEON", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -620,7 +634,7 @@ public class DungeonManager implements IDungeonManager {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", dungeonUUID);
-		dataRequester.requestData("", token, "GETSESSIONLIST", parameters, new IUserCallback() {
+		dataRequester.requestData("", "GETSESSIONLIST", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -665,7 +679,7 @@ public class DungeonManager implements IDungeonManager {
 		parameters.put("dungeonUUID", dungeonUUID);
 		parameters.put("newSessionName", newSessionName);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData("", token, "CREATENEWSESSION", parameters, new IUserCallback() {
+		dataRequester.requestData("", "CREATENEWSESSION", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -685,7 +699,7 @@ public class DungeonManager implements IDungeonManager {
 		parameters.put("dungeonUUID", dungeonUUID);
 		parameters.put("sessionUUID", sessionUUID);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData("", token, "DELETESESSION", parameters, new IUserCallback() {
+		dataRequester.requestData("", "DELETESESSION", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -705,7 +719,7 @@ public class DungeonManager implements IDungeonManager {
 		parameters.put("sessionUUID", selectedSessionUUID);
 		parameters.put("version", "" + versionToTest);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData("", token, "LOADSESSION", parameters, new IUserCallback() {
+		dataRequester.requestData("", "LOADSESSION", parameters, new IUserCallback() {
 
 			@Override
 			public void onSuccess(Object sender, Object data) {
@@ -801,7 +815,7 @@ public class DungeonManager implements IDungeonManager {
 			fogOfWarData.setFOW(sessionLevel.getFOW());
 			String fowDataString = JsonUtils.stringify(fogOfWarData);
 			IDataRequester dataRequester = ServiceManager.getDataRequester();
-			dataRequester.requestData(fowDataString, token, "UPDATEFOW", parameters, new IUserCallback() {
+			dataRequester.requestData(fowDataString, "UPDATEFOW", parameters, new IUserCallback() {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {
@@ -825,7 +839,7 @@ public class DungeonManager implements IDungeonManager {
 			parameters.put("needToAdd", "" + needToAdd);
 			IDataRequester dataRequester = ServiceManager.getDataRequester();
 			String pogDataString = JsonUtils.stringify(pogData);
-			dataRequester.requestData(pogDataString, token, "SAVEPOGTOSESSION", parameters, new IUserCallback() {
+			dataRequester.requestData(pogDataString, "SAVEPOGTOSESSION", parameters, new IUserCallback() {
 
 				@Override
 				public void onSuccess(Object sender, Object data) {
@@ -959,4 +973,29 @@ public class DungeonManager implements IDungeonManager {
 			loadSessionData(selectedSession.getVersion());
 		}
 	}
+
+	@Override
+	public void downloadDungeonFile(String fileName) {
+		String url = getUrlToDungeonData() + fileName;
+		makeSureLoaderExists();
+		downloadFile(fileName, url);
+	}
+
+	public native void makeSureLoaderExists() /*-{
+		var aLink = document.getElementById('downloader');
+		if (aLink == null) {
+			aLink = document.createElement('a');
+			aLink.setAttribute('id', 'downloader');
+			document.body.appendChild(aLink);
+		}
+	}-*/;
+
+	public native void downloadFile(String fileName, String urlData) /*-{
+		//		var aLink = document.createElement('a');
+		var aLink = document.getElementById('downloader');
+		aLink.download = fileName;
+		aLink.href = encodeURI(urlData);
+		var event = new MouseEvent('click');
+		aLink.dispatchEvent(event);
+	}-*/;
 }
