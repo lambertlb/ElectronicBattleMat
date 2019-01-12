@@ -252,7 +252,7 @@ public class DungeonSelectControl extends ResizableDialog {
 		element2.setAttribute("colspan", "3");
 	}
 
-	public void enableWidget(Widget widget, boolean enable) {
+	public static void enableWidget(Widget widget, boolean enable) {
 		if (enable) {
 			widget.getElement().removeAttribute("disabled");
 		} else {
