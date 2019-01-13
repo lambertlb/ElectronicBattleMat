@@ -21,6 +21,10 @@ h1 {
 	vertical-align: middle;
 }
 
+.badLabel {
+	color: red;
+}
+
 .noEvents {
 	pointer-events: none;
 }

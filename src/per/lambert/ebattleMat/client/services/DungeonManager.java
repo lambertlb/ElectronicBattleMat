@@ -6,9 +6,6 @@ import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Anchor;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -21,13 +18,13 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListData;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
+import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
-import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 public class DungeonManager implements IDungeonManager {
@@ -79,6 +76,10 @@ public class DungeonManager implements IDungeonManager {
 		return currentLevel;
 	}
 
+	@Override
+	public int getNextLevelNumber() {
+		return(selectedDungeon.getDungeonlevels().length + 1);
+	}
 	@Override
 	public void setCurrentLevel(int currentLevel) {
 		this.currentLevel = currentLevel;
@@ -998,4 +999,17 @@ public class DungeonManager implements IDungeonManager {
 		var event = new MouseEvent('click');
 		aLink.dispatchEvent(event);
 	}-*/;
+	
+	@Override
+	public boolean isLegalDungeonName(String nameToCheck) {
+		if (nameToCheck == null || nameToCheck.isEmpty() || nameToCheck.length() < 4) {
+			return(false);
+		}
+		return(true);
+	}
+
+	@Override
+	public void createNewLevel(DungeonLevel newLevel) {
+		selectedDungeon.addDungeonlevel(newLevel);
+	}
 }

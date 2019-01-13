@@ -36,6 +36,10 @@ public class DungeonData extends JavaScriptObject {
 		return this.dungeonLevels;
 	}-*/;
 
+	public final native void addDungeonlevel(DungeonLevel newLevel) /*-{
+		this.dungeonLevels.push(newLevel);
+	}-*/;
+
 	public final native void setShowGrid(boolean showGrid) /*-{
 		if (this.showGrid === undefined) {
 			this.showGrid = false;

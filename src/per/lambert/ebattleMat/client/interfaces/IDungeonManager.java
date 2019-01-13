@@ -119,4 +119,10 @@ public interface IDungeonManager {
 	String getUrlToDungeonData();
 
 	int getToken();
+
+	boolean isLegalDungeonName(String nameToCheck);
+
+	int getNextLevelNumber();
+
+	void createNewLevel(DungeonLevel currentLevel);
 }

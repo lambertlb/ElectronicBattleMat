@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Style.VerticalAlign;
@@ -15,6 +16,8 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -53,6 +56,8 @@ public class LevelOptionsControl extends ResizableDialog {
 	private String fileExtension;
 	private boolean legalFile;
 	private String pictureName;
+	private boolean newLevel;
+	private DungeonLevel currentLevel;
 
 	private CheckBox showGrid;
 	private LabeledTextBox gridSize;
@@ -65,6 +70,7 @@ public class LevelOptionsControl extends ResizableDialog {
 	private FormPanel formPanel;
 	private FileUpload fileUpload;
 	private Label fileUploadLabel;
+	private Button createNewLevelButton;
 
 	@UiField
 	Grid dmGrid;
@@ -95,6 +101,7 @@ public class LevelOptionsControl extends ResizableDialog {
 	}
 
 	private void initialize() {
+		newLevel = false;
 		fileNeedsToBeUploaded = false;
 		fileExtension = "";
 		legalFile = false;
@@ -102,7 +109,9 @@ public class LevelOptionsControl extends ResizableDialog {
 		Element ele = fileUpload.getElement();
 		InputElement inp = InputElement.as(ele);
 		inp.setValue("");
-		checkOkButtonStatus();
+		fileUpload.removeStyleName("badLabel");
+		levelNameLabel.removeStyleName("badLabel");
+		checkForLegalContent();
 	}
 
 	private void createContent() {
@@ -115,6 +124,20 @@ public class LevelOptionsControl extends ResizableDialog {
 		createLevelName();
 		createDownloadLevel();
 		createUploadLevel();
+		createNewLevel();
+	}
+
+	private void createNewLevel() {
+		createNewLevelButton = new Button("Create New Level");
+		createNewLevelButton.setStyleName("ribbonBarLabel");
+		createNewLevelButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				handleCreateNewLevel();
+			}
+		});
+		dmGrid.setWidget(7, 0, createNewLevelButton);
 	}
 
 	private void createUploadLevel() {
@@ -142,8 +165,8 @@ public class LevelOptionsControl extends ResizableDialog {
 		uploader.add(fileUploadLabel);
 		uploader.add(fileUpload);
 		formPanel.setWidget(uploader);
-		dmGrid.setWidget(4, 0, formPanel);
-		Element element = dmGrid.getCellFormatter().getElement(4, 0);
+		dmGrid.setWidget(5, 0, formPanel);
+		Element element = dmGrid.getCellFormatter().getElement(5, 0);
 		element.setAttribute("colspan", "3");
 	}
 
@@ -158,7 +181,7 @@ public class LevelOptionsControl extends ResizableDialog {
 				ServiceManager.getDungeonManager().downloadDungeonFile(levelData.getLevelDrawing());
 			}
 		});
-		dmGrid.setWidget(3, 0, downloadLevelPicture);
+		dmGrid.setWidget(4, 0, downloadLevelPicture);
 	}
 
 	private void createShowGrid() {
@@ -172,7 +195,7 @@ public class LevelOptionsControl extends ResizableDialog {
 				showGridClicked();
 			}
 		});
-		dmGrid.setWidget(0, 0, showGrid);
+		dmGrid.setWidget(1, 0, showGrid);
 	}
 
 	private void createGridSizeEntry() {
@@ -189,7 +212,7 @@ public class LevelOptionsControl extends ResizableDialog {
 			public void onKeyUp(KeyUpEvent event) {
 			}
 		});
-		dmGrid.setWidget(0, 1, gridSize);
+		dmGrid.setWidget(1, 1, gridSize);
 	}
 
 	private void createGridOffsetX() {
@@ -206,7 +229,7 @@ public class LevelOptionsControl extends ResizableDialog {
 			public void onKeyUp(KeyUpEvent event) {
 			}
 		});
-		dmGrid.setWidget(1, 0, gridOffsetX);
+		dmGrid.setWidget(2, 0, gridOffsetX);
 	}
 
 	private void createGridOffsetY() {
@@ -223,17 +246,31 @@ public class LevelOptionsControl extends ResizableDialog {
 			public void onKeyUp(KeyUpEvent event) {
 			}
 		});
-		dmGrid.setWidget(1, 1, gridOffsetY);
+		dmGrid.setWidget(2, 1, gridOffsetY);
 	}
 
 	private void createLevelName() {
 		levelNameLabel = new Label("Level Name");
 		levelNameLabel.setStyleName("ribbonBarLabel");
 		levelName = new TextBox();
-		;
+		levelName.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				checkForLegalContent();
+			}
+		});
+		levelName.addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				checkForLegalContent();
+			}
+		});
+
 		levelName.setStyleName("ribbonBarLabel");
-		dmGrid.setWidget(2, 0, levelNameLabel);
-		dmGrid.setWidget(2, 1, levelName);
+		dmGrid.setWidget(0, 0, levelNameLabel);
+		dmGrid.setWidget(0, 1, levelName);
 	}
 
 	private void setupEventHandlers() {
@@ -283,15 +320,20 @@ public class LevelOptionsControl extends ResizableDialog {
 	}
 
 	private void getData() {
-		DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentLevelData();
-		if (levelData == null) {
+		currentLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
+		if (currentLevel == null) {
 			return;
 		}
+		addLevelDataToForm();
+		checkForLegalContent();
+	}
+
+	private void addLevelDataToForm() {
 		showGrid.setValue(ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid());
-		gridSize.setValue(levelData.getGridSize());
-		gridOffsetX.setValue(levelData.getGridOffsetX());
-		gridOffsetY.setValue(levelData.getGridOffsetY());
-		levelName.setValue(levelData.getLevelName());
+		gridSize.setValue(currentLevel.getGridSize());
+		gridOffsetX.setValue(currentLevel.getGridOffsetX());
+		gridOffsetY.setValue(currentLevel.getGridOffsetY());
+		levelName.setValue(currentLevel.getLevelName());
 	}
 
 	protected void fileSelected() {
@@ -300,23 +342,32 @@ public class LevelOptionsControl extends ResizableDialog {
 		String filename = fileUpload.getFilename().toLowerCase();
 		if (filename.length() == 0) {
 			Window.alert("No File Specified!");
-			checkOkButtonStatus();
+			checkForLegalContent();
 			return;
 		}
 		int i = filename.lastIndexOf('.');
 		fileExtension = i > 0 ? filename.substring(i + 1) : "";
 		legalFile = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
-		checkOkButtonStatus();
+		checkForLegalContent();
 	}
 
 	private void acceptChanges() {
 		if (fileNeedsToBeUploaded && legalFile) {
 			String baseURL = ServiceManager.getDungeonManager().getUrlToDungeonData();
-			pictureName = "level" + (ServiceManager.getDungeonManager().getCurrentLevel() + 1) + "." + fileExtension;
+			String levelString = getCorrectLevelString();
+			pictureName = "level" + levelString + "." + fileExtension;
 			String filePath = baseURL + pictureName;
 			uploadFile(filePath);
 		} else {
 			acceptChangedPart2();
+		}
+	}
+
+	private String getCorrectLevelString() {
+		if (newLevel) {
+			return ("" + (ServiceManager.getDungeonManager().getNextLevelNumber()));
+		} else {
+			return ("" + (ServiceManager.getDungeonManager().getCurrentLevel() + 1));
 		}
 	}
 
@@ -327,13 +378,17 @@ public class LevelOptionsControl extends ResizableDialog {
 			return;
 		}
 		ServiceManager.getDungeonManager().getSelectedDungeon().setShowGrid(showGrid.getValue());
-		levelData.setGridSize(gridSize.getDoubleValue());
-		levelData.setGridOffsetX(gridOffsetX.getDoubleValue());
-		levelData.setGridOffsetY(gridOffsetY.getDoubleValue());
-		levelData.setLevelName(levelName.getValue());
+		currentLevel.setGridSize(gridSize.getDoubleValue());
+		currentLevel.setGridOffsetX(gridOffsetX.getDoubleValue());
+		currentLevel.setGridOffsetY(gridOffsetY.getDoubleValue());
+		currentLevel.setLevelName(levelName.getValue());
 		if (fileNeedsToBeUploaded) {
-			levelData.setLevelDrawing(pictureName);
+			currentLevel.setLevelDrawing(pictureName);
 		}
+		if (newLevel) {
+			ServiceManager.getDungeonManager().createNewLevel(currentLevel);
+		}
+
 		ServiceManager.getDungeonManager().saveDungeonData();
 		close();
 	}
@@ -357,11 +412,31 @@ public class LevelOptionsControl extends ResizableDialog {
 		acceptChangedPart2();
 	}
 
-	private void checkOkButtonStatus() {
+	private void checkForLegalContent() {
 		boolean isOK = true;
-		if (fileNeedsToBeUploaded && !legalFile) {
+		if (fileNeedsToBeUploaded) {
+			if (!legalFile) {
+				isOK = false;
+				fileUpload.addStyleName("badLabel");
+			} else {
+				fileUpload.removeStyleName("badLabel");
+			}
+		}
+		if (!ServiceManager.getDungeonManager().isLegalDungeonName(levelName.getValue())) {
 			isOK = false;
+			levelNameLabel.addStyleName("badLabel");
+		} else {
+			levelNameLabel.removeStyleName("badLabel");
 		}
 		DungeonSelectControl.enableWidget(ok, isOK);
+	}
+
+	protected void handleCreateNewLevel() {
+		initialize();
+		currentLevel = (DungeonLevel) JavaScriptObject.createObject().cast();
+		fileNeedsToBeUploaded = true;
+		addLevelDataToForm();
+		newLevel = true;
+		checkForLegalContent();
 	}
 }
