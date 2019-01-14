@@ -15,12 +15,14 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.controls.levelOptionsControl.LevelOptionsControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
+import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 public class RibbonBar extends Composite {
 
@@ -38,6 +40,8 @@ public class RibbonBar extends Composite {
 	private Button levelOptions;
 	private Button dungeonOptions;
 	private LevelOptionsControl levelOptionsControl;
+	private DungeonSelectControl manageDungeons;
+	private ListBox characterSelect;
 
 	public RibbonBar() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -84,8 +88,18 @@ public class RibbonBar extends Composite {
 			}
 		});
 		levelOptions.addStyleName("ribbonBarLabel");
-		dungeonOptions = new Button("Dungeon Options");
+		dungeonOptions = new Button("Manage Dungeons");
 		dungeonOptions.addStyleName("ribbonBarLabel");
+		dungeonOptions.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (manageDungeons == null) {
+					manageDungeons = new DungeonSelectControl();
+				}
+				manageDungeons.setupAndShow();
+			}
+		});
 	}
 
 	private void createCommonControls() {
@@ -102,6 +116,16 @@ public class RibbonBar extends Composite {
 			@Override
 			public void onChange(ChangeEvent event) {
 				ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
+			}
+		});
+		characterSelect = new ListBox();
+		characterSelect.setVisibleItemCount(1);
+		characterSelect.addStyleName("ribbonBarLabel");
+		characterSelect.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				characterWasSelected();
 			}
 		});
 	}
@@ -122,6 +146,10 @@ public class RibbonBar extends Composite {
 					dungeonDataLoaded();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.CharacterPogsLoaded) {
+					characterPogsLoaded();
+					return;
+				}
 			}
 		});
 	}
@@ -137,6 +165,7 @@ public class RibbonBar extends Composite {
 
 	private void setupViewCommon() {
 		panel.clear();
+		ribbonGrid.clear();
 		panel.getElement().getStyle().setBackgroundColor("grey");
 		panel.add(selectedPog);
 		panel.add(ribbonGrid);
@@ -147,9 +176,12 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(1, 0, levelSelect);
 		ribbonGrid.setWidget(0, 1, levelOptions);
 		ribbonGrid.setWidget(1, 1, dungeonOptions);
+		ribbonGrid.setWidget(0, 2, characterSelect);
 	}
 
 	private void setupForPlayer() {
+		ribbonGrid.setWidget(0, 0, characterSelect);
+		ribbonGrid.setWidget(0, 1, levelSelect);
 	}
 
 	private void dungeonDataLoaded() {
@@ -158,5 +190,22 @@ public class RibbonBar extends Composite {
 		for (String levelName : levelNames) {
 			levelSelect.addItem(levelName);
 		}
+	}
+	private void characterPogsLoaded() {
+		characterSelect.clear();
+		characterSelect.addItem("Select Character Pog", "");
+		PogData[] pogList = ServiceManager.getDungeonManager().getPcTemplatePogs();
+		for (PogData pogData : pogList) {
+			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
+		}
+	}
+	private void characterWasSelected() {
+		String uuid = characterSelect.getSelectedValue();
+		if (uuid == null || uuid.isEmpty()) {
+			return;
+		}
+		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(uuid);
+		ServiceManager.getDungeonManager().setSelectedPog(characterPog);
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 }
