@@ -3,7 +3,6 @@ package per.lambert.ebattleMat.client.controls.levelOptionsControl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -18,9 +17,6 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -31,26 +27,19 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
-import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.controls.labeledTextBox.LabeledTextBox;
+import per.lambert.ebattleMat.client.controls.okCancelDialog.OkCancelDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
-import per.lambert.ebattleMat.client.resizeableDialog.ResizableDialog;
 import per.lambert.ebattleMat.client.services.DataRequester;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 
-public class LevelOptionsControl extends ResizableDialog {
-
-	private static LevelOptionsControlUiBinder uiBinder = GWT.create(LevelOptionsControlUiBinder.class);
-
-	interface LevelOptionsControlUiBinder extends UiBinder<Widget, LevelOptionsControl> {
-	}
+public class LevelOptionsControl extends OkCancelDialog {
 
 	private boolean fileNeedsToBeUploaded;
 	private String fileExtension;
@@ -71,30 +60,18 @@ public class LevelOptionsControl extends ResizableDialog {
 	private FileUpload fileUpload;
 	private Label fileUploadLabel;
 	private Button createNewLevelButton;
-
-	@UiField
-	Grid dmGrid;
-
-	@UiField
-	HorizontalPanel uploadPanel;
-	@UiField
-	Button ok;
-
-	@UiField
-	Button cancel;
+	
+	private Grid dmGrid;
 
 	public LevelOptionsControl() {
-		setWidget(uiBinder.createAndBindUi(this));
+		super("Level Options", true, true);
+		load();
 	}
 
-	@Override
-	protected void onLoad() {
-		super.onLoad();
+	protected void load() {
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
-		if (showGrid == null) {
-			createContent();
-			setupEventHandlers();
-		}
+		createContent();
+		setupEventHandlers();
 		initialize();
 		center();
 		getData();
@@ -115,6 +92,7 @@ public class LevelOptionsControl extends ResizableDialog {
 	}
 
 	private void createContent() {
+		dmGrid = getCenterGrid();
 		dmGrid.clear();
 		dmGrid.resize(10, 2);
 		createShowGrid();
@@ -295,16 +273,20 @@ public class LevelOptionsControl extends ResizableDialog {
 				}
 			}
 		});
-	}
-
-	@UiHandler("ok")
-	void okClicked(ClickEvent event) {
-		acceptChanges();
-	}
-
-	@UiHandler("cancel")
-	void cancelClicked(ClickEvent event) {
-		close();
+		addOkClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				acceptChanges();
+			}
+		});
+		addCancelClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				close();
+			}
+		});
 	}
 
 	protected void showGridClicked() {
@@ -428,7 +410,7 @@ public class LevelOptionsControl extends ResizableDialog {
 		} else {
 			levelNameLabel.removeStyleName("badLabel");
 		}
-		DungeonSelectControl.enableWidget(ok, isOK);
+		enableOk(isOK);
 	}
 
 	protected void handleCreateNewLevel() {

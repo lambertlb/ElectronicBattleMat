@@ -33,3 +33,21 @@ h1 {
 	width: 1px;
 	height: 1px;
 }
+
+.popupPanel {
+	background-color: ivory;
+}
+
+.sessionLabel {
+	width: 100%;
+	height: 23px;
+	margin-right: 4px;
+	margin-top: 8px;
+	vertical-align: middle;
+	color: black;
+	background: darkgrey;
+	font-family: arial;
+	font-size: 9pt;
+	text-align: center;
+	padding-top: 5px;
+}
