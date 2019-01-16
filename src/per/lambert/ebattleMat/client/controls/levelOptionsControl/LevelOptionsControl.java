@@ -60,7 +60,7 @@ public class LevelOptionsControl extends OkCancelDialog {
 	private FileUpload fileUpload;
 	private Label fileUploadLabel;
 	private Button createNewLevelButton;
-	
+
 	private Grid dmGrid;
 
 	public LevelOptionsControl() {
@@ -73,8 +73,6 @@ public class LevelOptionsControl extends OkCancelDialog {
 		createContent();
 		setupEventHandlers();
 		initialize();
-		center();
-		getData();
 	}
 
 	private void initialize() {
@@ -89,6 +87,8 @@ public class LevelOptionsControl extends OkCancelDialog {
 		fileUpload.removeStyleName("badLabel");
 		levelNameLabel.removeStyleName("badLabel");
 		checkForLegalContent();
+		center();
+		getData();
 	}
 
 	private void createContent() {
@@ -273,20 +273,16 @@ public class LevelOptionsControl extends OkCancelDialog {
 				}
 			}
 		});
-		addOkClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				acceptChanges();
-			}
-		});
-		addCancelClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				close();
-			}
-		});
+	}
+
+	@Override
+	protected void onOkClick(ClickEvent event) {
+		acceptChanges();
+	}
+
+	@Override
+	protected void onCancelClick(ClickEvent event) {
+		close();
 	}
 
 	protected void showGridClicked() {
@@ -299,6 +295,7 @@ public class LevelOptionsControl extends OkCancelDialog {
 	@Override
 	public void show() {
 		super.show();
+		initialize();
 	}
 
 	private void getData() {

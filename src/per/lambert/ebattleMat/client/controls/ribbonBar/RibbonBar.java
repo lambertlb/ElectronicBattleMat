@@ -97,7 +97,8 @@ public class RibbonBar extends Composite {
 				if (manageDungeons == null) {
 					manageDungeons = new DungeonSelectControl();
 				}
-				manageDungeons.setupAndShow();
+				manageDungeons.enableCancel(true);
+				manageDungeons.show();
 			}
 		});
 	}

@@ -2,7 +2,6 @@ package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -12,9 +11,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -24,15 +20,11 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.resizeableDialog.ResizableDialog;
+import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
+import per.lambert.ebattleMat.client.controls.okCancelDialog.OkCancelDialog;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
-public class DungeonSelectControl extends ResizableDialog {
-
-	interface MyStyle extends CssResource {
-		String sessionLabel();
-	}
-
+public class DungeonSelectControl extends OkCancelDialog {
 	private DungeonSelectPresenter dungeonSelectPresenter;
 	private ListBox dungeonDropdownList;
 	private ListBox sessionDropdownList;
@@ -47,34 +39,35 @@ public class DungeonSelectControl extends ResizableDialog {
 	private TextBox newSessionName;
 	private Label sessionLabel;
 	private Label templateLabel;
+	private CheckBox asDM;
+	private Grid dmGrid;
 	private boolean dmStateChanged;
 	private boolean gridPopulated;
 
-	@UiField
-	MyStyle myStyle;
-
-	@UiField
-	CheckBox asDM;
-
-	@UiField
-	Grid dmGrid;
-
-	private static DungeonSelectControlUiBinder uiBinder = GWT.create(DungeonSelectControlUiBinder.class);
-
-	interface DungeonSelectControlUiBinder extends UiBinder<Widget, DungeonSelectControl> {
+	public DungeonSelectControl() {
+		super("Dungeon Template Management", false, true, 400, 400);
+		load();
 	}
 
-	public DungeonSelectControl() {
-		createGridItems();
+	private void load() {
+		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
 		dungeonSelectPresenter = new DungeonSelectPresenter();
 		dungeonSelectPresenter.setView(this);
-		setWidget(uiBinder.createAndBindUi(this));
+		createContent();
 		setGlassEnabled(true);
 		setText("Dungeon Select");
+		setupEventHandlers();
+		initialize();
+	}
+
+	private void initialize() {
+		setToDungeonMasterState();
 		center();
 	}
 
-	private void createGridItems() {
+	private void createContent() {
+		dmGrid = getCenterGrid();
+		asDM = new CheckBox("I am DM");
 		dungeonDropdownList = new ListBox();
 		sessionDropdownList = new ListBox();
 		editDungeonButton = new Button("Edit Dungeon");
@@ -198,13 +191,6 @@ public class DungeonSelectControl extends ResizableDialog {
 		});
 	}
 
-	@Override
-	protected void onLoad() {
-		super.onLoad();
-		setupEventHandlers();
-		setToDungeonMasterState();
-	}
-
 	private void populateGrid() {
 		if (gridPopulated && dmStateChanged == dungeonSelectPresenter.isDungeonMaster()) {
 			return;
@@ -212,43 +198,44 @@ public class DungeonSelectControl extends ResizableDialog {
 		gridPopulated = true;
 		dmStateChanged = dungeonSelectPresenter.isDungeonMaster();
 		dmGrid.clear();
-		dmGrid.resize(10, 2);
+		dmGrid.resize(12, 2);
 		if (dungeonSelectPresenter.isDungeonMaster()) {
 			populateDMView();
 		} else {
 			populatePlayerView();
 		}
-		Element element = dmGrid.getCellFormatter().getElement(0, 0);
+		Element element = dmGrid.getCellFormatter().getElement(1, 0);
 		element.setAttribute("colspan", "3");
-		sessionLabel.addStyleName(myStyle.sessionLabel());
-		templateLabel.addStyleName(myStyle.sessionLabel());
+		sessionLabel.addStyleName("sessionLabel");
+		templateLabel.addStyleName("sessionLabel");
 	}
 
 	private void populatePlayerView() {
 		populateCommon();
-		dmGrid.setWidget(2, 0, sessionDropdownList);
-		dmGrid.setWidget(3, 0, joinASessionButton);
+		dmGrid.setWidget(3, 0, sessionDropdownList);
+		dmGrid.setWidget(4, 0, joinASessionButton);
 	}
 
 	private void populateCommon() {
-		dmGrid.setWidget(0, 0, templateLabel);
-		dmGrid.setWidget(1, 0, dungeonDropdownList);
+		dmGrid.setWidget(0, 0, asDM);
+		dmGrid.setWidget(1, 0, templateLabel);
+		dmGrid.setWidget(2, 0, dungeonDropdownList);
 	}
 
 	private void populateDMView() {
 		populateCommon();
-		dmGrid.setWidget(2, 0, createDungeonButton);
-		dmGrid.setWidget(2, 1, newDungeonName);
-		dmGrid.setWidget(3, 0, editDungeonButton);
-		dmGrid.setWidget(4, 0, deleteDungeonButton);
-		dmGrid.setWidget(5, 0, sessionLabel);
-		dmGrid.setWidget(6, 0, sessionDropdownList);
-		dmGrid.setWidget(7, 0, dmSessionButton);
-		dmGrid.setWidget(8, 0, deleteSessionButton);
-		dmGrid.setWidget(9, 0, createSessionButton);
-		dmGrid.setWidget(9, 1, newSessionName);
-		
-		Element element2 = dmGrid.getCellFormatter().getElement(5, 0);
+		dmGrid.setWidget(3, 0, createDungeonButton);
+		dmGrid.setWidget(3, 1, newDungeonName);
+		dmGrid.setWidget(4, 0, editDungeonButton);
+		dmGrid.setWidget(5, 0, deleteDungeonButton);
+		dmGrid.setWidget(6, 0, sessionLabel);
+		dmGrid.setWidget(7, 0, sessionDropdownList);
+		dmGrid.setWidget(8, 0, dmSessionButton);
+		dmGrid.setWidget(9, 0, deleteSessionButton);
+		dmGrid.setWidget(10, 0, createSessionButton);
+		dmGrid.setWidget(10, 1, newSessionName);
+
+		Element element2 = dmGrid.getCellFormatter().getElement(6, 0);
 		element2.setAttribute("colspan", "3");
 	}
 
@@ -288,7 +275,7 @@ public class DungeonSelectControl extends ResizableDialog {
 	public void loadDungeonList() {
 		dungeonDropdownList.clear();
 		dungeonDropdownList.addItem("Select a Dungeon for Operations");
-		Map<String,String> dungeonNameToUUIDMap = dungeonSelectPresenter.getDungeonToUUIDMap();
+		Map<String, String> dungeonNameToUUIDMap = dungeonSelectPresenter.getDungeonToUUIDMap();
 		for (Map.Entry<String, String> entry : dungeonNameToUUIDMap.entrySet()) {
 			dungeonDropdownList.addItem(entry.getKey(), entry.getValue());
 		}
@@ -300,11 +287,11 @@ public class DungeonSelectControl extends ResizableDialog {
 		enableWidget(joinASessionButton, dungeonSelectPresenter.isOkToJoinSession());
 	}
 
-	public void setupAndShow() {
+	public void show() {
+		super.show();
 		dungeonSelectPresenter.refreshView();
 		getElement().getStyle().setZIndex(100);
-		center();
-		show();
+		initialize();
 	}
 
 	private void setupSessionDisplayForDungeonMaster() {
@@ -319,8 +306,9 @@ public class DungeonSelectControl extends ResizableDialog {
 	}
 
 	public void resetNewSessionText() {
-		newSessionName.setText("Enter Session Name");		
+		newSessionName.setText("Enter Session Name");
 	}
+
 	public void loadSessionList() {
 		setupSessionDisplayForDungeonMaster();
 		sessionDropdownList.clear();
@@ -336,4 +324,9 @@ public class DungeonSelectControl extends ResizableDialog {
 			}
 		}
 	}
+	@Override
+	protected void onCancelClick(ClickEvent event) {
+		hide();
+	}
+
 }

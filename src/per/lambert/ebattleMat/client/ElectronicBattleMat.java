@@ -92,7 +92,8 @@ public class ElectronicBattleMat implements EntryPoint {
 	private void selectDungeon() {
 		if (dungeonSelectControl == null) {
 			dungeonSelectControl = new DungeonSelectControl();
+			dungeonSelectControl.enableCancel(false);
 		}
-		dungeonSelectControl.setupAndShow();
+		dungeonSelectControl.show();
 	}
 }
