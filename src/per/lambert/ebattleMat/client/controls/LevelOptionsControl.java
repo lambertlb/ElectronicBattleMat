@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.levelOptionsControl;
+package per.lambert.ebattleMat.client.controls;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.TextBox;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.controls.labeledTextBox.LabeledTextBox;
-import per.lambert.ebattleMat.client.controls.okCancelDialog.OkCancelDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;

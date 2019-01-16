@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
-import per.lambert.ebattleMat.client.controls.okCancelDialog.OkCancelDialog;
+import per.lambert.ebattleMat.client.controls.OkCancelDialog;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 public class DungeonSelectControl extends OkCancelDialog {

@@ -15,8 +15,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.controls.LevelOptionsControl;
 import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
-import per.lambert.ebattleMat.client.controls.levelOptionsControl.LevelOptionsControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
