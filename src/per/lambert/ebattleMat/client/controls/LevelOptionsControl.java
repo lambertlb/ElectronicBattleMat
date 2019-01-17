@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -20,15 +19,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.controls.labeledTextBox.LabeledTextBox;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
@@ -54,10 +50,7 @@ public class LevelOptionsControl extends OkCancelDialog {
 	private Label levelNameLabel;
 	private TextBox levelName;
 	private Button downloadLevelPicture;
-	private HorizontalPanel uploader;
-	private FormPanel formPanel;
-	private FileUpload fileUpload;
-	private Label fileUploadLabel;
+	private FileUpLoadControl fileUpLoadControl;
 	private Button createNewLevelButton;
 
 	private Grid dmGrid;
@@ -68,7 +61,6 @@ public class LevelOptionsControl extends OkCancelDialog {
 	}
 
 	protected void load() {
-		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
 		createContent();
 		setupEventHandlers();
 		initialize();
@@ -80,10 +72,8 @@ public class LevelOptionsControl extends OkCancelDialog {
 		fileExtension = "";
 		legalFile = false;
 		pictureName = "";
-		Element ele = fileUpload.getElement();
-		InputElement inp = InputElement.as(ele);
-		inp.setValue("");
-		fileUpload.removeStyleName("badLabel");
+		fileUpLoadControl.setInput("");
+		fileUpLoadControl.setBadInput(false);
 		levelNameLabel.removeStyleName("badLabel");
 		checkForLegalContent();
 		center();
@@ -118,31 +108,22 @@ public class LevelOptionsControl extends OkCancelDialog {
 	}
 
 	private void createUploadLevel() {
-		uploader = new HorizontalPanel();
-		formPanel = new FormPanel();
-		fileUpload = new FileUpload();
-		fileUpload.setName("uploadFormElement");
-		fileUpload.setStyleName("ribbonBarLabel");
-		fileUpload.addChangeHandler(new ChangeHandler() {
+		 fileUpLoadControl = new FileUpLoadControl("Select level Picture:  ");
+		 fileUpLoadControl.addChangeHandler(new ChangeHandler() {
 
 			@Override
 			public void onChange(ChangeEvent event) {
 				fileSelected();
 			}
 		});
-		fileUploadLabel = new Label("Select level Picture:  ");
-		fileUploadLabel.setStyleName("ribbonBarLabel");
-		formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+		fileUpLoadControl.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 				uploadComplete(event);
 			}
 		});
-		uploader.add(fileUploadLabel);
-		uploader.add(fileUpload);
-		formPanel.setWidget(uploader);
-		dmGrid.setWidget(5, 0, formPanel);
+		dmGrid.setWidget(5, 0, fileUpLoadControl);
 		Element element = dmGrid.getCellFormatter().getElement(5, 0);
 		element.setAttribute("colspan", "3");
 	}
@@ -317,16 +298,20 @@ public class LevelOptionsControl extends OkCancelDialog {
 	protected void fileSelected() {
 		fileNeedsToBeUploaded = true;
 		legalFile = false;
-		String filename = fileUpload.getFilename().toLowerCase();
+		String filename = fileUpLoadControl.getFilename().toLowerCase();
 		if (filename.length() == 0) {
 			Window.alert("No File Specified!");
 			checkForLegalContent();
 			return;
 		}
+		isValidPictureExtension(filename);
+		checkForLegalContent();
+	}
+
+	private void isValidPictureExtension(String filename) {
 		int i = filename.lastIndexOf('.');
 		fileExtension = i > 0 ? filename.substring(i + 1) : "";
 		legalFile = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
-		checkForLegalContent();
 	}
 
 	private void acceptChanges() {
@@ -375,10 +360,10 @@ public class LevelOptionsControl extends OkCancelDialog {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("filePath", serverPath);
 		String url = DataRequester.buildUrl("FILEUPLOAD", parameters);
-		formPanel.setAction(url);
-		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
-		formPanel.setMethod(FormPanel.METHOD_POST);
-		formPanel.submit();
+		fileUpLoadControl.setAction(url);
+		fileUpLoadControl.setEncoding(FormPanel.ENCODING_MULTIPART);
+		fileUpLoadControl.setMethod(FormPanel.METHOD_POST);
+		fileUpLoadControl.submit();
 	}
 
 	protected void uploadComplete(SubmitCompleteEvent event) {
@@ -395,9 +380,9 @@ public class LevelOptionsControl extends OkCancelDialog {
 		if (fileNeedsToBeUploaded) {
 			if (!legalFile) {
 				isOK = false;
-				fileUpload.addStyleName("badLabel");
+				fileUpLoadControl.setBadInput(true);
 			} else {
-				fileUpload.removeStyleName("badLabel");
+				fileUpLoadControl.setBadInput(false);
 			}
 		}
 		if (!ServiceManager.getDungeonManager().isLegalDungeonName(levelName.getValue())) {

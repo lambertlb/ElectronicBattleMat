@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.controls.CharacterCreate;
 import per.lambert.ebattleMat.client.controls.LevelOptionsControl;
 import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -42,6 +43,8 @@ public class RibbonBar extends Composite {
 	private LevelOptionsControl levelOptionsControl;
 	private DungeonSelectControl manageDungeons;
 	private ListBox characterSelect;
+	private Button createCharacter;
+	private CharacterCreate characterCreate;
 
 	public RibbonBar() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -129,6 +132,16 @@ public class RibbonBar extends Composite {
 				characterWasSelected();
 			}
 		});
+		createCharacter = new Button("Create Character");
+		createCharacter.addStyleName("ribbonBarLabel");
+		createCharacter.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				characterCreate.show();
+			}
+		});
+		characterCreate = new CharacterCreate();
 	}
 
 	private void setupEventHandler() {
@@ -178,6 +191,7 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(0, 1, levelOptions);
 		ribbonGrid.setWidget(1, 1, dungeonOptions);
 		ribbonGrid.setWidget(0, 2, characterSelect);
+		ribbonGrid.setWidget(1, 2, createCharacter);
 	}
 
 	private void setupForPlayer() {

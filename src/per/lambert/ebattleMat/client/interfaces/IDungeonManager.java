@@ -125,4 +125,6 @@ public interface IDungeonManager {
 	int getNextLevelNumber();
 
 	void createNewLevel(DungeonLevel currentLevel);
+
+	boolean isValidNewCharacterName(String characterName);
 }

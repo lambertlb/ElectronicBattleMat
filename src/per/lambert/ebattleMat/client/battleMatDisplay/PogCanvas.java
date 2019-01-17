@@ -42,7 +42,7 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
-public class PogCanvas extends Composite implements HasDragStartHandlers , MouseDownHandler, TouchStartHandler, TouchMoveHandler, TouchEndHandler {
+public class PogCanvas extends Composite implements HasDragStartHandlers, MouseDownHandler, TouchStartHandler, TouchMoveHandler, TouchEndHandler {
 
 	private static ScalablePogUiBinder uiBinder = GWT.create(ScalablePogUiBinder.class);
 
@@ -103,6 +103,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		pogData.setPogSize(pogSize);
 	}
 
+	private boolean showImage = true;
 	private boolean imageLoaded = false;
 
 	@UiField
@@ -136,9 +137,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		hidePanel.add(image);
 		pogDrawPanel.add(hidePanel, -1, -1);
 		pogDrawPanel.add(canvas, 0, 0);
-//		pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
-//		backCanvas.getElement().getStyle().setBackgroundColor("transparent");
-//		canvas.getElement().getStyle().setBackgroundColor("transparent");
+		// pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
+		// backCanvas.getElement().getStyle().setBackgroundColor("transparent");
+		// canvas.getElement().getStyle().setBackgroundColor("transparent");
 		setupEventHandling();
 		getElement().setDraggable(Element.DRAGGABLE_TRUE);
 		addDragStartHandler(new DragStartHandler() {
@@ -169,7 +170,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 			}
 		});
 		pogDrawPanel.addDomHandler(new MouseUpHandler() {
-			
+
 			@Override
 			public void onMouseUp(MouseUpEvent event) {
 				if (ServiceManager.getDungeonManager().getFowToggle()) {
@@ -178,7 +179,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 			}
 		}, MouseUpEvent.getType());
 		pogDrawPanel.addDomHandler(new MouseMoveHandler() {
-			
+
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
 				if (ServiceManager.getDungeonManager().getFowToggle()) {
@@ -233,8 +234,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 	}
 
 	/**
-	 * Calculate the starting zoom factor so that one side of the image exactly
-	 * fills the parent.
+	 * Calculate the starting zoom factor so that one side of the image exactly fills the parent.
 	 */
 	private void calculateZoom() {
 		if (isScaleByWidth()) {
@@ -298,7 +298,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		adjustCanvases();
 		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth, imageHeight);
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
-		backContext.drawImage(imageElement, 0, 0);
+		if (showImage) {
+			backContext.drawImage(imageElement, 0, 0);
+		}
 		buffer(backContext, context);
 	}
 
@@ -313,6 +315,11 @@ public class PogCanvas extends Composite implements HasDragStartHandlers , Mouse
 		}
 		pogDrawPanel.getElement().getStyle().setOpacity(opacity);
 		front.drawImage(back.getCanvas(), 0, 0);
+	}
+
+	public void showImage(boolean showing) {
+		showImage = showing;
+		mainDraw();
 	}
 
 	@Override

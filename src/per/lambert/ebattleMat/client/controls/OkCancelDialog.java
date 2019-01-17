@@ -11,6 +11,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
+
 public class OkCancelDialog extends ResizableDialog {
 	private DockLayoutPanel dockLayoutPanel;
 	private Grid centerGrid;
@@ -34,6 +36,7 @@ public class OkCancelDialog extends ResizableDialog {
 	public OkCancelDialog(String caption, boolean okVisible, boolean cancelVisble, int height, int width) {
 		super();
 		setText(caption);
+		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
 		createContent();
 		ok.setVisible(okVisible);
 		cancel.setVisible(cancelVisble);

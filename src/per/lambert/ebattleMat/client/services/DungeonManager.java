@@ -665,6 +665,12 @@ public class DungeonManager implements IDungeonManager {
 		return isValidSessionName && !isInCurrentSessionNames && !isInCurrentSessionDirectories;
 	}
 
+	@Override
+	public boolean isValidNewCharacterName(String characterName) {
+		boolean isValid = !characterName.startsWith("Enter ") && characterName.length() > 4;
+		return isValid;
+	}
+
 	private boolean isInCurrentSessionNames(String newSessionName) {
 		for (String sessionName : sessionListData.getSessionNames()) {
 			if (sessionName.equals(newSessionName)) {
