@@ -10,7 +10,6 @@ public enum ReasonForAction {
 	DungeonDataCreated,
 	DungeonDataDeleted,
 	DungeonSelectedLevelChanged,
-	CharacterPogsLoaded,
 	MonsterPogsLoaded,
 	RoomObjectPogsLoaded,
 	PogWasSelected,

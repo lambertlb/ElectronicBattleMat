@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.services.ServiceManager;
+import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 public class CharacterCreate extends OkCancelDialog {
 	private Grid centerGrid;
@@ -20,6 +21,7 @@ public class CharacterCreate extends OkCancelDialog {
 	private TextBox characterPicture;
 	private FlowPanel pogPanel;
 	private PogCanvas pogCanvas;
+	private PogData pogData;
 
 	public CharacterCreate() {
 		super("Character Creation", true, true);
@@ -86,6 +88,8 @@ public class CharacterCreate extends OkCancelDialog {
 	}
 
 	private void initialize() {
+		pogData = ServiceManager.getDungeonManager().createPlayer();
+		pogCanvas.setPogData(pogData);
 		characterName.setValue("Enter Character Name");
 		characterName.removeStyleName("badLabel");
 		characterPicture.setValue("URL of character Picture");
@@ -144,6 +148,11 @@ public class CharacterCreate extends OkCancelDialog {
 	}
 
 	private void acceptChanges() {
+		pogData.setPogName(characterName.getValue());
+		pogData.setPogImageUrl(characterPicture.getValue());
+		pogData.setPogSize(1);
+		pogData.setDungeonLevel(-1);
+		ServiceManager.getDungeonManager().addPogDataToLevel(pogData);
 		close();
 	}
 

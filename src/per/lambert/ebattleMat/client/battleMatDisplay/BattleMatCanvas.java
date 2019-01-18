@@ -62,8 +62,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private static final int PLAYERS_Z = 5;
 	private static final int MONSTERS_Z = 3;
 	private static final int ROOMOBJECTS_Z = 1;
-	private static final int GREYOUT_Z = 7;
-	private static final int FOW_Z = 5;
+	private static final int GREYOUT_Z = 9;
+	private static final int FOW_Z = 8;
 	public static final int DIALOG_Z = 10;
 
 	private boolean showGrid = false;
@@ -614,7 +614,12 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	private PogCanvas addPogToCanvas(PogData pogData) {
 		getRibbonBarData();
-		PogData clonePog = ServiceManager.getDungeonManager().createPogInstance(pogData);
+		PogData clonePog;
+		if (pogData.isThisAPlayer()) {
+			clonePog = pogData;
+		} else {
+			clonePog = ServiceManager.getDungeonManager().createPogInstance(pogData);
+		}
 		clonePog.setPogColumn(dragColumn);
 		clonePog.setPogRow(dragRow);
 		ServiceManager.getDungeonManager().addPogDataToLevel(clonePog);

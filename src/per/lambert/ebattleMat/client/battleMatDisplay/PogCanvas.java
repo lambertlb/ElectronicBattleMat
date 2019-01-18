@@ -89,11 +89,17 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private double totalZoom = 1;
 	private PogData pogData;
-	private boolean isPlayer;
 
 	public PogData getPogData() {
 		return pogData;
 	}
+
+	public void setPogData(PogData pogData) {
+		this.pogData = pogData;
+		mainDraw();
+	}
+
+	private boolean isPlayer;
 
 	public int getPogSize() {
 		return pogData.getPogSize();

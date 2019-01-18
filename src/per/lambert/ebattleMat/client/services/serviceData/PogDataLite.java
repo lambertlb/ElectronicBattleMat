@@ -74,10 +74,22 @@ public class PogDataLite extends JavaScriptObject {
 		return (clone);
 	}
 
+	public final native int getDungeonLevel() /*-{
+		if (this.dungeonLevel === undefined) {
+			this.dungeonLevel = 0;
+		}
+		return (this.dungeonLevel);
+	}-*/;
+
+	public final native void setDungeonLevel(int dungeonLevel) /*-{
+		this.dungeonLevel = dungeonLevel;
+	}-*/;
+
 	public final void getRequiredData(PogDataLite clone) {
 		clone.setUUID(getUUID());
 		clone.setPogColumn(getPogColumn());
 		clone.setPogRow(getPogRow());
+		clone.setDungeonLevel(getDungeonLevel());
 		clone.setPlayerFlagsNative(getPlayerFlags());
 		clone.setDungeonMasterFlagsNative(getDungeonMasterFlags());
 	}

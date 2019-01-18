@@ -4,6 +4,7 @@ import java.util.Map;
 
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
@@ -42,8 +43,6 @@ public interface IDungeonManager {
 
 	void saveDungeonData();
 
-	PogData[] getPcTemplatePogs();
-
 	PogData[] getMonsterTemplatePogs();
 
 	PogData getSelectedPog();
@@ -77,8 +76,6 @@ public interface IDungeonManager {
 	void deleteTemplate(String dungeonUUID);
 
 	PogData fullCLoneMonster(PogDataLite pogData);
-
-	PogData findCharacterPog(String pogUUID);
 
 	PogData findMonsterPog(String pogUUID);
 
@@ -127,4 +124,10 @@ public interface IDungeonManager {
 	void createNewLevel(DungeonLevel currentLevel);
 
 	boolean isValidNewCharacterName(String characterName);
+
+	PogData createPlayer();
+
+	DungeonSessionData getSelectedSession();
+
+	PogData findCharacterPog(String uuid);
 }

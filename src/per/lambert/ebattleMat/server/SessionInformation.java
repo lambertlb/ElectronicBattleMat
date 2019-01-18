@@ -167,6 +167,7 @@ public class SessionInformation {
 			if (pog.uuid.equals(pogData.uuid)) {
 				pog.pogColumn = pogData.pogColumn;
 				pog.pogRow = pogData.pogRow;
+				pog.dungeonLevel = pogData.dungeonLevel;
 				break;
 			}
 		}

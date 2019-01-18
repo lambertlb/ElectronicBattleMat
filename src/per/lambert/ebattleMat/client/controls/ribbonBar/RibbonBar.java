@@ -23,6 +23,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 public class RibbonBar extends Composite {
@@ -160,7 +161,11 @@ public class RibbonBar extends Composite {
 					dungeonDataLoaded();
 					return;
 				}
-				if (event.getReasonForAction() == ReasonForAction.CharacterPogsLoaded) {
+				if (event.getReasonForAction() == ReasonForAction.SessionDataChanged) {
+					characterPogsLoaded();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToJoin) {
 					characterPogsLoaded();
 					return;
 				}
@@ -209,7 +214,11 @@ public class RibbonBar extends Composite {
 	private void characterPogsLoaded() {
 		characterSelect.clear();
 		characterSelect.addItem("Select Character Pog", "");
-		PogData[] pogList = ServiceManager.getDungeonManager().getPcTemplatePogs();
+		DungeonSessionData sessionData = ServiceManager.getDungeonManager().getSelectedSession();
+		if (sessionData == null) {
+			return;
+		}
+		PogData[] pogList = sessionData.getPlayers();
 		for (PogData pogData : pogList) {
 			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}
@@ -220,7 +229,9 @@ public class RibbonBar extends Composite {
 			return;
 		}
 		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(uuid);
-		ServiceManager.getDungeonManager().setSelectedPog(characterPog);
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+		if (characterPog != null) {
+			ServiceManager.getDungeonManager().setSelectedPog(characterPog);
+			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+		}
 	}
 }

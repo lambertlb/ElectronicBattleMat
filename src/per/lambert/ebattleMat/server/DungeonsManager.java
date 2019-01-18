@@ -288,7 +288,7 @@ public class DungeonsManager {
 	private static SessionInformation getSessionInformation(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
 		SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
 		if (sessionInformation != null) {
-			return (sessionInformation);
+//			return (sessionInformation);
 		}
 		lock.lock();
 		try {

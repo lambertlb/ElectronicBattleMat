@@ -30,10 +30,10 @@ public class CharacterSelect extends Composite {
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
-				if (event.getReasonForAction() == ReasonForAction.CharacterPogsLoaded) {
-					characterPogsLoaded();
-					return;
-				}
+//				if (event.getReasonForAction() == ReasonForAction.CharacterPogsLoaded) {
+//					characterPogsLoaded();
+//					return;
+//				}
 				if (event.getReasonForAction() == ReasonForAction.MonsterPogsLoaded) {
 					monsterPogsLoaded();
 					return;
@@ -91,18 +91,18 @@ public class CharacterSelect extends Composite {
 //	ListBox levelSelect;
 
 	private void characterWasSelected() {
-		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(characterSelect.getSelectedValue());
-		ServiceManager.getDungeonManager().setSelectedPog(characterPog);
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+//		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(characterSelect.getSelectedValue());
+//		ServiceManager.getDungeonManager().setSelectedPog(characterPog);
+//		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 
 	private void characterPogsLoaded() {
-		characterSelect.clear();
-		characterSelect.addItem("Select Character Pog", "");
-		PogData[] pogList = ServiceManager.getDungeonManager().getPcTemplatePogs();
-		for (PogData pogData : pogList) {
-			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
-		}
+//		characterSelect.clear();
+//		characterSelect.addItem("Select Character Pog", "");
+//		PogData[] pogList = ServiceManager.getDungeonManager().getPcTemplatePogs();
+//		for (PogData pogData : pogList) {
+//			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
+//		}
 	}
 
 	protected void monsterWasSelected() {

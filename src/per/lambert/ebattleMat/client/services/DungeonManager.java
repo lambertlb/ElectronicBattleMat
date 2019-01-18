@@ -69,6 +69,11 @@ public class DungeonManager implements IDungeonManager {
 
 	private DungeonSessionData selectedSession;
 
+	@Override
+	public DungeonSessionData getSelectedSession() {
+		return selectedSession;
+	}
+
 	private int currentLevel;
 
 	@Override
@@ -78,8 +83,9 @@ public class DungeonManager implements IDungeonManager {
 
 	@Override
 	public int getNextLevelNumber() {
-		return(selectedDungeon.getDungeonlevels().length + 1);
+		return (selectedDungeon.getDungeonlevels().length + 1);
 	}
+
 	@Override
 	public void setCurrentLevel(int currentLevel) {
 		this.currentLevel = currentLevel;
@@ -99,14 +105,6 @@ public class DungeonManager implements IDungeonManager {
 			return (selectedSession.getSessionLevels()[currentLevel]);
 		}
 		return null;
-	}
-
-	Map<String, PogData> pcTemplateMap = new HashMap<String, PogData>();
-	private PogList pcTemplatePogs;
-
-	@Override
-	public PogData[] getPcTemplatePogs() {
-		return pcTemplatePogs.getPogList();
 	}
 
 	Map<String, PogData> monsterTemplateMap = new HashMap<String, PogData>();
@@ -339,36 +337,8 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	private void loadInResourceData() {
-		loadCharacterPogs();
 		loadMonsterPogs();
 		loadRoomObjectPogs();
-	}
-
-	private void loadCharacterPogs() {
-		pcTemplatePogs = null;
-		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEON_PCPOG_LOCATION + "characterPogs.json");
-		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
-
-			@Override
-			public void onSuccess(Object sender, Object data) {
-				loadCharacterPogTemplates(data);
-			}
-
-			@Override
-			public void onError(Object sender, IErrorInformation error) {
-			}
-		});
-	}
-
-	private void loadCharacterPogTemplates(Object data) {
-		pcTemplateMap.clear();
-		pcTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
-		for (PogData pcTemplate : pcTemplatePogs.getPogList()) {
-			pcTemplateMap.put(pcTemplate.getUUID(), pcTemplate);
-		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.CharacterPogsLoaded, null));
 	}
 
 	private void loadMonsterPogs() {
@@ -614,11 +584,6 @@ public class DungeonManager implements IDungeonManager {
 		PogData clone = template.clone();
 		pogData.getRequiredData(clone);
 		return (clone);
-	}
-
-	@Override
-	public PogData findCharacterPog(String pogUUID) {
-		return (pcTemplateMap.get(pogUUID));
 	}
 
 	@Override
@@ -889,8 +854,7 @@ public class DungeonManager implements IDungeonManager {
 		DungeonSessionData sessionData = selectedSession;
 		if (sessionData != null) {
 			if (pog.isThisAPlayer()) {
-				pog.setDungeonLevel(currentLevel);
-				sessionData.addPlayer(pog);
+				addToSessionIfNotThere(pog, sessionData);
 			} else {
 				DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 				if (sessionLevel != null) {
@@ -902,8 +866,18 @@ public class DungeonManager implements IDungeonManager {
 					}
 				}
 			}
-			savePogToSessionData(pog, true);
+			savePogToSessionData(pog, !pog.isThisAPlayer());
 		}
+	}
+
+	private void addToSessionIfNotThere(PogData pog, DungeonSessionData sessionData) {
+		pog.setDungeonLevel(currentLevel);
+		for (PogData player : sessionData.getPlayers()) {
+			if (player.getTemplateUUID().equals(pog.getTemplateUUID())) {
+				return;
+			}
+		}
+		sessionData.addPlayer(pog);
 	}
 
 	@Override
@@ -1005,17 +979,45 @@ public class DungeonManager implements IDungeonManager {
 		var event = new MouseEvent('click');
 		aLink.dispatchEvent(event);
 	}-*/;
-	
+
 	@Override
 	public boolean isLegalDungeonName(String nameToCheck) {
 		if (nameToCheck == null || nameToCheck.isEmpty() || nameToCheck.length() < 4) {
-			return(false);
+			return (false);
 		}
-		return(true);
+		return (true);
 	}
 
 	@Override
 	public void createNewLevel(DungeonLevel newLevel) {
 		selectedDungeon.addDungeonlevel(newLevel);
 	}
+
+	private PogData createTemplatePog(String type) {
+		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
+		pogData.setTemplateUUID(PogDataLite.generateUUID());
+		pogData.setUUID(pogData.getTemplateUUID());
+		pogData.setPogType(type);
+		return (pogData);
+	}
+
+	@Override
+	public PogData createPlayer() {
+		PogData pogData = createTemplatePog(ElectronicBattleMat.POG_TYPE_PLAYER);
+		return (pogData);
+	}
+
+	@Override
+	public PogData findCharacterPog(String uuid) {
+		if (selectedSession == null) {
+			return null;
+		}
+		for (PogData pog : selectedSession.getPlayers()) {
+			if (pog.getUUID().equals(uuid)) {
+				return(pog);
+			}
+		}
+		return null;
+	}
+
 }
