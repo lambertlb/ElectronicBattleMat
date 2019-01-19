@@ -191,12 +191,22 @@ public class RibbonBar extends Composite {
 	}
 
 	private void setupForDungeonMaster() {
-		ribbonGrid.setWidget(0, 0, fowToggle);
-		ribbonGrid.setWidget(1, 0, levelSelect);
-		ribbonGrid.setWidget(0, 1, levelOptions);
-		ribbonGrid.setWidget(1, 1, dungeonOptions);
-		ribbonGrid.setWidget(0, 2, characterSelect);
-		ribbonGrid.setWidget(1, 2, createCharacter);
+		if (ServiceManager.getDungeonManager().isEditMode()) {
+			setupForEditDungeon();
+			return;
+		}
+		ribbonGrid.setWidget(0, 0, levelSelect);
+		ribbonGrid.setWidget(1, 0, levelOptions);
+		ribbonGrid.setWidget(0, 1, characterSelect);
+		ribbonGrid.setWidget(1, 1, createCharacter);
+		ribbonGrid.setWidget(0, 2, fowToggle);
+		ribbonGrid.setWidget(1, 2, dungeonOptions);
+	}
+
+	private void setupForEditDungeon() {
+		ribbonGrid.setWidget(0, 0, levelSelect);
+		ribbonGrid.setWidget(1, 0, levelOptions);
+		ribbonGrid.setWidget(0, 1, dungeonOptions);
 	}
 
 	private void setupForPlayer() {

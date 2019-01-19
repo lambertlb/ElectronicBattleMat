@@ -31,8 +31,11 @@ public class SelectedPog extends Composite {
 	@UiField
 	HTMLPanel hostPanel;
 
+	private PogCanvas scalablePog = new PogCanvas();
+
 	public SelectedPog() {
 		initWidget(uiBinder.createAndBindUi(this));
+		pogPanel.add(scalablePog);
 	}
 
 	@Override
@@ -49,21 +52,25 @@ public class SelectedPog extends Composite {
 			}
 		});
 	}
+
 	public void unselectedPogLook() {
-		int height = (int)BattleMatLayout.RIBBON_BAR_SIZE;
+		int height = (int) BattleMatLayout.RIBBON_BAR_SIZE;
 		pogPanel.setWidth("" + height + "px");
+		if (scalablePog != null) {
+			scalablePog.showImage(false);
+		}
 	}
 
 	private void pogSelected() {
 		PogData selectePog = ServiceManager.getDungeonManager().getSelectedPog();
-		pogPanel.clear();
 		if (selectePog == null) {
 			return;
 		}
-		PogCanvas scalablePog = new PogCanvas(selectePog);
+		
+		scalablePog.showImage(true);
+		scalablePog.setPogData(selectePog);
 		Widget parent = hostPanel.getParent().getParent();
 		int height = parent.getOffsetHeight();
 		scalablePog.setPogWidth(height);
-		pogPanel.add(scalablePog);
 	}
 }

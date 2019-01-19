@@ -95,8 +95,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	public void setPogData(PogData pogData) {
-		this.pogData = pogData;
-		mainDraw();
+		setupWithPogData(pogData);
 	}
 
 	private boolean isPlayer;
@@ -126,9 +125,13 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	public PogCanvas(PogData pogData) {
 		initWidget(uiBinder.createAndBindUi(this));
+		initialize();
+		setupWithPogData(pogData);
+	}
+
+	private void setupWithPogData(PogData pogData) {
 		this.pogData = pogData;
 		isPlayer = pogData.isThisAPlayer();
-		initialize();
 		if (pogData.getPogImageUrl() != "") {
 			setPogImageUrl(pogData.getPogImageUrl());
 		}
@@ -282,6 +285,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	private int imageCount = 1;
 
 	public void setPogImageUrl(String pogImageUrl) {
+		imageLoaded = false;
 		pogData.setPogImageUrl(pogImageUrl);
 		String imageUrl;
 		if (pogImageUrl.contains("?")) {
