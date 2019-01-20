@@ -101,6 +101,7 @@ public class CharacterCreate extends OkCancelDialog {
 	public void show() {
 		super.show();
 		initialize();
+		center();
 	}
 
 	private void validateForm() {

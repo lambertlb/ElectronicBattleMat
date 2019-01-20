@@ -852,9 +852,10 @@ public class DungeonManager implements IDungeonManager {
 
 	private void addToSession(PogData pog) {
 		DungeonSessionData sessionData = selectedSession;
+		boolean needToAdd = true;
 		if (sessionData != null) {
 			if (pog.isThisAPlayer()) {
-				addToSessionIfNotThere(pog, sessionData);
+				needToAdd = addToSessionIfNotThere(pog, sessionData);
 			} else {
 				DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 				if (sessionLevel != null) {
@@ -866,18 +867,20 @@ public class DungeonManager implements IDungeonManager {
 					}
 				}
 			}
-			savePogToSessionData(pog, !pog.isThisAPlayer());
+			savePogToSessionData(pog, needToAdd);
 		}
 	}
 
-	private void addToSessionIfNotThere(PogData pog, DungeonSessionData sessionData) {
+	private boolean addToSessionIfNotThere(PogData pog, DungeonSessionData sessionData) {
 		pog.setDungeonLevel(currentLevel);
 		for (PogData player : sessionData.getPlayers()) {
 			if (player.getTemplateUUID().equals(pog.getTemplateUUID())) {
-				return;
+				return(false);
 			}
 		}
+		pog.setDungeonLevel(-1);
 		sessionData.addPlayer(pog);
+		return(true);
 	}
 
 	@Override

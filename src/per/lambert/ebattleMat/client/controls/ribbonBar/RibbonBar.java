@@ -40,7 +40,7 @@ public class RibbonBar extends Composite {
 	private CheckBox fowToggle;
 	private ListBox levelSelect;
 	private Button levelOptions;
-	private Button dungeonOptions;
+	private Button manageDungeonsButton;
 	private LevelOptionsControl levelOptionsControl;
 	private DungeonSelectControl manageDungeons;
 	private ListBox characterSelect;
@@ -92,9 +92,9 @@ public class RibbonBar extends Composite {
 			}
 		});
 		levelOptions.addStyleName("ribbonBarLabel");
-		dungeonOptions = new Button("Manage Dungeons");
-		dungeonOptions.addStyleName("ribbonBarLabel");
-		dungeonOptions.addClickHandler(new ClickHandler() {
+		manageDungeonsButton = new Button("Manage Dungeons");
+		manageDungeonsButton.addStyleName("ribbonBarLabel");
+		manageDungeonsButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -136,7 +136,7 @@ public class RibbonBar extends Composite {
 		createCharacter = new Button("Create Character");
 		createCharacter.addStyleName("ribbonBarLabel");
 		createCharacter.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				characterCreate.show();
@@ -195,23 +195,25 @@ public class RibbonBar extends Composite {
 			setupForEditDungeon();
 			return;
 		}
-		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(1, 0, levelOptions);
-		ribbonGrid.setWidget(0, 1, characterSelect);
-		ribbonGrid.setWidget(1, 1, createCharacter);
+		setupForSession();
 		ribbonGrid.setWidget(0, 2, fowToggle);
-		ribbonGrid.setWidget(1, 2, dungeonOptions);
 	}
 
 	private void setupForEditDungeon() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(1, 0, levelOptions);
-		ribbonGrid.setWidget(0, 1, dungeonOptions);
+		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
+		ribbonGrid.setWidget(0, 1, levelOptions);
+	}
+
+	private void setupForSession() {
+		ribbonGrid.setWidget(0, 0, levelSelect);
+		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
+		ribbonGrid.setWidget(0, 1, characterSelect);
+		ribbonGrid.setWidget(1, 1, createCharacter);
 	}
 
 	private void setupForPlayer() {
-		ribbonGrid.setWidget(0, 0, characterSelect);
-		ribbonGrid.setWidget(0, 1, levelSelect);
+		setupForSession();
 	}
 
 	private void dungeonDataLoaded() {
@@ -221,6 +223,7 @@ public class RibbonBar extends Composite {
 			levelSelect.addItem(levelName);
 		}
 	}
+
 	private void characterPogsLoaded() {
 		characterSelect.clear();
 		characterSelect.addItem("Select Character Pog", "");
@@ -233,6 +236,7 @@ public class RibbonBar extends Composite {
 			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}
 	}
+
 	private void characterWasSelected() {
 		String uuid = characterSelect.getSelectedValue();
 		if (uuid == null || uuid.isEmpty()) {
