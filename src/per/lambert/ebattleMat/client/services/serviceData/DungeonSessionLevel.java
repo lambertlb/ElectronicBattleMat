@@ -33,35 +33,35 @@ public class DungeonSessionLevel extends JavaScriptObject {
 		return (fowGrid[columns][rows]);
 	}
 
-	public final native PogDataLite[] getMonsters() /*-{
+	public final native PogData[] getMonsters() /*-{
 		if (this.monsters === undefined) {
 			this.monsters = [];
 		}
 		return (this.monsters);
 	}-*/;
 
-	public final void addMonster(PogDataLite monster) {
+	public final void addMonster(PogData monster) {
 		getMonsters();
 		addMonsterNative(monster);
 	}
 
-	public final native void addMonsterNative(PogDataLite monster) /*-{
+	public final native void addMonsterNative(PogData monster) /*-{
 		this.monsters.push(monster);
 	}-*/;
 
-	public final native PogDataLite[] getRoomObjects() /*-{
+	public final native PogData[] getRoomObjects() /*-{
 		if (this.roomObjects === undefined) {
 			this.roomObjects = [];
 		}
 		return (this.roomObjects);
 	}-*/;
 
-	public final void addRoomObject(PogDataLite roomObject) {
+	public final void addRoomObject(PogData roomObject) {
 		getRoomObjects();
 		addRoomObjectsNative(roomObject);
 	}
 
-	public final native void addRoomObjectsNative(PogDataLite roomObject) /*-{
+	public final native void addRoomObjectsNative(PogData roomObject) /*-{
 		this.roomObjects.push(roomObject);
 	}-*/;
 }

@@ -8,6 +8,6 @@ public class DungeonLevel {
 	public int gridOffsetY;
 	public int columns;
 	public int rows;
-	public PogDataLite[] monsters = new PogDataLite[0];
-	public PogDataLite[] roomObjects = new PogDataLite[0];
+	public PogData[] monsters = new PogData[0];
+	public PogData[] roomObjects = new PogData[0];
 }

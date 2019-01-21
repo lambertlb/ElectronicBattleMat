@@ -5,14 +5,19 @@
 			"pogImageUrl": "https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg/revision/latest?cb=20141112221803",
 			"pogType": "MONSTER",
 			"uuid": "Male-Kobold",
-			"templateUUID": "Male-Kobold"
+			"templateUUID": "Male-Kobold",
+			"pogClass": "Fighter",
+			"race": "Kobold"
 		},
 		{
 			"pogName": "Female Kobold",
 			"pogImageUrl": "https://pre00.deviantart.net/9204/th/pre/f/2016/172/6/a/kalbold_femalekoboldfighter_color_01_by_prodigyduck-da75cmb.png",
 			"pogType": "MONSTER",
 			"uuid": "Female-Kobold",
-			"templateUUID": "Female-Kobold"
+			"templateUUID": "Female-Kobold",
+			"pogClass": "Fighter",
+			"race": "Kobold",
+			"playerFlags": 2
 		}
 	]
 }

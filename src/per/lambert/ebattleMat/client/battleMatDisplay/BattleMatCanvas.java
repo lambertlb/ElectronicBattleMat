@@ -44,7 +44,6 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
-import per.lambert.ebattleMat.client.services.serviceData.PogDataLite;
 
 /**
  * @author LLambert Class to manage a scaled image with overlays.
@@ -688,11 +687,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	private String computeDragColor() {
 		if (!ServiceManager.getDungeonManager().isDungeonMaster()) {
-			if ( ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
-				return("red");
+			if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
+				return ("red");
 			}
 		}
-		return("grey");
+		return ("grey");
 	}
 
 	@SuppressWarnings("unused")
@@ -734,28 +733,22 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	private void addMonsterPogs() {
-		PogDataLite[] monsters = ServiceManager.getDungeonManager().getMonstersForCurrentLevel();
+		PogData[] monsters = ServiceManager.getDungeonManager().getMonstersForCurrentLevel();
 		if (monsters == null) {
 			return;
 		}
-		for (PogDataLite monster : monsters) {
-			PogData clonePog = ServiceManager.getDungeonManager().fullCLoneMonster(monster);
-			if (clonePog != null) {
-				addPogToCanvas(clonePog, MONSTERS_Z);
-			}
+		for (PogData monster : monsters) {
+			addPogToCanvas(monster, MONSTERS_Z);
 		}
 	}
 
 	private void addRoomPogs() {
-		PogDataLite[] roomObjects = ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel();
+		PogData[] roomObjects = ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel();
 		if (roomObjects == null) {
 			return;
 		}
-		for (PogDataLite roomObject : roomObjects) {
-			PogData clonePog = ServiceManager.getDungeonManager().fullCLoneRoomObject(roomObject);
-			if (clonePog != null) {
-				addPogToCanvas(clonePog, ROOMOBJECTS_Z);
-			}
+		for (PogData roomObject : roomObjects) {
+			addPogToCanvas(roomObject, ROOMOBJECTS_Z);
 		}
 	}
 

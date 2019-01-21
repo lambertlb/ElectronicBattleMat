@@ -2,8 +2,8 @@ package per.lambert.ebattleMat.server.serviceData;
 
 public class DungeonSessionLevel {
 	public boolean fogOfWar[][] = new boolean[0][0];
-	public PogDataLite[] monsters = new PogDataLite[0];
-	public PogDataLite[] roomObjects = new PogDataLite[0];
+	public PogData[] monsters = new PogData[0];
+	public PogData[] roomObjects = new PogData[0];
 
 	public DungeonSessionLevel(DungeonLevel dungeonLevel) {
 		copyMonsters(dungeonLevel);
@@ -12,16 +12,16 @@ public class DungeonSessionLevel {
 	}
 
 	private void copyMonsters(DungeonLevel dungeonLevel) {
-		monsters = new PogDataLite[dungeonLevel.monsters.length];
+		monsters = new PogData[dungeonLevel.monsters.length];
 		for (int i = 0; i < dungeonLevel.monsters.length; ++i) {
-			monsters[i] = dungeonLevel.monsters[i].minimalClone();
+			monsters[i] = dungeonLevel.monsters[i].clone();
 		}
 	}
 
 	private void copyRoomObjects(DungeonLevel dungeonLevel) {
-		roomObjects = new PogDataLite[dungeonLevel.roomObjects.length];
+		roomObjects = new PogData[dungeonLevel.roomObjects.length];
 		for (int i = 0; i < dungeonLevel.roomObjects.length; ++i) {
-			roomObjects[i] = dungeonLevel.roomObjects[i].minimalClone();
+			roomObjects[i] = dungeonLevel.roomObjects[i].clone();
 		}
 	}
 

@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
-import per.lambert.ebattleMat.server.serviceData.PogDataLite;
 
 public class SessionInformation {
 	private boolean dirty;
@@ -114,7 +113,7 @@ public class SessionInformation {
 		dirty = false;
 	}
 
-	public void saveMonsterPog(PogDataLite pogData, int currentLevel, boolean needToAdd) {
+	public void saveMonsterPog(PogData pogData, int currentLevel, boolean needToAdd) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel != null) {
 			sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.monsters);
@@ -142,19 +141,19 @@ public class SessionInformation {
 		sessionData.players = newPogs;
 	}
 
-	public PogDataLite[] savePogToProperCollection(PogDataLite pogData, boolean needToAdd, PogDataLite[] pogCollection) {
+	public PogData[] savePogToProperCollection(PogData pogData, boolean needToAdd, PogData[] pogCollection) {
 		sessionData.increamentVersion();
 		dirty = true;
 		if (!needToAdd) {
 			updatePogCollection(pogCollection, pogData);
 			return (pogCollection);
 		}
-		PogDataLite[] newPogs = expandCollectionAndAddPog(pogCollection, pogData);
+		PogData[] newPogs = expandCollectionAndAddPog(pogCollection, pogData);
 		return (newPogs);
 	}
 
-	private PogDataLite[] expandCollectionAndAddPog(PogDataLite[] pogCollection, PogDataLite pogData) {
-		PogDataLite[] newPogs = new PogDataLite[pogCollection.length + 1];
+	private PogData[] expandCollectionAndAddPog(PogData[] pogCollection, PogData pogData) {
+		PogData[] newPogs = new PogData[pogCollection.length + 1];
 		for (int i = 0; i < pogCollection.length; ++i) {
 			newPogs[i] = pogCollection[i];
 		}
@@ -162,8 +161,8 @@ public class SessionInformation {
 		return newPogs;
 	}
 
-	private void updatePogCollection(PogDataLite[] pogCollection, PogDataLite pogData) {
-		for (PogDataLite pog : pogCollection) {
+	private void updatePogCollection(PogData[] pogCollection, PogData pogData) {
+		for (PogData pog : pogCollection) {
 			if (pog.uuid.equals(pogData.uuid)) {
 				pog.pogColumn = pogData.pogColumn;
 				pog.pogRow = pogData.pogRow;
