@@ -15,8 +15,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.controls.CharacterCreate;
+import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
 import per.lambert.ebattleMat.client.controls.LevelOptionsControl;
+import per.lambert.ebattleMat.client.controls.MonsterManageDialog;
 import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
@@ -45,7 +46,9 @@ public class RibbonBar extends Composite {
 	private DungeonSelectControl manageDungeons;
 	private ListBox characterSelect;
 	private Button createCharacter;
-	private CharacterCreate characterCreate;
+	private CharacterCreateDialog characterCreate;
+	private Button monsterManageButton;
+	private MonsterManageDialog monsterManage;
 
 	public RibbonBar() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -142,7 +145,17 @@ public class RibbonBar extends Composite {
 				characterCreate.show();
 			}
 		});
-		characterCreate = new CharacterCreate();
+		characterCreate = new CharacterCreateDialog();
+		monsterManageButton = new Button("Manage Monster");
+		monsterManageButton.addStyleName("ribbonBarLabel");
+		monsterManageButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				monsterManage.show();
+			}
+		});
+		monsterManage = new MonsterManageDialog();
 	}
 
 	private void setupEventHandler() {
@@ -201,8 +214,9 @@ public class RibbonBar extends Composite {
 
 	private void setupForEditDungeon() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
 		ribbonGrid.setWidget(0, 1, levelOptions);
+		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
+		ribbonGrid.setWidget(1, 1, monsterManageButton);
 	}
 
 	private void setupForSession() {

@@ -13,7 +13,7 @@ import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
-public class CharacterCreate extends OkCancelDialog {
+public class CharacterCreateDialog extends OkCancelDialog {
 	private Grid centerGrid;
 	private Label characterNameLabel;
 	private TextBox characterName;
@@ -23,7 +23,7 @@ public class CharacterCreate extends OkCancelDialog {
 	private PogCanvas pogCanvas;
 	private PogData pogData;
 
-	public CharacterCreate() {
+	public CharacterCreateDialog() {
 		super("Character Creation", true, true);
 		load();
 	}

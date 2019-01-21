@@ -125,4 +125,13 @@ public interface IDungeonManager {
 	DungeonSessionData getSelectedSession();
 
 	PogData findCharacterPog(String uuid);
+
+	PogData createMonster();
+
+	String[] getMonsterRaces();
+
+	String[] getMonsterClasses();
+
+	String[] getMonsterGenders();
+
 }

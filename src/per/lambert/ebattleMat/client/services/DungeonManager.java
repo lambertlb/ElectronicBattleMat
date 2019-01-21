@@ -980,6 +980,12 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
+	public PogData createMonster() {
+		PogData pogData = createTemplatePog(ElectronicBattleMat.POG_TYPE_MONSTER);
+		return (pogData);
+	}
+
+	@Override
 	public PogData findCharacterPog(String uuid) {
 		if (selectedSession == null) {
 			return null;
@@ -990,5 +996,20 @@ public class DungeonManager implements IDungeonManager {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public String[] getMonsterRaces() {
+		return (new String[] { "Kobold" });
+	}
+
+	@Override
+	public String[] getMonsterClasses() {
+		return (new String[] { "Fighter" });
+	}
+
+	@Override
+	public String[] getMonsterGenders() {
+		return (new String[] { "Male", "Female", "Neutral" });
 	}
 }
