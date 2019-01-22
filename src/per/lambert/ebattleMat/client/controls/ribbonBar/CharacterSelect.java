@@ -106,8 +106,7 @@ public class CharacterSelect extends Composite {
 	}
 
 	protected void monsterWasSelected() {
-		PogData monsterPog = ServiceManager.getDungeonManager().findMonsterPog(monsterSelect.getSelectedValue());
-		ServiceManager.getDungeonManager().setSelectedPog(monsterPog);
+		ServiceManager.getDungeonManager().setSelectedMonster(monsterSelect.getSelectedValue());
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 

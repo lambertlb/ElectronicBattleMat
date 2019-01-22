@@ -2,7 +2,7 @@
 	"pogList": [
 		{
 			"pogName": "Male Kobold",
-			"pogImageUrl": "https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg/revision/latest?cb=20141112221803",
+			"pogImageUrl": "https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg",
 			"pogType": "MONSTER",
 			"uuid": "Male-Kobold",
 			"templateUUID": "Male-Kobold",

@@ -14,6 +14,7 @@ import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
@@ -132,6 +133,12 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public void setSelectedPog(PogData selectedPog) {
 		this.selectedPog = selectedPog;
+	}
+
+	@Override
+	public void setSelectedMonster(String monsterUUID) {
+		this.selectedPog = findMonsterPog(monsterUUID);
+		;
 	}
 
 	private PogData pogBeingDragged;
@@ -605,6 +612,12 @@ public class DungeonManager implements IDungeonManager {
 		return isValid;
 	}
 
+	@Override
+	public boolean isValidNewMonsterName(String monsterName) {
+		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 4;
+		return isValid;
+	}
+
 	private boolean isInCurrentSessionNames(String newSessionName) {
 		for (String sessionName : sessionListData.getSessionNames()) {
 			if (sessionName.equals(newSessionName)) {
@@ -1011,5 +1024,45 @@ public class DungeonManager implements IDungeonManager {
 	@Override
 	public String[] getMonsterGenders() {
 		return (new String[] { "Male", "Female", "Neutral" });
+	}
+
+	@Override
+	public ArrayList<PogData> getFilteredMonsters(String raceFilter, String classFilter, String genderFilter) {
+		boolean needGenderFilter = false;
+		PlayerFlag genderFlag = PlayerFlag.NONE;
+		if (genderFilter != null && !genderFilter.isEmpty()) {
+			needGenderFilter = true;
+			if (genderFilter.equalsIgnoreCase("Neutral")) {
+				genderFlag = PlayerFlag.HAS_NO_SEX;
+			} else if (genderFilter.equalsIgnoreCase("Female")) {
+				genderFlag = PlayerFlag.IS_FEMALE;
+			}
+		}
+		ArrayList<PogData> filteredMonsters = new ArrayList<PogData>();
+		for (PogData monster : getMonsterTemplatePogs()) {
+			if (raceFilter != null && !raceFilter.isEmpty()) {
+				if (!monster.getRace().equalsIgnoreCase(raceFilter)) {
+					continue;
+				}
+			}
+			if (classFilter != null && !classFilter.isEmpty()) {
+				if (!monster.getPogClass().equalsIgnoreCase(classFilter)) {
+					continue;
+				}
+			}
+			if (needGenderFilter) {
+				if (genderFlag == PlayerFlag.NONE) {
+					boolean isFemale = monster.isFlagSet(PlayerFlag.IS_FEMALE);
+					boolean neutral = monster.isFlagSet(PlayerFlag.HAS_NO_SEX);
+					if (isFemale || neutral) {
+						continue;
+					}
+				} else if (!monster.isFlagSet(genderFlag)) {
+					continue;
+				}
+			}
+			filteredMonsters.add(monster);
+		}
+		return (filteredMonsters);
 	}
 }

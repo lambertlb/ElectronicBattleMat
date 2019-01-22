@@ -135,7 +135,6 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	}
 
 	private void showPog(boolean isValid) {
-
 		pogCanvas.setPogWidth(200);
 		pogCanvas.showImage(isValid);
 		if (isValid) {

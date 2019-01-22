@@ -37,6 +37,7 @@ public class OkCancelDialog extends ResizableDialog {
 		super();
 		setText(caption);
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
+		setSize("" + width + "px", "" + height + "px");
 		createContent();
 		ok.setVisible(okVisible);
 		cancel.setVisible(cancelVisble);
@@ -69,13 +70,24 @@ public class OkCancelDialog extends ResizableDialog {
 		southContent.add(cancel);
 		centerContent = new FlowPanel();
 		centerContent.setHeight("100%");
+		centerContent.setWidth("100%");
 		centerGrid = new Grid();
+		centerGrid.setWidth("100%");
 		centerContent.add(centerGrid);
 		dockLayoutPanel.add(centerContent);
 		setWidget(dockLayoutPanel);
 	}
 
 	private void initialize() {
+	}
+
+	@Override
+	protected void OnWindowResized() {
+		super.OnWindowResized();
+		int width = getDialogWidth();
+		int height = getDialogHeight();
+		dockLayoutPanel.setWidth("" + width + "px");
+		dockLayoutPanel.setHeight("" + height + "px");
 	}
 
 	@Override

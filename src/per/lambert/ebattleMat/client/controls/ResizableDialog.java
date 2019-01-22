@@ -76,6 +76,13 @@ public class ResizableDialog extends DialogBox {
 		}
 		DOM.releaseCapture(getElement());
 		resizeHandle = ResizeHandle.UNDEFINED;
+		OnWindowResized();
+	}
+
+	protected void OnWindowResized() {
+		Widget widget = getWidget();
+		int width = widget.getOffsetWidth();
+		int height = widget.getOffsetHeight();
 	}
 
 	private void resizeWindow(int deltaX, int deltaY) {
@@ -188,5 +195,11 @@ public class ResizableDialog extends DialogBox {
 			nativeEvent.preventDefault();
 		}
 		super.onPreviewNativeEvent(event);
+	}
+	protected int getDialogWidth() {
+		return(getWidget().getOffsetWidth());
+	}
+	protected int getDialogHeight() {
+		return(getWidget().getOffsetHeight());
 	}
 }

@@ -5,16 +5,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public enum PlayerFlag {
-	DEAD("Dead"),				// 1
-	IS_FEMALE("Is Female"),		// 2
-	HAS_NO_SEX("Has no sex"),	// 4
-	INVISIBLE("Invisible");		// 8
+	NONE("None"), // 0
+	DEAD("Dead"), // 1
+	IS_FEMALE("Is Female"), // 2
+	HAS_NO_SEX("Has no sex"), // 4
+	INVISIBLE("Invisible"); // 8
 
 	private int value;
 	private String name;
 
 	private static Map<String, PlayerFlag> flagMap;
-	private static int nextValue = 1;
+	private static int nextValue = 0;
 
 	PlayerFlag(String flagName) {
 		setPogFlag(flagName);
@@ -22,9 +23,13 @@ public enum PlayerFlag {
 
 	private void setPogFlag(String flagName) {
 		value = PlayerFlag.nextValue;
-		PlayerFlag.nextValue <<= 1;
+		if (PlayerFlag.nextValue == 0) {
+			PlayerFlag.nextValue = 1;
+		} else {
+			PlayerFlag.nextValue <<= 1;
+		}
 		name = flagName;
-		if (flagMap == null ) {
+		if (flagMap == null) {
 			flagMap = new LinkedHashMap<String, PlayerFlag>();
 		}
 		PlayerFlag.flagMap.put(flagName, this);

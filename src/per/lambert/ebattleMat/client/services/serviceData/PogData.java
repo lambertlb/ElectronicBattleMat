@@ -216,7 +216,7 @@ public class PogData extends JavaScriptObject {
 		if (this.race === undefined) {
 			this.race = "";
 		}
-		return (this.pogClass);
+		return (this.race);
 	}-*/;
 
 	public final native void setRace(String race) /*-{

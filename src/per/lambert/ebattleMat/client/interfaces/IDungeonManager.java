@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.interfaces;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
@@ -133,5 +134,11 @@ public interface IDungeonManager {
 	String[] getMonsterClasses();
 
 	String[] getMonsterGenders();
+
+	boolean isValidNewMonsterName(String monsterName);
+
+	void setSelectedMonster(String monsterUUID);
+
+	ArrayList<PogData> getFilteredMonsters(String raceFilter, String classFilter, String genderFilter);
 
 }
