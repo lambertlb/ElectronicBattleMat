@@ -152,7 +152,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		pogData.setPogImageUrl(characterPicture.getValue());
 		pogData.setPogSize(1);
 		pogData.setDungeonLevel(-1);
-		ServiceManager.getDungeonManager().addPogDataToLevel(pogData);
+		ServiceManager.getDungeonManager().addOrUpdatePogData(pogData);
 		close();
 	}
 

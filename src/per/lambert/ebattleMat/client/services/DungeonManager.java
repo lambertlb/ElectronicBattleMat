@@ -7,7 +7,6 @@ import java.util.Map;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
@@ -24,10 +23,9 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
-import per.lambert.ebattleMat.client.services.serviceData.PogList;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
-public class DungeonManager implements IDungeonManager {
+public class DungeonManager extends PogManager implements IDungeonManager {
 	private DungeonServerError lastError;
 
 	@Override
@@ -105,50 +103,6 @@ public class DungeonManager implements IDungeonManager {
 			return (selectedSession.getSessionLevels()[currentLevel]);
 		}
 		return null;
-	}
-
-	Map<String, PogData> monsterTemplateMap = new HashMap<String, PogData>();
-	private PogList monsterTemplatePogs;
-
-	@Override
-	public PogData[] getMonsterTemplatePogs() {
-		return monsterTemplatePogs.getPogList();
-	}
-
-	Map<String, PogData> roomObjectTemplateMap = new HashMap<String, PogData>();
-	private PogList roomObjectTemplatePogs;
-
-	@Override
-	public PogData[] getRoomObjectTemplatePogs() {
-		return roomObjectTemplatePogs.getPogList();
-	}
-
-	private PogData selectedPog;
-
-	@Override
-	public PogData getSelectedPog() {
-		return selectedPog;
-	}
-
-	@Override
-	public void setSelectedPog(PogData selectedPog) {
-		this.selectedPog = selectedPog;
-	}
-
-	@Override
-	public void setSelectedMonster(String monsterUUID) {
-		this.selectedPog = findMonsterPog(monsterUUID);
-		;
-	}
-
-	private PogData pogBeingDragged;
-
-	public void setPogBeingDragged(PogData pogBeingDragged) {
-		this.pogBeingDragged = pogBeingDragged;
-	}
-
-	public PogData getPogBeingDragged() {
-		return (pogBeingDragged);
 	}
 
 	private boolean isDungeonMaster;
@@ -316,8 +270,8 @@ public class DungeonManager implements IDungeonManager {
 		currentLevel = 0;
 		selectedDungeon = null;
 		selectedSession = null;
-		selectedPog = null;
-		pogBeingDragged = null;
+		setSelectedPog(null);
+		setPogBeingDragged(null);
 	}
 
 	@Override
@@ -345,66 +299,6 @@ public class DungeonManager implements IDungeonManager {
 	private void loadInResourceData() {
 		loadMonsterPogs();
 		loadRoomObjectPogs();
-	}
-
-	private void loadMonsterPogs() {
-		monsterTemplatePogs = null;
-		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEON_MONSTER_LOCATION + "monsterPogs.json");
-		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
-
-			@Override
-			public void onSuccess(Object sender, Object data) {
-				loadMonsterPogTemplates(data);
-			}
-
-			@Override
-			public void onError(Object sender, IErrorInformation error) {
-			}
-		});
-	}
-
-	private void loadMonsterPogTemplates(Object data) {
-		monsterTemplateMap.clear();
-		monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
-		for (PogData monsterTemplate : monsterTemplatePogs.getPogList()) {
-			monsterTemplateMap.put(monsterTemplate.getUUID(), monsterTemplate);
-		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
-	}
-
-	private void loadRoomObjectPogs() {
-		roomObjectTemplatePogs = null;
-		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEON_ROOMOBJECT_LOCATION + "roomPogs.json");
-		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
-
-			@Override
-			public void onSuccess(Object sender, Object data) {
-				loadRoomPogTemplates(data);
-			}
-
-			@Override
-			public void onError(Object sender, IErrorInformation error) {
-			}
-		});
-	}
-
-	private void loadRoomPogTemplates(Object data) {
-		roomObjectTemplateMap.clear();
-		roomObjectTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
-		for (PogData roomObjectTemplate : roomObjectTemplatePogs.getPogList()) {
-			roomObjectTemplateMap.put(roomObjectTemplate.getUUID(), roomObjectTemplate);
-		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.RoomObjectPogsLoaded, null));
-	}
-
-	@Override
-	public PogData createPogInstance(PogData template) {
-		PogData pog = template.clone();
-		return (pog);
 	}
 
 	@Override
@@ -560,16 +454,6 @@ public class DungeonManager implements IDungeonManager {
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataDeleted, null));
 			}
 		});
-	}
-
-	@Override
-	public PogData findMonsterPog(String pogUUID) {
-		return (monsterTemplateMap.get(pogUUID));
-	}
-
-	@Override
-	public PogData findRoomObjectPog(String pogUUID) {
-		return (roomObjectTemplateMap.get(pogUUID));
 	}
 
 	public void getSessionList(String dungeonUUID) {
@@ -809,43 +693,49 @@ public class DungeonManager implements IDungeonManager {
 	}
 
 	@Override
-	public void addPogDataToLevel(PogData pog) {
+	public void addOrUpdatePogData(PogData pog) {
 		if (editMode) {
-			addTemplateLevel(pog);
+			addPogToTemplate(pog);
 		}
 		if (isDungeonMaster || pog.isThisAPlayer()) {
-			addToSession(pog);
+			addPogToSession(pog);
 		}
 	}
 
-	private void addTemplateLevel(PogData pog) {
+	private void addPogToTemplate(PogData pog) {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (dungeonLevel == null) {
 			return;
 		}
-		PogData clone = pog.clone();
 		if (pog.isThisAMonster()) {
-			dungeonLevel.addMonster(clone);
+			if (findMonsterPog(pog.getUUID()) == null) {
+				dungeonLevel.addMonster(pog);
+			}
 		} else {
-			dungeonLevel.addRoomObject(clone);
+			if (findRoomObjectPog(pog.getUUID()) == null) {
+				dungeonLevel.addRoomObject(pog);
+			}
 		}
 		saveDungeonData();
 	}
 
-	private void addToSession(PogData pog) {
+	private void addPogToSession(PogData pog) {
 		DungeonSessionData sessionData = selectedSession;
 		boolean needToAdd = true;
 		if (sessionData != null) {
 			if (pog.isThisAPlayer()) {
-				needToAdd = addToSessionIfNotThere(pog, sessionData);
+				needToAdd = addPogToSessionIfNotThere(pog, sessionData);
 			} else {
 				DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 				if (sessionLevel != null) {
-					PogData clone = pog.clone();
 					if (pog.isThisAMonster()) {
-						sessionLevel.addMonster(clone);
+						if (findMonsterPog(pog.getUUID()) == null) {
+							sessionLevel.addMonster(pog);
+						}
 					} else {
-						sessionLevel.addRoomObject(clone);
+						if (findRoomObjectPog(pog.getUUID()) == null) {
+							sessionLevel.addRoomObject(pog);
+						}
 					}
 				}
 			}
@@ -853,7 +743,7 @@ public class DungeonManager implements IDungeonManager {
 		}
 	}
 
-	private boolean addToSessionIfNotThere(PogData pog, DungeonSessionData sessionData) {
+	private boolean addPogToSessionIfNotThere(PogData pog, DungeonSessionData sessionData) {
 		pog.setDungeonLevel(currentLevel);
 		for (PogData player : sessionData.getPlayers()) {
 			if (player.getTemplateUUID().equals(pog.getTemplateUUID())) {
@@ -881,8 +771,7 @@ public class DungeonManager implements IDungeonManager {
 		if (sessionLevel == null) {
 			return null;
 		}
-		PogData[] mobs = sessionLevel.getMonsters();
-		return mobs;
+		return sessionLevel.getMonsters();
 	}
 
 	@Override
@@ -901,8 +790,7 @@ public class DungeonManager implements IDungeonManager {
 		if (sessionLevel == null) {
 			return null;
 		}
-		PogData[] mobs = sessionLevel.getRoomObjects();
-		return mobs;
+		return sessionLevel.getRoomObjects();
 	}
 
 	@Override
@@ -910,7 +798,7 @@ public class DungeonManager implements IDungeonManager {
 		if (editMode || selectedDungeon == null || selectedSession == null) {
 			return null;
 		}
-		int currentLevel = ServiceManager.getDungeonManager().getCurrentLevel();
+		int currentLevel = getCurrentLevel();
 		ArrayList<PogData> playersOnLevel = new ArrayList<PogData>();
 		for (PogData player : selectedSession.getPlayers()) {
 			if (player.getDungeonLevel() == currentLevel) {
@@ -978,26 +866,6 @@ public class DungeonManager implements IDungeonManager {
 		selectedDungeon.addDungeonlevel(newLevel);
 	}
 
-	private PogData createTemplatePog(String type) {
-		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
-		pogData.setTemplateUUID(PogData.generateUUID());
-		pogData.setUUID(pogData.getTemplateUUID());
-		pogData.setPogType(type);
-		return (pogData);
-	}
-
-	@Override
-	public PogData createPlayer() {
-		PogData pogData = createTemplatePog(ElectronicBattleMat.POG_TYPE_PLAYER);
-		return (pogData);
-	}
-
-	@Override
-	public PogData createMonster() {
-		PogData pogData = createTemplatePog(ElectronicBattleMat.POG_TYPE_MONSTER);
-		return (pogData);
-	}
-
 	@Override
 	public PogData findCharacterPog(String uuid) {
 		if (selectedSession == null) {
@@ -1026,43 +894,4 @@ public class DungeonManager implements IDungeonManager {
 		return (new String[] { "Male", "Female", "Neutral" });
 	}
 
-	@Override
-	public ArrayList<PogData> getFilteredMonsters(String raceFilter, String classFilter, String genderFilter) {
-		boolean needGenderFilter = false;
-		PlayerFlag genderFlag = PlayerFlag.NONE;
-		if (genderFilter != null && !genderFilter.isEmpty()) {
-			needGenderFilter = true;
-			if (genderFilter.equalsIgnoreCase("Neutral")) {
-				genderFlag = PlayerFlag.HAS_NO_SEX;
-			} else if (genderFilter.equalsIgnoreCase("Female")) {
-				genderFlag = PlayerFlag.IS_FEMALE;
-			}
-		}
-		ArrayList<PogData> filteredMonsters = new ArrayList<PogData>();
-		for (PogData monster : getMonsterTemplatePogs()) {
-			if (raceFilter != null && !raceFilter.isEmpty()) {
-				if (!monster.getRace().equalsIgnoreCase(raceFilter)) {
-					continue;
-				}
-			}
-			if (classFilter != null && !classFilter.isEmpty()) {
-				if (!monster.getPogClass().equalsIgnoreCase(classFilter)) {
-					continue;
-				}
-			}
-			if (needGenderFilter) {
-				if (genderFlag == PlayerFlag.NONE) {
-					boolean isFemale = monster.isFlagSet(PlayerFlag.IS_FEMALE);
-					boolean neutral = monster.isFlagSet(PlayerFlag.HAS_NO_SEX);
-					if (isFemale || neutral) {
-						continue;
-					}
-				} else if (!monster.isFlagSet(genderFlag)) {
-					continue;
-				}
-			}
-			filteredMonsters.add(monster);
-		}
-		return (filteredMonsters);
-	}
 }

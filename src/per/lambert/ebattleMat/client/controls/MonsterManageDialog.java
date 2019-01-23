@@ -17,10 +17,12 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 public class MonsterManageDialog extends OkCancelDialog {
+
 	private Grid centerGrid;
 	private Label monsterNameLabel;
 	private TextBox monsterName;
@@ -36,6 +38,9 @@ public class MonsterManageDialog extends OkCancelDialog {
 	private Button applyFilters;
 	private ListBox filteredMonsterList;
 	private Label editSectionLabel;
+	private TextBox race;
+	private TextBox monsterClass;
+	private ListBox gender;
 
 	public MonsterManageDialog() {
 		super("Manage Monsters", true, true, 400, 400);
@@ -108,8 +113,20 @@ public class MonsterManageDialog extends OkCancelDialog {
 		element = centerGrid.getCellFormatter().getElement(6, 1);
 		element.setAttribute("colspan", "2");
 
+		race = new TextBox() ;
+		race.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(7, 0, race);
+
+		monsterClass = new TextBox() ;
+		monsterClass.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(7, 1, monsterClass);
+		
+		gender = new ListBox();
+		gender.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(7, 2, gender);
+
 		pogPanel = new FlowPanel();
-		centerGrid.setWidget(7, 0, pogPanel);
+		centerGrid.setWidget(8, 0, pogPanel);
 		pogCanvas = new PogCanvas();
 		pogPanel.add(pogCanvas);
 	}
@@ -165,8 +182,19 @@ public class MonsterManageDialog extends OkCancelDialog {
 		monsterPicture.removeStyleName("badLabel");
 		filteredMonsterList.clear();
 		filteredMonsterList.addItem("Filter Monsters", "");
+		race.setValue("Enter Race");
+		monsterClass.setValue("Enter Class");
+		setupGender();
 		filInFilters();
 		validateForm();
+	}
+
+	private void setupGender() {
+		gender.clear();
+		gender.addItem("Select Gender", "");
+		gender.addItem("Male");
+		gender.addItem("Female");
+		gender.addItem("Neutral");
 	}
 
 	private void filInFilters() {
@@ -272,6 +300,26 @@ public class MonsterManageDialog extends OkCancelDialog {
 		pogCanvas.setPogData(data);
 		monsterName.setValue(pogData.getPogName());
 		monsterPicture.setValue(pogData.getPogImageUrl());
+		race.setValue(pogData.getRace());
+		monsterClass.setValue(pogData.getPogClass());
+		getGender();
 		validateForm();
+	}
+
+	private void getGender() {
+		if (pogData.isFlagSet(PlayerFlag.HAS_NO_SEX)) {
+			gender.setSelectedIndex(3);
+		} else if (pogData.isFlagSet(PlayerFlag.IS_FEMALE)) {
+			gender.setSelectedIndex(2);
+		} else {
+			gender.setSelectedIndex(1);
+		}
+	}
+	@Override
+	protected void onOkClick(ClickEvent event) {
+		super.onOkClick(event);
+		ServiceManager.getDungeonManager().addOrUpdatePogResource(pogData);
+		ServiceManager.getDungeonManager().setSelectedPog(pogData);
+		close();
 	}
 }

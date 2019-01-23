@@ -259,7 +259,6 @@ public class RibbonBar extends Composite {
 		PogData characterPog = ServiceManager.getDungeonManager().findCharacterPog(uuid);
 		if (characterPog != null) {
 			ServiceManager.getDungeonManager().setSelectedPog(characterPog);
-			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 		}
 	}
 }

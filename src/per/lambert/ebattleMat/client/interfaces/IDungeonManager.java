@@ -12,7 +12,7 @@ import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 /**
  * @author LLambert Interface to user management services
  */
-public interface IDungeonManager {
+public interface IDungeonManager extends IPogManager {
 	void login(final String username, final String password, IUserCallback callback);
 
 	boolean isDungeonMaster();
@@ -43,18 +43,6 @@ public interface IDungeonManager {
 
 	void saveDungeonData();
 
-	PogData[] getMonsterTemplatePogs();
-
-	PogData getSelectedPog();
-
-	void setSelectedPog(PogData selectedPog);
-
-	void setPogBeingDragged(PogData pogBeingDragged);
-
-	PogData getPogBeingDragged();
-
-	PogData createPogInstance(PogData template);
-
 	void setSessionLevelSize(int columns, int rows);
 
 	void saveFow();
@@ -75,8 +63,6 @@ public interface IDungeonManager {
 
 	void deleteTemplate(String dungeonUUID);
 
-	PogData findMonsterPog(String pogUUID);
-
 	SessionListData getSessionListData();
 
 	void getSessionList(String dungeonName);
@@ -91,7 +77,7 @@ public interface IDungeonManager {
 
 	void updatePogDataOnLevel(PogData pog);
 
-	void addPogDataToLevel(PogData clonePog);
+	void addOrUpdatePogData(PogData clonePog);
 
 	PogData[] getMonstersForCurrentLevel();
 
@@ -100,10 +86,6 @@ public interface IDungeonManager {
 	String[] getDungeonLevelNames();
 
 	void doTimedTasks();
-
-	PogData findRoomObjectPog(String selectedValue);
-
-	PogData[] getRoomObjectTemplatePogs();
 
 	PogData[] getRoomObjectsForCurrentLevel();
 
@@ -121,13 +103,9 @@ public interface IDungeonManager {
 
 	boolean isValidNewCharacterName(String characterName);
 
-	PogData createPlayer();
-
 	DungeonSessionData getSelectedSession();
 
 	PogData findCharacterPog(String uuid);
-
-	PogData createMonster();
 
 	String[] getMonsterRaces();
 
@@ -136,9 +114,5 @@ public interface IDungeonManager {
 	String[] getMonsterGenders();
 
 	boolean isValidNewMonsterName(String monsterName);
-
-	void setSelectedMonster(String monsterUUID);
-
-	ArrayList<PogData> getFilteredMonsters(String raceFilter, String classFilter, String genderFilter);
 
 }
