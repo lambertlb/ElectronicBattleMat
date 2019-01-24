@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
@@ -20,6 +21,8 @@ import per.lambert.ebattleMat.client.services.serviceData.PogList;
 
 public class PogManager implements IPogManager {
 	Map<String, PogData> monsterTemplateMap = new HashMap<String, PogData>();
+	Map<String, String> monsterRaces = new HashMap<String, String>();
+	Map<String, String> monsterClasses = new HashMap<String, String>();
 	private PogList monsterTemplatePogs;
 
 	@Override
@@ -28,6 +31,8 @@ public class PogManager implements IPogManager {
 	}
 
 	Map<String, PogData> roomObjectTemplateMap = new HashMap<String, PogData>();
+	Map<String, String> roomObjectRaces = new HashMap<String, String>();
+	Map<String, String> roomObjectClasses = new HashMap<String, String>();
 	private PogList roomObjectTemplatePogs;
 
 	@Override
@@ -122,11 +127,27 @@ public class PogManager implements IPogManager {
 
 	protected void loadMonsterPogTemplates(Object data) {
 		monsterTemplateMap.clear();
+		monsterClasses.clear();
+		monsterRaces.clear();
 		monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
 		for (PogData monsterTemplate : monsterTemplatePogs.getPogList()) {
-			monsterTemplateMap.put(monsterTemplate.getUUID(), monsterTemplate);
+			addMonsterToCollections(monsterTemplate);
 		}
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
+	}
+
+	private void addMonsterToCollections(PogData monsterTemplate) {
+		if (!monsterTemplate.getPogClass().isEmpty()) {
+			if (!monsterClasses.containsKey(monsterTemplate.getPogClass())) {
+				monsterClasses.put(monsterTemplate.getPogClass(), monsterTemplate.getPogClass());
+			}
+		}
+		if (!monsterTemplate.getRace().isEmpty()) {
+			if (!monsterRaces.containsKey(monsterTemplate.getRace())) {
+				monsterRaces.put(monsterTemplate.getRace(), monsterTemplate.getRace());
+			}
+		}
+		monsterTemplateMap.put(monsterTemplate.getUUID(), monsterTemplate);
 	}
 
 	protected void loadRoomObjectPogs() {
@@ -149,11 +170,27 @@ public class PogManager implements IPogManager {
 
 	protected void loadRoomPogTemplates(Object data) {
 		roomObjectTemplateMap.clear();
+		roomObjectClasses.clear();
+		roomObjectRaces.clear();
 		roomObjectTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
 		for (PogData roomObjectTemplate : roomObjectTemplatePogs.getPogList()) {
-			roomObjectTemplateMap.put(roomObjectTemplate.getUUID(), roomObjectTemplate);
+			addRoomObjectToCollections(roomObjectTemplate);
 		}
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.RoomObjectPogsLoaded, null));
+	}
+
+	private void addRoomObjectToCollections(PogData roomObjectTemplate) {
+		if (!roomObjectTemplate.getPogClass().isEmpty()) {
+			if (!roomObjectClasses.containsKey(roomObjectTemplate.getPogClass())) {
+				roomObjectClasses.put(roomObjectTemplate.getPogClass(), roomObjectTemplate.getPogClass());
+			}
+		}
+		if (!roomObjectTemplate.getRace().isEmpty()) {
+			if (!roomObjectRaces.containsKey(roomObjectTemplate.getRace())) {
+				roomObjectRaces.put(roomObjectTemplate.getRace(), roomObjectTemplate.getRace());
+			}
+		}
+		roomObjectTemplateMap.put(roomObjectTemplate.getUUID(), roomObjectTemplate);
 	}
 	@Override
 	public ArrayList<PogData> getFilteredMonsters(String raceFilter, String classFilter, String genderFilter) {
@@ -194,6 +231,7 @@ public class PogManager implements IPogManager {
 		}
 		return (filteredMonsters);
 	}
+
 	@Override
 	public void addOrUpdatePogResource(PogData pog) {
 		if (pog.isThisAMonster()) {
@@ -206,22 +244,61 @@ public class PogManager implements IPogManager {
 	private void addOrUpdateMonster(PogData pog) {
 		if (findMonsterPog(pog.getUUID()) == null) {
 			monsterTemplatePogs.addPog(pog);
+			addMonsterToCollections(pog);
 		}
 		saveMonsterResources();
 	}
 
 	private void saveMonsterResources() {
+		String jsonData = JsonUtils.stringify(monsterTemplatePogs);
+		saveResources("monsters", jsonData);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
 	}
 
 	private void addOrUpdateRoomObject(PogData pog) {
 		if (findRoomObjectPog(pog.getUUID()) == null) {
 			roomObjectTemplatePogs.addPog(pog);
+			addRoomObjectToCollections(pog);
 		}
 		saveRoomObjectResources();
 	}
 
 	private void saveRoomObjectResources() {
+		String jsonData = JsonUtils.stringify(roomObjectTemplatePogs);
+		saveResources("roomObjects", jsonData);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.RoomObjectPogsLoaded, null));
+	}
+
+	private void saveResources(String resourceName, String jsonData) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("resourceName", resourceName);
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		dataRequester.requestData(jsonData, "SAVEJSONRESOURCE", parameters, new IUserCallback() {
+
+			@Override
+			public void onSuccess(Object sender, Object data) {
+			}
+
+			@Override
+			public void onError(Object sender, IErrorInformation error) {
+			}
+		});
+	}
+
+	@Override
+	public String[] getMonsterRaces() {
+		String[] rtn = new String[0];
+		return (monsterRaces.values().toArray(rtn));
+	}
+
+	@Override
+	public String[] getMonsterClasses() {
+		String[] rtn = new String[0];
+		return (monsterClasses.values().toArray(rtn));
+	}
+
+	@Override
+	public String[] getMonsterGenders() {
+		return (new String[] { "Male", "Female", "Neutral" });
 	}
 }

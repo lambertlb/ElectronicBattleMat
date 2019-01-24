@@ -32,6 +32,7 @@ public class DungeonsManager {
 	private static ReentrantLock lock = new ReentrantLock();
 	private final static String fileLocation = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
 	private final static String dungeonLocation = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
+	public final static String resourceLocation = "/" + ElectronicBattleMat.RESOURCE_LOCATION;
 	private static Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
 	private static Map<String, SessionInformation> sessionCache = new HashMap<String, SessionInformation>();
 	@SuppressWarnings("unused")
@@ -90,7 +91,7 @@ public class DungeonsManager {
 		}
 	}
 
-	private static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, String dungeonUUID) throws IOException {
+	public static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, String dungeonUUID) throws IOException {
 		String filePath = uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
 		URL servletPath = servlet.getServletContext().getResource("/");
 		saveJsonFile(dataToWrite, servletPath.getPath() + filePath);

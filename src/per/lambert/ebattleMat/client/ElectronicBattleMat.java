@@ -27,7 +27,7 @@ public class ElectronicBattleMat implements EntryPoint {
 	public static String SESSIONS_FOLDER = "/sessions/";
 	public static String DUNGEONS_LOCATION = DUNGEON_DATA_LOCATION + DUNGEONS_FOLDER;
 	public static String DUNGEON_RESOURCE_LOCATION = "resources/";
-	public static String DUNGEON_PCPOG_LOCATION = DUNGEON_RESOURCE_LOCATION + "pcPogs/";
+	public static String RESOURCE_LOCATION = DUNGEON_DATA_LOCATION + DUNGEON_RESOURCE_LOCATION;
 	public static String DUNGEON_MONSTER_LOCATION = DUNGEON_RESOURCE_LOCATION + "monsters/";
 	public static String DUNGEON_ROOMOBJECT_LOCATION = DUNGEON_RESOURCE_LOCATION + "roomObjects/";
 	public static String DUNGEON_DATA_FILENAME = "/dungeonData.json";

@@ -13,7 +13,6 @@ import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
-import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
@@ -492,13 +491,13 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 
 	@Override
 	public boolean isValidNewCharacterName(String characterName) {
-		boolean isValid = !characterName.startsWith("Enter ") && characterName.length() > 4;
+		boolean isValid = !characterName.startsWith("Enter ") && characterName.length() > 3;
 		return isValid;
 	}
 
 	@Override
 	public boolean isValidNewMonsterName(String monsterName) {
-		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 4;
+		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 3;
 		return isValid;
 	}
 
@@ -878,20 +877,4 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 		return null;
 	}
-
-	@Override
-	public String[] getMonsterRaces() {
-		return (new String[] { "Kobold" });
-	}
-
-	@Override
-	public String[] getMonsterClasses() {
-		return (new String[] { "Fighter" });
-	}
-
-	@Override
-	public String[] getMonsterGenders() {
-		return (new String[] { "Male", "Female", "Neutral" });
-	}
-
 }

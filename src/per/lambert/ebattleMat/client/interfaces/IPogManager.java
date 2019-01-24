@@ -33,4 +33,10 @@ public interface IPogManager {
 
 	void addOrUpdatePogResource(PogData pog);
 
+	String[] getMonsterRaces();
+
+	String[] getMonsterClasses();
+
+	String[] getMonsterGenders();
+
 }

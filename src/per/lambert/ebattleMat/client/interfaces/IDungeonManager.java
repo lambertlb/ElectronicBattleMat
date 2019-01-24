@@ -107,12 +107,6 @@ public interface IDungeonManager extends IPogManager {
 
 	PogData findCharacterPog(String uuid);
 
-	String[] getMonsterRaces();
-
-	String[] getMonsterClasses();
-
-	String[] getMonsterGenders();
-
 	boolean isValidNewMonsterName(String monsterName);
 
 }

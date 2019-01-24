@@ -59,7 +59,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 		centerGrid.resize(10, 3);
 		centerGrid.getColumnFormatter().setWidth(0, "20px");
 		centerGrid.getColumnFormatter().setWidth(1, "20px");
-		
+
 		selectionSectionLabel = new Label("Select existing Monster");
 		selectionSectionLabel.setStyleName("sessionLabel");
 		centerGrid.setWidget(0, 0, selectionSectionLabel);
@@ -113,14 +113,14 @@ public class MonsterManageDialog extends OkCancelDialog {
 		element = centerGrid.getCellFormatter().getElement(6, 1);
 		element.setAttribute("colspan", "2");
 
-		race = new TextBox() ;
+		race = new TextBox();
 		race.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(7, 0, race);
 
-		monsterClass = new TextBox() ;
+		monsterClass = new TextBox();
 		monsterClass.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(7, 1, monsterClass);
-		
+
 		gender = new ListBox();
 		gender.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(7, 2, gender);
@@ -169,6 +169,18 @@ public class MonsterManageDialog extends OkCancelDialog {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				validateForm();
+			}
+		});
+		race.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				race.selectAll();
+			}
+		});
+		monsterClass.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				monsterClass.selectAll();
 			}
 		});
 	}
@@ -315,11 +327,32 @@ public class MonsterManageDialog extends OkCancelDialog {
 			gender.setSelectedIndex(1);
 		}
 	}
+
 	@Override
 	protected void onOkClick(ClickEvent event) {
 		super.onOkClick(event);
+		getDialogData();
 		ServiceManager.getDungeonManager().addOrUpdatePogResource(pogData);
 		ServiceManager.getDungeonManager().setSelectedPog(pogData);
 		close();
+	}
+
+	private void getDialogData() {
+		pogData.setPogName(monsterName.getValue());
+		pogData.setPogImageUrl(monsterPicture.getValue());
+		String raceString = race.getValue();
+		if (!raceString.startsWith("Enter")) {
+			pogData.setRace(raceString);
+		}
+		String classString = monsterClass.getValue();
+		if (!classString.startsWith("Enter")) {
+			pogData.setPogClass(classString);
+		}
+		int index = gender.getSelectedIndex();
+		if (index > 1) {
+			pogData.clearFlags(PlayerFlag.HAS_NO_SEX);
+			pogData.clearFlags(PlayerFlag.IS_FEMALE);
+			pogData.setFlags(index == 3 ? PlayerFlag.HAS_NO_SEX : PlayerFlag.IS_FEMALE);
+		}
 	}
 }

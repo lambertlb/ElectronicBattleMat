@@ -20,6 +20,7 @@ import per.lambert.ebattleMat.server.handlers.LoadJsonDataHandler;
 import per.lambert.ebattleMat.server.handlers.LoadSessionHandler;
 import per.lambert.ebattleMat.server.handlers.LoginHandler;
 import per.lambert.ebattleMat.server.handlers.SaveJsonDataHandler;
+import per.lambert.ebattleMat.server.handlers.SaveJsonResourceHandler;
 import per.lambert.ebattleMat.server.handlers.SavePogHandler;
 import per.lambert.ebattleMat.server.handlers.SessionListHandler;
 import per.lambert.ebattleMat.server.handlers.UpdateFOWHander;
@@ -43,6 +44,7 @@ public class Dungeons extends HttpServlet {
 		webServices.put("SAVEPOGTOSESSION", new SavePogHandler());
 		webServices.put("UPDATEFOW", new UpdateFOWHander());
 		webServices.put("FILEUPLOAD", new FileUploadHandler());
+		webServices.put("SAVEJSONRESOURCE", new SaveJsonResourceHandler());
 	}
 
 	@Override
