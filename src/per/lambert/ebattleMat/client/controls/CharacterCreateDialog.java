@@ -13,27 +13,68 @@ import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
+/**
+ * Character creation dialog.
+ * Its main responsibility is to create a character that the player or DM can use
+ * for this one dungeon session.
+ * @author LLambert
+ *
+ */
 public class CharacterCreateDialog extends OkCancelDialog {
+	/**
+	 * Center grid with all the content.
+	 * It comes from the parent dialog
+	 */
 	private Grid centerGrid;
+	/**
+	 * Label for character name.
+	 */
 	private Label characterNameLabel;
+	/**
+	 * Text box for character name.
+	 */
 	private TextBox characterName;
+	/**
+	 * Label for Level picture.
+	 */
 	private Label characterPictureLabel;
+	/**
+	 * Text box for level picture URL.
+	 */
 	private TextBox characterPicture;
+	/**
+	 * Panel to hold pog canvas.
+	 */
 	private FlowPanel pogPanel;
+	/**
+	 * Pog canvas to manage picture.
+	 */
 	private PogCanvas pogCanvas;
+	/**
+	 * Pog data.
+	 */
 	private PogData pogData;
 
+	/**
+	 * Constructor for character creation.
+	 */
 	public CharacterCreateDialog() {
 		super("Character Creation", true, true);
 		load();
 	}
 
+	/**
+	 * Load in view.
+	 */
 	protected void load() {
 		createContent();
 		initialize();
 		setupEventHandlers();
 	}
 
+	/**
+	 * Create content.
+	 */
 	private void createContent() {
 		centerGrid = getCenterGrid();
 		centerGrid.clear();
@@ -58,35 +99,42 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		pogPanel.add(pogCanvas);
 	}
 
+	/**
+	 * Setup event handlers.
+	 */
 	private void setupEventHandlers() {
 		characterPicture.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				characterPicture.selectAll();
 			}
 		});
 		characterPicture.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				validateForm();
 			}
 		});
 		characterName.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				characterName.selectAll();
 			}
 		});
 		characterName.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				validateForm();
 			}
 		});
 	}
 
+	/**
+	 * initialize content.
+	 * Needed since the dialog can be reused.
+	 */
 	private void initialize() {
 		pogData = ServiceManager.getDungeonManager().createPlayer();
 		pogCanvas.setPogData(pogData);
@@ -97,6 +145,9 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		validateForm();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void show() {
 		super.show();
@@ -104,12 +155,19 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		center();
 	}
 
+	/**
+	 * Validate all data on form.
+	 */
 	private void validateForm() {
 		boolean isValidCharacterName = validateCharacterName();
 		boolean isValidUrl = validateUrl();
 		enableOk(isValidCharacterName && isValidUrl);
 	}
 
+	/**
+	 * Validate character name.
+	 * @return true if valid.
+	 */
 	private boolean validateCharacterName() {
 		boolean valid = ServiceManager.getDungeonManager().isValidNewCharacterName(characterName.getValue());
 		if (valid) {
@@ -120,6 +178,11 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		return valid;
 	}
 
+	/**
+	 * Validate Url of picture.
+	 * THis makes sure it is a picture type we support
+	 * @return true if ok.
+	 */
 	private boolean validateUrl() {
 		String filename = characterPicture.getValue();
 		int i = filename.lastIndexOf('.');
@@ -134,7 +197,11 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		return valid;
 	}
 
-	private void showPog(boolean isValid) {
+	/**
+	 * Show the pog image for the url.
+	 * @param isValid is valid url
+	 */
+	private void showPog(final boolean isValid) {
 		pogCanvas.setPogWidth(200);
 		pogCanvas.showImage(isValid);
 		if (isValid) {
@@ -142,11 +209,17 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void onOkClick(ClickEvent event) {
+	protected void onOkClick(final ClickEvent event) {
 		acceptChanges();
 	}
 
+	/**
+	 * Accept changes made in the dialog.
+	 */
 	private void acceptChanges() {
 		pogData.setPogName(characterName.getValue());
 		pogData.setPogImageUrl(characterPicture.getValue());
@@ -156,11 +229,17 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void onCancelClick(ClickEvent event) {
+	protected void onCancelClick(final ClickEvent event) {
 		close();
 	}
 
+	/**
+	 * Close the dialog.
+	 */
 	public void close() {
 		hide();
 	}
