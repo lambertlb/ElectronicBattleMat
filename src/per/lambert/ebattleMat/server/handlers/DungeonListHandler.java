@@ -3,6 +3,7 @@ package per.lambert.ebattleMat.server.handlers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,22 +12,46 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import per.lambert.ebattleMat.server.Dungeons;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+/**
+ * Handler for getting a dungeon list.
+ * @author LLambert
+ *
+ */
+public class DungeonListHandler implements IWebRequestHandler {
 
-public class DungeonListHandler implements IWebRequestHandler{
-
+	/**
+	 * Response for getting a dungeon list.
+	 * @author LLambert
+	 *
+	 */
 	public class DungeonListResponseData {
-		public String[] dungeonNames;
-		public String[] dungeonUUIDS;
-		public String[] dungeonDirectories;
-		public String serverPath;
-		public DungeonListResponseData(Map<String,String> dungeonListData, Map<String,String> dungeonDirectoryData, String serverPath) {
+		/**
+		 * array of dungeon names.
+		 */
+		private String[] dungeonNames;
+		/**
+		 * array of uuids.
+		 */
+		private String[] dungeonUUIDS;
+		/**
+		 * array of directories the dungeons are in.
+		 */
+		private String[] dungeonDirectories;
+		/**
+		 * path to server resources.
+		 */
+		@SuppressWarnings("unused")
+		private String serverPath;
+		/**
+		 * Handle the request.
+		 * @param dungeonListData map of dungeons and UUIDS
+		 * @param dungeonDirectoryData map of dungeon and directory names
+		 * @param serverPath path to server resources
+		 */
+		public DungeonListResponseData(final Map<String,String> dungeonListData, final Map<String,String> dungeonDirectoryData, final String serverPath) {
 			this.serverPath = serverPath;
 			dungeonNames = new String[dungeonListData.size()];
 			dungeonUUIDS = new String[dungeonListData.size()];
@@ -45,8 +70,11 @@ public class DungeonListHandler implements IWebRequestHandler{
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		DungeonsManager.getDungeonListData(servlet);
 		URL servletPath = servlet.getServletContext().getResource("/");
 		DungeonListResponseData dungeonListResponseData = new DungeonListResponseData(DungeonsManager.getDungeonNameToUUIDMap(), DungeonsManager.getUuidTemplatePathMap(), servletPath.getPath());

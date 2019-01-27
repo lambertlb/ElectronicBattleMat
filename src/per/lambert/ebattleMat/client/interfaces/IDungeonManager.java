@@ -33,7 +33,7 @@ public interface IDungeonManager extends IPogManager {
 
 	DungeonData getSelectedDungeon();
 
-	boolean dungeonSelected();
+	boolean isThereASelectedDungeon();
 
 	int getCurrentLevel();
 

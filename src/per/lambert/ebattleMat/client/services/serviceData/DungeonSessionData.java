@@ -65,12 +65,4 @@ public class DungeonSessionData extends JavaScriptObject {
 		}
 		return this.sessionLevels;
 	}-*/;
-
-	public final native boolean getIsDirty() /*-{
-		if (this.isDirty === undefined) {
-			this.isDirty = false;
-		}
-		return this.isDirty;
-	}-*/;
-
 }

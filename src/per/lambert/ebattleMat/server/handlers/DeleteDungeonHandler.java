@@ -11,10 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
+/**
+ * Handler for deleting a dungeon.
+ * 
+ * @author LLambert
+ *
+ */
 public class DeleteDungeonHandler implements IWebRequestHandler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		PrintWriter out = resp.getWriter();
 		DungeonsManager.deleteDungeon(servlet, dungeonUUID);

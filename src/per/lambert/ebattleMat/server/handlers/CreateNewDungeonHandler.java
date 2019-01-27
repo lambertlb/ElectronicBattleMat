@@ -11,10 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
+/**
+ * Handler for creating a new dungeon.
+ * It expects two html parameters as follows.
+ * dungeonUUID is the template dungeon that gets copied and renamed.
+ * newDungeonName is the name of the new dungeon
+ * @author LLambert
+ *
+ */
 public class CreateNewDungeonHandler implements IWebRequestHandler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		String newDungeonName = request.getParameter("newDungeonName");
 		DungeonsManager.copyDungeon(servlet, dungeonUUID, newDungeonName);

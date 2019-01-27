@@ -24,71 +24,133 @@ import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
+/**
+ * Manager for handling dungeon data.
+ * 
+ * @author LLambert
+ *
+ */
 public class DungeonManager extends PogManager implements IDungeonManager {
+	/**
+	 * Last error from server.
+	 */
 	private DungeonServerError lastError;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DungeonServerError getLastError() {
 		return (lastError);
 	}
 
+	/**
+	 * construct a dungeon manager.
+	 */
 	public DungeonManager() {
 	}
 
+	/**
+	 * Token from login credentials.
+	 */
 	private int token;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getToken() {
 		return token;
 	}
 
+	/**
+	 * List of session for this dungeon.
+	 */
 	private SessionListData sessionListData;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public SessionListData getSessionListData() {
 		return sessionListData;
 	}
 
+	/**
+	 * UUID for selected dungeon.
+	 */
 	private String selectedDungeonUUID;
+	/**
+	 * UUID for selected session.
+	 */
 	private String selectedSessionUUID;
-
+	/**
+	 * Selected dungeon.
+	 */
 	private DungeonData selectedDungeon;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean dungeonSelected() {
+	public boolean isThereASelectedDungeon() {
 		return (selectedDungeon != null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DungeonData getSelectedDungeon() {
 		return selectedDungeon;
 	}
 
+	/**
+	 * selected session.
+	 */
 	private DungeonSessionData selectedSession;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DungeonSessionData getSelectedSession() {
 		return selectedSession;
 	}
 
+	/**
+	 * current level index.
+	 */
 	private int currentLevel;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getCurrentLevel() {
 		return currentLevel;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getNextLevelNumber() {
 		return (selectedDungeon.getDungeonlevels().length + 1);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setCurrentLevel(int currentLevel) {
+	public void setCurrentLevel(final int currentLevel) {
 		this.currentLevel = currentLevel;
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelectedLevelChanged, null));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DungeonLevel getCurrentLevelData() {
 		if (selectedDungeon != null && currentLevel < selectedDungeon.getDungeonlevels().length) {
@@ -97,56 +159,128 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return null;
 	}
 
-	public DungeonSessionLevel getCurrentSessionLevelData() {
+	/**
+	 * get the session data for the current level index.
+	 * 
+	 * @return session data for the current level index.
+	 */
+	private DungeonSessionLevel getCurrentSessionLevelData() {
 		if (selectedSession != null && currentLevel < selectedSession.getSessionLevels().length) {
 			return (selectedSession.getSessionLevels()[currentLevel]);
 		}
 		return null;
 	}
 
+	/**
+	 * is the currently logged in person a dungeon master.
+	 */
 	private boolean isDungeonMaster;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isDungeonMaster() {
 		return isDungeonMaster;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setDungeonMaster(boolean isDungeonMaster) {
+	public void setDungeonMaster(final boolean isDungeonMaster) {
 		this.isDungeonMaster = isDungeonMaster;
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DMStateChange, null));
 	}
 
+	/**
+	 * Are we in edit mode on the dungeon.
+	 */
 	private boolean editMode;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isEditMode() {
 		return editMode;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setEditMode(boolean editMode) {
+	public void setEditMode(final boolean editMode) {
 		this.editMode = editMode;
 	}
 
+	/**
+	 * Dungeon to uuid map.
+	 */
 	private Map<String, String> dungeonToUUIDMap = new HashMap<String, String>();
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, String> getDungeonToUUIDMap() {
 		return dungeonToUUIDMap;
 	}
 
+	/**
+	 * Map of UUIDs to dungeon templates.
+	 */
 	private Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
-
+	/**
+	 * UUID of master template.
+	 */
 	private String uuidOfMasterTemplate;
+	/**
+	 * Path to server resources.
+	 */
 	private String serverPath;
 
+	/**
+	 * get Path to server resources.
+	 * 
+	 * @return Path to server resources.
+	 */
 	public String getServerPath() {
 		return serverPath;
 	}
 
+	/**
+	 * are we in fog of war toggle mode.
+	 */
+	private boolean fowToggle;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void login(final String username, final String password, IUserCallback callback) {
+	public boolean getFowToggle() {
+		return (fowToggle);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setFowToggle(final boolean fowToggle) {
+		this.fowToggle = fowToggle;
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.ToggleFowSelected, null));
+	}
+
+	/**
+	 * counter to use for retrieving resources. By appending this number onto URL you are guaranteed to get from server vs cache.
+	 */
+	private int resourceCount = 1;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void login(final String username, final String password, final IUserCallback callback) {
 		lastError = DungeonServerError.Succsess;
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -155,19 +289,26 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData("", "LOGIN", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				handleSuccessfulLogin(username, callback, data);
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 				callback.onError(username, error);
 			}
 		});
 	}
 
-	private void handleSuccessfulLogin(Object requestData, IUserCallback callback, Object data) {
+	/**
+	 * Handle successful login.
+	 * 
+	 * @param requestData request data
+	 * @param callback callback to user
+	 * @param data from request
+	 */
+	private void handleSuccessfulLogin(final Object requestData, final IUserCallback callback, final Object data) {
 		LoginResponseData loginResponseData = JsonUtils.<LoginResponseData>safeEval((String) data);
 		token = loginResponseData.getToken();
 		lastError = DungeonServerError.fromInt(loginResponseData.getError());
@@ -176,7 +317,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return;
 		}
 		callback.onError(requestData, new IErrorInformation() {
-
 			@Override
 			public Throwable getException() {
 				return null;
@@ -191,29 +331,41 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			public String getErrorMessage() {
 				return null;
 			}
-
 		});
 	}
 
-	private void getDungeonList(Object requestData, IUserCallback callback) {
+	/**
+	 * get list of dungeon data.
+	 * 
+	 * @param requestData request data
+	 * @param callback user callback
+	 */
+	private void getDungeonList(final Object requestData, final IUserCallback callback) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		dataRequester.requestData("", "GETDUNGEONLIST", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				handleSuccessfulDungeonList("", callback, data);
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 				callback.onError(requestData, error);
 			}
 		});
 	}
 
-	private void handleSuccessfulDungeonList(Object requestData, IUserCallback callback, Object data) {
+	/**
+	 * Handle successful read of dungeon list.
+	 * 
+	 * @param requestData request data
+	 * @param callback user callback
+	 * @param data data from response
+	 */
+	private void handleSuccessfulDungeonList(final Object requestData, final IUserCallback callback, final Object data) {
 		dungeonToUUIDMap.clear();
 		uuidTemplatePathMap.clear();
 		uuidOfMasterTemplate = null;
@@ -229,16 +381,25 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		callback.onSuccess(requestData, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void selectDungeon(String dungeonUUID) {
+	public void selectDungeon(final String dungeonUUID) {
 		selectedDungeonUUID = dungeonUUID;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void editSelectedDungeon() {
 		loadSelectedDungeon();
 	}
 
+	/**
+	 * load selected dungeon.
+	 */
 	private void loadSelectedDungeon() {
 		initializeDungeonData();
 		loadInResourceData();
@@ -248,7 +409,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
@@ -260,11 +421,14 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 			}
 		});
 	}
 
+	/**
+	 * initialize dungeon data.
+	 */
 	private void initializeDungeonData() {
 		currentLevel = 0;
 		selectedDungeon = null;
@@ -273,6 +437,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		setPogBeingDragged(null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void saveDungeonData() {
 		if (selectedDungeon != null) {
@@ -283,25 +450,31 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			dataRequester.requestData(dungeonDataString, "SAVEJSONFILE", parameters, new IUserCallback() {
 
 				@Override
-				public void onSuccess(Object sender, Object data) {
+				public void onSuccess(final Object sender, final Object data) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataSaved, null));
 				}
 
 				@Override
-				public void onError(Object sender, IErrorInformation error) {
+				public void onError(final Object sender, final IErrorInformation error) {
 					lastError = error.getError();
 				}
 			});
 		}
 	}
 
+	/**
+	 * Load in resource data.
+	 */
 	private void loadInResourceData() {
 		loadMonsterPogs();
 		loadRoomObjectPogs();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setSessionLevelSize(int columns, int rows) {
+	public void setSessionLevelSize(final int columns, final int rows) {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (!isDungeonMaster || dungeonLevel == null) {
 			return;
@@ -314,8 +487,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		saveDungeonData();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean isFowSet(int columns, int rows) {
+	public boolean isFowSet(final int columns, final int rows) {
 		if (editMode) {
 			return (false);
 		}
@@ -326,10 +502,16 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return (sessionLevel.isFowSet(columns, rows));
 	}
 
+	/**
+	 * Fog of war data is dirty.
+	 */
 	private boolean fowDirty;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setFow(int columns, int rows, boolean value) {
+	public void setFow(final int columns, final int rows, final boolean value) {
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (isDungeonMaster && sessionLevel != null) {
 			sessionLevel.updateFOW(columns, rows, value);
@@ -337,6 +519,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void saveFow() {
 		if (isDungeonMaster && fowDirty) {
@@ -345,27 +530,20 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		fowDirty = false;
 	}
 
-	private boolean fowToggle;
-
-	@Override
-	public boolean getFowToggle() {
-		return (fowToggle);
-	}
-
-	@Override
-	public void setFowToggle(boolean fowToggle) {
-		this.fowToggle = fowToggle;
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.ToggleFowSelected, null));
-	}
-
-	private int resourceCount = 1;
-
+	/**
+	 * Get directory for the current dungeon.
+	 * 
+	 * @return directory for the current dungeon.
+	 */
 	private String getDirectoryForCurrentDungeon() {
 		return (uuidTemplatePathMap.get(selectedDungeon.getUUID()));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getUrlToDungeonResource(String resourceItem) {
+	public String getUrlToDungeonResource(final String resourceItem) {
 		if (resourceItem.startsWith("http")) {
 			return resourceItem;
 		}
@@ -373,6 +551,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return (resourceUrl);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getUrlToDungeonData() {
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
@@ -380,6 +561,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return (resourceUrl);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void createNewDungeon(final String dungeonUUID, final String newDungeonName) {
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -389,38 +573,49 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData("", "CREATENEWDUNGEON", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				handlerNewDungeonCreated(newDungeonName);
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 			}
 		});
 	}
 
-	private void handlerNewDungeonCreated(String newDungeonName) {
+	/**
+	 * Handle successful new dungeon created callback.
+	 * 
+	 * @param newDungeonName name of new dungeon
+	 */
+	private void handlerNewDungeonCreated(final String newDungeonName) {
 		getDungeonList(null, new IUserCallback() {
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 			}
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataCreated, null));
 			}
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean okToDeleteThisTemplate(String dungeonUUID) {
+	public boolean okToDeleteThisTemplate(final String dungeonUUID) {
 		return !dungeonUUID.equals(uuidOfMasterTemplate);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void deleteTemplate(String dungeonUUID) {
+	public void deleteTemplate(final String dungeonUUID) {
 		if (!okToDeleteThisTemplate(dungeonUUID)) {
 			return;
 		}
@@ -430,56 +625,70 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData("", "DELETEDUNGEON", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				handlerDungeonDeleted();
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 			}
 		});
 	}
 
+	/**
+	 * handle successful delete dungeon request.
+	 */
 	private void handlerDungeonDeleted() {
 		getDungeonList("", new IUserCallback() {
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 			}
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataDeleted, null));
 			}
 		});
 	}
 
-	public void getSessionList(String dungeonUUID) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public void getSessionList(final String dungeonUUID) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", dungeonUUID);
 		dataRequester.requestData("", "GETSESSIONLIST", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
-				handleSuccessfulSessionList("", data);
+			public void onSuccess(final Object sender, final Object data) {
+				handleSuccessfulSessionList(data);
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 			}
 		});
 	}
 
-	private void handleSuccessfulSessionList(String string, Object data) {
+	/**
+	 * handle successful session list request.
+	 * 
+	 * @param data from response
+	 */
+	private void handleSuccessfulSessionList(final Object data) {
 		sessionListData = JsonUtils.<SessionListData>safeEval((String) data);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionListChanged, null));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean isNameValidForNewSession(String newSessionName) {
+	public boolean isNameValidForNewSession(final String newSessionName) {
 		boolean isValidSessionName = !newSessionName.startsWith("Enter ") && newSessionName.length() > 4;
 		boolean isInCurrentSessionNames = false;
 		boolean isInCurrentSessionDirectories = false;
@@ -489,19 +698,30 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return isValidSessionName && !isInCurrentSessionNames && !isInCurrentSessionDirectories;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean isValidNewCharacterName(String characterName) {
+	public boolean isValidNewCharacterName(final String characterName) {
 		boolean isValid = !characterName.startsWith("Enter ") && characterName.length() > 3;
 		return isValid;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean isValidNewMonsterName(String monsterName) {
+	public boolean isValidNewMonsterName(final String monsterName) {
 		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 3;
 		return isValid;
 	}
 
-	private boolean isInCurrentSessionNames(String newSessionName) {
+	/**
+	 * Is this session name in the current list. 
+	 * @param newSessionName new session name
+	 * @return true if in list
+	 */
+	private boolean isInCurrentSessionNames(final String newSessionName) {
 		for (String sessionName : sessionListData.getSessionNames()) {
 			if (sessionName.equals(newSessionName)) {
 				return (true);
@@ -510,8 +730,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void createNewSession(String dungeonUUID, String newSessionName) {
+	public void createNewSession(final String dungeonUUID, final String newSessionName) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", dungeonUUID);
 		parameters.put("newSessionName", newSessionName);
@@ -519,19 +742,22 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData("", "CREATENEWSESSION", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				getSessionList(dungeonUUID);
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 			}
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void deleteSession(String dungeonUUID, String sessionUUID) {
+	public void deleteSession(final String dungeonUUID, final String sessionUUID) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", dungeonUUID);
 		parameters.put("sessionUUID", sessionUUID);
@@ -539,17 +765,22 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData("", "DELETESESSION", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				getSessionList(dungeonUUID);
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 			}
 		});
 	}
 
+	/**
+	 * Load in data for session.
+	 * This will do a version test. If the version hasn't changed then nothing is returned.
+	 * @param versionToTest see if it is this version.
+	 */
 	private void loadSessionData(final int versionToTest) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", selectedDungeonUUID);
@@ -559,7 +790,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData("", "LOADSESSION", parameters, new IUserCallback() {
 
 			@Override
-			public void onSuccess(Object sender, Object data) {
+			public void onSuccess(final Object sender, final Object data) {
 				String jsonData = (String) data;
 				if (!jsonData.isEmpty()) {
 					selectedSession = JsonUtils.<DungeonSessionData>safeEval(jsonData);
@@ -572,19 +803,25 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			}
 
 			@Override
-			public void onError(Object sender, IErrorInformation error) {
+			public void onError(final Object sender, final IErrorInformation error) {
 			}
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void joinSession(String sessionUUID) {
+	public void joinSession(final String sessionUUID) {
 		selectedSessionUUID = sessionUUID;
 		loadSelectedDungeon();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void updatePogDataOnLevel(PogData pog) {
+	public void updatePogDataOnLevel(final PogData pog) {
 		if (editMode) {
 			updatePogDataInTemplateLevel(pog);
 		}
@@ -593,7 +830,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
-	private void updatePogDataInTemplateLevel(PogData pog) {
+	/**
+	 * Update pog data in dungeon data.
+	 * @param pog to update
+	 */
+	private void updatePogDataInTemplateLevel(final PogData pog) {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (dungeonLevel == null) {
 			return;
@@ -606,7 +847,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
-	private void updatePogListInLevel(PogData pog, PogData[] poglist) {
+	/**
+	 * Update pog list for this level.
+	 * @param pog to update
+	 * @param poglist pog list to update
+	 */
+	private void updatePogListInLevel(final PogData pog, final PogData[] poglist) {
 		for (PogData pogData : poglist) {
 			if (pog.getUUID().equals(pogData.getUUID())) {
 				pogData.setPogColumn(pog.getPogColumn());
@@ -617,7 +863,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
-	private void updatePodDataInSessionLevel(PogData pog) {
+	/**
+	 * Update pog in session data.
+	 * @param pog to update
+	 */
+	private void updatePodDataInSessionLevel(final PogData pog) {
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return;
@@ -631,7 +881,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
-	private void updatePogInSession(PogData pog, PogData[] poglist) {
+	/**
+	 * Update a pog within a list.
+	 * @param pog to update
+	 * @param poglist pog list
+	 */
+	private void updatePogInSession(final PogData pog, final PogData[] poglist) {
 		for (PogData pogData : poglist) {
 			if (pog.getUUID().equals(pogData.getUUID())) {
 				pogData.setPogColumn(pog.getPogColumn());
@@ -642,6 +897,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
+	/**
+	 * update fog of war.
+	 */
 	private void updateFogOfWar() {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
@@ -655,19 +913,24 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			dataRequester.requestData(fowDataString, "UPDATEFOW", parameters, new IUserCallback() {
 
 				@Override
-				public void onSuccess(Object sender, Object data) {
+				public void onSuccess(final Object sender, final Object data) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				}
 
 				@Override
-				public void onError(Object sender, IErrorInformation error) {
+				public void onError(final Object sender, final IErrorInformation error) {
 					lastError = error.getError();
 				}
 			});
 		}
 	}
 
-	private void savePogToSessionData(PogData pogData, boolean needToAdd) {
+	/**
+	 * Save pog to session data.
+	 * @param pogData to upsate
+	 * @param needToAdd true if needs tro be added verus updated
+	 */
+	private void savePogToSessionData(final PogData pogData, final boolean needToAdd) {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
 			parameters.put("dungeonUUID", selectedDungeon.getUUID());
@@ -679,20 +942,23 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			dataRequester.requestData(pogDataString, "SAVEPOGTOSESSION", parameters, new IUserCallback() {
 
 				@Override
-				public void onSuccess(Object sender, Object data) {
+				public void onSuccess(final Object sender, final Object data) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				}
 
 				@Override
-				public void onError(Object sender, IErrorInformation error) {
+				public void onError(final Object sender, final IErrorInformation error) {
 					lastError = error.getError();
 				}
 			});
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void addOrUpdatePogData(PogData pog) {
+	public void addOrUpdatePogData(final PogData pog) {
 		if (editMode) {
 			addPogToTemplate(pog);
 		}
@@ -701,7 +967,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
-	private void addPogToTemplate(PogData pog) {
+	/**
+	 * Add pog to dungeon template.
+	 * @param pog to add
+	 */
+	private void addPogToTemplate(final PogData pog) {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (dungeonLevel == null) {
 			return;
@@ -718,7 +988,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		saveDungeonData();
 	}
 
-	private void addPogToSession(PogData pog) {
+	/**
+	 * Add pog to session.
+	 * @param pog to add
+	 */
+	private void addPogToSession(final PogData pog) {
 		DungeonSessionData sessionData = selectedSession;
 		boolean needToAdd = true;
 		if (sessionData != null) {
@@ -742,7 +1016,13 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
-	private boolean addPogToSessionIfNotThere(PogData pog, DungeonSessionData sessionData) {
+	/**
+	 * Add pog to session if not there already.
+	 * @param pog to add
+	 * @param sessionData session data
+	 * @return true if added
+	 */
+	private boolean addPogToSessionIfNotThere(final PogData pog, final DungeonSessionData sessionData) {
 		pog.setDungeonLevel(currentLevel);
 		for (PogData player : sessionData.getPlayers()) {
 			if (player.getTemplateUUID().equals(pog.getTemplateUUID())) {
@@ -754,6 +1034,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return (true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PogData[] getMonstersForCurrentLevel() {
 		if (selectedDungeon == null) {
@@ -773,6 +1056,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return sessionLevel.getMonsters();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PogData[] getRoomObjectsForCurrentLevel() {
 		if (selectedDungeon == null) {
@@ -792,6 +1078,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return sessionLevel.getRoomObjects();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PogData[] getPlayersForCurrentSession() {
 		if (editMode || selectedDungeon == null || selectedSession == null) {
@@ -807,6 +1096,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return (PogData[]) playersOnLevel.toArray(new PogData[playersOnLevel.size()]);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] getDungeonLevelNames() {
 		if (selectedDungeon == null) {
@@ -820,6 +1112,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return (levelNames);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void doTimedTasks() {
 		if (selectedSession != null) {
@@ -827,13 +1122,19 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void downloadDungeonFile(String fileName) {
+	public void downloadDungeonFile(final String fileName) {
 		String url = getUrlToDungeonData() + fileName;
 		makeSureLoaderExists();
 		downloadFile(fileName, url);
 	}
 
+	/**
+	 * Make sure download element exists.
+	 */
 	public native void makeSureLoaderExists() /*-{
 		var aLink = document.getElementById('downloader');
 		if (aLink == null) {
@@ -843,6 +1144,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 	}-*/;
 
+	/**
+	 * Download file using loader.
+	 * @param fileName to download
+	 * @param urlData URL to resource
+	 */
 	public native void downloadFile(String fileName, String urlData) /*-{
 		//		var aLink = document.createElement('a');
 		var aLink = document.getElementById('downloader');
@@ -852,21 +1158,30 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		aLink.dispatchEvent(event);
 	}-*/;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean isLegalDungeonName(String nameToCheck) {
+	public boolean isLegalDungeonName(final String nameToCheck) {
 		if (nameToCheck == null || nameToCheck.isEmpty() || nameToCheck.length() < 4) {
 			return (false);
 		}
 		return (true);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void createNewLevel(DungeonLevel newLevel) {
+	public void createNewLevel(final DungeonLevel newLevel) {
 		selectedDungeon.addDungeonlevel(newLevel);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public PogData findCharacterPog(String uuid) {
+	public PogData findCharacterPog(final String uuid) {
 		if (selectedSession == null) {
 			return null;
 		}

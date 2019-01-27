@@ -128,8 +128,8 @@ public class DungeonsManager {
 	private static void getDungeonName(final HttpServlet servlet, File possibleDungeon) throws IOException {
 		String directoryDirectoryName = possibleDungeon.getName();
 		DungeonData dungeonData = getDungeonData(servlet, directoryDirectoryName);
-		String dungeonName = dungeonData.dungeonName;
-		String uuid = dungeonData.uuid;
+		String dungeonName = dungeonData.getDungeonName();
+		String uuid = dungeonData.getUuid();
 		addToDungeonCache(directoryDirectoryName, dungeonName, uuid);
 	}
 
@@ -172,10 +172,10 @@ public class DungeonsManager {
 			FileUtils.copyDirectory(srcDir, destDir);
 			deleteAnyOldSessions(destDir);
 			DungeonData dungeonData = getDungeonData(servlet, dstDirectory);
-			dungeonData.dungeonName = newDungeonName;
+			dungeonData.setDungeonName(newDungeonName);
 			UUID uuid = UUID.randomUUID();
 			String uuidString = uuid.toString();
-			dungeonData.uuid = uuidString;
+			dungeonData.setUuid(uuidString);
 			addToDungeonCache(dstDirectory, newDungeonName, uuidString);
 			Gson gson = new Gson();
 			String jsonData = gson.toJson(dungeonData);
@@ -260,15 +260,15 @@ public class DungeonsManager {
 		UUID uuid = UUID.randomUUID();
 		String uuidString = uuid.toString();
 		DungeonSessionData newSessionData = new DungeonSessionData(newSessionName, dungeonUUID, uuidString);
-		newSessionData.sessionLevels = new DungeonSessionLevel[dungeonData.dungeonLevels.length];
-		for (int i = 0; i < dungeonData.dungeonLevels.length; ++i) {
+		newSessionData.sessionLevels = new DungeonSessionLevel[dungeonData.getDungeonLevels().length];
+		for (int i = 0; i < dungeonData.getDungeonLevels().length; ++i) {
 			newSessionData.sessionLevels[i] = getSessionLevel(i, dungeonData, newSessionData);
 		}
 		return (newSessionData);
 	}
 
 	private static DungeonSessionLevel getSessionLevel(int i, DungeonData dungeonData, DungeonSessionData newSessionData) {
-		DungeonSessionLevel sessionLevel = new DungeonSessionLevel(dungeonData.dungeonLevels[i]);
+		DungeonSessionLevel sessionLevel = new DungeonSessionLevel(dungeonData.getDungeonLevels()[i]);
 		return (sessionLevel);
 	}
 
