@@ -24,31 +24,97 @@ import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.controls.OkCancelDialog;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
+/**
+ * Dungeon Selection control.
+ * 
+ * This has the job of allowing for selection of an existing dungeon or creating a new one. It also allows for creating a session for a particular dungeon.
+ * 
+ * @author LLambert
+ *
+ */
 public class DungeonSelectControl extends OkCancelDialog {
+	/**
+	 * Presenter for this view.
+	 */
 	private DungeonSelectPresenter dungeonSelectPresenter;
+	/**
+	 * List of available dungeons.
+	 */
 	private ListBox dungeonDropdownList;
+	/**
+	 * List of available sessions for the selected dungeon.
+	 */
 	private ListBox sessionDropdownList;
+	/**
+	 * Edit this dungeon template.
+	 */
 	private Button editDungeonButton;
+	/**
+	 * delete the selected dungeon.
+	 */
 	private Button deleteDungeonButton;
+	/**
+	 * delete the selected session.
+	 */
 	private Button deleteSessionButton;
+	/**
+	 * Create a new dungeon.
+	 */
 	private Button createDungeonButton;
+	/**
+	 * Create a new session.
+	 */
 	private Button createSessionButton;
+	/**
+	 * DM this session.
+	 */
 	private Button dmSessionButton;
+	/**
+	 * Join as player to this session.
+	 */
 	private Button joinASessionButton;
+	/**
+	 * Name of new dungeon.
+	 */
 	private TextBox newDungeonName;
+	/**
+	 * Name of new session.
+	 */
 	private TextBox newSessionName;
+	/**
+	 * Label for session name.
+	 */
 	private Label sessionLabel;
+	/**
+	 * Label for dungeon template.
+	 */
 	private Label templateLabel;
+	/**
+	 * Managing dungeon as DM.
+	 */
 	private CheckBox asDM;
-	private Grid dmGrid;
+	/**
+	 * Grid for content.
+	 */
+	private Grid centerGrid;
+	/**
+	 * DM flag state changed.
+	 */
 	private boolean dmStateChanged;
+	/**
+	 * Grid has been populated.
+	 */
 	private boolean gridPopulated;
-
+	/**
+	 * Constructor for Dungeon Select control.
+	 */
 	public DungeonSelectControl() {
 		super("Dungeon Template Management", false, true, 400, 400);
 		load();
 	}
-
+	/**
+	 * Load in content.
+	 */
 	private void load() {
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
 		dungeonSelectPresenter = new DungeonSelectPresenter();
@@ -59,14 +125,22 @@ public class DungeonSelectControl extends OkCancelDialog {
 		setupEventHandlers();
 		initialize();
 	}
-
+	/**
+	 * Initialize view.
+	 * 
+	 * This is needed because the dialog can be reused many times.
+	 */
 	private void initialize() {
 		setToDungeonMasterState();
 		center();
 	}
-
+	/**
+	 * Create content.
+	 * 
+	 * This should only ever happen once.
+	 */
 	private void createContent() {
-		dmGrid = getCenterGrid();
+		centerGrid = getCenterGrid();
 		asDM = new CheckBox("I am DM");
 		dungeonDropdownList = new ListBox();
 		sessionDropdownList = new ListBox();
@@ -84,174 +158,187 @@ public class DungeonSelectControl extends OkCancelDialog {
 		sessionLabel = new Label("Session Management");
 		templateLabel = new Label("Dungeon Template Management");
 	}
-
+	/**
+	 * Setup event handlers.
+	 */
 	private void setupEventHandlers() {
 		asDM.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.setDungeonMaster(asDM.getValue());
 			}
 		});
 		editDungeonButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.editDungeon();
 			}
 		});
 		deleteDungeonButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.deleteTemplate();
 			}
 		});
 		deleteSessionButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.deleteSession();
 			}
 		});
 		createDungeonButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.createDungeon();
 			}
 		});
 		createSessionButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.createSession();
 			}
 		});
 		joinASessionButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.joinSession();
 			}
 		});
 		dmSessionButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				dungeonSelectPresenter.dmSession();
 			}
 		});
 		dungeonDropdownList.addChangeHandler(new ChangeHandler() {
-
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 				dungeonSelectPresenter.selectNewDungeonName(dungeonDropdownList.getSelectedItemText(), dungeonDropdownList.getSelectedValue());
 			}
 		});
 		newDungeonName.addChangeHandler(new ChangeHandler() {
-
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 				dungeonSelectPresenter.newDungeonNameText(newDungeonName.getValue());
 			}
 		});
 		newDungeonName.addKeyUpHandler(new KeyUpHandler() {
-
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				dungeonSelectPresenter.newDungeonNameText(newDungeonName.getValue());
 			}
 		});
 		newDungeonName.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				newDungeonName.selectAll();
 			}
 		});
 		sessionDropdownList.addChangeHandler(new ChangeHandler() {
-
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 				dungeonSelectPresenter.selectSessionName(sessionDropdownList.getSelectedItemText(), sessionDropdownList.getSelectedValue());
 			}
 		});
 		newSessionName.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				newSessionName.selectAll();
 			}
 		});
 		newSessionName.addKeyUpHandler(new KeyUpHandler() {
-
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				dungeonSelectPresenter.newSessionNameText(newSessionName.getValue());
 			}
 		});
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
-			public void onResize(ResizeEvent event) {
+			public void onResize(final ResizeEvent event) {
 				if (isShowing()) {
 					center();
 				}
 			}
 		});
 	}
-
+	/**
+	 * populate grid.
+	 */
 	private void populateGrid() {
 		if (gridPopulated && dmStateChanged == dungeonSelectPresenter.isDungeonMaster()) {
 			return;
 		}
 		gridPopulated = true;
 		dmStateChanged = dungeonSelectPresenter.isDungeonMaster();
-		dmGrid.clear();
-		dmGrid.resize(12, 2);
+		centerGrid.clear();
+		centerGrid.resize(12, 2);
 		if (dungeonSelectPresenter.isDungeonMaster()) {
 			populateDMView();
 		} else {
 			populatePlayerView();
 		}
-		Element element = dmGrid.getCellFormatter().getElement(1, 0);
+		Element element = centerGrid.getCellFormatter().getElement(1, 0);
 		element.setAttribute("colspan", "3");
 		sessionLabel.addStyleName("sessionLabel");
 		templateLabel.addStyleName("sessionLabel");
 	}
-
+	/**
+	 * Populate common content for player and DM.
+	 */
+	private void populateCommon() {
+		centerGrid.setWidget(0, 0, asDM);
+		centerGrid.setWidget(1, 0, templateLabel);
+		centerGrid.setWidget(2, 0, dungeonDropdownList);
+	}
+	/**
+	 * Populate grid for a player.
+	 */
 	private void populatePlayerView() {
 		populateCommon();
-		dmGrid.setWidget(3, 0, sessionDropdownList);
-		dmGrid.setWidget(4, 0, joinASessionButton);
+		centerGrid.setWidget(3, 0, sessionDropdownList);
+		centerGrid.setWidget(4, 0, joinASessionButton);
 	}
-
-	private void populateCommon() {
-		dmGrid.setWidget(0, 0, asDM);
-		dmGrid.setWidget(1, 0, templateLabel);
-		dmGrid.setWidget(2, 0, dungeonDropdownList);
-	}
-
+	/**
+	 * Populate grid for a dungeon master.
+	 */
 	private void populateDMView() {
 		populateCommon();
-		dmGrid.setWidget(3, 0, createDungeonButton);
-		dmGrid.setWidget(3, 1, newDungeonName);
-		dmGrid.setWidget(4, 0, editDungeonButton);
-		dmGrid.setWidget(5, 0, deleteDungeonButton);
-		dmGrid.setWidget(6, 0, sessionLabel);
-		dmGrid.setWidget(7, 0, sessionDropdownList);
-		dmGrid.setWidget(8, 0, dmSessionButton);
-		dmGrid.setWidget(9, 0, deleteSessionButton);
-		dmGrid.setWidget(10, 0, createSessionButton);
-		dmGrid.setWidget(10, 1, newSessionName);
+		centerGrid.setWidget(3, 0, createDungeonButton);
+		centerGrid.setWidget(3, 1, newDungeonName);
+		centerGrid.setWidget(4, 0, editDungeonButton);
+		centerGrid.setWidget(5, 0, deleteDungeonButton);
+		centerGrid.setWidget(6, 0, sessionLabel);
+		centerGrid.setWidget(7, 0, sessionDropdownList);
+		centerGrid.setWidget(8, 0, dmSessionButton);
+		centerGrid.setWidget(9, 0, deleteSessionButton);
+		centerGrid.setWidget(10, 0, createSessionButton);
+		centerGrid.setWidget(10, 1, newSessionName);
 
-		Element element2 = dmGrid.getCellFormatter().getElement(6, 0);
+		Element element2 = centerGrid.getCellFormatter().getElement(6, 0);
 		element2.setAttribute("colspan", "3");
 	}
-
-	public static void enableWidget(Widget widget, boolean enable) {
+	/**
+	 * Enable or disable a widget.
+	 * @param widget to enable or disable
+	 * @param enable true to enable
+	 */
+	public static void enableWidget(final Widget widget, final boolean enable) {
 		if (enable) {
 			widget.getElement().removeAttribute("disabled");
 		} else {
 			widget.getElement().setAttribute("disabled", "disabled");
 		}
 	}
-
+	/**
+	 * Close this dialog.
+	 */
 	public void close() {
-		dungeonSelectPresenter.closing();
+		dungeonSelectPresenter.close();
 		hide();
 	}
-
+	/**
+	 * setup based on dungeon master state.
+	 */
 	public void setToDungeonMasterState() {
 		populateGrid();
 		if (dungeonSelectPresenter.isDungeonMaster()) {
@@ -260,7 +347,9 @@ public class DungeonSelectControl extends OkCancelDialog {
 			setupDisplayForPlayer();
 		}
 	}
-
+	/**
+	 * setup for dungeon master.
+	 */
 	private void setupDisplayForDungeonMaster() {
 		enableWidget(createDungeonButton, dungeonSelectPresenter.isOkToCreateDungeon());
 		enableWidget(editDungeonButton, dungeonSelectPresenter.isTemplateSelected());
@@ -271,7 +360,9 @@ public class DungeonSelectControl extends OkCancelDialog {
 		}
 		setupSessionDisplayForDungeonMaster();
 	}
-
+	/**
+	 * load in list of dungeons.
+	 */
 	public void loadDungeonList() {
 		dungeonDropdownList.clear();
 		dungeonDropdownList.addItem("Select a Dungeon for Operations");
@@ -281,19 +372,25 @@ public class DungeonSelectControl extends OkCancelDialog {
 		}
 		dungeonDropdownList.setVisibleItemCount(1);
 	}
-
+	/**
+	 * setup display for a player.
+	 */
 	private void setupDisplayForPlayer() {
 		enableWidget(sessionDropdownList, dungeonSelectPresenter.isOkToShowSessions());
 		enableWidget(joinASessionButton, dungeonSelectPresenter.isOkToJoinSession());
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	public void show() {
 		super.show();
 		dungeonSelectPresenter.refreshView();
 		getElement().getStyle().setZIndex(100);
 		initialize();
 	}
-
+	/**
+	 * Setup session section as dungeon master.
+	 */
 	private void setupSessionDisplayForDungeonMaster() {
 		enableWidget(sessionDropdownList, dungeonSelectPresenter.isOkToShowSessions());
 		enableWidget(createSessionButton, dungeonSelectPresenter.isOkToCreateSession());
@@ -304,11 +401,15 @@ public class DungeonSelectControl extends OkCancelDialog {
 			resetNewSessionText();
 		}
 	}
-
+	/**
+	 * Reset the text for a nw session.
+	 */
 	public void resetNewSessionText() {
 		newSessionName.setText("Enter Session Name");
 	}
-
+	/**
+	 * Load list with sessions for this dungeon.
+	 */
 	public void loadSessionList() {
 		setupSessionDisplayForDungeonMaster();
 		sessionDropdownList.clear();
@@ -324,8 +425,11 @@ public class DungeonSelectControl extends OkCancelDialog {
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void onCancelClick(ClickEvent event) {
+	protected void onCancelClick(final ClickEvent event) {
 		hide();
 	}
 
