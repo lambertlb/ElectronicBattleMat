@@ -1,6 +1,5 @@
 package per.lambert.ebattleMat.server;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +24,14 @@ import per.lambert.ebattleMat.server.handlers.SavePogHandler;
 import per.lambert.ebattleMat.server.handlers.SessionListHandler;
 import per.lambert.ebattleMat.server.handlers.UpdateFOWHander;
 
+/**
+ * Servlet expose to outside.
+ * @author LLambert
+ *
+ */
 public class Dungeons extends HttpServlet {
 	/**
-	 * Constructor
+	 * Constructor for servlet.
 	 */
 	public Dungeons() {
 		webServices = new HashMap<String, IWebRequestHandler>();
@@ -47,14 +51,20 @@ public class Dungeons extends HttpServlet {
 		webServices.put("SAVEJSONRESOURCE", new SaveJsonResourceHandler());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		// first, set the "content type" header of the response
 		response.setContentType("application/xml");
 		ServletUtils.handlePostRequest(request, response, webServices, this);
 	}
 
 	private static final long serialVersionUID = 1L;
+	/**
+	 * Collection of sevices exposed.
+	 */
 	private Map<String, IWebRequestHandler> webServices;
 
 }

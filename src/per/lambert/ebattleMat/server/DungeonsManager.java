@@ -28,27 +28,82 @@ import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
 
-public class DungeonsManager {
+/**
+ * Manager for dungeon information.
+ * 
+ * @author LLambert
+ *
+ */
+public final class DungeonsManager {
+	/**
+	 * lock used to manage concurrency.
+	 */
 	private static ReentrantLock lock = new ReentrantLock();
-	private final static String fileLocation = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
-	private final static String dungeonLocation = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
-	public final static String resourceLocation = "/" + ElectronicBattleMat.RESOURCE_LOCATION;
+	/**
+	 * Location of dungeon information.
+	 */
+	private static final String DUNGEON_DATA_LOCATION = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
+	/**
+	 * Location of dungeon templaters.
+	 */
+	private static final String DUNGEONS_LOCATION = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
+	/**
+	 * Location of resources.
+	 */
+	public static final String RESOURCE_LOCATION = "/" + ElectronicBattleMat.RESOURCE_LOCATION;
+	/**
+	 * Map of dungeon UUIDs to dungeon directory path.
+	 */
 	private static Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
-	private static Map<String, SessionInformation> sessionCache = new HashMap<String, SessionInformation>();
-	@SuppressWarnings("unused")
-	private static boolean initialized = initializeDungeonManager();
-	private static Timer timer;
 
+	/**
+	 * get Map of dungeon UUIDs to dungeon directory path.
+	 * 
+	 * @return Map of dungeon UUIDs to dungeon directory path
+	 */
 	public static Map<String, String> getUuidTemplatePathMap() {
 		return uuidTemplatePathMap;
 	}
 
+	/**
+	 * cache of sessions.
+	 */
+	private static Map<String, SessionInformation> sessionCache = new HashMap<String, SessionInformation>();
+	/**
+	 * used to initialize static data.
+	 */
+	@SuppressWarnings("unused")
+	private static boolean initialized = initializeDungeonManager();
+	/**
+	 * Timer for periodic tasks.
+	 */
+	private static Timer timer;
+	/**
+	 * map of dungeon names to UUIDs.
+	 */
 	private static Map<String, String> dungeonNameToUUIDMap = new HashMap<String, String>();
 
+	/**
+	 * get map of dungeon names to UUIDs.
+	 * 
+	 * @return map of dungeon names to UUIDs.
+	 */
 	public static Map<String, String> getDungeonNameToUUIDMap() {
 		return dungeonNameToUUIDMap;
 	}
 
+	/**
+	 * Hide constructor.
+	 */
+	private DungeonsManager() {
+
+	}
+
+	/**
+	 * initialize dungeon data.
+	 * 
+	 * @return boolean to make sure this is called at startup.
+	 */
 	private static boolean initializeDungeonManager() {
 		TimerTask repeatedTask = new TimerTask() {
 			public void run() {
@@ -63,6 +118,9 @@ public class DungeonsManager {
 		return true;
 	}
 
+	/**
+	 * Periodic taks.
+	 */
 	protected static void periodicTimer() {
 		lock.lock();
 		try {
@@ -72,12 +130,23 @@ public class DungeonsManager {
 		}
 	}
 
+	/**
+	 * Check if session data needs to be saved because it is dirty.
+	 */
 	private static void checkIfTimeToSaveSessionData() {
 		for (SessionInformation sessionInformation : sessionCache.values()) {
 			sessionInformation.saveIfDirty();
 		}
 	}
 
+	/**
+	 * Save dungeon data.
+	 * 
+	 * @param request to send
+	 * @param servlet servlet data
+	 * @param dataToWrite data to write
+	 * @throws IOException thrown if error
+	 */
 	public static void saveDungeonData(final HttpServletRequest request, final HttpServlet servlet, final String dataToWrite) throws IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		if (dungeonUUID == null || dungeonUUID.isEmpty()) {
@@ -91,18 +160,36 @@ public class DungeonsManager {
 		}
 	}
 
-	public static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, String dungeonUUID) throws IOException {
+	/**
+	 * Save dungeon data.
+	 * 
+	 * @param servlet servlet data
+	 * @param dataToWrite data to write
+	 * @param dungeonUUID dungeon UUID
+	 * @throws IOException thrown if error
+	 */
+	public static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, final String dungeonUUID) throws IOException {
 		String filePath = uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
 		URL servletPath = servlet.getServletContext().getResource("/");
 		saveJsonFile(dataToWrite, servletPath.getPath() + filePath);
 	}
 
+	/**
+	 * rebuild dungeon list.
+	 * 
+	 * @param servlet servlet data
+	 */
 	private static void rebuildDungeonList(final HttpServlet servlet) {
 		uuidTemplatePathMap.clear();
 		dungeonNameToUUIDMap.clear();
 		getDungeonListData(servlet);
 	}
 
+	/**
+	 * Get list of dungeons.
+	 * 
+	 * @param servlet servlet data
+	 */
 	public static void getDungeonListData(final HttpServlet servlet) {
 		lock.lock();
 		if (uuidTemplatePathMap.size() != 0) {
@@ -111,7 +198,7 @@ public class DungeonsManager {
 		}
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String directoryPath = servletPath.getPath() + dungeonLocation;
+			String directoryPath = servletPath.getPath() + DUNGEONS_LOCATION;
 			File directory = new File(directoryPath);
 			for (File possibleDungeon : directory.listFiles()) {
 				if (possibleDungeon.isDirectory()) {
@@ -125,35 +212,73 @@ public class DungeonsManager {
 		}
 	}
 
-	private static void getDungeonName(final HttpServlet servlet, File possibleDungeon) throws IOException {
-		String directoryDirectoryName = possibleDungeon.getName();
-		DungeonData dungeonData = getDungeonData(servlet, directoryDirectoryName);
+	/**
+	 * Get name of dungeon from dungeon data.
+	 * 
+	 * @param servlet servlet data
+	 * @param possibleDungeon possible dungeon
+	 * @throws IOException thrown if error
+	 */
+	private static void getDungeonName(final HttpServlet servlet, final File possibleDungeon) throws IOException {
+		String directoryName = possibleDungeon.getName();
+		DungeonData dungeonData = getDungeonData(servlet, directoryName);
 		String dungeonName = dungeonData.getDungeonName();
 		String uuid = dungeonData.getUuid();
-		addToDungeonCache(directoryDirectoryName, dungeonName, uuid);
+		addToDungeonCache(directoryName, dungeonName, uuid);
 	}
 
-	private static void addToDungeonCache(String directoryDirectoryName, String dungeonName, String uuid) {
+	/**
+	 * Add dungeon to cache.
+	 * 
+	 * @param directoryName directory name
+	 * @param dungeonName dungeon name
+	 * @param uuid UUID of dungeon
+	 */
+	private static void addToDungeonCache(final String directoryName, final String dungeonName, final String uuid) {
 		lock.lock();
 		try {
-			uuidTemplatePathMap.put(uuid, dungeonLocation + directoryDirectoryName);
+			uuidTemplatePathMap.put(uuid, DUNGEONS_LOCATION + directoryName);
 			dungeonNameToUUIDMap.put(uuid, dungeonName);
 		} finally {
 			lock.unlock();
 		}
 	}
 
-	private static DungeonData getDungeonData(final HttpServlet servlet, String directoryDirectoryName) throws IOException {
-		String directoryPath = dungeonLocation + directoryDirectoryName;
+	/**
+	 * Get dungeon data.
+	 * 
+	 * @param servlet servlet data
+	 * @param directoryName directory name
+	 * @return dungeon data
+	 * @throws IOException thrown if error
+	 */
+	private static DungeonData getDungeonData(final HttpServlet servlet, final String directoryName) throws IOException {
+		String directoryPath = DUNGEONS_LOCATION + directoryName;
 		return getDungeonDataFromPath(servlet, directoryPath);
 	}
 
-	private static DungeonData getDungeonDataFromUUID(final HttpServlet servlet, String dungeonUUID) throws IOException {
+	/**
+	 * Get dungeon data from UUID.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID dungeon UUID
+	 * @return dungeon data
+	 * @throws IOException thrown if error
+	 */
+	private static DungeonData getDungeonDataFromUUID(final HttpServlet servlet, final String dungeonUUID) throws IOException {
 		String directoryPath = uuidTemplatePathMap.get(dungeonUUID);
 		return getDungeonDataFromPath(servlet, directoryPath);
 	}
 
-	private static DungeonData getDungeonDataFromPath(final HttpServlet servlet, String directoryPath) throws IOException {
+	/**
+	 * Get dungeon data from path.
+	 * 
+	 * @param servlet servlet data
+	 * @param directoryPath directory path
+	 * @return dungeon data
+	 * @throws IOException thrown if error
+	 */
+	private static DungeonData getDungeonDataFromPath(final HttpServlet servlet, final String directoryPath) throws IOException {
 		URL servletPath = servlet.getServletContext().getResource("/");
 		String filePath = servletPath.getPath() + directoryPath + "/dungeonData.json";
 		String jsonData = readJsonFile(filePath);
@@ -162,13 +287,21 @@ public class DungeonsManager {
 		return (dungeonData);
 	}
 
-	public static void copyDungeon(HttpServlet servlet, String dungeonUUID, String newDungeonName) throws IOException {
+	/**
+	 * Copy a template dungeon to make a new one.
+	 * 
+	 * @param servlet servlet data
+	 * @param templateDungeonUUID template dungeon UUID
+	 * @param newDungeonName name of new dungeon
+	 * @throws IOException thrown if error
+	 */
+	public static void copyDungeon(final HttpServlet servlet, final String templateDungeonUUID, final String newDungeonName) throws IOException {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
 			String dstDirectory = newDungeonName.replaceAll("\\s+", "_");
-			File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID));
-			File destDir = new File(servletPath.getPath() + dungeonLocation + dstDirectory);
+			File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(templateDungeonUUID));
+			File destDir = new File(servletPath.getPath() + DUNGEONS_LOCATION + dstDirectory);
 			FileUtils.copyDirectory(srcDir, destDir);
 			deleteAnyOldSessions(destDir);
 			DungeonData dungeonData = getDungeonData(servlet, dstDirectory);
@@ -185,7 +318,14 @@ public class DungeonsManager {
 		}
 	}
 
-	public static void deleteDungeon(HttpServlet servlet, String dungeonUUID) throws IOException {
+	/**
+	 * Delete this dungeon.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon to delete
+	 * @throws IOException thrown if error
+	 */
+	public static void deleteDungeon(final HttpServlet servlet, final String dungeonUUID) throws IOException {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
@@ -197,7 +337,15 @@ public class DungeonsManager {
 		}
 	}
 
-	public static String getDungeonDataAsString(HttpServlet servlet, String dungeonUUID) throws IOException {
+	/**
+	 * get dungeon data as a string.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon to read
+	 * @return dungeon data as string
+	 * @throws IOException thrown if error
+	 */
+	public static String getDungeonDataAsString(final HttpServlet servlet, final String dungeonUUID) throws IOException {
 		lock.lock();
 		try {
 			if (!uuidTemplatePathMap.containsKey(dungeonUUID)) {
@@ -211,7 +359,14 @@ public class DungeonsManager {
 		}
 	}
 
-	public static Map<String, String> getSessionListData(HttpServlet servlet, String dungeonUUID) {
+	/**
+	 * get a map of session data for this dungeon.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon with sessions
+	 * @return map of session names vs UUIDs
+	 */
+	public static Map<String, String> getSessionListData(final HttpServlet servlet, final String dungeonUUID) {
 		Map<String, String> sessionListData = new HashMap<String, String>();
 		lock.lock();
 		try {
@@ -233,13 +388,30 @@ public class DungeonsManager {
 		return sessionListData;
 	}
 
-	private static void putSessionNameInCache(final HttpServlet servlet, String sessionsPath, File possibleSession, Map<String, String> sessionListData) throws IOException {
+	/**
+	 * Put session name into cache.
+	 * 
+	 * @param servlet servlet data
+	 * @param sessionsPath session path
+	 * @param possibleSession possible session
+	 * @param sessionListData Map of session data
+	 * @throws IOException thrown if error
+	 */
+	private static void putSessionNameInCache(final HttpServlet servlet, final String sessionsPath, final File possibleSession, final Map<String, String> sessionListData) throws IOException {
 		SessionInformation sessionInformation = loadSessionInformation(possibleSession);
 		DungeonSessionData sessionData = sessionInformation.getSessionData();
-		sessionListData.put(sessionData.sessionName, sessionData.sessionUUID);
+		sessionListData.put(sessionData.getSessionName(), sessionData.getSessionUUID());
 	}
 
-	public static void createSession(HttpServlet servlet, String dungeonUUID, String newSessionName) throws IOException {
+	/**
+	 * Create a session for this dungeon.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon that needs the session
+	 * @param newSessionName name of new session
+	 * @throws IOException thrown if error
+	 */
+	public static void createSession(final HttpServlet servlet, final String dungeonUUID, final String newSessionName) throws IOException {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
@@ -256,23 +428,49 @@ public class DungeonsManager {
 		}
 	}
 
-	private static DungeonSessionData createSessionData(HttpServlet servlet, String sessionDirectory, String dungeonUUID, String newSessionName, DungeonData dungeonData) {
+	/**
+	 * Create session data.
+	 * 
+	 * @param servlet servlet data
+	 * @param sessionDirectory session directory
+	 * @param dungeonUUID UUID of dungeon
+	 * @param newSessionName new session name
+	 * @param dungeonData dungeon data
+	 * @return new session data
+	 */
+	private static DungeonSessionData createSessionData(final HttpServlet servlet, final String sessionDirectory, final String dungeonUUID, final String newSessionName, final DungeonData dungeonData) {
 		UUID uuid = UUID.randomUUID();
 		String uuidString = uuid.toString();
 		DungeonSessionData newSessionData = new DungeonSessionData(newSessionName, dungeonUUID, uuidString);
-		newSessionData.sessionLevels = new DungeonSessionLevel[dungeonData.getDungeonLevels().length];
+		newSessionData.setSessionLevels(new DungeonSessionLevel[dungeonData.getDungeonLevels().length]);
 		for (int i = 0; i < dungeonData.getDungeonLevels().length; ++i) {
-			newSessionData.sessionLevels[i] = getSessionLevel(i, dungeonData, newSessionData);
+			newSessionData.getSessionLevels()[i] = getSessionLevel(i, dungeonData, newSessionData);
 		}
 		return (newSessionData);
 	}
 
-	private static DungeonSessionLevel getSessionLevel(int i, DungeonData dungeonData, DungeonSessionData newSessionData) {
-		DungeonSessionLevel sessionLevel = new DungeonSessionLevel(dungeonData.getDungeonLevels()[i]);
+	/**
+	 * get new session data for this dungeon level.
+	 * 
+	 * @param level in dungeon
+	 * @param dungeonData dungeon data
+	 * @param newSessionData new session level
+	 * @return session level
+	 */
+	private static DungeonSessionLevel getSessionLevel(final int level, final DungeonData dungeonData, final DungeonSessionData newSessionData) {
+		DungeonSessionLevel sessionLevel = new DungeonSessionLevel(dungeonData.getDungeonLevels()[level]);
 		return (sessionLevel);
 	}
 
-	public static void deleteSession(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
+	/**
+	 * Delete a session.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon with sessions
+	 * @param sessionUUID UUID of session to delete
+	 * @throws IOException thrown if error
+	 */
+	public static void deleteSession(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID) throws IOException {
 		lock.lock();
 		try {
 			SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
@@ -286,10 +484,19 @@ public class DungeonsManager {
 		}
 	}
 
-	private static SessionInformation getSessionInformation(HttpServlet servlet, String dungeonUUID, String sessionUUID) throws IOException {
+	/**
+	 * Get session information.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon with sessions
+	 * @param sessionUUID UUID of session to get
+	 * @return session information
+	 * @throws IOException thrown if error
+	 */
+	private static SessionInformation getSessionInformation(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID) throws IOException {
 		SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
 		if (sessionInformation != null) {
-//			return (sessionInformation);
+			return (sessionInformation);
 		}
 		lock.lock();
 		try {
@@ -312,13 +519,26 @@ public class DungeonsManager {
 		return null;
 	}
 
-	private static SessionInformation loadSessionInformation(File possibleSession) throws IOException {
+	/**
+	 * Load in session information from file.
+	 * 
+	 * @param possibleSession possible session
+	 * @return session information
+	 * @throws IOException thrown if error
+	 */
+	private static SessionInformation loadSessionInformation(final File possibleSession) throws IOException {
 		SessionInformation possibleSessionInformation = new SessionInformation();
 		possibleSessionInformation.load(possibleSession.getPath() + "/sessionData.json", possibleSession.getPath());
 		return possibleSessionInformation;
 	}
 
-	private static SessionInformation getSessionFromCache(String sessionUUID) {
+	/**
+	 * Get session information from cache.
+	 * 
+	 * @param sessionUUID UUID of session
+	 * @return session information or null
+	 */
+	private static SessionInformation getSessionFromCache(final String sessionUUID) {
 		lock.lock();
 		try {
 			return (sessionCache.get(sessionUUID));
@@ -327,7 +547,12 @@ public class DungeonsManager {
 		}
 	}
 
-	private static void removeSessionFromCache(String sessionUUID) {
+	/**
+	 * remove session from cache.
+	 * 
+	 * @param sessionUUID UUID of session
+	 */
+	private static void removeSessionFromCache(final String sessionUUID) {
 		lock.lock();
 		try {
 			if (sessionCache.containsKey(sessionUUID)) {
@@ -338,7 +563,12 @@ public class DungeonsManager {
 		}
 	}
 
-	private static void addSessionToCache(SessionInformation sessionInformation) {
+	/**
+	 * Add session to cache.
+	 * 
+	 * @param sessionInformation to add
+	 */
+	private static void addSessionToCache(final SessionInformation sessionInformation) {
 		lock.lock();
 		try {
 			if (sessionCache.containsKey(sessionInformation.getUUID())) {
@@ -350,7 +580,19 @@ public class DungeonsManager {
 		}
 	}
 
-	public static String getSessionDataAsString(HttpServlet servlet, String dungeonUUID, String sessionUUID, int version) throws IOException {
+	/**
+	 * get session data as string.
+	 * 
+	 * This will check version. if the version number hand't change it will just return empty string.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon with sessions.
+	 * @param sessionUUID UUID of session
+	 * @param version of session
+	 * @return session data as string or empty string if version hasn't changed.
+	 * @throws IOException thrown if error
+	 */
+	public static String getSessionDataAsString(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID, final int version) throws IOException {
 		lock.lock();
 		try {
 			SessionInformation sessionInformation;
@@ -368,7 +610,16 @@ public class DungeonsManager {
 		}
 	}
 
-	public static void saveSessionDataData(HttpServletRequest request, HttpServlet servlet, String jsonData, String sessionUUID) throws IOException {
+	/**
+	 * Save session data.
+	 * 
+	 * @param request data
+	 * @param servlet servlet data
+	 * @param jsonData of session
+	 * @param sessionUUID UUID of session
+	 * @throws IOException thrown if error
+	 */
+	public static void saveSessionData(final HttpServletRequest request, final HttpServlet servlet, final String jsonData, final String sessionUUID) throws IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		if (dungeonUUID == null || dungeonUUID.isEmpty()) {
 			return;
@@ -385,7 +636,18 @@ public class DungeonsManager {
 		}
 	}
 
-	public static void savePog(HttpServlet servlet, String dungeonUUID, String sessionUUID, int currentLevel, boolean needToAdd, String pogJsonData) throws IOException {
+	/**
+	 * Save Pog data.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon
+	 * @param sessionUUID UUID of session
+	 * @param currentLevel level in dungeon
+	 * @param needToAdd true if need to add
+	 * @param pogJsonData JSON data of Pog
+	 * @throws IOException thrown if error
+	 */
+	public static void savePog(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID, final int currentLevel, final boolean needToAdd, final String pogJsonData) throws IOException {
 		lock.lock();
 		try {
 			SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
@@ -406,7 +668,15 @@ public class DungeonsManager {
 		}
 	}
 
-	public static void updateFOW(HttpServlet servlet, String sessionUUID, int currentLevel, boolean[][] fogOfWar) {
+	/**
+	 * Update fog of war.
+	 * 
+	 * @param servlet servlet data
+	 * @param sessionUUID UUID of session
+	 * @param currentLevel level in dungeon
+	 * @param fogOfWar array of fog of war bits
+	 */
+	public static void updateFOW(final HttpServlet servlet, final String sessionUUID, final int currentLevel, final boolean[][] fogOfWar) {
 		lock.lock();
 		try {
 			SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
@@ -419,18 +689,33 @@ public class DungeonsManager {
 		}
 	}
 
+	/**
+	 * get this file as a string.
+	 * 
+	 * @param servlet servlet data
+	 * @param fileName to read
+	 * @return string with data
+	 * @throws IOException thrown if error
+	 */
 	public static String getFileAsString(final HttpServlet servlet, final String fileName) throws IOException {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String filePath = servletPath.getPath() + fileLocation + fileName;
+			String filePath = servletPath.getPath() + DUNGEON_DATA_LOCATION + fileName;
 			return (readJsonFile(filePath));
 		} finally {
 			lock.unlock();
 		}
 	}
 
-	public static void saveJsonFile(final String dataToWrite, String filePath) throws IOException {
+	/**
+	 * Save JSON data to file.
+	 * 
+	 * @param dataToWrite data to write
+	 * @param filePath to file
+	 * @throws IOException thrown if error
+	 */
+	public static void saveJsonFile(final String dataToWrite, final String filePath) throws IOException {
 		BufferedWriter output = null;
 		try {
 			lock.lock();
@@ -450,7 +735,13 @@ public class DungeonsManager {
 		}
 	}
 
-	public static String readJsonFile(String filePath) {
+	/**
+	 * read file with JSON data.
+	 * 
+	 * @param filePath to file
+	 * @return string with file data
+	 */
+	public static String readJsonFile(final String filePath) {
 		StringBuilder builder = new StringBuilder();
 		BufferedReader input = null;
 		try {
@@ -474,8 +765,14 @@ public class DungeonsManager {
 		return builder.toString();
 	}
 
-	private static void deleteAnyOldSessions(File destDir) throws IOException {
-		String sessionsPath = destDir.getPath() + "/" + ElectronicBattleMat.SESSIONS_FOLDER;
+	/**
+	 * Delete all old session that might exist.
+	 * 
+	 * @param destinationDirectory to delete
+	 * @throws IOException thrown if error
+	 */
+	private static void deleteAnyOldSessions(final File destinationDirectory) throws IOException {
+		String sessionsPath = destinationDirectory.getPath() + "/" + ElectronicBattleMat.SESSIONS_FOLDER;
 		File sessions = new File(sessionsPath);
 		lock.lock();
 		try {
@@ -485,8 +782,13 @@ public class DungeonsManager {
 		}
 	}
 
-	private static void makeSureDirectoryExists(String dungeonDirectoryPath) {
-		File path = new File(dungeonDirectoryPath);
+	/**
+	 * Make sure path exists.
+	 * 
+	 * @param directoryPath to check
+	 */
+	private static void makeSureDirectoryExists(final String directoryPath) {
+		File path = new File(directoryPath);
 		if (!path.exists()) {
 			path.mkdir();
 		}

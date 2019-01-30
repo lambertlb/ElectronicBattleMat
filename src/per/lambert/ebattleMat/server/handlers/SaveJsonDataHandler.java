@@ -18,7 +18,7 @@ public class SaveJsonDataHandler implements IWebRequestHandler {
 		if (sessionUUID == null) {
 			DungeonsManager.saveDungeonData(request, servlet, jsonData);
 		} else {
-			DungeonsManager.saveSessionDataData(request, servlet, jsonData, sessionUUID);
+			DungeonsManager.saveSessionData(request, servlet, jsonData, sessionUUID);
 		}
 	}
 

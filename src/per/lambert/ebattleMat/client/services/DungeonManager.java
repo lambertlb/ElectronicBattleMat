@@ -393,7 +393,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void editSelectedDungeon() {
+	public void editSelectedDungeonUUID() {
 		loadSelectedDungeon();
 	}
 
@@ -1173,7 +1173,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createNewLevel(final DungeonLevel newLevel) {
+	public void addNewLevel(final DungeonLevel newLevel) {
 		selectedDungeon.addDungeonlevel(newLevel);
 	}
 

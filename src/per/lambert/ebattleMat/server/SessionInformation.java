@@ -51,7 +51,7 @@ public class SessionInformation {
 
 	public String getUUID() {
 		if (sessionData != null) {
-			return (sessionData.sessionUUID);
+			return (sessionData.getSessionUUID());
 		}
 		return (null);
 	}
@@ -76,10 +76,10 @@ public class SessionInformation {
 	}
 
 	public DungeonSessionLevel getSessionLevel(int currentLevel) {
-		if (currentLevel < 0 || currentLevel >= sessionData.sessionLevels.length) {
+		if (currentLevel < 0 || currentLevel >= sessionData.getSessionLevels().length) {
 			return (null);
 		}
-		return (sessionData.sessionLevels[currentLevel]);
+		return (sessionData.getSessionLevels()[currentLevel]);
 	}
 
 	public String toJson() {
@@ -116,13 +116,13 @@ public class SessionInformation {
 	public void saveMonsterPog(PogData pogData, int currentLevel, boolean needToAdd) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel != null) {
-			sessionLevel.monsters = savePogToProperCollection(pogData, needToAdd, sessionLevel.monsters);
+			sessionLevel.setMonsters(savePogToProperCollection(pogData, needToAdd, sessionLevel.getMonsters()));
 		}
 	}
 	public void saveRoomObjectPog(PogData pogData, int currentLevel, boolean needToAdd) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel != null) {
-			sessionLevel.roomObjects = savePogToProperCollection(pogData, needToAdd, sessionLevel.roomObjects);
+			sessionLevel.setRoomObjects(savePogToProperCollection(pogData, needToAdd, sessionLevel.getRoomObjects()));
 		}
 	}
 
@@ -130,15 +130,15 @@ public class SessionInformation {
 		sessionData.increamentVersion();
 		dirty = true;
 		if (!needToAdd) {
-			updatePogCollection(sessionData.players, pogData);
+			updatePogCollection(sessionData.getPlayers(), pogData);
 			return;
 		}
-		PogData[] newPogs = new PogData[sessionData.players.length + 1];
-		for (int i = 0; i < sessionData.players.length; ++i) {
-			newPogs[i] = sessionData.players[i];
+		PogData[] newPogs = new PogData[sessionData.getPlayers().length + 1];
+		for (int i = 0; i < sessionData.getPlayers().length; ++i) {
+			newPogs[i] = sessionData.getPlayers()[i];
 		}
 		newPogs[newPogs.length - 1] = pogData;
-		sessionData.players = newPogs;
+		sessionData.setPlayers(newPogs);
 	}
 
 	public PogData[] savePogToProperCollection(PogData pogData, boolean needToAdd, PogData[] pogCollection) {

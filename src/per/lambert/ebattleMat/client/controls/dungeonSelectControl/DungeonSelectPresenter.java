@@ -2,8 +2,6 @@ package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
 
 import java.util.Map;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
@@ -166,15 +164,11 @@ public class DungeonSelectPresenter {
 		return okToJoinSession;
 	}
 	/**
-	 * Dungeon data has changed event.
-	 */
-	private HandlerRegistration dungeonDataChangedEvent;
-	/**
 	 * Constructor for presenter.
 	 */
 	public DungeonSelectPresenter() {
 		IEventManager eventManager = ServiceManager.getEventManager();
-		dungeonDataChangedEvent = eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataDeleted) {
 					refreshView();
@@ -306,7 +300,7 @@ public class DungeonSelectPresenter {
 		ServiceManager.getDungeonManager().setEditMode(true);
 		ServiceManager.getDungeonManager().setDungeonMaster(isDungeonMaster);
 		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
-		ServiceManager.getDungeonManager().editSelectedDungeon();
+		ServiceManager.getDungeonManager().editSelectedDungeonUUID();
 		view.close();
 	}
 	/**

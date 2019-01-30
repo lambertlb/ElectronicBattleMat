@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
-jarsExcludedFromWebInfLib=/home/llambert/workspace/ElectronicBattleMat/lib/guice-3.0.jar
+jarsExcludedFromWebInfLib=/home/llambert/workspace/ElectronicBattleMat/lib/guice-3.0.jar|C\:/Workspace/ElectronicBattleMat/lib/guice-3.0.jar
 warSrcDir=war
 warSrcDirIsOutput=true

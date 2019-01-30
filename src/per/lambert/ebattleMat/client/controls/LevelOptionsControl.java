@@ -349,7 +349,7 @@ public class LevelOptionsControl extends OkCancelDialog {
 			currentLevel.setLevelDrawing(pictureName);
 		}
 		if (newLevel) {
-			ServiceManager.getDungeonManager().createNewLevel(currentLevel);
+			ServiceManager.getDungeonManager().addNewLevel(currentLevel);
 		}
 
 		ServiceManager.getDungeonManager().saveDungeonData();

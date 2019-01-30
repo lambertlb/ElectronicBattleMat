@@ -17,10 +17,18 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
+/**
+ * File upload handler.
+ * @author LLambert
+ *
+ */
 public class FileUploadHandler implements IWebRequestHandler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse response, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		ServletFileUpload upload = new ServletFileUpload();
 		response.setContentType("text/plain");
 		String filePath = request.getParameter("filePath");

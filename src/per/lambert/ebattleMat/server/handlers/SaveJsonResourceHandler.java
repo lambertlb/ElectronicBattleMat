@@ -17,7 +17,7 @@ public class SaveJsonResourceHandler implements IWebRequestHandler {
 	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
 		String resourceName = request.getParameter("resourceName");
 		URL servletPath = servlet.getServletContext().getResource("/");
-		String directory = servletPath.getPath() + DungeonsManager.resourceLocation + "/";
+		String directory = servletPath.getPath() + DungeonsManager.RESOURCE_LOCATION + "/";
 		String resourcePath;
 		if (resourceName.equalsIgnoreCase("monsters")) {
 			resourcePath = "monsters/monsterPogs.json";

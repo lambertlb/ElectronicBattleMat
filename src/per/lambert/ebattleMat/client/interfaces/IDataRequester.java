@@ -2,6 +2,18 @@ package per.lambert.ebattleMat.client.interfaces;
 
 import java.util.Map;
 
+/**
+ * interface for handling a web request.
+ * @author LLambert
+ *
+ */
 public interface IDataRequester {
-	void requestData(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback);
+	/**
+	 * handle web request.
+	 * @param requestData request data
+	 * @param requestType request type
+	 * @param parameters for request
+	 * @param callback user callback.
+	 */
+	void requestData(String requestData, String requestType, Map<String, String> parameters, IUserCallback callback);
 }
