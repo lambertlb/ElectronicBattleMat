@@ -6,13 +6,13 @@ package per.lambert.ebattleMat.client.interfaces;
  */
 public interface IUserCallback {
 	/**
-	 * Called if error occurred
+	 * Called if error occurred.
 	 * @param sender The original caller
 	 * @param error Information about the error
 	 */
 	void	onError(Object sender, IErrorInformation error);
 	/**
-	 * Called when request succeeds
+	 * Called when request succeeds.
 	 * @param sender The original caller
 	 * @param data Data returned from execution
 	 */

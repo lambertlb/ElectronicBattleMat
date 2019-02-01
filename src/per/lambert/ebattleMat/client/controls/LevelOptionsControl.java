@@ -34,38 +34,101 @@ import per.lambert.ebattleMat.client.services.DataRequester;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 
+/**
+ * Dialog for Level Options.
+ * 
+ * @author LLambert
+ *
+ */
 public class LevelOptionsControl extends OkCancelDialog {
-
+	/**
+	 * A file needs to be uploaded.
+	 */
 	private boolean fileNeedsToBeUploaded;
+	/**
+	 * Extension of file to be uploaded.
+	 */
 	private String fileExtension;
+	/**
+	 * Is this file legal to be uploaded.
+	 */
 	private boolean legalFile;
+	/**
+	 * Name of picture file.
+	 */
 	private String pictureName;
+	/**
+	 * New level needs to be created.
+	 */
 	private boolean newLevel;
+	/**
+	 * Current level we are working on.
+	 */
 	private DungeonLevel currentLevel;
 
+	/**
+	 * Show grid on dungeon levels.
+	 */
 	private CheckBox showGrid;
+	/**
+	 * grid size in pixels.
+	 */
 	private LabeledTextBox gridSize;
+	/**
+	 * X Offset of grid from top Left.
+	 */
 	private LabeledTextBox gridOffsetX;
+	/**
+	 * Y Offset of grid from top Left.
+	 */
 	private LabeledTextBox gridOffsetY;
+	/**
+	 * Label for new level.
+	 */
 	private Label levelNameLabel;
+	/**
+	 * Name of new level.
+	 */
 	private TextBox levelName;
+	/**
+	 * Start download of picture file.
+	 */
 	private Button downloadLevelPicture;
+	/**
+	 * File upload control.
+	 */
 	private FileUpLoadControl fileUpLoadControl;
+	/**
+	 * Create new level button.
+	 */
 	private Button createNewLevelButton;
+	/**
+	 * Grid for content.
+	 */
+	private Grid centerGrid;
 
-	private Grid dmGrid;
-
+	/**
+	 * Constructor for level option control.
+	 */
 	public LevelOptionsControl() {
 		super("Level Options", true, true);
 		load();
 	}
 
+	/**
+	 * Load in view.
+	 */
 	protected void load() {
 		createContent();
 		setupEventHandlers();
 		initialize();
 	}
 
+	/**
+	 * Initialize view.
+	 * 
+	 * Must be run before reusing the view.
+	 */
 	private void initialize() {
 		newLevel = false;
 		fileNeedsToBeUploaded = false;
@@ -75,138 +138,158 @@ public class LevelOptionsControl extends OkCancelDialog {
 		fileUpLoadControl.setInput("");
 		fileUpLoadControl.setBadInput(false);
 		levelNameLabel.removeStyleName("badLabel");
-		checkForLegalContent();
+		validateContent();
 		center();
-		getData();
+		gatherData();
 	}
 
+	/**
+	 * Create content for the view.
+	 */
 	private void createContent() {
-		dmGrid = getCenterGrid();
-		dmGrid.clear();
-		dmGrid.resize(10, 2);
+		centerGrid = getCenterGrid();
+		centerGrid.clear();
+		centerGrid.resize(10, 2);
 		createShowGrid();
 		createGridSizeEntry();
 		createGridOffsetX();
 		createGridOffsetY();
 		createLevelName();
-		createDownloadLevel();
+		createDownloadLevelPicture();
 		createUploadLevel();
 		createNewLevel();
 	}
 
+	/**
+	 * Create new level content.
+	 */
 	private void createNewLevel() {
 		createNewLevelButton = new Button("Create New Level");
 		createNewLevelButton.setStyleName("ribbonBarLabel");
 		createNewLevelButton.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				handleCreateNewLevel();
 			}
 		});
-		dmGrid.setWidget(7, 0, createNewLevelButton);
+		centerGrid.setWidget(7, 0, createNewLevelButton);
 	}
 
+	/**
+	 * Create upload level content.
+	 */
 	private void createUploadLevel() {
-		 fileUpLoadControl = new FileUpLoadControl("Select level Picture:  ");
-		 fileUpLoadControl.addChangeHandler(new ChangeHandler() {
+		fileUpLoadControl = new FileUpLoadControl("Select level Picture:  ");
+		fileUpLoadControl.addChangeHandler(new ChangeHandler() {
 
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 				fileSelected();
 			}
 		});
 		fileUpLoadControl.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 
 			@Override
-			public void onSubmitComplete(SubmitCompleteEvent event) {
+			public void onSubmitComplete(final SubmitCompleteEvent event) {
 				uploadComplete(event);
 			}
 		});
-		dmGrid.setWidget(5, 0, fileUpLoadControl);
-		Element element = dmGrid.getCellFormatter().getElement(5, 0);
+		centerGrid.setWidget(5, 0, fileUpLoadControl);
+		Element element = centerGrid.getCellFormatter().getElement(5, 0);
 		element.setAttribute("colspan", "3");
 	}
 
-	private void createDownloadLevel() {
+	/**
+	 * Create download level picture content.
+	 */
+	private void createDownloadLevelPicture() {
 		downloadLevelPicture = new Button("Download Level Picture");
 		downloadLevelPicture.setStyleName("ribbonBarLabel");
 		downloadLevelPicture.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentLevelData();
 				ServiceManager.getDungeonManager().downloadDungeonFile(levelData.getLevelDrawing());
 			}
 		});
-		dmGrid.setWidget(4, 0, downloadLevelPicture);
+		centerGrid.setWidget(4, 0, downloadLevelPicture);
 	}
 
+	/**
+	 * Create show grid content.
+	 */
 	private void createShowGrid() {
 		showGrid = new CheckBox("Show Grid");
 		showGrid.setStyleName("ribbonBarLabel");
 		showGrid.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
-		showGrid.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				showGridClicked();
-			}
-		});
-		dmGrid.setWidget(1, 0, showGrid);
+		centerGrid.setWidget(1, 0, showGrid);
 	}
 
+	/**
+	 * Create grid size content.
+	 */
 	private void createGridSizeEntry() {
 		gridSize = new LabeledTextBox("Grid Size", 0.0);
 		gridSize.addChangeHandler(new ChangeHandler() {
 
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 			}
 		});
 		gridSize.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 			}
 		});
-		dmGrid.setWidget(1, 1, gridSize);
+		centerGrid.setWidget(1, 1, gridSize);
 	}
 
+	/**
+	 * Create X grid offset content.
+	 */
 	private void createGridOffsetX() {
 		gridOffsetX = new LabeledTextBox("Grid Offset X", 0.0);
 		gridOffsetX.addChangeHandler(new ChangeHandler() {
 
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 			}
 		});
 		gridOffsetX.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 			}
 		});
-		dmGrid.setWidget(2, 0, gridOffsetX);
+		centerGrid.setWidget(2, 0, gridOffsetX);
 	}
 
+	/**
+	 * Create Y grid offset content.
+	 */
 	private void createGridOffsetY() {
 		gridOffsetY = new LabeledTextBox("Grid Offset Y", 0.0);
 		gridOffsetY.addChangeHandler(new ChangeHandler() {
 
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 			}
 		});
 		gridOffsetY.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 			}
 		});
-		dmGrid.setWidget(2, 1, gridOffsetY);
+		centerGrid.setWidget(2, 1, gridOffsetY);
 	}
 
+	/**
+	 * Create level name content.
+	 */
 	private void createLevelName() {
 		levelNameLabel = new Label("Level Name");
 		levelNameLabel.setStyleName("ribbonBarLabel");
@@ -214,40 +297,43 @@ public class LevelOptionsControl extends OkCancelDialog {
 		levelName.addValueChangeHandler(new ValueChangeHandler<String>() {
 
 			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				checkForLegalContent();
+			public void onValueChange(final ValueChangeEvent<String> event) {
+				validateContent();
 			}
 		});
 		levelName.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				checkForLegalContent();
+			public void onKeyUp(final KeyUpEvent event) {
+				validateContent();
 			}
 		});
 
 		levelName.setStyleName("ribbonBarLabel");
-		dmGrid.setWidget(0, 0, levelNameLabel);
-		dmGrid.setWidget(0, 1, levelName);
+		centerGrid.setWidget(0, 0, levelNameLabel);
+		centerGrid.setWidget(0, 1, levelName);
 	}
 
+	/**
+	 * Setup event handlers.
+	 */
 	private void setupEventHandlers() {
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataLoaded) {
-					getData();
+					gatherData();
 					return;
 				}
 				if (event.getReasonForAction() == ReasonForAction.DungeonSelectedLevelChanged) {
-					getData();
+					gatherData();
 					return;
 				}
 			}
 		});
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
-			public void onResize(ResizeEvent event) {
+			public void onResize(final ResizeEvent event) {
 				if (isShowing()) {
 					center();
 				}
@@ -255,38 +341,53 @@ public class LevelOptionsControl extends OkCancelDialog {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void onOkClick(ClickEvent event) {
+	protected void onOkClick(final ClickEvent event) {
 		acceptChanges();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void onCancelClick(ClickEvent event) {
+	protected void onCancelClick(final ClickEvent event) {
 		close();
 	}
 
-	protected void showGridClicked() {
-	}
-
+	/**
+	 * close dialog.
+	 */
 	public void close() {
 		hide();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void show() {
 		super.show();
 		initialize();
 	}
 
-	private void getData() {
+	/**
+	 * Gather data.
+	 */
+	private void gatherData() {
 		currentLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
 		if (currentLevel == null) {
 			return;
 		}
 		addLevelDataToForm();
-		checkForLegalContent();
+		validateContent();
 	}
 
+	/**
+	 * Add level to form.
+	 */
 	private void addLevelDataToForm() {
 		showGrid.setValue(ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid());
 		gridSize.setValue(currentLevel.getGridSize());
@@ -295,25 +396,35 @@ public class LevelOptionsControl extends OkCancelDialog {
 		levelName.setValue(currentLevel.getLevelName());
 	}
 
+	/**
+	 * File was selected.
+	 */
 	protected void fileSelected() {
 		fileNeedsToBeUploaded = true;
 		legalFile = false;
 		String filename = fileUpLoadControl.getFilename().toLowerCase();
 		if (filename.length() == 0) {
 			Window.alert("No File Specified!");
-			checkForLegalContent();
+			validateContent();
 			return;
 		}
 		isValidPictureExtension(filename);
-		checkForLegalContent();
+		validateContent();
 	}
 
-	private void isValidPictureExtension(String filename) {
+	/**
+	 * Is this a valid picture extension.
+	 * @param filename to test
+	 */
+	private void isValidPictureExtension(final String filename) {
 		int i = filename.lastIndexOf('.');
 		fileExtension = i > 0 ? filename.substring(i + 1) : "";
 		legalFile = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
 	}
 
+	/**
+	 * Accept changes to level.
+	 */
 	private void acceptChanges() {
 		if (fileNeedsToBeUploaded && legalFile) {
 			String baseURL = ServiceManager.getDungeonManager().getUrlToDungeonData();
@@ -322,10 +433,14 @@ public class LevelOptionsControl extends OkCancelDialog {
 			String filePath = baseURL + pictureName;
 			uploadFile(filePath);
 		} else {
-			acceptChangedPart2();
+			acceptChangesToDungeonLevel();
 		}
 	}
 
+	/**
+	 * Get correct level number.
+	 * @return correct level number as string.
+	 */
 	private String getCorrectLevelString() {
 		if (newLevel) {
 			return ("" + (ServiceManager.getDungeonManager().getNextLevelNumber()));
@@ -334,7 +449,10 @@ public class LevelOptionsControl extends OkCancelDialog {
 		}
 	}
 
-	private void acceptChangedPart2() {
+	/**
+	 * accept Changes To Dungeon Level.
+	 */
+	private void acceptChangesToDungeonLevel() {
 		DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentLevelData();
 		if (levelData == null) {
 			close();
@@ -356,7 +474,11 @@ public class LevelOptionsControl extends OkCancelDialog {
 		close();
 	}
 
-	private void uploadFile(String serverPath) {
+	/**
+	 * Up load file.
+	 * @param serverPath path on server
+	 */
+	private void uploadFile(final String serverPath) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("filePath", serverPath);
 		String url = DataRequester.buildUrl("FILEUPLOAD", parameters);
@@ -366,16 +488,23 @@ public class LevelOptionsControl extends OkCancelDialog {
 		fileUpLoadControl.submit();
 	}
 
-	protected void uploadComplete(SubmitCompleteEvent event) {
+	/**
+	 * Upload complete.
+	 * @param event with data
+	 */
+	protected void uploadComplete(final SubmitCompleteEvent event) {
 		String results = event.getResults();
 		if (!results.isEmpty()) {
 			Window.alert("Failed to upload picture " + results);
 			return;
 		}
-		acceptChangedPart2();
+		acceptChangesToDungeonLevel();
 	}
 
-	private void checkForLegalContent() {
+	/**
+	 * Validate content.
+	 */
+	private void validateContent() {
 		boolean isOK = true;
 		if (fileNeedsToBeUploaded) {
 			if (!legalFile) {
@@ -394,12 +523,15 @@ public class LevelOptionsControl extends OkCancelDialog {
 		enableOk(isOK);
 	}
 
+	/**
+	 * Handle create new level.
+	 */
 	protected void handleCreateNewLevel() {
 		initialize();
 		currentLevel = (DungeonLevel) JavaScriptObject.createObject().cast();
 		fileNeedsToBeUploaded = true;
 		addLevelDataToForm();
 		newLevel = true;
-		checkForLegalContent();
+		validateContent();
 	}
 }

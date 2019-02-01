@@ -343,7 +343,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 		calculateStartingZoom();
 		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
-		mainDraw();
+		drawEverything();
 	}
 
 	/**
@@ -375,7 +375,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		totalZoom = zoom;
 		getGridData();
-		mainDraw();
+		drawEverything();
 	}
 
 	/**
@@ -448,7 +448,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		offsetX += (xPos - mouseDownXPos);
 		offsetY += (yPos - mouseDownYPos);
 		try {
-			mainDraw();
+			drawEverything();
 		} catch (Exception ex) {
 			mouseDownXPos = xPos;
 			mouseDownYPos = yPos;
@@ -474,7 +474,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Main method for drawing image.
 	 */
-	public final void mainDraw() {
+	public final void drawEverything() {
 		calculateDimensions();
 		backCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing, imageHeight + gridSpacing);
 		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
@@ -673,7 +673,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		PogCanvas dragPog = updateOrCreatePogCanvasForTHisCell();
 		if (dragPog != null) {
 			removeHighlightGridSquare();
-			mainDraw();
+			drawEverything();
 		}
 	}
 
@@ -722,7 +722,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (pogData.isThisAPlayer()) {
 			clonePog = pogData;
 		} else {
-			clonePog = ServiceManager.getDungeonManager().createPogInstance(pogData);
+			clonePog = pogData.clone();
 		}
 		clonePog.setPogColumn(dragColumn);
 		clonePog.setPogRow(dragRow);
@@ -871,7 +871,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		addMonsterPogs();
 		addPlayerPogs();
 		addRoomPogs();
-		mainDraw();
+		drawEverything();
 	}
 
 	/**

@@ -18,33 +18,93 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * Control for handling login.
+ * 
+ * @author LLambert
+ *
+ */
 public class LoginControl extends PopupPanel {
+	/**
+	 * My style.
+	 * 
+	 * @author LLambert
+	 *
+	 */
 	interface MyStyle extends CssResource {
+		/**
+		 * Get style for session label.
+		 * 
+		 * @return style name.
+		 */
 		String sessionLabel();
 	}
 
+	/**
+	 * interface to binder.
+	 * 
+	 * @author LLambert
+	 *
+	 */
 	interface MyBinder extends UiBinder<Widget, LoginControl> {
 	}
 
+	/**
+	 * UI binder.
+	 */
 	private static MyBinder binder = GWT.create(MyBinder.class);
 
+	/**
+	 * Login button.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	Button btnLogin;
+	/**
+	 * User name.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	TextBox txtUserName;
+	/**
+	 * Password.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField(provided = true)
 	TextBox txtPassword;
+	/**
+	 * label for user name.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	LabelElement labelUserName;
+	/**
+	 * Label for password.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	LabelElement labelPassword;
+	/**
+	 * Label for errors.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	LabelElement loginError;
+	/**
+	 * title.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	HeadingElement headerTitle;
 
+	/**
+	 * Presenter for view.
+	 */
 	private LoginPresenter presenter;
 
+	/**
+	 * Constructor for login control.
+	 */
 	public LoginControl() {
 		setStyleName("");
 
@@ -57,6 +117,9 @@ public class LoginControl extends PopupPanel {
 		Window.addResizeHandler(repositionOnResize);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onLoad() {
 		super.onLoad();
@@ -75,33 +138,59 @@ public class LoginControl extends PopupPanel {
 		headerTitle.setInnerText("Title");
 	}
 
+	/**
+	 * User name has changed.
+	 * @param event data
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiHandler("txtUserName")
-	void userNameChanged(ChangeEvent event) {
+	void userNameChanged(final ChangeEvent event) {
 		presenter.setUsername(txtUserName.getText());
 	}
 
+	/**
+	 * Pasword changed.
+	 * @param event data.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiHandler("txtPassword")
-	void passwordChanged(ChangeEvent event) {
+	void passwordChanged(final ChangeEvent event) {
 		presenter.setPassword(txtPassword.getText());
 	}
 
+	/**
+	 * Ok button pressed.
+	 * @param event data
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiHandler("btnLogin")
-	void login(ClickEvent event) {
+	void login(final ClickEvent event) {
 		presenter.ok();
 	}
 
+	/**
+	 * Update view.
+	 */
 	public void update() {
 		displayMessage(presenter.getMessage());
 		setEnable(presenter.getIsEnabled());
 	}
 
-	void setEnable(boolean enable) {
+	/**
+	 * Enable or disable controls.
+	 * @param enable data
+	 */
+	void setEnable(final boolean enable) {
 		btnLogin.setEnabled(enable);
 		txtUserName.setEnabled(enable);
 		txtPassword.setEnabled(enable);
 	}
 
-	void displayMessage(String message) {
+	/**
+	 * display a message.
+	 * @param message to display
+	 */
+	void displayMessage(final String message) {
 		loginError.setInnerHTML(message);
 		if (!message.isEmpty()) {
 			loginError.getStyle().setProperty("visibility", "visible");
@@ -110,12 +199,18 @@ public class LoginControl extends PopupPanel {
 		}
 	}
 
+	/**
+	 * Close view.
+	 */
 	public void close() {
 		hide();
 	}
 
+	/**
+	 * add re-size handler.
+	 */
 	private ResizeHandler repositionOnResize = new ResizeHandler() {
-		public void onResize(ResizeEvent event) {
+		public void onResize(final ResizeEvent event) {
 			if (isShowing()) {
 				center();
 			}

@@ -8,32 +8,75 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 
+/**
+ * Base dialog for dialogs needing OK and cancel buttons.
+ * @author LLambert
+ *
+ */
 public class OkCancelDialog extends ResizableDialog {
+	/**
+	 * Dock layout panel.
+	 */
 	private DockLayoutPanel dockLayoutPanel;
+	/**
+	 * Grid for sub-classes to use for content.
+	 */
 	private Grid centerGrid;
+	/**
+	 * OK button.
+	 */
 	private Button ok;
+	/**
+	 * Cancel button.
+	 */
 	private Button cancel;
+	/**
+	 * Panel to hold center content.
+	 */
 	private FlowPanel centerContent;
+	/**
+	 * Content on south side of dialog.
+	 */
 	private HorizontalPanel southContent;
 
+	/**
+	 * grid for user content.
+	 * @return grid for user content.
+	 */
 	protected Grid getCenterGrid() {
 		return (centerGrid);
 	}
 
+	/**
+	 * Constructor.
+	 */
 	public OkCancelDialog() {
 		this("", false, false);
 	}
 
-	public OkCancelDialog(String caption, boolean okVisible, boolean cancelVisble) {
+	/**
+	 * Constructor.
+	 * @param caption for dialog
+	 * @param okVisible true if OK button is visible.
+	 * @param cancelVisble true if Cancel button is visible
+	 */
+	public OkCancelDialog(final String caption, final boolean okVisible, final boolean cancelVisble) {
 		this(caption, okVisible, cancelVisble, 400, 350);
 	}
 
-	public OkCancelDialog(String caption, boolean okVisible, boolean cancelVisble, int height, int width) {
+	/**
+	 * Constructor.
+	 * @param caption for dialog
+	 * @param okVisible true if OK button is visible.
+	 * @param cancelVisble true if Cancel button is visible
+	 * @param height of dialog
+	 * @param width of dialog
+	 */
+	public OkCancelDialog(final String caption, final boolean okVisible, final boolean cancelVisble, final int height, final int width) {
 		super();
 		setText(caption);
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
@@ -45,6 +88,9 @@ public class OkCancelDialog extends ResizableDialog {
 		dockLayoutPanel.setHeight("" + height + "px");
 	}
 
+	/**
+	 * Create content.
+	 */
 	private void createContent() {
 		dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.setStyleName("popupPanel");
@@ -54,7 +100,7 @@ public class OkCancelDialog extends ResizableDialog {
 		ok.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onOkClick(event);
 			}
 		});
@@ -63,7 +109,7 @@ public class OkCancelDialog extends ResizableDialog {
 		cancel.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onCancelClick(event);
 			}
 		});
@@ -78,9 +124,15 @@ public class OkCancelDialog extends ResizableDialog {
 		setWidget(dockLayoutPanel);
 	}
 
+	/**
+	 * Initialize content.
+	 */
 	private void initialize() {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void OnWindowResized() {
 		super.OnWindowResized();
@@ -90,6 +142,9 @@ public class OkCancelDialog extends ResizableDialog {
 		dockLayoutPanel.setHeight("" + height + "px");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void show() {
 		super.show();
@@ -97,21 +152,42 @@ public class OkCancelDialog extends ResizableDialog {
 	}
 
 
-	public void enableOk(boolean enable) {
+	/**
+	 * enable or disable OK button.
+	 * @param enable true to enable.
+	 */
+	public void enableOk(final boolean enable) {
 		enableWidget(ok, enable);
 	}
 
-	public void enableCancel(boolean enable) {
+	/**
+	 * enable or disable Cancel button.
+	 * @param enable true to enable.
+	 */
+	public void enableCancel(final boolean enable) {
 		enableWidget(cancel, enable);
 	}
 
-	protected void onOkClick(ClickEvent event) {
+	/**
+	 * OK button clicked.
+	 * @param event data
+	 */
+	protected void onOkClick(final ClickEvent event) {
 	}
 
-	protected void onCancelClick(ClickEvent event) {
+	/**
+	 * Cancel button clicked.
+	 * @param event data
+	 */
+	protected void onCancelClick(final ClickEvent event) {
 	}
 
-	public static void enableWidget(Widget widget, boolean enable) {
+	/**
+	 * Enable or Disable widget.
+	 * @param widget to enable
+	 * @param enable true if enabled
+	 */
+	public static void enableWidget(final Widget widget, final boolean enable) {
 		if (enable) {
 			widget.getElement().removeAttribute("disabled");
 		} else {

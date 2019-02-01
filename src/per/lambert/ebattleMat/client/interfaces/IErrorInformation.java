@@ -6,15 +6,19 @@ package per.lambert.ebattleMat.client.interfaces;
  */
 public interface IErrorInformation {
 	/**
-	 * Get any exception thrown while executing
+	 * Get any exception thrown while executing.
 	 * @return exception if there was one else null
 	 */
 	Throwable	getException();
 	/**
-	 * Get error from execution
+	 * Get error from execution.
 	 * @return GatewayErrors error
 	 */
 	DungeonServerError getError();
 	
+	/**
+	 * get proper error message.
+	 * @return error message.
+	 */
 	String getErrorMessage();
 }

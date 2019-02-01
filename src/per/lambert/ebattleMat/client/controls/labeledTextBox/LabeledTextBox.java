@@ -11,37 +11,81 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * Text Box with a preceeding label.
+ * 
+ * @author LLambert
+ *
+ */
 public class LabeledTextBox extends Composite {
 
+	/**
+	 * UI Binder.
+	 */
 	private static LabeledTextBoxUiBinder uiBinder = GWT.create(LabeledTextBoxUiBinder.class);
 
+	/**
+	 * Interface to binder.
+	 * 
+	 * @author LLambert
+	 *
+	 */
 	interface LabeledTextBoxUiBinder extends UiBinder<Widget, LabeledTextBox> {
 	}
 
+	/**
+	 * Textbox contains a double.
+	 */
 	private boolean asDouble;
 
-	public LabeledTextBox(String labelText, String editText) {
+	/**
+	 * Constructor for text box.
+	 * 
+	 * @param labelText label text
+	 * @param editText edit text
+	 */
+	public LabeledTextBox(final String labelText, final String editText) {
 		initWidget(uiBinder.createAndBindUi(this));
 		asDouble = false;
 		setLabelText(labelText);
 	}
 
-	public LabeledTextBox(String labelText, Double vale) {
+	/**
+	 * Constructor for text box.
+	 * 
+	 * @param labelText label text
+	 * @param value edit text
+	 */
+	public LabeledTextBox(final String labelText, final Double value) {
 		initWidget(uiBinder.createAndBindUi(this));
 		asDouble = true;
 		setLabelText(labelText);
 	}
 
+	/**
+	 * Label for text box.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	Label textBoxLabel;
-
+	/**
+	 * Text box.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	TextBox textBox;
+	/**
+	 * text box for double value.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	DoubleBox doubleBox;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void onLoad() {
+	protected final void onLoad() {
 		super.onLoad();
 		if (asDouble) {
 			textBox.setVisible(false);
@@ -52,27 +96,51 @@ public class LabeledTextBox extends Composite {
 		}
 	}
 
-	public void setLabelText(String labelText) {
+	/**
+	 * Set label text.
+	 * @param labelText to set
+	 */
+	public final void setLabelText(final String labelText) {
 		textBoxLabel.setText(labelText);
 	}
 
-	public void setValue(String value) {
+	/**
+	 * Set text box value.
+	 * @param value to set
+	 */
+	public final void setValue(final String value) {
 		textBox.setValue(value);
 	}
 
-	public void setValue(Double value) {
+	/**
+	 * Set double box value.
+	 * @param value to set
+	 */
+	public final void setValue(final Double value) {
 		doubleBox.setValue(value);
 	}
 
-	public String getTextValue() {
+	/**
+	 * Get text box value.
+	 * @return value
+	 */
+	public final String getTextValue() {
 		return (textBox.getValue());
 	}
 
-	public Double getDoubleValue() {
+	/**
+	 * Get double box value.
+	 * @return value
+	 */
+	public final Double getDoubleValue() {
 		return (doubleBox.getValue());
 	}
 
-	public void addChangeHandler(ChangeHandler changeHandler) {
+	/**
+	 * Add value changed handler.
+	 * @param changeHandler to add
+	 */
+	public final void addChangeHandler(final ChangeHandler changeHandler) {
 		if (asDouble) {
 			doubleBox.addChangeHandler(changeHandler);
 		} else {
@@ -80,7 +148,11 @@ public class LabeledTextBox extends Composite {
 		}
 	}
 
-	public void addKeyUpHandler(KeyUpHandler keyUpHandler) {
+	/**
+	 * Add key up handler.
+	 * @param keyUpHandler to add.
+	 */
+	public final void addKeyUpHandler(final KeyUpHandler keyUpHandler) {
 		if (asDouble) {
 			doubleBox.addKeyUpHandler(keyUpHandler);
 		} else {

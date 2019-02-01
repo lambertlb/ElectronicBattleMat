@@ -19,12 +19,6 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.dom.client.TouchEndEvent;
-import com.google.gwt.event.dom.client.TouchEndHandler;
-import com.google.gwt.event.dom.client.TouchMoveEvent;
-import com.google.gwt.event.dom.client.TouchMoveHandler;
-import com.google.gwt.event.dom.client.TouchStartEvent;
-import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -42,13 +36,33 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
-public class PogCanvas extends Composite implements HasDragStartHandlers, MouseDownHandler, TouchStartHandler, TouchMoveHandler, TouchEndHandler {
+/**
+ * Pog canvas.
+ * 
+ * This is used to display the picture for a Pog.
+ * 
+ * @author LLambert
+ *
+ */
+public class PogCanvas extends Composite implements HasDragStartHandlers, MouseDownHandler {
 
+	/**
+	 * UI Binder.
+	 */
 	private static ScalablePogUiBinder uiBinder = GWT.create(ScalablePogUiBinder.class);
 
+	/**
+	 * Interface for UI binder.
+	 * 
+	 * @author LLambert
+	 *
+	 */
 	interface ScalablePogUiBinder extends UiBinder<Widget, PogCanvas> {
 	}
 
+	/**
+	 * Canvas for drawing pog.
+	 */
 	private Canvas canvas = Canvas.createIfSupported();
 	/**
 	 * Canvas context for drawing.
@@ -62,6 +76,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * background context for drawing.
 	 */
 	private Context2d backContext = backCanvas.getContext2d();
+	/**
+	 * Image of pog.
+	 */
 	private Image image = new Image();
 	/**
 	 * image context for drawing.
@@ -88,50 +105,104 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * current zoom factor for image.
 	 */
 	private double totalZoom = 1;
+	/**
+	 * Pog data.
+	 */
 	private PogData pogData;
 
+	/**
+	 * Get Pog data.
+	 * 
+	 * @return pog data.
+	 */
 	public PogData getPogData() {
 		return pogData;
 	}
 
-	public void setPogData(PogData pogData) {
+	/**
+	 * Set pog data.
+	 * 
+	 * @param pogData pog data
+	 */
+	public void setPogData(final PogData pogData) {
 		setupWithPogData(pogData);
 	}
 
-	private boolean isPlayer;
-
+	/**
+	 * Get size of pog in pixels.
+	 * 
+	 * @return size of pog in pixels.
+	 */
 	public int getPogSize() {
 		return pogData.getPogSize();
 	}
 
-	public void setPogSize(int pogSize) {
+	/**
+	 * Set size of pixel.
+	 * 
+	 * @param pogSize size of pixel.
+	 */
+	public void setPogSize(final int pogSize) {
 		pogData.setPogSize(pogSize);
 	}
 
+	/**
+	 * Should image be shown.
+	 */
 	private boolean showImage = true;
+	/**
+	 * image has been loaded.
+	 */
 	private boolean imageLoaded = false;
 
+	/**
+	 * Main panel.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	SimpleLayoutPanel pogMainPanel;
 
+	/**
+	 * Panel to draw in.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	AbsolutePanel pogDrawPanel;
 
+	/**
+	 * Constructor.
+	 */
 	public PogCanvas() {
 		initWidget(uiBinder.createAndBindUi(this));
 		pogData = (PogData) JavaScriptObject.createObject().cast();
-		initialize();
+		createContent();
 	}
 
-	public PogCanvas(PogData pogData) {
+	/**
+	 * Constructor.
+	 * @param pogData data for pog
+	 */
+	public PogCanvas(final PogData pogData) {
 		initWidget(uiBinder.createAndBindUi(this));
-		initialize();
+		createContent();
 		setupWithPogData(pogData);
 	}
 
-	private void setupWithPogData(PogData pogData) {
+	/**
+	 * Setup view with this data.
+	 * @param pogData data to use.
+	 */
+	private void setupWithPogData(final PogData pogData) {
 		this.pogData = pogData;
-		isPlayer = pogData.isThisAPlayer();
+		if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
+			 pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
+			 backCanvas.getElement().getStyle().setBackgroundColor("transparent");
+			 canvas.getElement().getStyle().setBackgroundColor("transparent");
+		} else {
+			 pogDrawPanel.getElement().getStyle().setBackgroundColor("white");
+			 backCanvas.getElement().getStyle().setBackgroundColor("white");
+			 canvas.getElement().getStyle().setBackgroundColor("white");
+		}
 		if (pogData.getPogImageUrl() != "") {
 			setPogImageUrl(pogData.getPogImageUrl());
 		}
@@ -140,22 +211,22 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		}
 	}
 
-	private void initialize() {
+	/**
+	 * Create content.
+	 */
+	private void createContent() {
 		LayoutPanel hidePanel = new LayoutPanel();
 		hidePanel.setVisible(false);
 		hidePanel.add(image);
 		pogDrawPanel.add(hidePanel, -1, -1);
 		pogDrawPanel.add(canvas, 0, 0);
-		// pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
-		// backCanvas.getElement().getStyle().setBackgroundColor("transparent");
-		// canvas.getElement().getStyle().setBackgroundColor("transparent");
 		setupEventHandling();
 		getElement().setDraggable(Element.DRAGGABLE_TRUE);
 		addDragStartHandler(new DragStartHandler() {
 			@Override
-			public void onDragStart(DragStartEvent event) {
+			public void onDragStart(final DragStartEvent event) {
 				boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
-				if (ServiceManager.getDungeonManager().getFowToggle() || (!isDM && !isPlayer)) {
+				if (ServiceManager.getDungeonManager().getFowToggle() || (!isDM && !pogData.isThisAPlayer())) {
 					event.preventDefault();
 					return;
 				}
@@ -165,23 +236,26 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		});
 		addDragLeaveHandler(new DragLeaveHandler() {
 			@Override
-			public void onDragLeave(DragLeaveEvent event) {
+			public void onDragLeave(final DragLeaveEvent event) {
 				event.preventDefault();
 			}
 		});
 		canvas.addMouseDownHandler(this);
 	}
 
+	/**
+	 * Setup event handlers.
+	 */
 	private void setupEventHandling() {
 		image.addLoadHandler(new LoadHandler() {
-			public void onLoad(LoadEvent event) {
+			public void onLoad(final LoadEvent event) {
 				setImage();
 			}
 		});
 		pogDrawPanel.addDomHandler(new MouseUpHandler() {
 
 			@Override
-			public void onMouseUp(MouseUpEvent event) {
+			public void onMouseUp(final MouseUpEvent event) {
 				if (ServiceManager.getDungeonManager().getFowToggle()) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseUpEventBubble, event));
 				}
@@ -190,7 +264,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		pogDrawPanel.addDomHandler(new MouseMoveHandler() {
 
 			@Override
-			public void onMouseMove(MouseMoveEvent event) {
+			public void onMouseMove(final MouseMoveEvent event) {
 				if (ServiceManager.getDungeonManager().getFowToggle()) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseMoveEventBubble, event));
 				}
@@ -198,20 +272,32 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		}, MouseMoveEvent.getType());
 	}
 
-	public HandlerRegistration addDragStartHandler(DragStartHandler handler) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public HandlerRegistration addDragStartHandler(final DragStartHandler handler) {
 		return addBitlessDomHandler(handler, DragStartEvent.getType());
 	}
 
-	public HandlerRegistration addDragLeaveHandler(DragLeaveHandler handler) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public HandlerRegistration addDragLeaveHandler(final DragLeaveHandler handler) {
 		return addBitlessDomHandler(handler, DragLeaveEvent.getType());
 	}
 
+	/**
+	 * Set image URL
+	 */
 	public final void setImage() {
 		this.imageElement = (ImageElement) image.getElement().cast();
 		imageLoaded = true;
-		mainDraw();
+		drawEverything();
 	}
 
+	/**
+	 * Adjust canvas based on size.
+	 */
 	public final void adjustCanvases() {
 		parentWidth = pogMainPanel.getOffsetWidth();
 		parentHeight = pogMainPanel.getOffsetHeight();
@@ -253,38 +339,70 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		}
 	}
 
+	/**
+	 * Set pog name.
+	 * @param nameoFPog name of pog.
+	 */
 	public void setPogName(final String nameoFPog) {
 		pogData.setPogName(nameoFPog);
 		pogMainPanel.setTitle(pogData.getPogName());
 	}
 
+	/**
+	 * Get pog name.
+	 * @return pog name
+	 */
 	public String getPogName() {
 		return (pogData.getPogName());
 	}
 
-	public void setPogPosition(int column, int row) {
+	/**
+	 * Set position of pog in grid.
+	 * @param column to use
+	 * @param row to use
+	 */
+	public void setPogPosition(final int column, final int row) {
 		pogData.setPogColumn(column);
 		pogData.setPogRow(row);
 	}
 
+	/**
+	 * get column.
+	 * @return column
+	 */
 	public int getPogColumn() {
 		return (pogData.getPogColumn());
 	}
 
+	/**
+	 * get row.
+	 * @return row
+	 */
 	public int getPogRow() {
 		return (pogData.getPogRow());
 	}
 
-	public void setPogWidth(int width) {
+	/**
+	 * Set width of pog.
+	 * @param width of pog
+	 */
+	public void setPogWidth(final int width) {
 		int scaledWidth = width * pogData.getPogSize();
 		pogMainPanel.setWidth(scaledWidth + "px");
 		pogMainPanel.setHeight(scaledWidth + "px");
-		mainDraw();
+		drawEverything();
 	}
 
+	/**
+	 * Image count.
+	 */
 	private int imageCount = 1;
 
-	public void setPogImageUrl(String pogImageUrl) {
+	/**
+	 * Set URL for image.
+	 * @param pogImageUrl URL for image
+	 */
+	public void setPogImageUrl(final String pogImageUrl) {
 		imageLoaded = false;
 		pogData.setPogImageUrl(pogImageUrl);
 		String imageUrl;
@@ -301,7 +419,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private static final int CLEAR_OFFEST = -10;
 
-	public void mainDraw() {
+	/**
+	 * refresh view.
+	 */
+	public void drawEverything() {
 		if (!imageLoaded) {
 			return;
 		}
@@ -311,10 +432,15 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		if (showImage) {
 			backContext.drawImage(imageElement, 0, 0);
 		}
-		buffer(backContext, context);
+		handleAllDrawing(backContext, context);
 	}
 
-	public final void buffer(final Context2d back, final Context2d front) {
+	/**
+	 * Handle all canvas drawing.
+	 * @param back canvas.
+	 * @param front canvas.
+	 */
+	public final void handleAllDrawing(final Context2d back, final Context2d front) {
 		if (!pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
 			front.setFillStyle("white");
 			front.fillRect(0, 0, parentWidth, parentHeight);
@@ -327,30 +453,22 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		front.drawImage(back.getCanvas(), 0, 0);
 	}
 
-	public void showImage(boolean showing) {
+	/**
+	 * Show the image if true.
+	 * @param showing trueif image should be shown
+	 */
+	public void showImage(final boolean showing) {
 		showImage = showing;
-		mainDraw();
+		drawEverything();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void onMouseDown(MouseDownEvent event) {
+	public void onMouseDown(final MouseDownEvent event) {
 		if (ServiceManager.getDungeonManager().getFowToggle()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
 		}
-	}
-
-	@Override
-	public void onTouchEnd(TouchEndEvent event) {
-		event.preventDefault();
-	}
-
-	@Override
-	public void onTouchMove(TouchMoveEvent event) {
-		event.preventDefault();
-	}
-
-	@Override
-	public void onTouchStart(TouchStartEvent event) {
-		event.preventDefault();
 	}
 }

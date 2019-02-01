@@ -8,54 +8,120 @@ import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 
+/**
+ * Login control presenter.
+ * 
+ * @author LLambert
+ *
+ */
 public class LoginPresenter {
 
+	/**
+	 * View to manage.
+	 */
 	private LoginControl view;
 
-	String message = "";
+	/**
+	 * Message about login.
+	 */
+	private String message = "";
 
+	/**
+	 * Get message.
+	 * 
+	 * @return message
+	 */
 	public String getMessage() {
 		return message;
 	}
 
+	/**
+	 * set message.
+	 * 
+	 * @param message to set
+	 */
+	public void setMessage(final String message) {
+		this.message = message;
+	}
+
+	/**
+	 * User name.
+	 */
 	private String username;
 
+	/**
+	 * get user name.
+	 * 
+	 * @return user name
+	 */
 	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username) {
+	/**
+	 * Set user name.
+	 * 
+	 * @param username to set
+	 */
+	public void setUsername(final String username) {
 		this.username = username;
 	}
 
+	/**
+	 * password.
+	 */
 	private String password;
 
+	/**
+	 * get password.
+	 * 
+	 * @return password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	/**
+	 * Set password.
+	 * 
+	 * @param password to set
+	 */
+	public void setPassword(final String password) {
 		this.password = password;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+	/**
+	 * Is enabled.
+	 */
+	private boolean isEnabled;
 
-	boolean isEnabled;
-
+	/**
+	 * get is enabled.
+	 * @return is enabled
+	 */
 	public boolean getIsEnabled() {
 		return isEnabled;
 	}
 
-	public void setIsEnabled(boolean isEnabled) {
+	/**
+	 * Set is enabled.
+	 * @param isEnabled if set
+	 */
+	public void setIsEnabled(final boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
 
-	public void setView(LoginControl view) {
+	/**
+	 * Set view.
+	 * @param view to set
+	 */
+	public void setView(final LoginControl view) {
 		this.view = view;
 	}
 
+	/**
+	 * Ok button pressed.
+	 */
 	public void ok() {
 		setIsEnabled(false);
 		view.update();
@@ -70,13 +136,18 @@ public class LoginPresenter {
 				if (dungeonManagement.getLastError() == DungeonServerError.Succsess) {
 					view.close();
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.Login, null));
-				} else
+				} else {
 					loginComplete("Login Fail");
+				}
 			}
 		});
 	}
 
-	void loginComplete(String message) {
+	/**
+	 * Login complete.
+	 * @param message to display on view
+	 */
+	void loginComplete(final String message) {
 		setMessage(message);
 		setIsEnabled(true);
 		view.update();
