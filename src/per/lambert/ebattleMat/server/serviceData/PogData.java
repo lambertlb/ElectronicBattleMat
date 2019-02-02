@@ -1,25 +1,87 @@
 package per.lambert.ebattleMat.server.serviceData;
 
+/**
+ * Pog data server side.
+ * 
+ * @author LLambert
+ *
+ */
 public class PogData {
-	public int pogSize;
-	public int pogColumn;
-	public int pogRow;
-	public int playerFlags;
-	public int dungeonMasterFlags;
-	public int dungeonLevel;
-	public String pogName;
-	public String pogImageUrl;
-	public String pogType;
-	public String uuid;
-	public String templateUUID;
-	public String pogClass;
-	public String race;
+	/**
+	 * Size of pog in grid squares.
+	 */
+	private int pogSize;
+	/**
+	 * Column pog is in grid.
+	 */
+	private int pogColumn;
+	/**
+	 * Row pog is in grid.
+	 */
+	private int pogRow;
+	/**
+	 * Flag bits for player.
+	 */
+	private int playerFlags;
+	/**
+	 * Flag bits for dungeon master.
+	 */
+	private int dungeonMasterFlags;
+	/**
+	 * Level of dungeon pog is on.
+	 */
+	private int dungeonLevel;
+	/**
+	 * Name of pog.
+	 */
+	private String pogName;
+	/**
+	 * URL of pog image.
+	 */
+	private String pogImageUrl;
+	/**
+	 * Type of Pog.
+	 */
+	private String pogType;
+	/**
+	 * UUID of pog instance.
+	 */
+	private String uuid;
+	/**
+	 * UUID of template this pog was created from.
+	 */
+	private String templateUUID;
+	/**
+	 * Class of pog.
+	 */
+	private String pogClass;
+	/**
+	 * Race of pog.
+	 */
+	private String race;
 
+	/**
+	 * Constructor.
+	 */
 	public PogData() {
 	}
 
-	public PogData(PogData pogData) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param pogData to clone
+	 */
+	public PogData(final PogData pogData) {
 		pogSize = pogData.pogSize;
+		copyData(pogData);
+	}
+
+	/**
+	 * Copy data from a different pog.
+	 * 
+	 * @param pogData with data to copy.
+	 */
+	private void copyData(final PogData pogData) {
 		pogColumn = pogData.pogColumn;
 		pogRow = pogData.pogRow;
 		playerFlags = pogData.playerFlags;
@@ -34,22 +96,64 @@ public class PogData {
 		race = pogData.race;
 	}
 
+	/**
+	 * Update pog with new data.
+	 * @param withUpdates with updates
+	 */
+	public void updatePog(final PogData withUpdates) {
+		this.pogColumn = withUpdates.pogColumn;
+		this.pogRow = withUpdates.pogRow;
+		dungeonLevel = withUpdates.dungeonLevel;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public PogData clone() {
 		PogData clone = new PogData();
-		clone.pogSize = pogSize;
-		clone.pogColumn = pogColumn;
-		clone.pogRow = pogRow;
-		clone.playerFlags = playerFlags;
-		clone.dungeonMasterFlags = dungeonMasterFlags;
-		clone.dungeonLevel = dungeonLevel;
-		clone.pogName = pogName;
-		clone.pogImageUrl = pogImageUrl;
-		clone.pogType = pogType;
-		clone.uuid = uuid;
-		clone.templateUUID = templateUUID;
-		clone.pogClass = pogClass;
-		clone.race = race;
+		clone.copyData(this);
 		return (clone);
 	}
 
+	/**
+	 * Is pog this type?
+	 * 
+	 * @param typeToCheck type to check
+	 * @return true if is
+	 */
+	public boolean isType(final String typeToCheck) {
+		return (pogType.equals(typeToCheck));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(final Object toCompare) {
+		if (toCompare instanceof PogData) {
+			return (equals((PogData) toCompare));
+		}
+		return (false);
+	}
+
+	/**
+	 * Are these the same?
+	 * 
+	 * @param toCompare to compare
+	 * @return true if same uuid
+	 */
+	public boolean equals(final PogData toCompare) {
+		if (toCompare == null) {
+			return (false);
+		}
+		return (uuid.equals(toCompare.uuid));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		return uuid.hashCode();
+	}
 }

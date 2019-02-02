@@ -163,10 +163,8 @@ public class SessionInformation {
 
 	private void updatePogCollection(PogData[] pogCollection, PogData pogData) {
 		for (PogData pog : pogCollection) {
-			if (pog.uuid.equals(pogData.uuid)) {
-				pog.pogColumn = pogData.pogColumn;
-				pog.pogRow = pogData.pogRow;
-				pog.dungeonLevel = pogData.dungeonLevel;
+			if (pog.equals(pogData)) {
+				pog.updatePog(pogData);
 				break;
 			}
 		}

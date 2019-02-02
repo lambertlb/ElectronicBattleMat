@@ -280,7 +280,7 @@ public abstract class PogManager implements IPogManager {
 	 * 
 	 * @param roomObjectTemplate to add.
 	 */
-	private void addRoomObjectToCollections(PogData roomObjectTemplate) {
+	private void addRoomObjectToCollections(final PogData roomObjectTemplate) {
 		if (!roomObjectTemplate.getPogClass().isEmpty()) {
 			if (!roomObjectClasses.containsKey(roomObjectTemplate.getPogClass())) {
 				roomObjectClasses.put(roomObjectTemplate.getPogClass(), roomObjectTemplate.getPogClass());

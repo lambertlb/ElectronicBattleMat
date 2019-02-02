@@ -287,7 +287,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Set image URL
+	 * Set image URL.
 	 */
 	public final void setImage() {
 		this.imageElement = (ImageElement) image.getElement().cast();

@@ -14,25 +14,44 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
 import per.lambert.ebattleMat.server.serviceData.ServiceResponseData;
 
 /**
- * Login handler
+ * Login handler.
  * 
  * @author LLambert
  *
  */
 public class LoginHandler implements IWebRequestHandler {
 
+	/**
+	 * Response data for login.
+	 * @author LLambert
+	 *
+	 */
 	public class LoginResponseData extends ServiceResponseData {
+		/**
+		 * Token for user.
+		 */
 		private int token;
 
+		/**
+		 * get token.
+		 * @return token
+		 */
 		public int getToken() {
 			return token;
 		}
 
-		public void setToken(int token) {
+		/**
+		 * Set token.
+		 * @param token to set
+		 */
+		public void setToken(final int token) {
 			this.token = token;
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final void handleRequest(final HttpServletRequest request, final HttpServletResponse resp,
 			final HttpServlet servlet, final String jsonData) throws ServletException, IOException {

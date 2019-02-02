@@ -656,11 +656,11 @@ public final class DungeonsManager {
 			}
 			Gson gson = new Gson();
 			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
-			if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+			if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
 				sessionInformation.saveMonsterPog(pogData, currentLevel, needToAdd);
-			} else if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
+			} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
 				sessionInformation.saveRoomObjectPog(pogData, currentLevel, needToAdd);
-			} else if (pogData.pogType.equals(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+			} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_PLAYER)) {
 				sessionInformation.savePlayerPog(pogData, currentLevel, needToAdd);
 			}
 		} finally {
