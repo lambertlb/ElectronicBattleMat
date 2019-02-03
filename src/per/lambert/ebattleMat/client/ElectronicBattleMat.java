@@ -5,7 +5,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatLayout;
-import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
+import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.controls.loginControl.LoginControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
@@ -28,7 +28,7 @@ public class ElectronicBattleMat implements EntryPoint {
 	/**
 	 * dungeon select control.
 	 */
-	private DungeonSelectControl dungeonSelectControl;
+	private DungeonSelectDialog dungeonSelectControl;
 	/**
 	 * timer to run tasks periodically.
 	 */
@@ -120,10 +120,6 @@ public class ElectronicBattleMat implements EntryPoint {
 					layout.dungeonDataChanged();
 					return;
 				}
-				if (event.getReasonForAction() == ReasonForAction.SelectNewDungeon) {
-					showDungeonManagerDialog();
-					return;
-				}
 				if (event.getReasonForAction() == ReasonForAction.SessionDataChanged) {
 					layout.dungeonDataUpdated();
 					return;
@@ -141,7 +137,7 @@ public class ElectronicBattleMat implements EntryPoint {
 	 */
 	private void showDungeonManagerDialog() {
 		if (dungeonSelectControl == null) {
-			dungeonSelectControl = new DungeonSelectControl();
+			dungeonSelectControl = new DungeonSelectDialog();
 			dungeonSelectControl.enableCancel(false);
 		}
 		dungeonSelectControl.show();

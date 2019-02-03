@@ -8,47 +8,102 @@ import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
 
+/**
+ * Worker class for managing dungeon session.
+ * 
+ * This is useful for caching session information.
+ * @author LLambert
+ *
+ */
 public class SessionInformation {
+	/**
+	 * Session is dirty.
+	 */
 	private boolean dirty;
 
+	/**
+	 * get is dirty.
+	 * @return true if dirty
+	 */
 	public boolean isDirty() {
 		return dirty;
 	}
 
-	public void setDirty(boolean dirty) {
+	/**
+	 * set is dirty.
+	 * @param dirty true if dirty
+	 */
+	public void setDirty(final boolean dirty) {
 		this.dirty = dirty;
 	}
 
+	/**
+	 * Directory of session.
+	 */
 	private String sessionDirectory;
 
+	/**
+	 * get session directory.
+	 * @return session directory.
+	 */
 	public String getSessionDirectory() {
 		return sessionDirectory;
 	}
 
-	public void setSessionDirectory(String sessionDirectory) {
+	/**
+	 * Set session directory.
+	 * @param sessionDirectory to set
+	 */
+	public void setSessionDirectory(final String sessionDirectory) {
 		this.sessionDirectory = sessionDirectory;
 	}
 
+	/**
+	 * Path to session.
+	 */
 	private String sessionPath;
 
+	/**
+	 * get session path.
+	 * @return session path
+	 */
 	public String getSessionPath() {
 		return sessionPath;
 	}
 
-	public void setSessionPath(String sessionPath) {
+	/**
+	 * set session path.
+	 * @param sessionPath to set
+	 */
+	public void setSessionPath(final String sessionPath) {
 		this.sessionPath = sessionPath;
 	}
 
+	/**
+	 * Data for session.
+	 */
 	private DungeonSessionData sessionData;
 
+	/**
+	 * Get session data.
+	 * @return session data
+	 */
 	public DungeonSessionData getSessionData() {
 		return sessionData;
 	}
 
-	public void setSessionData(DungeonSessionData sessionData) {
+	/**
+	 * set session data.
+	 * @param sessionData to set
+	 */
+	public void setSessionData(final DungeonSessionData sessionData) {
 		this.sessionData = sessionData;
 	}
 
+	/**
+	 * get UUID of session.
+	 * @return uuid of session
+	 */
 	public String getUUID() {
 		if (sessionData != null) {
 			return (sessionData.getSessionUUID());
@@ -56,32 +111,55 @@ public class SessionInformation {
 		return (null);
 	}
 
+	/**
+	 * Constructor.
+	 */
 	public SessionInformation() {
 		this.sessionData = null;
 		this.sessionPath = null;
 		this.sessionDirectory = null;
 	}
 
-	public SessionInformation(DungeonSessionData sessionData, String sessionPath, String sessionDirectory) {
+	/**
+	 * Session information.
+	 * @param sessionData session data
+	 * @param sessionPath session path
+	 * @param sessionDirectory session directory
+	 */
+	public SessionInformation(final DungeonSessionData sessionData, final String sessionPath, final String sessionDirectory) {
 		this();
 		this.sessionData = sessionData;
 		this.sessionPath = sessionPath;
 		this.sessionDirectory = sessionDirectory;
 	}
 
-	public SessionInformation(String sessionPath, String sessionDirectory) {
+	/**
+	 * Session information.
+	 * @param sessionPath session path
+	 * @param sessionDirectory session directory
+	 */
+	public SessionInformation(final String sessionPath, final String sessionDirectory) {
 		this();
 		this.sessionPath = sessionPath;
 		this.sessionDirectory = sessionDirectory;
 	}
 
-	public DungeonSessionLevel getSessionLevel(int currentLevel) {
+	/**
+	 * get session level information.
+	 * @param currentLevel to get
+	 * @return session level information or null
+	 */
+	public DungeonSessionLevel getSessionLevel(final int currentLevel) {
 		if (currentLevel < 0 || currentLevel >= sessionData.getSessionLevels().length) {
 			return (null);
 		}
 		return (sessionData.getSessionLevels()[currentLevel]);
 	}
 
+	/**
+	 * Convert to JSON.
+	 * @return session data as JSON
+	 */
 	public String toJson() {
 		if (sessionData != null) {
 			Gson gson = new Gson();
@@ -91,14 +169,24 @@ public class SessionInformation {
 		return ("");
 	}
 
-	public void load(String sessionPath, String sessionDirectory) throws IOException {
+	/**
+	 * Load in session data.
+	 * @param sessionPath path to data
+	 * @param sessionDirectory directory for data
+	 * @throws IOException if error
+	 */
+	public void load(final String sessionPath, final String sessionDirectory) throws IOException {
 		this.sessionPath = sessionPath;
 		this.sessionDirectory = sessionDirectory;
 		String jsonData = DungeonsManager.readJsonFile(sessionPath);
 		fromJson(jsonData);
 	}
 
-	public void fromJson(String jsonData) {
+	/**
+	 * convert from JSON data.
+	 * @param jsonData to convert
+	 */
+	public void fromJson(final String jsonData) {
 		sessionData = null;
 		if (jsonData != null && !jsonData.isEmpty()) {
 			Gson gson = new Gson();
@@ -106,6 +194,10 @@ public class SessionInformation {
 		}
 	}
 
+	/**
+	 * Save as JSON data.
+	 * @throws IOException if error
+	 */
 	public void save() throws IOException {
 		Gson gson = new Gson();
 		String sessionJson = gson.toJson(sessionData);
@@ -113,20 +205,38 @@ public class SessionInformation {
 		dirty = false;
 	}
 
-	public void saveMonsterPog(PogData pogData, int currentLevel, boolean needToAdd) {
+	/**
+	 * Save monster pog.
+	 * @param pogData to save
+	 * @param currentLevel session level
+	 * @param needToAdd true if need to add
+	 */
+	public void saveMonsterPog(final PogData pogData, final int currentLevel, final boolean needToAdd) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel != null) {
 			sessionLevel.setMonsters(savePogToProperCollection(pogData, needToAdd, sessionLevel.getMonsters()));
 		}
 	}
-	public void saveRoomObjectPog(PogData pogData, int currentLevel, boolean needToAdd) {
+	/**
+	 * Save room object pog.
+	 * @param pogData to save
+	 * @param currentLevel session level
+	 * @param needToAdd true if need to add.
+	 */
+	public void saveRoomObjectPog(final PogData pogData, final int currentLevel, final boolean needToAdd) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel != null) {
 			sessionLevel.setRoomObjects(savePogToProperCollection(pogData, needToAdd, sessionLevel.getRoomObjects()));
 		}
 	}
 
-	public void savePlayerPog(PogData pogData, int currentLevel, boolean needToAdd) {
+	/**
+	 * Save player pog.
+	 * @param pogData to save
+	 * @param currentLevel session level
+	 * @param needToAdd true if need to add.
+	 */
+	public void savePlayerPog(final PogData pogData, final int currentLevel, final boolean needToAdd) {
 		sessionData.increamentVersion();
 		dirty = true;
 		if (!needToAdd) {
@@ -141,7 +251,14 @@ public class SessionInformation {
 		sessionData.setPlayers(newPogs);
 	}
 
-	public PogData[] savePogToProperCollection(PogData pogData, boolean needToAdd, PogData[] pogCollection) {
+	/**
+	 * Save pog to proper collection.
+	 * @param pogData to save
+	 * @param needToAdd true if need to add.
+	 * @param pogCollection collect to get add
+	 * @return new collection with pog added
+	 */
+	public PogData[] savePogToProperCollection(final PogData pogData, final boolean needToAdd, final PogData[] pogCollection) {
 		sessionData.increamentVersion();
 		dirty = true;
 		if (!needToAdd) {
@@ -152,7 +269,13 @@ public class SessionInformation {
 		return (newPogs);
 	}
 
-	private PogData[] expandCollectionAndAddPog(PogData[] pogCollection, PogData pogData) {
+	/**
+	 * Expand collect with room to add new pog.
+	 * @param pogCollection to expand
+	 * @param pogData data to add
+	 * @return new collection
+	 */
+	private PogData[] expandCollectionAndAddPog(final PogData[] pogCollection, final PogData pogData) {
 		PogData[] newPogs = new PogData[pogCollection.length + 1];
 		for (int i = 0; i < pogCollection.length; ++i) {
 			newPogs[i] = pogCollection[i];
@@ -161,7 +284,12 @@ public class SessionInformation {
 		return newPogs;
 	}
 
-	private void updatePogCollection(PogData[] pogCollection, PogData pogData) {
+	/**
+	 * Update pog dat ain collection.
+	 * @param pogCollection with pogs
+	 * @param pogData to update
+	 */
+	private void updatePogCollection(final PogData[] pogCollection, final PogData pogData) {
 		for (PogData pog : pogCollection) {
 			if (pog.equals(pogData)) {
 				pog.updatePog(pogData);
@@ -170,6 +298,9 @@ public class SessionInformation {
 		}
 	}
 
+	/**
+	 * Save if dirty.
+	 */
 	public void saveIfDirty() {
 		if (dirty) {
 			try {
@@ -179,7 +310,12 @@ public class SessionInformation {
 		}
 	}
 
-	public void updateFOW(boolean[][] fowData, int currentLevel) {
+	/**
+	 * Update fog of war data in session level.
+	 * @param fowData to update
+	 * @param currentLevel session level.
+	 */
+	public void updateFOW(final boolean[][] fowData, final int currentLevel) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel == null) {
 			return;

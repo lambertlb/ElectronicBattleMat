@@ -17,30 +17,55 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
+/**
+ * Control for handling selected pog.
+ * 
+ * This will scale the picture to the size of the host panel.
+ * It will scale to keep proportions the same.
+ * 
+ * @author LLambert
+ *
+ */
 public class SelectedPog extends Composite {
 
+	/**
+	 * UI binder.
+	 */
 	private static SelectedPogUiBinder uiBinder = GWT.create(SelectedPogUiBinder.class);
 
+	/**
+	 * Interface for UI binder.
+	 * @author LLambert
+	 *
+	 */
 	interface SelectedPogUiBinder extends UiBinder<Widget, SelectedPog> {
 	}
 
+	/**
+	 * Panel to show pog.
+	 */
 	@UiField
+	@SuppressWarnings("VisibilityModifier")
 	FlowPanel pogPanel;
 
+	/**
+	 * Host panel used for size.
+	 */
 	@UiField
+	@SuppressWarnings("VisibilityModifier")
 	HTMLPanel hostPanel;
 
+	/**
+	 * Canvas for showing pog.
+	 */
 	private PogCanvas scalablePog = new PogCanvas();
 
+	/**
+	 * Constructor.
+	 */
 	public SelectedPog() {
 		initWidget(uiBinder.createAndBindUi(this));
 		pogPanel.add(scalablePog);
-	}
-
-	@Override
-	protected void onLoad() {
-		super.onLoad();
-		unselectedPogLook();
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
 			public void onReasonForAction(final ReasonForActionEvent event) {
@@ -52,6 +77,18 @@ public class SelectedPog extends Composite {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		unselectedPogLook();
+	}
+
+	/**
+	 * No pog yet so set the look.
+	 */
 	public void unselectedPogLook() {
 		int height = (int) BattleMatLayout.RIBBON_BAR_SIZE;
 		pogPanel.setWidth("" + height + "px");
@@ -60,12 +97,15 @@ public class SelectedPog extends Composite {
 		}
 	}
 
+	/**
+	 * Pog has been selected.
+	 */
 	private void pogSelected() {
 		PogData selectePog = ServiceManager.getDungeonManager().getSelectedPog();
-		if (selectePog == null) {
+		if (selectePog == null || hostPanel == null) {
 			return;
 		}
-		
+
 		scalablePog.showImage(true);
 		scalablePog.setPogData(selectePog);
 		Widget parent = hostPanel.getParent().getParent();

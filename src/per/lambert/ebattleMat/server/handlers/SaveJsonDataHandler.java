@@ -10,10 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
+/**
+ * Handler for saving JSON data.
+ * @author LLambert
+ *
+ */
 public class SaveJsonDataHandler implements IWebRequestHandler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String sessionUUID = request.getParameter("sessionUUID");
 		if (sessionUUID == null) {
 			DungeonsManager.saveDungeonData(request, servlet, jsonData);

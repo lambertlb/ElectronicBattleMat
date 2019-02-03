@@ -40,7 +40,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
  * @author LLambert
  *
  */
-public class LevelOptionsControl extends OkCancelDialog {
+public class LevelOptionsDialog extends OkCancelDialog {
 	/**
 	 * A file needs to be uploaded.
 	 */
@@ -110,7 +110,7 @@ public class LevelOptionsControl extends OkCancelDialog {
 	/**
 	 * Constructor for level option control.
 	 */
-	public LevelOptionsControl() {
+	public LevelOptionsDialog() {
 		super("Level Options", true, true);
 		load();
 	}

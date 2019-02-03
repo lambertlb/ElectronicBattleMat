@@ -13,14 +13,30 @@ import com.google.gson.Gson;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
+/**
+ * Handle update fog of war reuqest.
+ * @author LLambert
+ *
+ */
 public class UpdateFOWHander implements IWebRequestHandler {
 
+	/**
+	 * Worker class for converting fog of war JSON data.
+	 * @author LLambert
+	 *
+	 */
 	public class FogOfWarData {
-		public boolean fogOfWar[][];
+		/**
+		 * Fog of war data.
+		 */
+		private boolean[][] fogOfWar;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String sessionUUID = request.getParameter("sessionUUID");
 		int currentLevel = Integer.parseInt(request.getParameter("currentLevel"));
 		Gson gson = new Gson();

@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
+package per.lambert.ebattleMat.client.controls.dungeonSelectDialog;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class DungeonSelectPresenter {
 	/**
 	 * View to manage.
 	 */
-	private DungeonSelectControl view;
+	private DungeonSelectDialog view;
 	/**
 	 * acting as DM.
 	 */
@@ -237,7 +237,7 @@ public class DungeonSelectPresenter {
 	 * Set view for presenter.
 	 * @param dungeonSelectControl view for presenter.
 	 */
-	public void setView(final DungeonSelectControl dungeonSelectControl) {
+	public void setView(final DungeonSelectDialog dungeonSelectControl) {
 		view = dungeonSelectControl;
 	}
 	/**

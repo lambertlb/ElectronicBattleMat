@@ -11,10 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
+/**
+ * Handler for saving pog resource.
+ * @author LLambert
+ *
+ */
 public class SaveJsonResourceHandler implements IWebRequestHandler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String resourceName = request.getParameter("resourceName");
 		URL servletPath = servlet.getServletContext().getResource("/");
 		String directory = servletPath.getPath() + DungeonsManager.RESOURCE_LOCATION + "/";

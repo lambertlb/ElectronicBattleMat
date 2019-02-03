@@ -134,8 +134,8 @@ public class OkCancelDialog extends ResizableDialog {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void OnWindowResized() {
-		super.OnWindowResized();
+	protected void onWindowResized() {
+		super.onWindowResized();
 		int width = getDialogWidth();
 		int height = getDialogHeight();
 		dockLayoutPanel.setWidth("" + width + "px");

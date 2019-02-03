@@ -13,40 +13,114 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/*
- * DialogBox has a grid that contains the the grow handles
- * following is the coordinates for the the various handles.
+/**
+ * DialogBox has a grid that contains the the grow handles following is the coordinates for the the various handles.
  *  0,2 Top Right
- * 	0,1 Top Center
- * 	0,0 Top Left
- * 	1,0 Middle Left
- * 	1,2 Middle Right
- * 	2,2 Bottom Right
- * 	2,1 Bottom Center
- * 	2,0 Bottom Left
+ *  0,1 Top Center
+ *  0,0 Top Left
+ *  1,0 Middle Left
+ *  1,2 Middle Right
+ *  2,2 Bottom Right
+ *  2,1 Bottom Center
+ *  2,0 Bottom Left
+ * 
+ * @author LLambert
+ *
  */
 public class ResizableDialog extends DialogBox {
 
-	public enum ResizeHandle {
-		TOP, TOPRIGHT, TOPLEFT, RIGHT, LEFT, BOTTOM, BOTTOMRIGHT, BOTTOMLEFT, UNDEFINED
+	/**
+	 * Position of resize.
+	 * @author LLambert
+	 *
+	 */
+	public enum ResizePosition {
+		/**
+		 * Top of window.
+		 */
+		TOP,
+		/**
+		 * Top right corner of window.
+		 */
+		TOPRIGHT,
+		/**
+		 * Top left corner of window.
+		 */
+		TOPLEFT,
+		/**
+		 * Right side of window.
+		 */
+		RIGHT,
+		/**
+		 * Left side of window.
+		 */
+		LEFT,
+		/**
+		 * Bottom of window.
+		 */
+		BOTTOM,
+		/**
+		 * Bottom right corner of window.
+		 */
+		BOTTOMRIGHT,
+		/**
+		 * Bottom left of window.
+		 */
+		BOTTOMLEFT,
+		/**
+		 * Undefined position.
+		 */
+		UNDEFINED
 	}
 
+	/**
+	 * Margin around edge of window.
+	 */
 	private static final int MARGIN = 5;
+	/**
+	 * Minimum wisth of window.
+	 */
 	private static final int MIN_WIDTH = 100;
+	/**
+	 * Minimum heifht of window.
+	 */
 	private static final int MIN_HEIGHT = 100;
+	/**
+	 * Starting X of drag.
+	 */
 	private int startingX;
+	/**
+	 * Starting Y of drag.
+	 */
 	private int startingY;
-	private ResizeHandle resizeHandle = ResizeHandle.UNDEFINED;
+	/**
+	 * Position of last click.
+	 */
+	private ResizePosition resizePosition = ResizePosition.UNDEFINED;
+	/**
+	 * Delta X from starting position.
+	 */
+	private int deltaXFromStarting;
+	/**
+	 * Delta Y from starting position.
+	 */
+	private int deltaYFromStarting;
+	/**
+	 * Height of client window.
+	 */
+	private int clientHeight;
+	/**
+	 * Width of client window.
+	 */
+	private int clientWidth;
 
-	private int deltaXFromHandle;
-	private int deltaYFromHandle;
-	private int handleHeight;
-	private int handleWidth;
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void beginDragging(MouseDownEvent event) {
-		resizeHandle = computeResizeHandle(event.getNativeEvent());
-		if (resizeHandle == ResizeHandle.UNDEFINED) {
+	protected void beginDragging(final MouseDownEvent event) {
+		resizePosition = computeResizePosition(event.getNativeEvent());
+		if (resizePosition == ResizePosition.UNDEFINED) {
 			super.beginDragging(event);
 			return;
 		}
@@ -55,9 +129,12 @@ public class ResizableDialog extends DialogBox {
 		startingY = event.getClientY();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void continueDragging(MouseMoveEvent event) {
-		if (resizeHandle == ResizeHandle.UNDEFINED) {
+	protected void continueDragging(final MouseMoveEvent event) {
+		if (resizePosition == ResizePosition.UNDEFINED) {
 			super.continueDragging(event);
 			return;
 		}
@@ -68,24 +145,34 @@ public class ResizableDialog extends DialogBox {
 		resizeWindow(deltaX, deltaY);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void endDragging(MouseUpEvent event) {
-		if (resizeHandle == ResizeHandle.UNDEFINED) {
+	protected void endDragging(final MouseUpEvent event) {
+		if (resizePosition == ResizePosition.UNDEFINED) {
 			super.endDragging(event);
 			return;
 		}
 		DOM.releaseCapture(getElement());
-		resizeHandle = ResizeHandle.UNDEFINED;
-		OnWindowResized();
+		resizePosition = ResizePosition.UNDEFINED;
+		onWindowResized();
 	}
 
-	protected void OnWindowResized() {
-		Widget widget = getWidget();
-		int width = widget.getOffsetWidth();
-		int height = widget.getOffsetHeight();
+	/**
+	 * On window resized.
+	 * 
+	 * for Sub-classes to know when window size changed.
+	 */
+	protected void onWindowResized() {
 	}
 
-	private void resizeWindow(int deltaX, int deltaY) {
+	/**
+	 * Set new size of window.
+	 * @param deltaX delta X
+	 * @param deltaY delta Y
+	 */
+	private void resizeWindow(final int deltaX, final int deltaY) {
 		Widget widget = getWidget();
 		int width = widget.getOffsetWidth() + deltaX;
 		width = width < MIN_WIDTH ? MIN_WIDTH : width;
@@ -95,80 +182,144 @@ public class ResizableDialog extends DialogBox {
 		widget.setHeight(height + "px");
 	}
 
-	private ResizeHandle computeResizeHandle(NativeEvent event) {
-		computeHandleSize();
+	/**
+	 * compute Resize Position.
+	 * @param event native event.
+	 * @return position of window being resized.
+	 */
+	private ResizePosition computeResizePosition(final NativeEvent event) {
+		computeNewWindowSize();
 		if (isBottomRight(event)) {
-			return ResizeHandle.BOTTOMRIGHT;
+			return ResizePosition.BOTTOMRIGHT;
 		}
-		return ResizeHandle.UNDEFINED;
+		return ResizePosition.UNDEFINED;
 	}
 
-	private void computeHandleSize() {
+	/**
+	 * Get new size of window.
+	 */
+	private void computeNewWindowSize() {
 		Element growElement = this.getCellElement(2, 2).getParentElement();
-		handleWidth = growElement.getClientWidth();
-		handleHeight = growElement.getClientHeight();
+		clientWidth = growElement.getClientWidth();
+		clientHeight = growElement.getClientHeight();
 	}
 
-	private void computeDeltasDromHandle(NativeEvent event, int row, int column) {
+	/**
+	 * Compute delta from starting positions.
+	 * @param event native event.
+	 * @param row to examine.
+	 * @param column column to examine.
+	 */
+	private void computeDeltas(final NativeEvent event, final int row, final int column) {
 		Element growElement = this.getCellElement(row, column).getParentElement();
-		deltaXFromHandle = event.getClientX() - growElement.getAbsoluteLeft() + growElement.getScrollLeft() + growElement.getOwnerDocument().getScrollLeft();
-		deltaYFromHandle = event.getClientY() - growElement.getAbsoluteTop() + growElement.getScrollTop() + growElement.getOwnerDocument().getScrollTop();
+		deltaXFromStarting = event.getClientX() - growElement.getAbsoluteLeft() + growElement.getScrollLeft() + growElement.getOwnerDocument().getScrollLeft();
+		deltaYFromStarting = event.getClientY() - growElement.getAbsoluteTop() + growElement.getScrollTop() + growElement.getOwnerDocument().getScrollTop();
 	}
 
-	private boolean isTop(NativeEvent event) {
-		computeDeltasDromHandle(event, 0, 1);
-		return (deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight);
+	/**
+	 * Was change to top of window.
+	 * @param event native event.
+	 * @return true if top was changed.
+	 */
+	@SuppressWarnings("unused")
+	private boolean isTop(final NativeEvent event) {
+		computeDeltas(event, 0, 1);
+		return (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight);
 	}
 
-	private boolean isTopLeft(NativeEvent event) {
-		computeDeltasDromHandle(event, 0, 0);
-		return ((deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth && deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight + MARGIN)
-				|| (deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight && deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth + MARGIN));
+	/**
+	 * Was change to top left of window.
+	 * @param event native event.
+	 * @return true if top left was changed.
+	 */
+	@SuppressWarnings("unused")
+	private boolean isTopLeft(final NativeEvent event) {
+		computeDeltas(event, 0, 0);
+		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight + MARGIN)
+				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth + MARGIN));
 	}
 
-	private boolean isTopRight(NativeEvent event) {
-		computeDeltasDromHandle(event, 0, 2);
-		return ((deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth && deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight + MARGIN)
-				|| (deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight && deltaXFromHandle >= -MARGIN && deltaXFromHandle < handleWidth));
+	/**
+	 * Was change to top right of window.
+	 * @param event native event.
+	 * @return true if top right was changed.
+	 */
+	@SuppressWarnings("unused")
+	private boolean isTopRight(final NativeEvent event) {
+		computeDeltas(event, 0, 2);
+		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight + MARGIN)
+				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= -MARGIN && deltaXFromStarting < clientWidth));
 	}
 
-	private boolean isBottomLeft(NativeEvent event) {
-		computeDeltasDromHandle(event, 2, 0);
-		return ((deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth && deltaYFromHandle >= -MARGIN && deltaYFromHandle < handleHeight)
-				|| (deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight && deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth + MARGIN));
+	/**
+	 * Was change to bottom left of window.
+	 * @param event native event.
+	 * @return true if bottom left was changed.
+	 */
+	@SuppressWarnings("unused")
+	private boolean isBottomLeft(final NativeEvent event) {
+		computeDeltas(event, 2, 0);
+		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= -MARGIN && deltaYFromStarting < clientHeight)
+				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth + MARGIN));
 	}
 
-	private boolean isBottomRight(NativeEvent event) {
-		computeDeltasDromHandle(event, 2, 2);
-		return ((deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth && deltaYFromHandle >= -MARGIN && deltaYFromHandle < handleHeight)
-				|| (deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight && deltaXFromHandle >= -MARGIN && deltaXFromHandle < handleWidth));
+	/**
+	 * Was change to bottom right of window.
+	 * @param event native event.
+	 * @return true if bottom right was changed.
+	 */
+	private boolean isBottomRight(final NativeEvent event) {
+		computeDeltas(event, 2, 2);
+		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= -MARGIN && deltaYFromStarting < clientHeight)
+				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= -MARGIN && deltaXFromStarting < clientWidth));
 	}
 
-	private boolean isBottom(NativeEvent event) {
-		computeDeltasDromHandle(event, 2, 1);
-		return (deltaYFromHandle >= 0 && deltaYFromHandle < handleHeight);
+	/**
+	 * Was change to bottom of window.
+	 * @param event native event.
+	 * @return true if bottom was changed.
+	 */
+	@SuppressWarnings("unused")
+	private boolean isBottom(final NativeEvent event) {
+		computeDeltas(event, 2, 1);
+		return (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight);
 	}
 
-	private boolean isLeft(NativeEvent event) {
-		computeDeltasDromHandle(event, 1, 0);
-		return (deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth);
+	/**
+	 * Was change to left of window.
+	 * @param event native event.
+	 * @return true if left was changed.
+	 */
+	@SuppressWarnings("unused")
+	private boolean isLeft(final NativeEvent event) {
+		computeDeltas(event, 1, 0);
+		return (deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth);
 	}
 
-	private boolean isRight(NativeEvent event) {
-		computeDeltasDromHandle(event, 1, 2);
-		return (deltaXFromHandle >= 0 && deltaXFromHandle < handleWidth);
+	/**
+	 * Was change to right of window.
+	 * @param event native event.
+	 * @return true if right was changed.
+	 */
+	@SuppressWarnings("unused")
+	private boolean isRight(final NativeEvent event) {
+		computeDeltas(event, 1, 2);
+		return (deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void onBrowserEvent(Event event) {
+	public void onBrowserEvent(final Event event) {
 		switch (event.getTypeInt()) {
 		case Event.ONMOUSEDOWN:
 		case Event.ONMOUSEUP:
 		case Event.ONMOUSEMOVE:
 		case Event.ONMOUSEOVER:
 		case Event.ONMOUSEOUT:
-			ResizeHandle possible = computeResizeHandle(event);
-			if (resizeHandle != ResizeHandle.UNDEFINED || possible != ResizeHandle.UNDEFINED) {
+			ResizePosition possible = computeResizePosition(event);
+			if (resizePosition != ResizePosition.UNDEFINED || possible != ResizePosition.UNDEFINED) {
 				switch (DOM.eventGetType(event)) {
 				case Event.ONMOUSEOVER:
 				case Event.ONMOUSEOUT:
@@ -177,29 +328,45 @@ public class ResizableDialog extends DialogBox {
 						return;
 					}
 					break;
+				default:
 				}
 				DomEvent.fireNativeEvent(event, this, this.getElement());
-				getElement().getStyle().setCursor(possible != ResizeHandle.UNDEFINED ? Cursor.POINTER : Cursor.AUTO);
+				getElement().getStyle().setCursor(possible != ResizePosition.UNDEFINED ? Cursor.POINTER : Cursor.AUTO);
 				return;
 			}
-			getElement().getStyle().setCursor(possible != ResizeHandle.UNDEFINED ? Cursor.POINTER : Cursor.AUTO);
+			getElement().getStyle().setCursor(possible != ResizePosition.UNDEFINED ? Cursor.POINTER : Cursor.AUTO);
+		default:
+			break;
 		}
 		super.onBrowserEvent(event);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void onPreviewNativeEvent(NativePreviewEvent event) {
+	protected void onPreviewNativeEvent(final NativePreviewEvent event) {
 		NativeEvent nativeEvent = event.getNativeEvent();
 
-		if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && computeResizeHandle(event.getNativeEvent()) != ResizeHandle.UNDEFINED) {
+		if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && computeResizePosition(event.getNativeEvent()) != ResizePosition.UNDEFINED) {
 			nativeEvent.preventDefault();
 		}
 		super.onPreviewNativeEvent(event);
 	}
+
+	/**
+	 * Get width of dialog.
+	 * @return width of dialog
+	 */
 	protected int getDialogWidth() {
-		return(getWidget().getOffsetWidth());
+		return (getWidget().getOffsetWidth());
 	}
+
+	/**
+	 * Get height of dialog.
+	 * @return height of dialog
+	 */
 	protected int getDialogHeight() {
-		return(getWidget().getOffsetHeight());
+		return (getWidget().getOffsetHeight());
 	}
 }

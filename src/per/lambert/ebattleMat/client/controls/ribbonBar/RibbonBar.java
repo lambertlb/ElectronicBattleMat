@@ -16,9 +16,9 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
-import per.lambert.ebattleMat.client.controls.LevelOptionsControl;
+import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
 import per.lambert.ebattleMat.client.controls.MonsterManageDialog;
-import per.lambert.ebattleMat.client.controls.dungeonSelectControl.DungeonSelectControl;
+import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
@@ -27,33 +27,99 @@ import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
+/**
+ * Ribbon bar on top of view.
+ * 
+ * This breaks down into columns and rows of bar items.
+ * 
+ * @author LLambert
+ *
+ */
 public class RibbonBar extends Composite {
 
+	/**
+	 * UI Binder.
+	 */
 	private static RibbonBarUiBinder uiBinder = GWT.create(RibbonBarUiBinder.class);
 
+	/**
+	 * Interface for ui binder.
+	 * 
+	 * @author LLambert
+	 *
+	 */
 	interface RibbonBarUiBinder extends UiBinder<Widget, RibbonBar> {
 	}
 
+	/**
+	 * Panel for bar items.
+	 */
+	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	HorizontalPanel panel;
+	/**
+	 * Grid to hold bar items.
+	 */
 	private Grid ribbonGrid;
+	/**
+	 * Control to show selected pog.
+	 */
 	private SelectedPog selectedPog;
+	/**
+	 * Fog of war toggle.
+	 */
 	private CheckBox fowToggle;
+	/**
+	 * List of levels to select.
+	 */
 	private ListBox levelSelect;
+	/**
+	 * Show option for level.
+	 */
 	private Button levelOptions;
+	/**
+	 * Dungeon selection dialog button.
+	 */
 	private Button manageDungeonsButton;
-	private LevelOptionsControl levelOptionsControl;
-	private DungeonSelectControl manageDungeons;
+	/**
+	 * Dialog for level options.
+	 */
+	private LevelOptionsDialog levelOptionsDialog;
+	/**
+	 * Manage dungeon dialog.
+	 */
+	private DungeonSelectDialog manageDungeons;
+	/**
+	 * List of character to select.
+	 */
 	private ListBox characterSelect;
+	/**
+	 * Create character button.
+	 */
 	private Button createCharacter;
+	/**
+	 * character create dialog.
+	 */
 	private CharacterCreateDialog characterCreate;
+	/**
+	 * Monster manager button.
+	 */
 	private Button monsterManageButton;
+	/**
+	 * Monster manage dialog.
+	 */
 	private MonsterManageDialog monsterManage;
 
+	/**
+	 * Constructor.
+	 */
 	public RibbonBar() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void onLoad() {
 		super.onLoad();
@@ -62,15 +128,18 @@ public class RibbonBar extends Composite {
 		setupView();
 	}
 
+	/**
+	 * Create controls.
+	 */
 	private void createControls() {
 		createCommonControls();
 		createDMControls();
 		createPlayerControls();
 	}
 
-	private void createPlayerControls() {
-	}
-
+	/**
+	 * Create DM controls.
+	 */
 	private void createDMControls() {
 		fowToggle = new CheckBox("Toggle FOW");
 		fowToggle.addStyleName("ribbonBarLabel");
@@ -79,7 +148,7 @@ public class RibbonBar extends Composite {
 		fowToggle.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				ServiceManager.getDungeonManager().setFowToggle(fowToggle.getValue());
 			}
 		});
@@ -87,11 +156,11 @@ public class RibbonBar extends Composite {
 		levelOptions.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
-				if (levelOptionsControl == null) {
-					levelOptionsControl = new LevelOptionsControl();
+			public void onClick(final ClickEvent event) {
+				if (levelOptionsDialog == null) {
+					levelOptionsDialog = new LevelOptionsDialog();
 				}
-				levelOptionsControl.show();
+				levelOptionsDialog.show();
 			}
 		});
 		levelOptions.addStyleName("ribbonBarLabel");
@@ -100,9 +169,9 @@ public class RibbonBar extends Composite {
 		manageDungeonsButton.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				if (manageDungeons == null) {
-					manageDungeons = new DungeonSelectControl();
+					manageDungeons = new DungeonSelectDialog();
 				}
 				manageDungeons.enableCancel(true);
 				manageDungeons.show();
@@ -110,6 +179,9 @@ public class RibbonBar extends Composite {
 		});
 	}
 
+	/**
+	 * Create cpommon controls.
+	 */
 	private void createCommonControls() {
 		ribbonGrid = new Grid();
 		ribbonGrid.resize(2, 10);
@@ -122,7 +194,7 @@ public class RibbonBar extends Composite {
 		levelSelect.addStyleName("ribbonBarLabel");
 		levelSelect.addChangeHandler(new ChangeHandler() {
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 				ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
 			}
 		});
@@ -132,7 +204,7 @@ public class RibbonBar extends Composite {
 		characterSelect.addChangeHandler(new ChangeHandler() {
 
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onChange(final ChangeEvent event) {
 				characterWasSelected();
 			}
 		});
@@ -141,7 +213,7 @@ public class RibbonBar extends Composite {
 		createCharacter.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				characterCreate.show();
 			}
 		});
@@ -151,13 +223,16 @@ public class RibbonBar extends Composite {
 		monsterManageButton.addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				monsterManage.show();
 			}
 		});
 		monsterManage = new MonsterManageDialog();
 	}
 
+	/**
+	 * Setup event handlers.
+	 */
 	private void setupEventHandler() {
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
@@ -186,6 +261,9 @@ public class RibbonBar extends Composite {
 		});
 	}
 
+	/**
+	 * Setup view.
+	 */
 	protected void setupView() {
 		setupViewCommon();
 		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
@@ -195,6 +273,11 @@ public class RibbonBar extends Composite {
 		}
 	}
 
+	/**
+	 * Setup common portion of view.
+	 * 
+	 * These are items the same between player and DM.
+	 */
 	private void setupViewCommon() {
 		panel.clear();
 		ribbonGrid.clear();
@@ -203,6 +286,9 @@ public class RibbonBar extends Composite {
 		panel.add(ribbonGrid);
 	}
 
+	/**
+	 * Setup for dungeon master.
+	 */
 	private void setupForDungeonMaster() {
 		if (ServiceManager.getDungeonManager().isEditMode()) {
 			setupForEditDungeon();
@@ -212,6 +298,9 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(0, 2, fowToggle);
 	}
 
+	/**
+	 * Setup for editing dungeons.
+	 */
 	private void setupForEditDungeon() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
 		ribbonGrid.setWidget(0, 1, levelOptions);
@@ -219,6 +308,9 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(1, 1, monsterManageButton);
 	}
 
+	/**
+	 * Setyp session section.
+	 */
 	private void setupForSession() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
 		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
@@ -226,10 +318,16 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(1, 1, createCharacter);
 	}
 
+	/**
+	 * Setup for player.
+	 */
 	private void setupForPlayer() {
 		setupForSession();
 	}
 
+	/**
+	 * Dungeon data loaded.
+	 */
 	private void dungeonDataLoaded() {
 		levelSelect.clear();
 		String[] levelNames = ServiceManager.getDungeonManager().getDungeonLevelNames();
@@ -238,6 +336,9 @@ public class RibbonBar extends Composite {
 		}
 	}
 
+	/**
+	 * Character pogs loaded.
+	 */
 	private void characterPogsLoaded() {
 		characterSelect.clear();
 		characterSelect.addItem("Select Character Pog", "");
@@ -251,6 +352,9 @@ public class RibbonBar extends Composite {
 		}
 	}
 
+	/**
+	 * Character was selected.
+	 */
 	private void characterWasSelected() {
 		String uuid = characterSelect.getSelectedValue();
 		if (uuid == null || uuid.isEmpty()) {
@@ -261,4 +365,11 @@ public class RibbonBar extends Composite {
 			ServiceManager.getDungeonManager().setSelectedPog(characterPog);
 		}
 	}
+
+	/**
+	 * Create player controls.
+	 */
+	private void createPlayerControls() {
+	}
+
 }

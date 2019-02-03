@@ -1,12 +1,28 @@
-package serverApp;
+package per.serverApp;
 
 import java.io.File;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-public class ServerApp {
-	public static void main(String[] args) throws Exception {
+/**
+ * Application for client can run Jetty server locally to DM a session.
+ * @author LLambert
+ *
+ */
+public final class ServerApp {
+	/**
+	 * Constructor.
+	 */
+	private ServerApp() {
+		
+	}
+	/**
+	 * Main entry point.
+	 * @param args arguments
+	 * @throws Exception if error.
+	 */
+	public static void main(final String[] args) throws Exception {
 		Server server = new Server(8088);
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/");

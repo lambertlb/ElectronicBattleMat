@@ -11,10 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
+/**
+ * Handler for save pog.
+ * @author LLambert
+ *
+ */
 public class SavePogHandler implements IWebRequestHandler {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse resp, HttpServlet servlet, String jsonData) throws ServletException, IOException {
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		String sessionUUID = request.getParameter("sessionUUID");
 		int currentLevel = Integer.parseInt(request.getParameter("currentLevel"));

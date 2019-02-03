@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client.controls.dungeonSelectControl;
+package per.lambert.ebattleMat.client.controls.dungeonSelectDialog;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
  * @author LLambert
  *
  */
-public class DungeonSelectControl extends OkCancelDialog {
+public class DungeonSelectDialog extends OkCancelDialog {
 	/**
 	 * Presenter for this view.
 	 */
@@ -108,7 +108,7 @@ public class DungeonSelectControl extends OkCancelDialog {
 	/**
 	 * Constructor for Dungeon Select control.
 	 */
-	public DungeonSelectControl() {
+	public DungeonSelectDialog() {
 		super("Dungeon Template Management", false, true, 400, 400);
 		load();
 	}
