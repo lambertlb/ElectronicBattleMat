@@ -23,10 +23,12 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.Gson;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.server.serviceData.DungeonData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
+import per.lambert.ebattleMat.server.serviceData.PogList;
 
 /**
  * Manager for dungeon information.
@@ -792,5 +794,81 @@ public final class DungeonsManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
+	}
+	/**
+	 * Save Pog data.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon
+	 * @param sessionUUID UUID of session
+	 * @param currentLevel level in dungeon
+	 * @param place place where to add
+	 * @param pogJsonData JSON data of Pog
+	 * @throws IOException thrown if error
+	 */
+	public static void savePog(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID, final int currentLevel, final PogPlace place, final String pogJsonData) throws IOException {
+		lock.lock();
+		try {
+			Gson gson = new Gson();
+			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
+			if (place == PogPlace.COMMON_RESOURCE) {
+				addOrUpdatePogToCommonResource(servlet, pogData);
+			} else if (place == PogPlace.DUNGEON_RESOURCE) {
+				addOrUpdatePogToDungeonResource(pogData);
+			} else if (place == PogPlace.DUNGEON_INSTANCE) {
+				addOrUpdatePogToDungeonInstance(pogData);
+			} else if (place == PogPlace.SESSION_RESOURCE) {
+				addOrUpdatePogToSessionResource(pogData);
+			} else if (place == PogPlace.SESSION_INSTANCE) {
+				addOrUpdatePogToSessionInstance(pogData);
+			}
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	/**
+	 * Add or update pog to proper resource.
+	 * @param servlet servlet data
+	 * @param pogData to add
+	 * @throws IOException if error
+	 */
+	private static void addOrUpdatePogToCommonResource(final HttpServlet servlet, final PogData pogData) throws IOException {
+		if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+			addOrUpdatePogToCommonResource(servlet, pogData, ElectronicBattleMat.MONSTER_FOLDER);
+		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
+			addOrUpdatePogToCommonResource(servlet, pogData, ElectronicBattleMat.ROOM_OBJECT_FOLDER);
+		}
+	}
+
+	/**
+	 * Add or Update pog to resource folder.
+	 * @param servlet with data
+	 * @param pogData to update
+	 * @param folder resource folder
+	 * @throws IOException if error
+	 */
+	private static void addOrUpdatePogToCommonResource(final HttpServlet servlet, final PogData pogData, final String folder) throws IOException {
+		String resourcePath = RESOURCE_LOCATION + folder + "pogs.json";
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String filePath = servletPath.getPath() + resourcePath;
+		String fileData = readJsonFile(filePath);
+		Gson gson = new Gson();
+		PogList pogList = gson.fromJson(fileData, PogList.class);
+		pogList.addOrUpdate(pogData);
+		String updatedData = gson.toJson(pogList);
+		saveJsonFile(updatedData, filePath);
+	}
+
+	private static void addOrUpdatePogToDungeonResource(final PogData pogData) {
+	}
+
+	private static void addOrUpdatePogToDungeonInstance(final PogData pogData) {
+	}
+
+	private static void addOrUpdatePogToSessionResource(final PogData pogData) {
+	}
+
+	private static void addOrUpdatePogToSessionInstance(final PogData pogData) {
 	}
 }

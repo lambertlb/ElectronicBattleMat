@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
@@ -313,9 +314,12 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 */
 	private void getGenderList() {
 		genderList.clear();
+		gender.clear();
 		genderList.addItem("Select Gender", "");
+		gender.addItem("Select Gender", "");
 		for (String pogGender : ServiceManager.getDungeonManager().getMonsterGenders()) {
 			genderList.addItem(pogGender, pogGender);
+			gender.addItem(pogGender, pogGender);
 		}
 	}
 
@@ -330,6 +334,15 @@ public class MonsterManageDialog extends OkCancelDialog {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onWindowResized() {
+		super.onWindowResized();
+		validateUrl();
+	}
+
+	/**
 	 * Validate form data.
 	 */
 	private void validateForm() {
@@ -340,6 +353,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 
 	/**
 	 * Validate URL.
+	 * 
 	 * @return true if valid
 	 */
 	private boolean validateUrl() {
@@ -358,10 +372,11 @@ public class MonsterManageDialog extends OkCancelDialog {
 
 	/**
 	 * Show pog.
+	 * 
 	 * @param valid true if image if valid
 	 */
 	private void showPog(final boolean valid) {
-		pogCanvas.setPogWidth(150);
+		pogCanvas.setPogWidth(computePogSize());
 		pogCanvas.showImage(valid);
 		if (valid) {
 			pogCanvas.setPogImageUrl(monsterPicture.getValue());
@@ -369,7 +384,23 @@ public class MonsterManageDialog extends OkCancelDialog {
 	}
 
 	/**
+	 * Compute area pog can have.
+	 * 
+	 * @return area pog can have.
+	 */
+	private int computePogSize() {
+		int pogTop = pogCanvas.getAbsoluteTop();
+		int okTop = getOkTop();
+		int deltaTop = okTop - pogTop;
+		if (deltaTop < 50) {
+			return (50);
+		}
+		return deltaTop - 10;
+	}
+
+	/**
 	 * Validate monster name.
+	 * 
 	 * @return true if valid
 	 */
 	private boolean validateMonsterName() {
@@ -448,7 +479,8 @@ public class MonsterManageDialog extends OkCancelDialog {
 	protected void onOkClick(final ClickEvent event) {
 		super.onOkClick(event);
 		getDialogData();
-		ServiceManager.getDungeonManager().addOrUpdatePogResource(pogData);
+		// ServiceManager.getDungeonManager().addOrUpdatePogResource(pogData);
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogData, PogPlace.COMMON_RESOURCE);
 		ServiceManager.getDungeonManager().setSelectedPog(pogData);
 		close();
 	}
@@ -468,10 +500,12 @@ public class MonsterManageDialog extends OkCancelDialog {
 			pogData.setPogClass(classString);
 		}
 		int index = gender.getSelectedIndex();
-		if (index > 1) {
+		if (index >= 1) {
 			pogData.clearFlags(PlayerFlag.HAS_NO_GENDER);
 			pogData.clearFlags(PlayerFlag.IS_FEMALE);
-			pogData.setFlags(index == 3 ? PlayerFlag.HAS_NO_GENDER : PlayerFlag.IS_FEMALE);
+			if (index > 1) {
+				pogData.setFlags(index == 3 ? PlayerFlag.HAS_NO_GENDER : PlayerFlag.IS_FEMALE);
+			}
 		}
 	}
 }

@@ -82,22 +82,30 @@ public class PogData {
 	 * @param pogData with data to copy.
 	 */
 	private void copyData(final PogData pogData) {
-		pogColumn = pogData.pogColumn;
-		pogRow = pogData.pogRow;
+		templateUUID = pogData.templateUUID;
+		uuid = pogData.uuid;
+		fullUpdate(pogData);
+	}
+
+	/**
+	 * Update everything but UUIDs.
+	 * 
+	 * @param pogData with data
+	 */
+	public void fullUpdate(final PogData pogData) {
+		updatePog(pogData);
 		playerFlags = pogData.playerFlags;
 		dungeonMasterFlags = pogData.dungeonMasterFlags;
-		dungeonLevel = pogData.dungeonLevel;
 		pogName = pogData.pogName;
 		pogImageUrl = pogData.pogImageUrl;
 		pogType = pogData.pogType;
-		uuid = pogData.uuid;
-		templateUUID = pogData.templateUUID;
-		pogClass = pogData.pogClass;
 		race = pogData.race;
+		pogClass = pogData.pogClass;
 	}
 
 	/**
 	 * Update pog with new data.
+	 * 
 	 * @param withUpdates with updates
 	 */
 	public void updatePog(final PogData withUpdates) {

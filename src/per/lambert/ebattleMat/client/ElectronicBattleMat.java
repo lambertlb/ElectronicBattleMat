@@ -59,13 +59,21 @@ public class ElectronicBattleMat implements EntryPoint {
 	 */
 	public static final String RESOURCE_LOCATION = DUNGEON_DATA_LOCATION + DUNGEON_RESOURCE_LOCATION;
 	/**
+	 * Folder name for monsters.
+	 */
+	public static final String MONSTER_FOLDER = "monsters/";
+	/**
 	 * sub-folder for monster resources.
 	 */
-	public static final String DUNGEON_MONSTER_LOCATION = DUNGEON_RESOURCE_LOCATION + "monsters/";
+	public static final String DUNGEON_MONSTER_LOCATION = DUNGEON_RESOURCE_LOCATION + MONSTER_FOLDER;
+	/**
+	 * Folder name for room objects.
+	 */
+	public static final String ROOM_OBJECT_FOLDER = "roomObjects/";
 	/**
 	 * sub-folder for room object resources.
 	 */
-	public static final String DUNGEON_ROOMOBJECT_LOCATION = DUNGEON_RESOURCE_LOCATION + "roomObjects/";
+	public static final String DUNGEON_ROOMOBJECT_LOCATION = DUNGEON_RESOURCE_LOCATION + ROOM_OBJECT_FOLDER;
 	/**
 	 * Monster type pog.
 	 */

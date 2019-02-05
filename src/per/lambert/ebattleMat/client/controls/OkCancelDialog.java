@@ -14,6 +14,7 @@ import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 
 /**
  * Base dialog for dialogs needing OK and cancel buttons.
+ * 
  * @author LLambert
  *
  */
@@ -45,6 +46,7 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * grid for user content.
+	 * 
 	 * @return grid for user content.
 	 */
 	protected Grid getCenterGrid() {
@@ -60,6 +62,7 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param caption for dialog
 	 * @param okVisible true if OK button is visible.
 	 * @param cancelVisble true if Cancel button is visible
@@ -70,6 +73,7 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param caption for dialog
 	 * @param okVisible true if OK button is visible.
 	 * @param cancelVisble true if Cancel button is visible
@@ -151,9 +155,9 @@ public class OkCancelDialog extends ResizableDialog {
 		initialize();
 	}
 
-
 	/**
 	 * enable or disable OK button.
+	 * 
 	 * @param enable true to enable.
 	 */
 	public void enableOk(final boolean enable) {
@@ -162,6 +166,7 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * enable or disable Cancel button.
+	 * 
 	 * @param enable true to enable.
 	 */
 	public void enableCancel(final boolean enable) {
@@ -170,6 +175,7 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * OK button clicked.
+	 * 
 	 * @param event data
 	 */
 	protected void onOkClick(final ClickEvent event) {
@@ -177,13 +183,33 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * Cancel button clicked.
+	 * 
 	 * @param event data
 	 */
 	protected void onCancelClick(final ClickEvent event) {
 	}
 
 	/**
+	 * get top of ok button.
+	 * 
+	 * @return top of ok button
+	 */
+	protected int getOkTop() {
+		return (ok.getAbsoluteTop());
+	}
+
+	/**
+	 * get left of ok button.
+	 * 
+	 * @return left of ok button
+	 */
+	protected int getOkLeft() {
+		return (ok.getAbsoluteLeft());
+	}
+
+	/**
 	 * Enable or Disable widget.
+	 * 
 	 * @param widget to enable
 	 * @param enable true if enabled
 	 */

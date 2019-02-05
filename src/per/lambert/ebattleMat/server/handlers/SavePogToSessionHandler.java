@@ -16,7 +16,7 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  * @author LLambert
  *
  */
-public class SavePogHandler implements IWebRequestHandler {
+public class SavePogToSessionHandler implements IWebRequestHandler {
 
 	/**
 	 * {@inheritDoc}

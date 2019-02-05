@@ -189,7 +189,7 @@ public abstract class PogManager implements IPogManager {
 		monsterTemplatePogs = null;
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEON_MONSTER_LOCATION + "monsterPogs.json");
+		parameters.put("fileName", ElectronicBattleMat.DUNGEON_MONSTER_LOCATION + "pogs.json");
 		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
@@ -245,7 +245,7 @@ public abstract class PogManager implements IPogManager {
 		roomObjectTemplatePogs = null;
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEON_ROOMOBJECT_LOCATION + "roomPogs.json");
+		parameters.put("fileName", ElectronicBattleMat.DUNGEON_ROOMOBJECT_LOCATION + "pogs.json");
 		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
@@ -439,5 +439,24 @@ public abstract class PogManager implements IPogManager {
 	@Override
 	public String[] getMonsterGenders() {
 		return (new String[] {"Male", "Female", "Neutral" });
+	}
+
+	/**
+	 * Add pog to common resource area.
+	 * 
+	 * @param pog to add
+	 */
+	protected void addOrUpdatePogToCommonResource(final PogData pog) {
+		if (pog.isThisAMonster()) {
+			if (findMonsterPog(pog.getUUID()) == null) {
+				monsterTemplatePogs.addPog(pog);
+				addMonsterToCollections(pog);
+			}
+			return;
+		}
+		if (findRoomObjectPog(pog.getUUID()) == null) {
+			roomObjectTemplatePogs.addPog(pog);
+			addRoomObjectToCollections(pog);
+		}
 	}
 }

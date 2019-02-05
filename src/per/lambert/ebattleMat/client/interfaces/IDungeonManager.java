@@ -361,4 +361,11 @@ public interface IDungeonManager extends IPogManager {
 	 */
 	boolean isValidNewMonsterName(String monsterName);
 
+	/**
+	 * Add or update pog to proper place.
+	 * @param pog to add
+	 * @param place to add
+	 */
+	void addOrUpdatePog(PogData pog, PogPlace place);
+
 }
