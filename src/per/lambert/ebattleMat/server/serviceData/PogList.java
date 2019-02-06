@@ -31,6 +31,22 @@ public class PogList {
 	}
 
 	/**
+	 * Constructor.
+	 */
+	public PogList() {
+		this(0);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param startingSize starting size.
+	 */
+	public PogList(final int startingSize) {
+		pogList = new PogData[startingSize];
+	}
+
+	/**
 	 * Update pog if it exists ot add it.
 	 * 
 	 * @param pog with data.
@@ -57,5 +73,16 @@ public class PogList {
 		}
 		newList[pogList.length] = pog;
 		pogList = newList;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public PogList clone() {
+		PogList newList = new PogList(pogList.length);
+		for (int i = 0; i < pogList.length; ++i) {
+			newList.pogList[i] = pogList[i].clone();
+		}
+		return (newList);
 	}
 }

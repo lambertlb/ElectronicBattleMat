@@ -23,6 +23,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.services.serviceData.PogList;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 /**
@@ -860,13 +861,13 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			if (currentLevel == null) {
 				return null;
 			}
-			return (currentLevel.getMonsters());
+			return (currentLevel.getMonsters().getPogList());
 		}
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return null;
 		}
-		return sessionLevel.getMonsters();
+		return sessionLevel.getMonsters().getPogList();
 	}
 
 	/**
@@ -882,13 +883,13 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			if (currentLevel == null) {
 				return null;
 			}
-			return (currentLevel.getRoomObjects());
+			return (currentLevel.getRoomObjects().getPogList());
 		}
 		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 		if (sessionLevel == null) {
 			return null;
 		}
-		return sessionLevel.getRoomObjects();
+		return sessionLevel.getRoomObjects().getPogList();
 	}
 
 	/**
@@ -901,7 +902,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 		int currentLevel = getCurrentLevel();
 		ArrayList<PogData> playersOnLevel = new ArrayList<PogData>();
-		for (PogData player : selectedSession.getPlayers()) {
+		for (PogData player : selectedSession.getPlayers().getPogList()) {
 			if (player.getDungeonLevel() == currentLevel) {
 				playersOnLevel.add(player);
 			}
@@ -999,7 +1000,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (selectedSession == null) {
 			return null;
 		}
-		for (PogData pog : selectedSession.getPlayers()) {
+		for (PogData pog : selectedSession.getPlayers().getPogList()) {
 			if (pog.getUUID().equals(uuid)) {
 				return (pog);
 			}
@@ -1045,11 +1046,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param pog to update
 	 * @param poglist pog list to update
 	 */
-	private void updatePogListInLevel(final PogData pog, final PogData[] poglist) {
-		for (PogData pogData : poglist) {
+	private void updatePogListInLevel(final PogData pog, final PogList poglist) {
+		for (PogData pogData : poglist.getPogList()) {
 			if (pog.getUUID().equals(pogData.getUUID())) {
-				pogData.setPogColumn(pog.getPogColumn());
-				pogData.setPogRow(pog.getPogRow());
+				pogData.updatePog(pog);
 				saveDungeonData();
 				break;
 			}
@@ -1081,11 +1081,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param pog to update
 	 * @param poglist pog list
 	 */
-	private void updatePogInSession(final PogData pog, final PogData[] poglist) {
-		for (PogData pogData : poglist) {
+	private void updatePogInSession(final PogData pog, final PogList poglist) {
+		for (PogData pogData : poglist.getPogList()) {
 			if (pog.getUUID().equals(pogData.getUUID())) {
-				pogData.setPogColumn(pog.getPogColumn());
-				pogData.setPogRow(pog.getPogRow());
+				pogData.updatePog(pog);
 				savePogToSessionData(pog, false);
 				break;
 			}
@@ -1195,7 +1194,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	private boolean addPogToSessionIfNotThere(final PogData pog, final DungeonSessionData sessionData) {
 		pog.setDungeonLevel(currentLevel);
-		for (PogData player : sessionData.getPlayers()) {
+		for (PogData player : sessionData.getPlayers().getPogList()) {
 			if (player.getTemplateUUID().equals(pog.getTemplateUUID())) {
 				return (false);
 			}

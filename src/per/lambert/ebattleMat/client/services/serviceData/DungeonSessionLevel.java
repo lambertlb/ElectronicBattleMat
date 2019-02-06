@@ -65,9 +65,9 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * Get monsters on level.
 	 * @return monsters on level.
 	 */
-	public final native PogData[] getMonsters() /*-{
+	public final native PogList getMonsters() /*-{
 		if (this.monsters === undefined) {
-			this.monsters = [];
+			this.monsters = {"pogList": []};
 		}
 		return (this.monsters);
 	}-*/;
@@ -77,25 +77,17 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * @param monster to add
 	 */
 	public final void addMonster(final PogData monster) {
-		getMonsters();
-		addMonsterNative(monster);
+		PogList monsters = getMonsters();
+		monsters.addPog(monster);
 	}
-
-	/**
-	 * Add monster to list.
-	 * @param monster to add
-	 */
-	public final native void addMonsterNative(PogData monster) /*-{
-		this.monsters.push(monster);
-	}-*/;
 
 	/**
 	 * get room objects.
 	 * @return room objects
 	 */
-	public final native PogData[] getRoomObjects() /*-{
+	public final native PogList getRoomObjects() /*-{
 		if (this.roomObjects === undefined) {
-			this.roomObjects = [];
+			this.roomObjects = {"pogList": []};
 		}
 		return (this.roomObjects);
 	}-*/;
@@ -105,15 +97,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * @param roomObject to add
 	 */
 	public final void addRoomObject(final PogData roomObject) {
-		getRoomObjects();
-		addRoomObjectsNative(roomObject);
+		PogList roomObjects = getRoomObjects();
+		roomObjects.addPog(roomObject);
 	}
-
-	/**
-	 * Add room object to list.
-	 * @param roomObject to add
-	 */
-	public final native void addRoomObjectsNative(PogData roomObject) /*-{
-		this.roomObjects.push(roomObject);
-	}-*/;
 }

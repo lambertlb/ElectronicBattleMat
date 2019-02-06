@@ -346,7 +346,7 @@ public class RibbonBar extends Composite {
 		if (sessionData == null) {
 			return;
 		}
-		PogData[] pogList = sessionData.getPlayers();
+		PogData[] pogList = sessionData.getPlayers().getPogList();
 		for (PogData pogData : pogList) {
 			characterSelect.addItem(pogData.getPogName(), pogData.getUUID());
 		}

@@ -8,53 +8,57 @@
 			"gridSize": 50,
 			"gridOffsetX": 11,
 			"gridOffsetY": 11,
-			"monsters": [
-				{
-					"pogName": "Male Kobold",
-					"pogImageUrl": "https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg",
-					"pogType": "MONSTER",
-					"uuid": "4f917336-c437-4a72-924b-2a0d20a0b4c6",
-					"templateUUID": "Male-Kobold",
-					"pogClass": "Fighter",
-					"race": "Kobold",
-					"playerFlags": 0,
-					"pogSize": 1,
-					"dungeonMasterFlags": 0,
-					"pogColumn": 5,
-					"pogRow": 2
-				},
-				{
-					"pogName": "Male Kobold",
-					"pogImageUrl": "https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg",
-					"pogType": "MONSTER",
-					"uuid": "010ff57c-36cd-4149-826d-e40a95a1712c",
-					"templateUUID": "Male-Kobold",
-					"pogClass": "Fighter",
-					"race": "Kobold",
-					"playerFlags": 0,
-					"pogSize": 1,
-					"dungeonMasterFlags": 0,
-					"pogColumn": 7,
-					"pogRow": 3
-				},
-				{
-					"pogName": "Female Kobold",
-					"pogImageUrl": "https://pre00.deviantart.net/9204/th/pre/f/2016/172/6/a/kalbold_femalekoboldfighter_color_01_by_prodigyduck-da75cmb.png",
-					"pogType": "MONSTER",
-					"uuid": "3e8f3820-8987-47b1-8867-dfbeabb4c0f6",
-					"templateUUID": "Female-Kobold",
-					"pogClass": "Fighter",
-					"race": "Kobold",
-					"playerFlags": 2,
-					"pogSize": 1,
-					"dungeonMasterFlags": 0,
-					"pogColumn": 9,
-					"pogRow": 4
-				}
-			],
+			"monsters": {
+				"pogList": [
+					{
+						"pogName": "Male Kobold",
+						"pogImageUrl": "https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg",
+						"pogType": "MONSTER",
+						"uuid": "4f917336-c437-4a72-924b-2a0d20a0b4c6",
+						"templateUUID": "Male-Kobold",
+						"pogClass": "Fighter",
+						"race": "Kobold",
+						"playerFlags": 0,
+						"pogSize": 1,
+						"dungeonMasterFlags": 0,
+						"pogColumn": 5,
+						"pogRow": 2
+					},
+					{
+						"pogName": "Male Kobold",
+						"pogImageUrl": "https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg",
+						"pogType": "MONSTER",
+						"uuid": "010ff57c-36cd-4149-826d-e40a95a1712c",
+						"templateUUID": "Male-Kobold",
+						"pogClass": "Fighter",
+						"race": "Kobold",
+						"playerFlags": 0,
+						"pogSize": 1,
+						"dungeonMasterFlags": 0,
+						"pogColumn": 7,
+						"pogRow": 3
+					},
+					{
+						"pogName": "Female Kobold",
+						"pogImageUrl": "https://pre00.deviantart.net/9204/th/pre/f/2016/172/6/a/kalbold_femalekoboldfighter_color_01_by_prodigyduck-da75cmb.png",
+						"pogType": "MONSTER",
+						"uuid": "3e8f3820-8987-47b1-8867-dfbeabb4c0f6",
+						"templateUUID": "Female-Kobold",
+						"pogClass": "Fighter",
+						"race": "Kobold",
+						"playerFlags": 2,
+						"pogSize": 1,
+						"dungeonMasterFlags": 0,
+						"pogColumn": 9,
+						"pogRow": 4
+					}
+				]
+			},
 			"columns": 31,
 			"rows": 31,
-			"roomObjects": []
+			"roomObjects": {
+				"pogList": []
+			}
 		},
 		{
 			"levelDrawing": "level2.jpg",
@@ -62,10 +66,14 @@
 			"gridSize": 50,
 			"gridOffsetX": 0,
 			"gridOffsetY": 0,
-			"monsters": [],
+			"monsters": {
+				"pogList": []
+			},
 			"columns": 39,
 			"rows": 22,
-			"roomObjects": []
+			"roomObjects": {
+				"pogList": []
+			}
 		},
 		{
 			"gridSize": 50,
@@ -75,10 +83,13 @@
 			"levelDrawing": "level3.jpg",
 			"columns": 39,
 			"rows": 22,
-			"monsters": [],
-			"roomObjects": []
+			"monsters": {
+				"pogList": []
+			},
+			"roomObjects": {
+				"pogList": []
+			}
 		}
 	],
-	"showGrid": true,
-	"isDirty": false
+	"showGrid": true
 }

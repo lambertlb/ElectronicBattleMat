@@ -423,4 +423,44 @@ public class PogData extends JavaScriptObject {
 		return (theClone);
 	}
 
+	/**
+	 * Are these the same?
+	 * 
+	 * @param toCompare to compare
+	 * @return true if same uuid
+	 */
+	public final boolean isEquals(final PogData toCompare) {
+		if (toCompare == null) {
+			return (false);
+		}
+		return (getUUID().equals(toCompare.getUUID()));
+	}
+	/**
+	 * Update everything but UUIDs.
+	 * 
+	 * @param pogData with data
+	 */
+	public final void fullUpdate(final PogData pogData) {
+		updatePog(pogData);
+		setPlayerFlagsNative(pogData.getPlayerFlags());
+		setDungeonMasterFlagsNative(pogData.getDungeonMasterFlags());
+		setPogName(pogData.getPogName());
+		setPogImageUrl(pogData.getPogImageUrl());
+		setPogType(pogData.getPogType());
+		setRace(pogData.getRace());
+		setPogClass(pogData.getPogClass());
+		setPogSize(pogData.getPogSize());
+	}
+
+	/**
+	 * Update pog with new data.
+	 * 
+	 * @param withUpdates with updates
+	 */
+	public final void updatePog(final PogData withUpdates) {
+		setPogColumn(withUpdates.getPogColumn());
+		setPogRow(withUpdates.getPogRow());
+		setDungeonLevel(withUpdates.getDungeonLevel());
+	}
+
 }

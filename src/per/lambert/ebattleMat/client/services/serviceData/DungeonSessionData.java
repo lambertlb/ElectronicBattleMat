@@ -87,9 +87,11 @@ public class DungeonSessionData extends JavaScriptObject {
 	 * 
 	 * @return list of players.
 	 */
-	public final native PogData[] getPlayers() /*-{
+	public final native PogList getPlayers() /*-{
 		if (this.players === undefined) {
-			this.players = [];
+			this.players = {
+				"pogList" : []
+			};
 		}
 		return (this.players);
 	}-*/;
@@ -100,18 +102,9 @@ public class DungeonSessionData extends JavaScriptObject {
 	 * @param player to add
 	 */
 	public final void addPlayer(final PogData player) {
-		getPlayers();
-		addPlayerNative(player);
+		PogList players = getPlayers();
+		players.addPog(player);
 	}
-
-	/**
-	 * Add player.
-	 * 
-	 * @param player to add
-	 */
-	public final native void addPlayerNative(PogData player) /*-{
-		this.players.push(player);
-	}-*/;
 
 	/**
 	 * get levels for session.

@@ -171,13 +171,13 @@ public class DungeonLevel {
 	/**
 	 * List of monsters on level.
 	 */
-	private PogData[] monsters = new PogData[0];
+	private PogList monsters = new PogList();
 
 	/**
 	 * get List of monsters on level.
 	 * @return List of monsters on level.
 	 */
-	public PogData[] getMonsters() {
+	public PogList getMonsters() {
 		return monsters;
 	}
 
@@ -185,20 +185,20 @@ public class DungeonLevel {
 	 * set List of monsters on level.
 	 * @param monsters List of monsters on level.
 	 */
-	public void setMonsters(final PogData[] monsters) {
+	public void setMonsters(final PogList monsters) {
 		this.monsters = monsters;
 	}
 
 	/**
 	 * List of room objects on level.
 	 */
-	private PogData[] roomObjects = new PogData[0];
+	private PogList roomObjects = new PogList();
 
 	/**
 	 * get List of room objects on level.
 	 * @return List of room objects on level.
 	 */
-	public PogData[] getRoomObjects() {
+	public PogList getRoomObjects() {
 		return roomObjects;
 	}
 
@@ -206,7 +206,7 @@ public class DungeonLevel {
 	 * set List of room objects on level.
 	 * @param roomObjects List of room objects on level.
 	 */
-	public void setRoomObjects(final PogData[] roomObjects) {
+	public void setRoomObjects(final PogList roomObjects) {
 		this.roomObjects = roomObjects;
 	}
 }

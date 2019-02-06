@@ -102,14 +102,14 @@ public class DungeonSessionData {
 	/**
 	 * players in this session.
 	 */
-	private PogData[] players = new PogData[0];
+	private PogList players = new PogList();
 
 	/**
 	 * get players in this session.
 	 * 
 	 * @return players in this session.
 	 */
-	public PogData[] getPlayers() {
+	public PogList getPlayers() {
 		return players;
 	}
 
@@ -118,7 +118,7 @@ public class DungeonSessionData {
 	 * 
 	 * @param players players in this session.
 	 */
-	public void setPlayers(final PogData[] players) {
+	public void setPlayers(final PogList players) {
 		this.players = players;
 	}
 	/**

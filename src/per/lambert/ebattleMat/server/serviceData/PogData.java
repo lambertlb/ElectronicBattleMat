@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.server.serviceData;
 
+import java.util.UUID;
+
 /**
  * Pog data server side.
  * 
@@ -72,7 +74,6 @@ public class PogData {
 	 * @param pogData to clone
 	 */
 	public PogData(final PogData pogData) {
-		pogSize = pogData.pogSize;
 		copyData(pogData);
 	}
 
@@ -101,6 +102,7 @@ public class PogData {
 		pogType = pogData.pogType;
 		race = pogData.race;
 		pogClass = pogData.pogClass;
+		pogSize = pogData.pogSize;
 	}
 
 	/**
@@ -118,8 +120,9 @@ public class PogData {
 	 * {@inheritDoc}
 	 */
 	public PogData clone() {
-		PogData clone = new PogData();
-		clone.copyData(this);
+		PogData clone = new PogData(this);
+		UUID uuid = UUID.randomUUID();
+		clone.uuid = uuid.toString();
 		return (clone);
 	}
 

@@ -33,14 +33,14 @@ public class DungeonSessionLevel {
 	/**
 	 * list of monsters.
 	 */
-	private PogData[] monsters = new PogData[0];
+	private PogList monsters = new PogList();
 
 	/**
 	 * get list of monsters.
 	 * 
 	 * @return list of monsters.
 	 */
-	public PogData[] getMonsters() {
+	public PogList getMonsters() {
 		return monsters;
 	}
 
@@ -49,21 +49,21 @@ public class DungeonSessionLevel {
 	 * 
 	 * @param monsters list of monsters.
 	 */
-	public void setMonsters(final PogData[] monsters) {
+	public void setMonsters(final PogList monsters) {
 		this.monsters = monsters;
 	}
 
 	/**
 	 * list of room objects.
 	 */
-	private PogData[] roomObjects = new PogData[0];
+	private PogList roomObjects = new PogList();
 
 	/**
 	 * get list of room objects.
 	 * 
 	 * @return list of room objects.
 	 */
-	public PogData[] getRoomObjects() {
+	public PogList getRoomObjects() {
 		return roomObjects;
 	}
 
@@ -72,7 +72,7 @@ public class DungeonSessionLevel {
 	 * 
 	 * @param roomObjects list of room objects.
 	 */
-	public void setRoomObjects(final PogData[] roomObjects) {
+	public void setRoomObjects(final PogList roomObjects) {
 		this.roomObjects = roomObjects;
 	}
 
@@ -82,33 +82,9 @@ public class DungeonSessionLevel {
 	 * @param dungeonLevel dungeon level to copy
 	 */
 	public DungeonSessionLevel(final DungeonLevel dungeonLevel) {
-		copyMonsters(dungeonLevel);
-		copyRoomObjects(dungeonLevel);
+		monsters = dungeonLevel.getMonsters().clone();
+		monsters = dungeonLevel.getRoomObjects().clone();
 		creatFogOfWar(dungeonLevel);
-	}
-
-	/**
-	 * Copy monsters from dungeon level.
-	 * 
-	 * @param dungeonLevel dungeon level with monsters
-	 */
-	private void copyMonsters(final DungeonLevel dungeonLevel) {
-		monsters = new PogData[dungeonLevel.getMonsters().length];
-		for (int i = 0; i < dungeonLevel.getMonsters().length; ++i) {
-			monsters[i] = dungeonLevel.getMonsters()[i].clone();
-		}
-	}
-
-	/**
-	 * Copy room objects from dungeon level.
-	 * 
-	 * @param dungeonLevel dungeon level with room objects
-	 */
-	private void copyRoomObjects(final DungeonLevel dungeonLevel) {
-		roomObjects = new PogData[dungeonLevel.getRoomObjects().length];
-		for (int i = 0; i < dungeonLevel.getRoomObjects().length; ++i) {
-			roomObjects[i] = dungeonLevel.getRoomObjects()[i].clone();
-		}
 	}
 
 	/**
