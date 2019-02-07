@@ -97,16 +97,6 @@ public class DungeonSessionData extends JavaScriptObject {
 	}-*/;
 
 	/**
-	 * Add player.
-	 * 
-	 * @param player to add
-	 */
-	public final void addPlayer(final PogData player) {
-		PogList players = getPlayers();
-		players.addPog(player);
-	}
-
-	/**
 	 * get levels for session.
 	 * 
 	 * @return levels for session

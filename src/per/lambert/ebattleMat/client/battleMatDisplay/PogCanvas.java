@@ -367,6 +367,13 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
+	 * Set dungeon level the pog is on.
+	 * @param level in dungeon
+	 */
+	public void setPogDungeonLevel(final int level) {
+		pogData.setDungeonLevel(level);
+	}
+	/**
 	 * get column.
 	 * @return column
 	 */

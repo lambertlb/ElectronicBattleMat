@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.server.serviceData.DungeonData;
+import per.lambert.ebattleMat.server.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
@@ -639,38 +640,6 @@ public final class DungeonsManager {
 	}
 
 	/**
-	 * Save Pog data.
-	 * 
-	 * @param servlet servlet data
-	 * @param dungeonUUID UUID of dungeon
-	 * @param sessionUUID UUID of session
-	 * @param currentLevel level in dungeon
-	 * @param needToAdd true if need to add
-	 * @param pogJsonData JSON data of Pog
-	 * @throws IOException thrown if error
-	 */
-	public static void savePog(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID, final int currentLevel, final boolean needToAdd, final String pogJsonData) throws IOException {
-		lock.lock();
-		try {
-			SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
-			if (sessionInformation == null) {
-				return;
-			}
-			Gson gson = new Gson();
-			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
-			if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
-				sessionInformation.saveMonsterPog(pogData, currentLevel, needToAdd);
-			} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
-				sessionInformation.saveRoomObjectPog(pogData, currentLevel, needToAdd);
-			} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_PLAYER)) {
-				sessionInformation.savePlayerPog(pogData, currentLevel, needToAdd);
-			}
-		} finally {
-			lock.unlock();
-		}
-	}
-
-	/**
 	 * Update fog of war.
 	 * 
 	 * @param servlet servlet data
@@ -795,32 +764,33 @@ public final class DungeonsManager {
 			path.mkdir();
 		}
 	}
+
 	/**
 	 * Save Pog data.
 	 * 
 	 * @param servlet servlet data
 	 * @param dungeonUUID UUID of dungeon
 	 * @param sessionUUID UUID of session
-	 * @param currentLevel level in dungeon
+	 * @param level level in dungeon
 	 * @param place place where to add
 	 * @param pogJsonData JSON data of Pog
 	 * @throws IOException thrown if error
 	 */
-	public static void savePog(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID, final int currentLevel, final PogPlace place, final String pogJsonData) throws IOException {
+	public static void savePog(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID, final int level, final PogPlace place, final String pogJsonData) throws IOException {
 		lock.lock();
 		try {
 			Gson gson = new Gson();
 			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
 			if (place == PogPlace.COMMON_RESOURCE) {
 				addOrUpdatePogToCommonResource(servlet, pogData);
+			} else if (place == PogPlace.DUNGEON_INSTANCE) {
+				addOrUpdatePogToDungeonInstance(servlet, pogData, dungeonUUID, level);
+			} else if (place == PogPlace.SESSION_RESOURCE) {
+				addOrUpdatePogToSessionResource(servlet, pogData, dungeonUUID, sessionUUID, level);
+			} else if (place == PogPlace.SESSION_INSTANCE) {
+				addOrUpdatePogToSessionInstance(servlet, pogData, dungeonUUID, sessionUUID, level);
 			} else if (place == PogPlace.DUNGEON_RESOURCE) {
 				addOrUpdatePogToDungeonResource(pogData);
-			} else if (place == PogPlace.DUNGEON_INSTANCE) {
-				addOrUpdatePogToDungeonInstance(pogData);
-			} else if (place == PogPlace.SESSION_RESOURCE) {
-				addOrUpdatePogToSessionResource(pogData);
-			} else if (place == PogPlace.SESSION_INSTANCE) {
-				addOrUpdatePogToSessionInstance(pogData);
 			}
 		} finally {
 			lock.unlock();
@@ -829,6 +799,7 @@ public final class DungeonsManager {
 
 	/**
 	 * Add or update pog to proper resource.
+	 * 
 	 * @param servlet servlet data
 	 * @param pogData to add
 	 * @throws IOException if error
@@ -843,6 +814,7 @@ public final class DungeonsManager {
 
 	/**
 	 * Add or Update pog to resource folder.
+	 * 
 	 * @param servlet with data
 	 * @param pogData to update
 	 * @param folder resource folder
@@ -860,15 +832,69 @@ public final class DungeonsManager {
 		saveJsonFile(updatedData, filePath);
 	}
 
+	/**
+	 * Add or update pog instance to a dungeon level within the template.
+	 * 
+	 * @param pogData pog data
+	 * @param dungeonUUID UUID of dungeon.
+	 * @param level dungeon level
+	 * @param servlet data
+	 * @throws IOException if error
+	 */
+	private static void addOrUpdatePogToDungeonInstance(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final int level) throws IOException {
+		DungeonData dungeonData = getDungeonDataFromUUID(servlet, dungeonUUID);
+		DungeonLevel dungeonLevel = dungeonData.getDungeonLevels()[level];
+		if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+			dungeonLevel.getMonsters().addOrUpdate(pogData);
+		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
+			dungeonLevel.getRoomObjects().addOrUpdate(pogData);
+		}
+		Gson gson = new Gson();
+		String jsonData = gson.toJson(dungeonData);
+		saveDungeonData(servlet, jsonData, dungeonUUID);
+	}
+
+	/**
+	 * Add or update pog instance to a session level.
+	 * 
+	 * @param servlet data
+	 * @param pogData pog data
+	 * @param dungeonUUID UUID of dungeon.
+	 * @param sessionUUID UUID of session
+	 * @param level dungeon level
+	 * @throws IOException if error
+	 */
+	private static void addOrUpdatePogToSessionInstance(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final String sessionUUID, final int level) throws IOException {
+		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+		sessionInformation.addOrUpdatePog(pogData, level);
+	}
+
+	/**
+	 * Add or update pog instance to a session resource level.
+	 * 
+	 * This should only be player information.
+	 * 
+	 * @param servlet data
+	 * @param pogData pog data
+	 * @param dungeonUUID UUID of dungeon.
+	 * @param sessionUUID UUID of session
+	 * @param level dungeon level
+	 * @throws IOException if error
+	 */
+	private static void addOrUpdatePogToSessionResource(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final String sessionUUID, final int level) throws IOException {
+		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+		if (pogData.isType(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+			sessionInformation.addOrUpdatePog(pogData, level);
+		}
+	}
+
+	/**
+	 * This is for pogs templates specific to a particular dungeon.
+	 * 
+	 * No support for this yet but might be added in the future.
+	 * 
+	 * @param pogData pog data
+	 */
 	private static void addOrUpdatePogToDungeonResource(final PogData pogData) {
-	}
-
-	private static void addOrUpdatePogToDungeonInstance(final PogData pogData) {
-	}
-
-	private static void addOrUpdatePogToSessionResource(final PogData pogData) {
-	}
-
-	private static void addOrUpdatePogToSessionInstance(final PogData pogData) {
 	}
 }

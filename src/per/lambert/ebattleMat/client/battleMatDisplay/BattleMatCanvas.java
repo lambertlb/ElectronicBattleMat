@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
@@ -678,7 +677,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Update the pog canvas for this cell. Create on if none exists.
+	 * Update the pog canvas for this cell. Create one if none exists.
 	 * 
 	 * @return pog canvas in the cell
 	 */
@@ -686,12 +685,22 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
 		for (PogCanvas pog : pogs) {
 			if (pog.getPogData() == pogBeingDragged) {
-				pog.setPogPosition(dragColumn, dragRow);
-				ServiceManager.getDungeonManager().updatePogDataOnLevel(pogBeingDragged);
+				updatePogData(pog.getPogData());
+				ServiceManager.getDungeonManager().addOrUpdatePog(pogBeingDragged);
 				return (pog);
 			}
 		}
-		return addPogToCanvas(pogBeingDragged);
+		return addClonePogToCanvas(pogBeingDragged);
+	}
+
+	/**
+	 * Update pog position data.
+	 * @param pog to update
+	 */
+	private void updatePogData(final PogData pog) {
+		pog.setPogColumn(dragColumn);
+		pog.setPogRow(dragRow);
+		pog.setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevel());
 	}
 
 	/**
@@ -701,10 +710,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @return Proper Z
 	 */
 	private int getPogZ(final PogData pogData) {
-		if (pogData.getPogType().equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+		if (pogData.isThisAMonster()) {
 			return (MONSTERS_Z);
 		}
-		if (pogData.getPogType().equals(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+		if (pogData.isThisAPlayer()) {
 			return (PLAYERS_Z);
 		}
 		return (ROOMOBJECTS_Z);
@@ -716,7 +725,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param pogData pog data
 	 * @return pog canvas
 	 */
-	private PogCanvas addPogToCanvas(final PogData pogData) {
+	private PogCanvas addClonePogToCanvas(final PogData pogData) {
 		getGridData();
 		PogData clonePog;
 		if (pogData.isThisAPlayer()) {
@@ -724,24 +733,22 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		} else {
 			clonePog = pogData.clone();
 		}
-		clonePog.setPogColumn(dragColumn);
-		clonePog.setPogRow(dragRow);
-		ServiceManager.getDungeonManager().addOrUpdatePogData(clonePog);
-		return addPogToCanvas(clonePog, getPogZ(pogData));
+		updatePogData(clonePog);
+		ServiceManager.getDungeonManager().addOrUpdatePog(clonePog);
+		return addPogToCanvas(clonePog);
 	}
 
 	/**
-	 * Add thsi pog to canvas with the specified Z order.
+	 * Add this pog to canvas with the specified Z order.
 	 * 
 	 * @param clonePog pog data
-	 * @param zLevel Z order
 	 * @return pog canvas
 	 */
-	private PogCanvas addPogToCanvas(final PogData clonePog, final int zLevel) {
+	private PogCanvas addPogToCanvas(final PogData clonePog) {
 		PogCanvas scalablePog = new PogCanvas(clonePog);
 		scalablePog.setPogWidth((int) gridSpacing - 10);
 		pogs.add(scalablePog);
-		scalablePog.getElement().getStyle().setZIndex(zLevel);
+		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
 		return (scalablePog);
 	}
@@ -883,7 +890,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		for (PogData monster : monsters) {
-			addPogToCanvas(monster, MONSTERS_Z);
+			addPogToCanvas(monster);
 		}
 	}
 
@@ -896,7 +903,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		for (PogData roomObject : roomObjects) {
-			addPogToCanvas(roomObject, ROOMOBJECTS_Z);
+			addPogToCanvas(roomObject);
 		}
 	}
 
@@ -910,7 +917,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		for (PogData player : players) {
 			if (player != null) {
-				addPogToCanvas(player, PLAYERS_Z);
+				addPogToCanvas(player);
 			}
 		}
 	}

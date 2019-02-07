@@ -73,15 +73,6 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	}-*/;
 
 	/**
-	 * Add monster to level.
-	 * @param monster to add
-	 */
-	public final void addMonster(final PogData monster) {
-		PogList monsters = getMonsters();
-		monsters.addPog(monster);
-	}
-
-	/**
 	 * get room objects.
 	 * @return room objects
 	 */
@@ -91,13 +82,4 @@ public class DungeonSessionLevel extends JavaScriptObject {
 		}
 		return (this.roomObjects);
 	}-*/;
-
-	/**
-	 * add room object.
-	 * @param roomObject to add
-	 */
-	public final void addRoomObject(final PogData roomObject) {
-		PogList roomObjects = getRoomObjects();
-		roomObjects.addPog(roomObject);
-	}
 }

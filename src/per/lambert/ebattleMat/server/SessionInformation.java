@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
@@ -224,46 +225,22 @@ public class SessionInformation {
 	}
 
 	/**
-	 * Save monster pog.
-	 * 
-	 * @param pogData to save
-	 * @param currentLevel session level
-	 * @param needToAdd true if need to add
+	 * Add or update pog.
+	 * @param pogData to add
+	 * @param currentLevel where to add
 	 */
-	public void saveMonsterPog(final PogData pogData, final int currentLevel, final boolean needToAdd) {
+	public void addOrUpdatePog(final PogData pogData, final int currentLevel) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
-		if (sessionLevel != null) {
+		if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
 			sessionLevel.getMonsters().addOrUpdate(pogData);
-		}
-	}
-
-	/**
-	 * Save room object pog.
-	 * 
-	 * @param pogData to save
-	 * @param currentLevel session level
-	 * @param needToAdd true if need to add.
-	 */
-	public void saveRoomObjectPog(final PogData pogData, final int currentLevel, final boolean needToAdd) {
-		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
-		if (sessionLevel != null) {
+		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
 			sessionLevel.getRoomObjects().addOrUpdate(pogData);
+		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+			sessionData.getPlayers().addOrUpdate(pogData);
 		}
-	}
-
-	/**
-	 * Save player pog.
-	 * 
-	 * @param pogData to save
-	 * @param currentLevel session level
-	 * @param needToAdd true if need to add.
-	 */
-	public void savePlayerPog(final PogData pogData, final int currentLevel, final boolean needToAdd) {
 		sessionData.increamentVersion();
 		dirty = true;
-		sessionData.getPlayers().addOrUpdate(pogData);
 	}
-
 	/**
 	 * Save if dirty.
 	 */

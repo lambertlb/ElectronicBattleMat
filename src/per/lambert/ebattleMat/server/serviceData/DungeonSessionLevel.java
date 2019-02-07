@@ -83,7 +83,7 @@ public class DungeonSessionLevel {
 	 */
 	public DungeonSessionLevel(final DungeonLevel dungeonLevel) {
 		monsters = dungeonLevel.getMonsters().clone();
-		monsters = dungeonLevel.getRoomObjects().clone();
+		roomObjects = dungeonLevel.getRoomObjects().clone();
 		creatFogOfWar(dungeonLevel);
 	}
 

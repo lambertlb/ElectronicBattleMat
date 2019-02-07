@@ -213,10 +213,19 @@ public abstract class PogManager implements IPogManager {
 		monsterClasses.clear();
 		monsterRaces.clear();
 		monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
+		rebuildMonsterCollections();
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
+	}
+
+	/**
+	 * Rebuild collections for filters.
+	 */
+	private void rebuildMonsterCollections() {
+		monsterClasses.clear();
+		monsterRaces.clear();
 		for (PogData monsterTemplate : monsterTemplatePogs.getPogList()) {
 			addMonsterToCollections(monsterTemplate);
 		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
 	}
 
 	/**
@@ -450,13 +459,12 @@ public abstract class PogManager implements IPogManager {
 		if (pog.isThisAMonster()) {
 			if (findMonsterPog(pog.getUUID()) == null) {
 				monsterTemplatePogs.addPog(pog);
-				addMonsterToCollections(pog);
 			}
 			return;
 		}
 		if (findRoomObjectPog(pog.getUUID()) == null) {
 			roomObjectTemplatePogs.addPog(pog);
-			addRoomObjectToCollections(pog);
 		}
+		rebuildMonsterCollections();
 	}
 }

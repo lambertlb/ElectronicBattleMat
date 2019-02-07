@@ -26,5 +26,9 @@ public enum PogPlace {
 	/**
 	 * Resides in Session level instance area.
 	 */
-	SESSION_INSTANCE
+	SESSION_INSTANCE,
+	/**
+	 * Invalid place.
+	 */
+	INVALID
 }

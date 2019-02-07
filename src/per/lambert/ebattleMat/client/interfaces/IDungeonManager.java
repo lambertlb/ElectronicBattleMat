@@ -246,20 +246,6 @@ public interface IDungeonManager extends IPogManager {
 	void deleteSession(String dungeonUUID, String sessionUUID);
 
 	/**
-	 * Update pog data on current level.
-	 * 
-	 * @param pog to update
-	 */
-	void updatePogDataOnLevel(PogData pog);
-
-	/**
-	 * Add of update pog data.
-	 * 
-	 * @param pog to add or update
-	 */
-	void addOrUpdatePogData(PogData pog);
-
-	/**
 	 * Get list of monster on current level.
 	 * 
 	 * if in edit mode this will be list of monster in template else it will be a list of monster in session.
@@ -367,5 +353,20 @@ public interface IDungeonManager extends IPogManager {
 	 * @param place to add
 	 */
 	void addOrUpdatePog(PogData pog, PogPlace place);
+
+	/**
+	 * Compute place pog should go.
+	 * 
+	 * @param pog to put
+	 * @return Pog Place
+	 */
+	PogPlace computePlace(PogData pog);
+
+	/**
+	 * Add or update Pog.
+	 * 
+	 * @param pog to add
+	 */
+	void addOrUpdatePog(PogData pog);
 
 }

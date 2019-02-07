@@ -23,7 +23,6 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
-import per.lambert.ebattleMat.client.services.serviceData.PogList;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 /**
@@ -1008,200 +1007,34 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return null;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * {@inheritDoc}
+	 * Compute place pog should go.
+	 * 
+	 * @param pog to put
+	 * @return Pog Place
 	 */
 	@Override
-	public void updatePogDataOnLevel(final PogData pog) {
+	public PogPlace computePlace(final PogData pog) {
 		if (editMode) {
-			updatePogDataInTemplateLevel(pog);
-		}
-		if (isDungeonMaster) {
-			updatePodDataInSessionLevel(pog);
-		}
-	}
-
-	/**
-	 * Update pog data in dungeon data.
-	 * 
-	 * @param pog to update
-	 */
-	private void updatePogDataInTemplateLevel(final PogData pog) {
-		DungeonLevel dungeonLevel = getCurrentLevelData();
-		if (dungeonLevel == null) {
-			return;
-		}
-		if (pog.isThisAMonster()) {
-			updatePogListInLevel(pog, dungeonLevel.getMonsters());
-		}
-		if (pog.isThisARoomObject()) {
-			updatePogListInLevel(pog, dungeonLevel.getRoomObjects());
-		}
-	}
-
-	/**
-	 * Update pog list for this level.
-	 * 
-	 * @param pog to update
-	 * @param poglist pog list to update
-	 */
-	private void updatePogListInLevel(final PogData pog, final PogList poglist) {
-		for (PogData pogData : poglist.getPogList()) {
-			if (pog.getUUID().equals(pogData.getUUID())) {
-				pogData.updatePog(pog);
-				saveDungeonData();
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Update pog in session data.
-	 * 
-	 * @param pog to update
-	 */
-	private void updatePodDataInSessionLevel(final PogData pog) {
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (sessionLevel == null) {
-			return;
+			return (PogPlace.DUNGEON_INSTANCE);
 		}
 		if (pog.isThisAPlayer()) {
-			updatePogInSession(pog, selectedSession.getPlayers());
-		} else if (pog.isThisAMonster()) {
-			updatePogInSession(pog, sessionLevel.getMonsters());
-		} else if (pog.isThisARoomObject()) {
-			updatePogInSession(pog, sessionLevel.getRoomObjects());
+			return (PogPlace.SESSION_RESOURCE);
 		}
+		if (isDungeonMaster) {
+			return (PogPlace.SESSION_INSTANCE);
+		}
+		return (PogPlace.INVALID);
 	}
 
 	/**
-	 * Update a pog within a list.
+	 * Add or update Pog.
 	 * 
-	 * @param pog to update
-	 * @param poglist pog list
-	 */
-	private void updatePogInSession(final PogData pog, final PogList poglist) {
-		for (PogData pogData : poglist.getPogList()) {
-			if (pog.getUUID().equals(pogData.getUUID())) {
-				pogData.updatePog(pog);
-				savePogToSessionData(pog, false);
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Save pog to session data.
-	 * 
-	 * @param pogData to upsate
-	 * @param needToAdd true if needs tro be added verus updated
-	 */
-	private void savePogToSessionData(final PogData pogData, final boolean needToAdd) {
-		if (selectedDungeon != null) {
-			Map<String, String> parameters = new HashMap<String, String>();
-			parameters.put("dungeonUUID", selectedDungeon.getUUID());
-			parameters.put("sessionUUID", selectedSession.getSessionUUID());
-			parameters.put("currentLevel", "" + currentLevel);
-			parameters.put("needToAdd", "" + needToAdd);
-			IDataRequester dataRequester = ServiceManager.getDataRequester();
-			String pogDataString = JsonUtils.stringify(pogData);
-			dataRequester.requestData(pogDataString, "SAVEPOGTOSESSION", parameters, new IUserCallback() {
-
-				@Override
-				public void onSuccess(final Object sender, final Object data) {
-					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
-				}
-
-				@Override
-				public void onError(final Object sender, final IErrorInformation error) {
-					lastError = error.getError();
-				}
-			});
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
+	 * @param pog to add
 	 */
 	@Override
-	public void addOrUpdatePogData(final PogData pog) {
-		if (editMode) {
-			addPogToTemplate(pog);
-		}
-		if (isDungeonMaster || pog.isThisAPlayer()) {
-			addPogToSession(pog);
-		}
-	}
-
-	/**
-	 * Add pog to dungeon template.
-	 * 
-	 * @param pog to add
-	 */
-	private void addPogToTemplate(final PogData pog) {
-		DungeonLevel dungeonLevel = getCurrentLevelData();
-		if (dungeonLevel == null) {
-			return;
-		}
-		if (pog.isThisAMonster()) {
-			if (findMonsterPog(pog.getUUID()) == null) {
-				dungeonLevel.addMonster(pog);
-			}
-		} else {
-			if (findRoomObjectPog(pog.getUUID()) == null) {
-				dungeonLevel.addRoomObject(pog);
-			}
-		}
-		saveDungeonData();
-	}
-
-	/**
-	 * Add pog to session.
-	 * 
-	 * @param pog to add
-	 */
-	private void addPogToSession(final PogData pog) {
-		DungeonSessionData sessionData = selectedSession;
-		boolean needToAdd = true;
-		if (sessionData != null) {
-			if (pog.isThisAPlayer()) {
-				needToAdd = addPogToSessionIfNotThere(pog, sessionData);
-			} else {
-				DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-				if (sessionLevel != null) {
-					if (pog.isThisAMonster()) {
-						if (findMonsterPog(pog.getUUID()) == null) {
-							sessionLevel.addMonster(pog);
-						}
-					} else {
-						if (findRoomObjectPog(pog.getUUID()) == null) {
-							sessionLevel.addRoomObject(pog);
-						}
-					}
-				}
-			}
-			savePogToSessionData(pog, needToAdd);
-		}
-	}
-
-	/**
-	 * Add pog to session if not there already.
-	 * 
-	 * @param pog to add
-	 * @param sessionData session data
-	 * @return true if added
-	 */
-	private boolean addPogToSessionIfNotThere(final PogData pog, final DungeonSessionData sessionData) {
-		pog.setDungeonLevel(currentLevel);
-		for (PogData player : sessionData.getPlayers().getPogList()) {
-			if (player.getTemplateUUID().equals(pog.getTemplateUUID())) {
-				return (false);
-			}
-		}
-		pog.setDungeonLevel(-1);
-		sessionData.addPlayer(pog);
-		return (true);
+	public void addOrUpdatePog(final PogData pog) {
+		addOrUpdatePog(pog, computePlace(pog));
 	}
 
 	/**
@@ -1214,24 +1047,18 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	public void addOrUpdatePog(final PogData pog, final PogPlace place) {
 		if (place == PogPlace.COMMON_RESOURCE) {
 			addOrUpdatePogToCommonResource(pog);
-		} else if (place == PogPlace.DUNGEON_RESOURCE) {
-			addOrUpdatePogToDungeonResource(pog);
+		} else if (place == PogPlace.SESSION_INSTANCE) {
+			addOrUpdatePogToSessionInstance(pog);
 		} else if (place == PogPlace.DUNGEON_INSTANCE) {
 			addOrUpdatePogToDungeonInstance(pog);
 		} else if (place == PogPlace.SESSION_RESOURCE) {
 			addOrUpdatePogToSessionResource(pog);
-		} else if (place == PogPlace.SESSION_INSTANCE) {
-			addOrUpdatePogToSessionInstance(pog);
+		} else if (place == PogPlace.DUNGEON_RESOURCE) {
+			addOrUpdatePogToDungeonResource(pog);
+		} else if (place == PogPlace.INVALID) {
+			return;
 		}
 		addOrUpdatePogToServer(pog, place);
-	}
-
-	/**
-	 * Add pog to dungeon resource area.
-	 * 
-	 * @param pog to add
-	 */
-	private void addOrUpdatePogToDungeonResource(final PogData pog) {
 	}
 
 	/**
@@ -1240,6 +1067,14 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param pog to add
 	 */
 	private void addOrUpdatePogToDungeonInstance(final PogData pog) {
+		DungeonLevel dungeonLevel = getCurrentLevelData();
+		if (pog.isThisAMonster()) {
+			dungeonLevel.getMonsters().addOrUpdate(pog);
+		}
+		if (findRoomObjectPog(pog.getUUID()) == null) {
+			dungeonLevel.getRoomObjects().addOrUpdate(pog);
+		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
 	}
 
 	/**
@@ -1248,14 +1083,44 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param pog to add
 	 */
 	private void addOrUpdatePogToSessionInstance(final PogData pog) {
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return;
+		}
+		if (pog.isThisAMonster()) {
+			sessionLevel.getMonsters().addOrUpdate(pog);
+		} else if (pog.isThisARoomObject()) {
+			sessionLevel.getRoomObjects().addOrUpdate(pog);
+		} else if (pog.isThisAPlayer()) {
+			addOrUpdatePogToSessionResource(pog); // shouldn't get here but what the heck just in case.
+			return;
+		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
 	}
 
 	/**
 	 * Add pog to session resource area.
 	 * 
+	 * This should only be player data.
+	 * 
 	 * @param pog to add
 	 */
 	private void addOrUpdatePogToSessionResource(final PogData pog) {
+		if (pog.isThisAPlayer()) {
+			DungeonSessionData sessionData = getSelectedSession();
+			sessionData.getPlayers().addOrUpdate(pog);
+		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
+	}
+
+	/**
+	 * Add pog to dungeon resource area.
+	 * 
+	 * This is not support yet but might be used in the future for duneon specific resources.
+	 * 
+	 * @param pog to add
+	 */
+	private void addOrUpdatePogToDungeonResource(final PogData pog) {
 	}
 
 	/**
