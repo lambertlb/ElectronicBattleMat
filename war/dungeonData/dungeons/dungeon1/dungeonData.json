@@ -1,1 +1,52 @@
-{"uuid":"dungeon1-template","dungeonName":"Dungeon1","dungeonLevels":[{"levelDrawing":"level1.jpg","levelName":"Entrance","gridSize":50,"gridOffsetX":11,"gridOffsetY":11,"columns":31,"rows":31,"monsters":{"pogList":[{"pogSize":1,"pogColumn":4,"pogRow":2,"playerFlags":0,"dungeonMasterFlags":0,"dungeonLevel":0,"pogName":"Male Kobold","pogImageUrl":"https://vignette.wikia.nocookie.net/forgottenrealms/images/f/f3/Monster_Manual_5e_-_Kobold_-_p195.jpg","pogType":"MONSTER","uuid":"4f917336-c437-4a72-924b-2a0d20a0b4c6","templateUUID":"Male-Kobold","pogClass":"Fighter","race":"Kobold"}]},"roomObjects":{"pogList":[]}},{"levelDrawing":"level2.jpg","levelName":"Deep Dark (2)","gridSize":50,"gridOffsetX":0,"gridOffsetY":0,"columns":39,"rows":22,"monsters":{"pogList":[]},"roomObjects":{"pogList":[]}},{"levelDrawing":"level3.jpg","levelName":"Flooded Area (3)","gridSize":50,"gridOffsetX":0,"gridOffsetY":0,"columns":39,"rows":22,"monsters":{"pogList":[]},"roomObjects":{"pogList":[]}}],"showGrid":true}
+{
+	"uuid": "dungeon1-template",
+	"dungeonName": "Dungeon1",
+	"dungeonLevels": [
+		{
+			"levelDrawing": "level1.jpg",
+			"levelName": "Entrance",
+			"gridSize": 50,
+			"gridOffsetX": 11,
+			"gridOffsetY": 11,
+			"columns": 31,
+			"rows": 31,
+			"monsters": {
+				"pogList": []
+			},
+			"roomObjects": {
+				"pogList": []
+			}
+		},
+		{
+			"levelDrawing": "level2.jpg",
+			"levelName": "Deep Dark (2)",
+			"gridSize": 50,
+			"gridOffsetX": 0,
+			"gridOffsetY": 0,
+			"columns": 39,
+			"rows": 22,
+			"monsters": {
+				"pogList": []
+			},
+			"roomObjects": {
+				"pogList": []
+			}
+		},
+		{
+			"levelDrawing": "level3.jpg",
+			"levelName": "Flooded Area (3)",
+			"gridSize": 50,
+			"gridOffsetX": 0,
+			"gridOffsetY": 0,
+			"columns": 39,
+			"rows": 22,
+			"monsters": {
+				"pogList": []
+			},
+			"roomObjects": {
+				"pogList": []
+			}
+		}
+	],
+	"showGrid": true
+}

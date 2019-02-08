@@ -8,7 +8,6 @@ import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
-import per.lambert.ebattleMat.server.serviceData.PogList;
 
 /**
  * Worker class for managing dungeon session.

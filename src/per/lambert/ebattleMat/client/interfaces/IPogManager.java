@@ -40,20 +40,6 @@ public interface IPogManager {
 	void setSelectedPog(PogData selectedPog);
 
 	/**
-	 * Lookup monster with this UUID and set as selected pog.
-	 * 
-	 * @param monsterUUID to look up
-	 */
-	void setSelectedMonster(String monsterUUID);
-
-	/**
-	 * Lookup room object with this UUID and set as selected pog.
-	 * 
-	 * @param roomObjectUUID to look up
-	 */
-	void setSelectedRoomObject(String roomObjectUUID);
-
-	/**
 	 * Set pog being dragged.
 	 * 
 	 * @param pogBeingDragged pog being dragged.
@@ -98,16 +84,6 @@ public interface IPogManager {
 	PogData findRoomObjectPog(String pogUUID);
 
 	/**
-	 * Get list of filtered monsters.
-	 * 
-	 * @param raceFilter race filter
-	 * @param classFilter class filter
-	 * @param genderFilter gender filter
-	 * @return list of monsters that meet the filters.
-	 */
-	ArrayList<PogData> getFilteredMonsters(String raceFilter, String classFilter, String genderFilter);
-
-	/**
 	 * Add Pog to proper resource list.
 	 * 
 	 * @param pog to add
@@ -115,24 +91,59 @@ public interface IPogManager {
 	void addOrUpdatePogResource(PogData pog);
 
 	/**
-	 * Get list of monster races.
-	 * 
-	 * @return list of monster races.
-	 */
-	String[] getMonsterRaces();
-
-	/**
-	 * Get list of monster classes.
-	 * 
-	 * @return list of monster classes.
-	 */
-	String[] getMonsterClasses();
-
-	/**
 	 * Get list of monster genders.
 	 * 
 	 * @return list of monster genders.
 	 */
-	String[] getMonsterGenders();
+	String[] getTemplateGenders();
 
+	/**
+	 * Get pog sizes.
+	 * 
+	 * @return pog sizes.
+	 */
+	String[] getPogSizes();
+
+	/**
+	 * Create template Pog based on this type.
+	 * 
+	 * @param type to create.
+	 * @return Pog of type
+	 */
+	PogData createTemplatePog(String type);
+
+	/**
+	 * Get a list of filtered common resources.
+	 * 
+	 * @param pogType type of resource
+	 * @param raceFilter race filter
+	 * @param classFilter class filter
+	 * @param genderFilter gender filter
+	 * @return list of filtered pogs
+	 */
+	ArrayList<PogData> getFilteredCommonTemplates(String pogType, String raceFilter, String classFilter, String genderFilter);
+
+	/**
+	 * Set selected pog.
+	 * 
+	 * @param pogType type of pog
+	 * @param templateUUID uuid of pog
+	 */
+	void setCommonTemplate(String pogType, String templateUUID);
+
+	/**
+	 * get common template classes.
+	 * 
+	 * @param pogType to get
+	 * @return list of classes
+	 */
+	String[] getCommonClasses(String pogType);
+
+	/**
+	 * get common template races.
+	 * 
+	 * @param pogType to get
+	 * @return list of races
+	 */
+	String[] getCommonRaces(String pogType);
 }

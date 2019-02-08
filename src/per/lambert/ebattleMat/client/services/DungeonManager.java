@@ -1154,4 +1154,47 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			}
 		});
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ArrayList<PogData> getFilteredTemplates(final PogPlace place, final String pogType, final String raceFilter, final String classFilter, final String genderFilter) {
+		if (place != PogPlace.COMMON_RESOURCE) {
+			return (new ArrayList<PogData>()); // for now only have templates in common area.
+		}
+		return (getFilteredCommonTemplates(pogType, raceFilter, classFilter, genderFilter));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSelectedTemplate(final PogPlace place, final String pogType, final String templateUUID) {
+		if (place == PogPlace.COMMON_RESOURCE) {
+			setCommonTemplate(pogType, templateUUID);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String[] getTemplaceClasses(final PogPlace place, final String pogType) {
+		if (place == PogPlace.COMMON_RESOURCE) {
+			return (getCommonClasses(pogType));
+		}
+		return (new String[0]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String[] getTemplaceRaces(final PogPlace place, final String pogType) {
+		if (place == PogPlace.COMMON_RESOURCE) {
+			return (getCommonRaces(pogType));
+		}
+		return (new String[0]);
+	}
 }

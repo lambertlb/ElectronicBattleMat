@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.interfaces;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
@@ -368,5 +369,40 @@ public interface IDungeonManager extends IPogManager {
 	 * @param pog to add
 	 */
 	void addOrUpdatePog(PogData pog);
+
+	/**
+	 * Get list of filtered pogs.
+	 * @param place place where pog reside.
+	 * @param pogType pog type
+	 * @param raceFilter race filter
+	 * @param classFilter class filter
+	 * @param genderFilter gender filter
+	 * @return list of pogs that match
+	 */
+	ArrayList<PogData> getFilteredTemplates(PogPlace place, String pogType, String raceFilter, String classFilter, String genderFilter);
+
+	/**
+	 * Selected this pog.
+	 * @param place where pog resides.
+	 * @param pogType type of pog.
+	 * @param templateUUID uuid of pog
+	 */
+	void setSelectedTemplate(PogPlace place, String pogType, String templateUUID);
+
+	/**
+	 * Get list of classes.
+	 * @param place where pogs reside
+	 * @param pogType type of pog
+	 * @return list of classes
+	 */
+	String[] getTemplaceClasses(PogPlace place, String pogType);
+
+	/**
+	 * Get list of races.
+	 * @param place where pogs reside
+	 * @param pogType type of pog
+	 * @return list of races
+	 */
+	String[] getTemplaceRaces(PogPlace place, String pogType);
 
 }

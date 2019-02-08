@@ -101,15 +101,28 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setSelectedMonster(final String monsterUUID) {
+	public void setCommonTemplate(final String pogType, final String templateUUID) {
+		if (pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+			setSelectedMonster(templateUUID);
+		} else {
+			setSelectedRoomObject(templateUUID);
+		}
+	}
+	/**
+	 * Lookup monster with this UUID and set as selected pog.
+	 * 
+	 * @param monsterUUID to look up
+	 */
+	private void setSelectedMonster(final String monsterUUID) {
 		this.selectedPog = findMonsterPog(monsterUUID);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Lookup room object with this UUID and set as selected pog.
+	 * 
+	 * @param roomObjectUUID to look up
 	 */
-	@Override
-	public void setSelectedRoomObject(final String roomObjectUUID) {
+	private void setSelectedRoomObject(final String roomObjectUUID) {
 		this.selectedPog = findRoomObjectPog(roomObjectUUID);
 	}
 
@@ -169,12 +182,10 @@ public abstract class PogManager implements IPogManager {
 	}
 
 	/**
-	 * Create template Pog based on this type.
-	 * 
-	 * @param type to create.
-	 * @return Pog of type
+	 * {@inheritDoc}
 	 */
-	private PogData createTemplatePog(final String type) {
+	@Override
+	public PogData createTemplatePog(final String type) {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
 		pogData.setTemplateUUID(PogData.generateUUID());
 		pogData.setUUID(pogData.getTemplateUUID());
@@ -307,7 +318,20 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ArrayList<PogData> getFilteredMonsters(final String raceFilter, final String classFilter, final String genderFilter) {
+	public ArrayList<PogData> getFilteredCommonTemplates(final String pogType, final String raceFilter, final String classFilter, final String genderFilter) {
+		PogList pogsToSearch = pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER) ? monsterTemplatePogs : roomObjectTemplatePogs;
+		return (getFilteredMonsters(pogsToSearch, raceFilter, classFilter, genderFilter));
+	}
+
+	/**
+	 * Filter a pog list.
+	 * @param pogsToSearch pog list to search
+	 * @param raceFilter race filter
+	 * @param classFilter class filter
+	 * @param genderFilter gender filter
+	 * @return pog that match
+	 */
+	private ArrayList<PogData> getFilteredMonsters(final PogList pogsToSearch, final String raceFilter, final String classFilter, final String genderFilter) {
 		boolean needGenderFilter = false;
 		PlayerFlag genderFlag = PlayerFlag.NONE;
 		if (genderFilter != null && !genderFilter.isEmpty()) {
@@ -319,7 +343,7 @@ public abstract class PogManager implements IPogManager {
 			}
 		}
 		ArrayList<PogData> filteredMonsters = new ArrayList<PogData>();
-		for (PogData monster : getMonsterTemplatePogs()) {
+		for (PogData monster : pogsToSearch.getPogList()) {
 			if (raceFilter != null && !raceFilter.isEmpty()) {
 				if (!monster.getRace().equalsIgnoreCase(raceFilter)) {
 					continue;
@@ -428,26 +452,42 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getMonsterRaces() {
+	public String[] getCommonClasses(final String pogType) {
 		String[] rtn = new String[0];
-		return (monsterRaces.values().toArray(rtn));
-	}
+		if (pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+			return (monsterClasses.values().toArray(rtn));
+		}
+		return (roomObjectClasses.values().toArray(rtn));
 
+	}
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getMonsterClasses() {
+	public String[] getCommonRaces(final String pogType) {
 		String[] rtn = new String[0];
-		return (monsterClasses.values().toArray(rtn));
-	}
+		if (pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+			return (monsterRaces.values().toArray(rtn));
+		}
+		return (roomObjectRaces.values().toArray(rtn));
 
+	}
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getMonsterGenders() {
+	public String[] getTemplateGenders() {
 		return (new String[] {"Male", "Female", "Neutral" });
+	}
+
+	/**
+	 * Get pog sizes.
+	 * 
+	 * @return pog sizes.
+	 */
+	@Override
+	public String[] getPogSizes() {
+		return (new String[] {"Normal", "Large", "Huge", "Gargantuan" });
 	}
 
 	/**

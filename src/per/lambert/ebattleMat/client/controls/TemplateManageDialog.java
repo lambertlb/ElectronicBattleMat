@@ -23,33 +23,33 @@ import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
- * Monster manage dialog.
+ * Template manage dialog.
  * 
  * @author LLambert
  *
  */
-public class MonsterManageDialog extends OkCancelDialog {
+public class TemplateManageDialog extends OkCancelDialog {
 
 	/**
 	 * grid for content.
 	 */
 	private Grid centerGrid;
 	/**
-	 * label for monster name.
+	 * label for Template name.
 	 */
-	private Label monsterNameLabel;
+	private Label templateNameLabel;
 	/**
-	 * text box for monster name.
+	 * text box for template name.
 	 */
-	private TextBox monsterName;
+	private TextBox templateName;
 	/**
-	 * Label for monster picture.
+	 * Label for template picture.
 	 */
-	private Label monsterPictureLabel;
+	private Label templatePictureLabel;
 	/**
-	 * Monster picture URL.
+	 * template picture URL.
 	 */
-	private TextBox monsterPicture;
+	private TextBox templatePicture;
 	/**
 	 * Panel for pog display.
 	 */
@@ -62,6 +62,15 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 * Pog data.
 	 */
 	private PogData pogData;
+
+	/**
+	 * Which pog templates to use.
+	 */
+	private PogPlace place;
+	/**
+	 * Type of templates to use.
+	 */
+	private String pogType;
 	/**
 	 * Label for select section of display.
 	 */
@@ -83,31 +92,48 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 */
 	private Button applyFilters;
 	/**
-	 * List of monsters tha tmatch the filter.
+	 * List of templates that match the filter.
 	 */
-	private ListBox filteredMonsterList;
+	private ListBox filteredTemplateList;
 	/**
 	 * Label for edit section of display.
 	 */
 	private Label editSectionLabel;
 	/**
-	 * Race of monster.
+	 * Race of template.
 	 */
 	private TextBox race;
 	/**
-	 * Class of monster.
+	 * Class of template.
 	 */
-	private TextBox monsterClass;
+	private TextBox templateClass;
 	/**
-	 * Gender of monster.
+	 * Gender of template.
 	 */
 	private ListBox gender;
+	/**
+	 * Label for size.
+	 */
+	private Label sizeLabel;
+	/**
+	 * List of pog sizes.
+	 */
+	private ListBox size;
+	/**
+	 * Start a new template.
+	 */
+	private Button startNewTemplate;
 
 	/**
 	 * Constructor.
+	 * 
+	 * @param place Which pog templates to edit.
+	 * @param pogType type og pog templates
 	 */
-	public MonsterManageDialog() {
-		super("Manage Monsters", true, true, 400, 400);
+	public TemplateManageDialog(final PogPlace place, final String pogType) {
+		super("Manage " + pogType + " Templates", true, true, 400, 400);
+		this.place = place;
+		this.pogType = pogType;
 		load();
 	}
 
@@ -130,7 +156,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 		centerGrid.getColumnFormatter().setWidth(0, "20px");
 		centerGrid.getColumnFormatter().setWidth(1, "20px");
 
-		selectionSectionLabel = new Label("Select existing Monster");
+		selectionSectionLabel = new Label("Select existing template");
 		selectionSectionLabel.setStyleName("sessionLabel");
 		centerGrid.setWidget(0, 0, selectionSectionLabel);
 		Element element = centerGrid.getCellFormatter().getElement(0, 0);
@@ -155,31 +181,31 @@ public class MonsterManageDialog extends OkCancelDialog {
 		applyFilters.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(2, 0, applyFilters);
 
-		filteredMonsterList = new ListBox();
-		filteredMonsterList.setStyleName("ribbonBarLabel");
-		filteredMonsterList.setVisibleItemCount(1);
-		centerGrid.setWidget(3, 0, filteredMonsterList);
+		filteredTemplateList = new ListBox();
+		filteredTemplateList.setStyleName("ribbonBarLabel");
+		filteredTemplateList.setVisibleItemCount(1);
+		centerGrid.setWidget(3, 0, filteredTemplateList);
 
-		editSectionLabel = new Label("Edit Monster");
+		editSectionLabel = new Label("Edit Template");
 		editSectionLabel.setStyleName("sessionLabel");
 		centerGrid.setWidget(4, 0, editSectionLabel);
 		element = centerGrid.getCellFormatter().getElement(4, 0);
 		element.setAttribute("colspan", "3");
 
-		monsterNameLabel = new Label("Monster Name: ");
-		monsterNameLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(5, 0, monsterNameLabel);
-		monsterName = new TextBox();
-		monsterName.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(5, 1, monsterName);
+		templateNameLabel = new Label("Template Name: ");
+		templateNameLabel.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(5, 0, templateNameLabel);
+		templateName = new TextBox();
+		templateName.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(5, 1, templateName);
 
-		monsterPictureLabel = new Label("Monster Picture: ");
-		monsterPictureLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(6, 0, monsterPictureLabel);
-		monsterPicture = new TextBox();
-		monsterPicture.setStyleName("ribbonBarLabel");
-		monsterPicture.setWidth("100%");
-		centerGrid.setWidget(6, 1, monsterPicture);
+		templatePictureLabel = new Label("Template Picture: ");
+		templatePictureLabel.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(6, 0, templatePictureLabel);
+		templatePicture = new TextBox();
+		templatePicture.setStyleName("ribbonBarLabel");
+		templatePicture.setWidth("100%");
+		centerGrid.setWidget(6, 1, templatePicture);
 		element = centerGrid.getCellFormatter().getElement(6, 1);
 		element.setAttribute("colspan", "2");
 
@@ -187,17 +213,31 @@ public class MonsterManageDialog extends OkCancelDialog {
 		race.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(7, 0, race);
 
-		monsterClass = new TextBox();
-		monsterClass.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(7, 1, monsterClass);
+		templateClass = new TextBox();
+		templateClass.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(7, 1, templateClass);
 
 		gender = new ListBox();
 		gender.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(7, 2, gender);
 
+		sizeLabel = new Label("Pog Size");
+		sizeLabel.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(8, 0, sizeLabel);
+
+		size = new ListBox();
+		size.setStyleName("ribbonBarLabel");
+		size.setVisibleItemCount(1);
+		centerGrid.setWidget(8, 1, size);
+
+		startNewTemplate = new Button("Create New Template");
+		startNewTemplate.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(8, 2, startNewTemplate);
+
 		pogPanel = new FlowPanel();
-		centerGrid.setWidget(8, 0, pogPanel);
+		centerGrid.setWidget(9, 0, pogPanel);
 		pogCanvas = new PogCanvas();
+		pogCanvas.setShowNormalSizeOnly(true);
 		pogPanel.add(pogCanvas);
 	}
 
@@ -211,33 +251,33 @@ public class MonsterManageDialog extends OkCancelDialog {
 				applyFilters();
 			}
 		});
-		filteredMonsterList.addChangeHandler(new ChangeHandler() {
+		filteredTemplateList.addChangeHandler(new ChangeHandler() {
 
 			@Override
 			public void onChange(final ChangeEvent event) {
-				monsterSelected();
+				templateSelected();
 			}
 		});
-		monsterName.addClickHandler(new ClickHandler() {
+		templateName.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				monsterName.selectAll();
+				templateName.selectAll();
 			}
 		});
-		monsterName.addKeyUpHandler(new KeyUpHandler() {
+		templateName.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				validateForm();
 			}
 		});
-		monsterPicture.addClickHandler(new ClickHandler() {
+		templatePicture.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				monsterPicture.selectAll();
+				templatePicture.selectAll();
 			}
 		});
-		monsterPicture.addKeyUpHandler(new KeyUpHandler() {
+		templatePicture.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
@@ -250,10 +290,17 @@ public class MonsterManageDialog extends OkCancelDialog {
 				race.selectAll();
 			}
 		});
-		monsterClass.addClickHandler(new ClickHandler() {
+		templateClass.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				monsterClass.selectAll();
+				templateClass.selectAll();
+			}
+		});
+		startNewTemplate.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				setForNewPog();
+				filteredTemplateList.setSelectedIndex(0);
 			}
 		});
 	}
@@ -264,18 +311,36 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 * Must be called every time view is shown.
 	 */
 	private void initialize() {
-		pogData = ServiceManager.getDungeonManager().createMonster();
-		pogCanvas.setPogData(pogData);
-		monsterName.setValue("Enter Monster Name");
-		monsterName.removeStyleName("badLabel");
-		monsterPicture.setValue("URL of Monster Picture");
-		monsterPicture.removeStyleName("badLabel");
-		filteredMonsterList.clear();
-		filteredMonsterList.addItem("Filter Monsters", "");
-		race.setValue("Enter Race");
-		monsterClass.setValue("Enter Class");
+		setForNewPog();
+		filteredTemplateList.clear();
+		filteredTemplateList.addItem("Filter Templates", "");
+		fillInSizes();
 		filInFilters();
 		validateForm();
+	}
+
+	/**
+	 * Setup for noew pog.
+	 */
+	private void setForNewPog() {
+		pogData = ServiceManager.getDungeonManager().createTemplatePog(pogType);
+		pogCanvas.setPogData(pogData);
+		templateName.setValue("Enter Template Name");
+		templateName.removeStyleName("badLabel");
+		templatePicture.setValue("URL of Template Picture");
+		templatePicture.removeStyleName("badLabel");
+		race.setValue("Enter Race");
+		templateClass.setValue("Enter Class");
+	}
+
+	/**
+	 * Fill in pog size list.
+	 */
+	private void fillInSizes() {
+		size.clear();
+		for (String sizeName : ServiceManager.getDungeonManager().getPogSizes()) {
+			size.addItem(sizeName);
+		}
 	}
 
 	/**
@@ -293,7 +358,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 	private void getRaceList() {
 		raceList.clear();
 		raceList.addItem("Select Race", "");
-		for (String race : ServiceManager.getDungeonManager().getMonsterRaces()) {
+		for (String race : ServiceManager.getDungeonManager().getTemplaceRaces(place, pogType)) {
 			raceList.addItem(race, race);
 		}
 	}
@@ -304,7 +369,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 	private void getClassList() {
 		classList.clear();
 		classList.addItem("Select Class", "");
-		for (String pogClass : ServiceManager.getDungeonManager().getMonsterClasses()) {
+		for (String pogClass : ServiceManager.getDungeonManager().getTemplaceClasses(place, pogType)) {
 			classList.addItem(pogClass, pogClass);
 		}
 	}
@@ -317,7 +382,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 		gender.clear();
 		genderList.addItem("Select Gender", "");
 		gender.addItem("Select Gender", "");
-		for (String pogGender : ServiceManager.getDungeonManager().getMonsterGenders()) {
+		for (String pogGender : ServiceManager.getDungeonManager().getTemplateGenders()) {
 			genderList.addItem(pogGender, pogGender);
 			gender.addItem(pogGender, pogGender);
 		}
@@ -346,9 +411,9 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 * Validate form data.
 	 */
 	private void validateForm() {
-		boolean isValidMonsterName = validateMonsterName();
+		boolean isValidTemplateName = validateTemplateName();
 		boolean isValidUrl = validateUrl();
-		enableOk(isValidMonsterName && isValidUrl);
+		enableOk(isValidTemplateName && isValidUrl);
 	}
 
 	/**
@@ -357,14 +422,14 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 * @return true if valid
 	 */
 	private boolean validateUrl() {
-		String filename = monsterPicture.getValue();
+		String filename = templatePicture.getValue();
 		int i = filename.lastIndexOf('.');
 		String fileExtension = i > 0 ? filename.substring(i + 1) : "";
 		boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
 		if (valid) {
-			monsterPicture.removeStyleName("badLabel");
+			templatePicture.removeStyleName("badLabel");
 		} else {
-			monsterPicture.addStyleName("badLabel");
+			templatePicture.addStyleName("badLabel");
 		}
 		showPog(valid);
 		return valid;
@@ -379,7 +444,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 		pogCanvas.setPogWidth(computePogSize());
 		pogCanvas.showImage(valid);
 		if (valid) {
-			pogCanvas.setPogImageUrl(monsterPicture.getValue());
+			pogCanvas.setPogImageUrl(templatePicture.getValue());
 		}
 	}
 
@@ -399,16 +464,16 @@ public class MonsterManageDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Validate monster name.
+	 * Validate template name.
 	 * 
 	 * @return true if valid
 	 */
-	private boolean validateMonsterName() {
-		boolean valid = ServiceManager.getDungeonManager().isValidNewMonsterName(monsterName.getValue());
+	private boolean validateTemplateName() {
+		boolean valid = ServiceManager.getDungeonManager().isValidNewMonsterName(templateName.getValue());
 		if (valid) {
-			monsterName.removeStyleName("badLabel");
+			templateName.removeStyleName("badLabel");
 		} else {
-			monsterName.addStyleName("badLabel");
+			templateName.addStyleName("badLabel");
 		}
 		return valid;
 	}
@@ -432,30 +497,35 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 * Apply filters.
 	 */
 	protected void applyFilters() {
-		filteredMonsterList.clear();
-		filteredMonsterList.addItem("Filter Monsters", "");
-		ArrayList<PogData> filteredMonsters = ServiceManager.getDungeonManager().getFilteredMonsters(raceList.getSelectedValue(), classList.getSelectedValue(), genderList.getSelectedValue());
-		for (PogData monster : filteredMonsters) {
-			filteredMonsterList.addItem(monster.getPogName(), monster.getUUID());
+		filteredTemplateList.clear();
+		filteredTemplateList.addItem("Filter Templates", "");
+		ArrayList<PogData> filteredTemplates = ServiceManager.getDungeonManager().getFilteredTemplates(place, pogType, raceList.getSelectedValue(), classList.getSelectedValue(), genderList.getSelectedValue());
+		for (PogData template : filteredTemplates) {
+			filteredTemplateList.addItem(template.getPogName(), template.getUUID());
 		}
 	}
 
 	/**
-	 * Monster was selected from filtered list.
+	 * Template was selected from filtered list.
 	 */
-	protected void monsterSelected() {
-		ServiceManager.getDungeonManager().setSelectedMonster(filteredMonsterList.getSelectedValue());
+	protected void templateSelected() {
+		ServiceManager.getDungeonManager().setSelectedTemplate(place, pogType, filteredTemplateList.getSelectedValue());
 		PogData data = ServiceManager.getDungeonManager().getSelectedPog();
 		if (data == null) {
 			return;
 		}
 		pogData = data;
 		pogCanvas.setPogData(data);
-		monsterName.setValue(pogData.getPogName());
-		monsterPicture.setValue(pogData.getPogImageUrl());
+		templateName.setValue(pogData.getPogName());
+		templatePicture.setValue(pogData.getPogImageUrl());
 		race.setValue(pogData.getRace());
-		monsterClass.setValue(pogData.getPogClass());
+		templateClass.setValue(pogData.getPogClass());
 		getGender();
+		int pogSize = pogData.getPogSize() - 1;
+		if (pogSize < 0) {
+			pogSize = 0;
+		}
+		size.setSelectedIndex(pogSize);
 		validateForm();
 	}
 
@@ -479,8 +549,7 @@ public class MonsterManageDialog extends OkCancelDialog {
 	protected void onOkClick(final ClickEvent event) {
 		super.onOkClick(event);
 		getDialogData();
-		// ServiceManager.getDungeonManager().addOrUpdatePogResource(pogData);
-		ServiceManager.getDungeonManager().addOrUpdatePog(pogData, PogPlace.COMMON_RESOURCE);
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogData, place);
 		ServiceManager.getDungeonManager().setSelectedPog(pogData);
 		close();
 	}
@@ -489,13 +558,13 @@ public class MonsterManageDialog extends OkCancelDialog {
 	 * Get data from dialog.
 	 */
 	private void getDialogData() {
-		pogData.setPogName(monsterName.getValue());
-		pogData.setPogImageUrl(monsterPicture.getValue());
+		pogData.setPogName(templateName.getValue());
+		pogData.setPogImageUrl(templatePicture.getValue());
 		String raceString = race.getValue();
 		if (!raceString.startsWith("Enter")) {
 			pogData.setRace(raceString);
 		}
-		String classString = monsterClass.getValue();
+		String classString = templateClass.getValue();
 		if (!classString.startsWith("Enter")) {
 			pogData.setPogClass(classString);
 		}
@@ -507,5 +576,6 @@ public class MonsterManageDialog extends OkCancelDialog {
 				pogData.setFlags(index == 3 ? PlayerFlag.HAS_NO_GENDER : PlayerFlag.IS_FEMALE);
 			}
 		}
+		pogData.setPogSize(size.getSelectedIndex() + 1);
 	}
 }

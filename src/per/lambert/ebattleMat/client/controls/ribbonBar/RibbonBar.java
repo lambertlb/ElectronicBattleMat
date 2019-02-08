@@ -15,13 +15,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
 import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
-import per.lambert.ebattleMat.client.controls.MonsterManageDialog;
+import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
 import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
@@ -108,7 +110,7 @@ public class RibbonBar extends Composite {
 	/**
 	 * Monster manage dialog.
 	 */
-	private MonsterManageDialog monsterManage;
+	private TemplateManageDialog monsterManage;
 
 	/**
 	 * Constructor.
@@ -227,7 +229,7 @@ public class RibbonBar extends Composite {
 				monsterManage.show();
 			}
 		});
-		monsterManage = new MonsterManageDialog();
+		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_ROOMOBJECT);
 	}
 
 	/**

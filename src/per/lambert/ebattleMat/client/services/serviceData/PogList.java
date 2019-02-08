@@ -25,7 +25,11 @@ public class PogList extends JavaScriptObject {
 		return this.pogList;
 	}-*/;
 
-	public final void addOrUpdate(PogData pog) {
+	/**
+	 * Add or update pog.
+	 * @param pog to add
+	 */
+	public final void addOrUpdate(final PogData pog) {
 		PogData[] list = getPogList();
 		for (PogData pogInList : list) {
 			if (pogInList.isEquals(pog)) {

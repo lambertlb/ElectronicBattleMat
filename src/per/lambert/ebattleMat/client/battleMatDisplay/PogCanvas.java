@@ -105,6 +105,30 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * current zoom factor for image.
 	 */
 	private double totalZoom = 1;
+
+	/**
+	 * Show as normal size only.
+	 */
+	private boolean showNormalSizeOnly = false;
+
+	/**
+	 * set show normal size only.
+	 * 
+	 * @return true if set
+	 */
+	public boolean getShowNormalSizeOnly() {
+		return showNormalSizeOnly;
+	}
+
+	/**
+	 * Set show normal size only.
+	 * 
+	 * @param showNormalSizeOnly true if only normal size
+	 */
+	public void setShowNormalSizeOnly(final boolean showNormalSizeOnly) {
+		this.showNormalSizeOnly = showNormalSizeOnly;
+	}
+
 	/**
 	 * Pog data.
 	 */
@@ -126,6 +150,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	public void setPogData(final PogData pogData) {
 		setupWithPogData(pogData);
+		drawEverything();
 	}
 
 	/**
@@ -180,6 +205,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param pogData data for pog
 	 */
 	public PogCanvas(final PogData pogData) {
@@ -190,25 +216,26 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Setup view with this data.
+	 * 
 	 * @param pogData data to use.
 	 */
 	private void setupWithPogData(final PogData pogData) {
 		this.pogData = pogData;
 		if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
-			 pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
-			 backCanvas.getElement().getStyle().setBackgroundColor("transparent");
-			 canvas.getElement().getStyle().setBackgroundColor("transparent");
+			pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
+			backCanvas.getElement().getStyle().setBackgroundColor("transparent");
+			canvas.getElement().getStyle().setBackgroundColor("transparent");
 		} else {
-			 pogDrawPanel.getElement().getStyle().setBackgroundColor("white");
-			 backCanvas.getElement().getStyle().setBackgroundColor("white");
-			 canvas.getElement().getStyle().setBackgroundColor("white");
+			pogDrawPanel.getElement().getStyle().setBackgroundColor("white");
+			backCanvas.getElement().getStyle().setBackgroundColor("white");
+			canvas.getElement().getStyle().setBackgroundColor("white");
 		}
 		if (pogData.getPogImageUrl() != "") {
 			setPogImageUrl(pogData.getPogImageUrl());
+		} else {
+			showImage = false;
 		}
-		if (pogData.getPogName() != "") {
-			pogMainPanel.setTitle(pogData.getPogName());
-		}
+		pogMainPanel.setTitle(pogData.getPogName());
 	}
 
 	/**
@@ -341,6 +368,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Set pog name.
+	 * 
 	 * @param nameoFPog name of pog.
 	 */
 	public void setPogName(final String nameoFPog) {
@@ -350,6 +378,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Get pog name.
+	 * 
 	 * @return pog name
 	 */
 	public String getPogName() {
@@ -358,6 +387,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Set position of pog in grid.
+	 * 
 	 * @param column to use
 	 * @param row to use
 	 */
@@ -368,13 +398,16 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Set dungeon level the pog is on.
+	 * 
 	 * @param level in dungeon
 	 */
 	public void setPogDungeonLevel(final int level) {
 		pogData.setDungeonLevel(level);
 	}
+
 	/**
 	 * get column.
+	 * 
 	 * @return column
 	 */
 	public int getPogColumn() {
@@ -383,6 +416,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * get row.
+	 * 
 	 * @return row
 	 */
 	public int getPogRow() {
@@ -391,10 +425,14 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Set width of pog.
+	 * 
 	 * @param width of pog
 	 */
 	public void setPogWidth(final int width) {
-		int scaledWidth = width * pogData.getPogSize();
+		int scaledWidth = width;
+		if (!showNormalSizeOnly) {
+			scaledWidth *= pogData.getPogSize();
+		}
 		pogMainPanel.setWidth(scaledWidth + "px");
 		pogMainPanel.setHeight(scaledWidth + "px");
 		drawEverything();
@@ -407,6 +445,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Set URL for image.
+	 * 
 	 * @param pogImageUrl URL for image
 	 */
 	public void setPogImageUrl(final String pogImageUrl) {
@@ -444,6 +483,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Handle all canvas drawing.
+	 * 
 	 * @param back canvas.
 	 * @param front canvas.
 	 */
@@ -462,6 +502,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Show the image if true.
+	 * 
 	 * @param showing trueif image should be shown
 	 */
 	public void showImage(final boolean showing) {
