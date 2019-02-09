@@ -181,6 +181,27 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	private boolean imageLoaded = false;
 
 	/**
+	 * True to force a background color even if transparent is set.
+	 */
+	private boolean forceBackgroundColor = false;
+
+	/**
+	 * get force background color.
+	 * @return true if force background color.
+	 */
+	public boolean getForceBackgroundColor() {
+		return forceBackgroundColor;
+	}
+
+	/**
+	 * set force background color.
+	 * @param forceBackgroundColor to set
+	 */
+	public void setForceBackgroundColor(final boolean forceBackgroundColor) {
+		this.forceBackgroundColor = forceBackgroundColor;
+	}
+
+	/**
 	 * Main panel.
 	 */
 	@SuppressWarnings("VisibilityModifier")
@@ -221,21 +242,35 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private void setupWithPogData(final PogData pogData) {
 		this.pogData = pogData;
-		if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
-			pogDrawPanel.getElement().getStyle().setBackgroundColor("transparent");
-			backCanvas.getElement().getStyle().setBackgroundColor("transparent");
-			canvas.getElement().getStyle().setBackgroundColor("transparent");
-		} else {
-			pogDrawPanel.getElement().getStyle().setBackgroundColor("white");
-			backCanvas.getElement().getStyle().setBackgroundColor("white");
-			canvas.getElement().getStyle().setBackgroundColor("white");
-		}
+		String backgroundColor = getBackgroundColor(pogData);
+		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
+		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+
 		if (pogData.getPogImageUrl() != "") {
 			setPogImageUrl(pogData.getPogImageUrl());
 		} else {
 			showImage = false;
 		}
 		pogMainPanel.setTitle(pogData.getPogName());
+	}
+
+	/**
+	 * Get proper background color.
+	 * 
+	 * @param pogData with DM bits
+	 * @return color
+	 */
+	private String getBackgroundColor(final PogData pogData) {
+		String color = "white";
+		if (forceBackgroundColor) {
+			if (pogData.isFlagSet(DungeonMasterFlag.DARK_BACKGROUND)) {
+				color = "black";
+			}
+		} else if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
+			color = "transparent";
+		}
+		return color;
 	}
 
 	/**

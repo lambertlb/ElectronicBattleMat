@@ -682,25 +682,41 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @return pog canvas in the cell
 	 */
 	private PogCanvas updateOrCreatePogCanvasForTHisCell() {
+		PogCanvas existingPog = findCanvasForDraggedPog();
+		if (existingPog == null) {
+			existingPog = addClonePogToCanvas(ServiceManager.getDungeonManager().getPogBeingDragged());
+		} else { // ensure it is on top
+			remove(existingPog);
+			add(existingPog);
+		}
+		updatePogData(existingPog);
+		ServiceManager.getDungeonManager().addOrUpdatePog(existingPog.getPogData());
+		return (existingPog);
+	}
+
+	/**
+	 * Find Pog canvas for pog being dragged.
+	 * 
+	 * @return Pog canvas or null.
+	 */
+	private PogCanvas findCanvasForDraggedPog() {
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
 		for (PogCanvas pog : pogs) {
 			if (pog.getPogData() == pogBeingDragged) {
-				updatePogData(pog.getPogData());
-				ServiceManager.getDungeonManager().addOrUpdatePog(pogBeingDragged);
 				return (pog);
 			}
 		}
-		return addClonePogToCanvas(pogBeingDragged);
+		return (null);
 	}
 
 	/**
 	 * Update pog position data.
+	 * 
 	 * @param pog to update
 	 */
-	private void updatePogData(final PogData pog) {
-		pog.setPogColumn(dragColumn);
-		pog.setPogRow(dragRow);
-		pog.setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevel());
+	private void updatePogData(final PogCanvas pog) {
+		pog.setPogPosition(dragColumn, dragRow);
+		pog.getPogData().setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevel());
 	}
 
 	/**
@@ -733,9 +749,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		} else {
 			clonePog = pogData.clone();
 		}
-		updatePogData(clonePog);
-		ServiceManager.getDungeonManager().addOrUpdatePog(clonePog);
-		return addPogToCanvas(clonePog);
+		return (addPogToCanvas(clonePog));
 	}
 
 	/**
@@ -772,6 +786,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	/**
 	 * Highlight the cell at X and Y.
+	 * 
 	 * @param clientX Top left X
 	 * @param clientY Top Left Y
 	 */
@@ -795,6 +810,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	/**
 	 * Compute Column and row from the X and Y positions.
+	 * 
 	 * @param clientX X position
 	 * @param clientY Y position
 	 */
@@ -824,8 +840,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Get color for drag indicator.
-	 * Players are only all to drag over non-fog of war areas.
+	 * Get color for drag indicator. Players are only all to drag over non-fog of war areas.
+	 * 
 	 * @return color string
 	 */
 	private String computeDragColor() {
@@ -838,8 +854,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Dungeon data has changed get the URL for current level picture.
-	 * All other activities will get triggered when the picture actually loads.
+	 * Dungeon data has changed get the URL for current level picture. All other activities will get triggered when the picture actually loads.
 	 */
 	public void dungeonDataChanged() {
 		intializeView();

@@ -66,6 +66,7 @@ public class SelectedPog extends Composite {
 	public SelectedPog() {
 		initWidget(uiBinder.createAndBindUi(this));
 		scalablePog.setShowNormalSizeOnly(true);
+		scalablePog.setForceBackgroundColor(true);
 		pogPanel.add(scalablePog);
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {

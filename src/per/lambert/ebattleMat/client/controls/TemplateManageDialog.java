@@ -238,6 +238,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		centerGrid.setWidget(9, 0, pogPanel);
 		pogCanvas = new PogCanvas();
 		pogCanvas.setShowNormalSizeOnly(true);
+		pogCanvas.setForceBackgroundColor(true);
 		pogPanel.add(pogCanvas);
 	}
 

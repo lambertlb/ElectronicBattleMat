@@ -24,9 +24,13 @@ public enum DungeonMasterFlag {
 	 */
 	SHIFT_RIGHT("Shifted to Right"),
 	/**
-	 * Th epog is shifted half a cell to the top.
+	 * The pog is shifted half a cell to the top.
 	 */
-	SHIFT_TOP("Shifted to Top");
+	SHIFT_TOP("Shifted to Top"),
+	/**
+	 * Pog has dark background in edit mode.
+	 */
+	DARK_BACKGROUND("Dark background in edit mode");
 
 	/**
 	 * value of flag.

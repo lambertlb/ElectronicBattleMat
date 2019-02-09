@@ -111,6 +111,14 @@ public class RibbonBar extends Composite {
 	 * Monster manage dialog.
 	 */
 	private TemplateManageDialog monsterManage;
+	/**
+	 * Room objects manager button.
+	 */
+	private Button roomObjectsManageButton;
+	/**
+	 * Monster manage dialog.
+	 */
+	private TemplateManageDialog roomObjectsManage;
 
 	/**
 	 * Constructor.
@@ -220,7 +228,8 @@ public class RibbonBar extends Composite {
 			}
 		});
 		characterCreate = new CharacterCreateDialog();
-		monsterManageButton = new Button("Manage Monster");
+
+		monsterManageButton = new Button("Monster Templates");
 		monsterManageButton.addStyleName("ribbonBarLabel");
 		monsterManageButton.addClickHandler(new ClickHandler() {
 
@@ -229,7 +238,18 @@ public class RibbonBar extends Composite {
 				monsterManage.show();
 			}
 		});
-		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_ROOMOBJECT);
+		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER);
+
+		roomObjectsManageButton = new Button("Room Object Templates");
+		roomObjectsManageButton.addStyleName("ribbonBarLabel");
+		roomObjectsManageButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				roomObjectsManage.show();
+			}
+		});
+		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_ROOMOBJECT);
 	}
 
 	/**
@@ -308,6 +328,7 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(0, 1, levelOptions);
 		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
 		ribbonGrid.setWidget(1, 1, monsterManageButton);
+		ribbonGrid.setWidget(0, 2, roomObjectsManageButton);
 	}
 
 	/**
