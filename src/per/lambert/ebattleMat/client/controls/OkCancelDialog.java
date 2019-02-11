@@ -208,6 +208,13 @@ public class OkCancelDialog extends ResizableDialog {
 	}
 
 	/**
+	 * Add an ok click handler.
+	 * @param clickHandler to add
+	 */
+	public void	addOkClickHandler(final ClickHandler clickHandler) {
+		ok.addClickHandler(clickHandler);
+	}
+	/**
 	 * Enable or Disable widget.
 	 * 
 	 * @param widget to enable

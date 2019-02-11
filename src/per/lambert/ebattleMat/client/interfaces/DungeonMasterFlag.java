@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.interfaces;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,84 +11,105 @@ import java.util.Map;
  * @author LLambert
  *
  */
-public enum DungeonMasterFlag {
+public final class DungeonMasterFlag extends FlagBits {
+	/**
+	 * Next available value.
+	 */
+	private static int nextValue = 0;
+	/**
+	 * No flag.
+	 */
+	public static final DungeonMasterFlag NONE = new DungeonMasterFlag("None"); // 0
 	/**
 	 * This pog is invisible to players.
 	 */
-	INVISIBLE_FROM_PLAYER("Invis to Player"),
+	public static final DungeonMasterFlag INVISIBLE_FROM_PLAYER = new DungeonMasterFlag("Invis to Player"); // 1
 	/**
 	 * The background is transparent.
 	 */
-	TRANSPARENT_BACKGROUND("Transparent Background"),
+	public static final DungeonMasterFlag TRANSPARENT_BACKGROUND = new DungeonMasterFlag("Transparent Background"); // 2
 	/**
 	 * The pog is shifted a half cell to right.
 	 */
-	SHIFT_RIGHT("Shifted to Right"),
+	public static final DungeonMasterFlag SHIFT_RIGHT = new DungeonMasterFlag("Shifted to Right"); // 4
 	/**
 	 * The pog is shifted half a cell to the top.
 	 */
-	SHIFT_TOP("Shifted to Top"),
+	public static final DungeonMasterFlag SHIFT_TOP = new DungeonMasterFlag("Shifted to Top"); // 8
 	/**
 	 * Pog has dark background in edit mode.
 	 */
-	DARK_BACKGROUND("Dark background in edit mode");
+	public static final DungeonMasterFlag DARK_BACKGROUND = new DungeonMasterFlag("Dark background in edit mode"); // 16
 
 	/**
-	 * value of flag.
+	 * Map of names vs flag bit.
 	 */
-	private int value;
-	/**
-	 * Name of value.
-	 */
-	private String name;
-	/**
-	 * Map for names vs flag.
-	 */
-	private static Map<String, DungeonMasterFlag> flagMap;
-	/**
-	 * Next value for enum.
-	 */
-	private static int nextValue = 1;
+	private static Map<String, FlagBits> nameMap;
 
 	/**
-	 * Constructor for dungeon master flags.
-	 * @param flagName flag name
+	 * expose to sub-classes.
+	 * 
+	 * @return map of names
 	 */
-	DungeonMasterFlag(final String flagName) {
-		setPogFlag(flagName);
+	protected static Map<String, FlagBits> getNameMap() {
+		return nameMap;
 	}
+
 	/**
-	 * Set enumeration data.
+	 * Value vs flag bit.
+	 */
+	private static Map<Integer, FlagBits> valueMap;
+
+	/**
+	 * Constructor.
+	 * 
 	 * @param flagName flag name
 	 */
-	private void setPogFlag(final String flagName) {
-		value = DungeonMasterFlag.nextValue;
-		DungeonMasterFlag.nextValue <<= 1;
-		name = flagName;
-		if (flagMap == null) {
-			flagMap = new LinkedHashMap<String, DungeonMasterFlag>();
+	private DungeonMasterFlag(final String flagName) {
+		super(flagName, nextValue);
+		if (nextValue == 0) {
+			nextValue = 1;
+		} else {
+			nextValue <<= 1;
 		}
-		DungeonMasterFlag.flagMap.put(flagName, this);
+		if (nameMap == null) {
+			nameMap = new LinkedHashMap<String, FlagBits>();
+			valueMap = new LinkedHashMap<Integer, FlagBits>();
+		}
+		nameMap.put(flagName, (FlagBits)this);
+		valueMap.put(getValue(), (FlagBits)this);
 	}
+
 	/**
-	 * Get value of enumeration.
-	 * @return enumeration value
+	 * Get value for this name.
+	 * 
+	 * @param name to get
+	 * @return flag bit
 	 */
-	public int getValue() {
-		return (value);
+	public static FlagBits valueOf(final String name) {
+		return (nameMap.get(name));
 	}
+
 	/**
-	 * Get enumeration name.
-	 * @return enumeration name.
+	 * Get flag bit for this ordinal.
+	 * 
+	 * @param ordinal to get
+	 * @return flag bit
 	 */
-	public String getName() {
-		return (name);
+	public static FlagBits valueOf(final int ordinal) {
+		return (valueMap.get(ordinal));
 	}
+
 	/**
-	 * Get collection of enumeration values.
-	 * @return collection of enumeration values.
+	 * Get collection of flags.
+	 * 
+	 * @return collection of flags.
 	 */
-	public static Collection<DungeonMasterFlag> getValues() {
-		return (flagMap.values());
+	public static Collection<FlagBits> getValues() {
+		ArrayList<FlagBits> list = new ArrayList<FlagBits>();
+		for (FlagBits flagBit : getNameMap().values()) {
+			list.add(flagBit);
+		}
+		return (list);
 	}
 }

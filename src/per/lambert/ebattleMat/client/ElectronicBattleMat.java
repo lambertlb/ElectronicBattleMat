@@ -1,5 +1,7 @@
 package per.lambert.ebattleMat.client;
 
+import java.util.Collection;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -10,6 +12,7 @@ import per.lambert.ebattleMat.client.controls.loginControl.LoginControl;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 

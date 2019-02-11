@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
+import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.services.ServiceManager;
@@ -123,6 +124,22 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Start a new template.
 	 */
 	private Button startNewTemplate;
+	/**
+	 * Button for player flags.
+	 */
+	private Button playerFlagsButton;
+	/**
+	 * Dialog for player flags.
+	 */
+	private FlagBitsDialog playerFlagDialog;
+	/**
+	 * Button for DM flags.
+	 */
+	private Button dmFlagsButton;
+	/**
+	 * Dialog for DM flags.
+	 */
+	private FlagBitsDialog dmFlagDialog;
 
 	/**
 	 * Constructor.
@@ -152,7 +169,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	private void createContent() {
 		centerGrid = getCenterGrid();
 		centerGrid.clear();
-		centerGrid.resize(10, 3);
+		centerGrid.resize(11, 3);
 		centerGrid.getColumnFormatter().setWidth(0, "20px");
 		centerGrid.getColumnFormatter().setWidth(1, "20px");
 
@@ -234,8 +251,22 @@ public class TemplateManageDialog extends OkCancelDialog {
 		startNewTemplate.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(8, 2, startNewTemplate);
 
+		playerFlagsButton = new Button("Player flags");
+		playerFlagsButton.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(9, 0, playerFlagsButton);
+
+		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
+
+		dmFlagsButton = new Button("Player flags");
+		dmFlagsButton.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(9, 1, dmFlagsButton);
+		/**
+		 * Dialog for DM flags.
+		 */
+		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+
 		pogPanel = new FlowPanel();
-		centerGrid.setWidget(9, 0, pogPanel);
+		centerGrid.setWidget(10, 0, pogPanel);
 		pogCanvas = new PogCanvas();
 		pogCanvas.setShowNormalSizeOnly(true);
 		pogCanvas.setForceBackgroundColor(true);
@@ -304,6 +335,32 @@ public class TemplateManageDialog extends OkCancelDialog {
 				filteredTemplateList.setSelectedIndex(0);
 			}
 		});
+		playerFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				playerFlagDialog.setBits(pogData.getPlayerFlags());
+				playerFlagDialog.show();
+			}
+		});
+		playerFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogData.setPlayerFlagsNative(playerFlagDialog.getBits());
+			}
+		});
+		dmFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				dmFlagDialog.setBits(pogData.getDungeonMasterFlags());
+				dmFlagDialog.show();
+			}
+		});
+		dmFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
+			}
+		});
 	}
 
 	/**
@@ -332,6 +389,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		templatePicture.removeStyleName("badLabel");
 		race.setValue("Enter Race");
 		templateClass.setValue("Enter Class");
+		setFlagsDialogData();
 	}
 
 	/**
@@ -527,7 +585,16 @@ public class TemplateManageDialog extends OkCancelDialog {
 			pogSize = 0;
 		}
 		size.setSelectedIndex(pogSize);
+		setFlagsDialogData();
 		validateForm();
+	}
+
+	/**
+	 * Set flags dialog data.
+	 */
+	private void setFlagsDialogData() {
+		playerFlagDialog.setBits(pogData.getPlayerFlags());
+		dmFlagDialog.setBits(pogData.getDungeonMasterFlags());
 	}
 
 	/**
@@ -569,6 +636,9 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (!classString.startsWith("Enter")) {
 			pogData.setPogClass(classString);
 		}
+		pogData.setPogSize(size.getSelectedIndex() + 1);
+		pogData.setPlayerFlagsNative(playerFlagDialog.getBits());
+		pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
 		int index = gender.getSelectedIndex();
 		if (index >= 1) {
 			pogData.clearFlags(PlayerFlag.HAS_NO_GENDER);
@@ -577,6 +647,5 @@ public class TemplateManageDialog extends OkCancelDialog {
 				pogData.setFlags(index == 3 ? PlayerFlag.HAS_NO_GENDER : PlayerFlag.IS_FEMALE);
 			}
 		}
-		pogData.setPogSize(size.getSelectedIndex() + 1);
 	}
 }

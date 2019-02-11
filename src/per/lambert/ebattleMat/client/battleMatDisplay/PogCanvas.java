@@ -25,6 +25,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -293,7 +294,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 					return;
 				}
 				ServiceManager.getDungeonManager().setPogBeingDragged(pogData);
-				event.getDataTransfer().setDragImage(pogMainPanel.getElement(), 10, 120);
+				event.getDataTransfer().setDragImage(canvas.getElement(), 0, 0);
 			}
 		});
 		addDragLeaveHandler(new DragLeaveHandler() {
