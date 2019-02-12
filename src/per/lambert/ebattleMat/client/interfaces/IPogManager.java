@@ -146,4 +146,11 @@ public interface IPogManager {
 	 * @return list of races
 	 */
 	String[] getCommonRaces(String pogType);
+
+	/**
+	 * Is this Pog a template.
+	 * @param pogData pog to check
+	 * @return true if template
+	 */
+	boolean isTemplate(PogData pogData);
 }

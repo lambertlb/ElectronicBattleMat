@@ -17,12 +17,15 @@ import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
+import per.lambert.ebattleMat.client.controls.FlagBitsDialog;
 import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
 import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
 import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
@@ -119,6 +122,23 @@ public class RibbonBar extends Composite {
 	 * Monster manage dialog.
 	 */
 	private TemplateManageDialog roomObjectsManage;
+
+	/**
+	 * Button for player flags.
+	 */
+	private Button playerFlagsButton;
+	/**
+	 * Dialog for player flags.
+	 */
+	private FlagBitsDialog playerFlagDialog;
+	/**
+	 * Button for DM flags.
+	 */
+	private Button dmFlagsButton;
+	/**
+	 * Dialog for DM flags.
+	 */
+	private FlagBitsDialog dmFlagDialog;
 
 	/**
 	 * Constructor.
@@ -250,6 +270,47 @@ public class RibbonBar extends Composite {
 			}
 		});
 		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_ROOMOBJECT);
+
+		playerFlagsButton = new Button("Player flags");
+		playerFlagsButton.setStyleName("ribbonBarLabel");
+		playerFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				playerFlagDialog.setBits(ServiceManager.getDungeonManager().getSelectedPog().getPlayerFlags());
+				playerFlagDialog.show();
+			}
+		});
+
+		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
+		playerFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+				selectedPog.setPlayerFlagsNative(playerFlagDialog.getBits());
+				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
+			}
+		});
+
+		dmFlagsButton = new Button("DM flags");
+		dmFlagsButton.setStyleName("ribbonBarLabel");
+		dmFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				dmFlagDialog.setBits(ServiceManager.getDungeonManager().getSelectedPog().getDungeonMasterFlags());
+				dmFlagDialog.show();
+			}
+		});
+
+		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+		dmFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+				selectedPog.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
+				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
+			}
+		});
+		pogSelection();
 	}
 
 	/**
@@ -279,8 +340,22 @@ public class RibbonBar extends Composite {
 					characterPogsLoaded();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.PogWasSelected) {
+					pogSelection();
+					return;
+				}
 			}
 		});
+	}
+
+	/**
+	 * New pog was selected so adjust controls.
+	 */
+	protected void pogSelection() {
+		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+		boolean enabled = selectedPog != null ? !selectedPog.isTemplate() : false;
+		DungeonSelectDialog.enableWidget(playerFlagsButton, enabled);
+		DungeonSelectDialog.enableWidget(dmFlagsButton, enabled);
 	}
 
 	/**
@@ -327,8 +402,10 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(0, 0, levelSelect);
 		ribbonGrid.setWidget(0, 1, levelOptions);
 		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
-		ribbonGrid.setWidget(1, 1, monsterManageButton);
 		ribbonGrid.setWidget(0, 2, roomObjectsManageButton);
+		ribbonGrid.setWidget(1, 2, monsterManageButton);
+		ribbonGrid.setWidget(0, 3, playerFlagsButton);
+		ribbonGrid.setWidget(1, 3, dmFlagsButton);
 	}
 
 	/**

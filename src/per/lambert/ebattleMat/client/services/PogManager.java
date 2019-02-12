@@ -93,8 +93,10 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public void setSelectedPog(final PogData selectedPog) {
-		this.selectedPog = selectedPog;
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+		if (!selectedPog.isEquals(this.selectedPog)) {
+			this.selectedPog = selectedPog;
+			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
+		}
 	}
 
 	/**
@@ -108,13 +110,14 @@ public abstract class PogManager implements IPogManager {
 			setSelectedRoomObject(templateUUID);
 		}
 	}
+
 	/**
 	 * Lookup monster with this UUID and set as selected pog.
 	 * 
 	 * @param monsterUUID to look up
 	 */
 	private void setSelectedMonster(final String monsterUUID) {
-		this.selectedPog = findMonsterPog(monsterUUID);
+		setSelectedPog(findMonsterPog(monsterUUID));
 	}
 
 	/**
@@ -123,7 +126,7 @@ public abstract class PogManager implements IPogManager {
 	 * @param roomObjectUUID to look up
 	 */
 	private void setSelectedRoomObject(final String roomObjectUUID) {
-		this.selectedPog = findRoomObjectPog(roomObjectUUID);
+		setSelectedPog(findRoomObjectPog(roomObjectUUID));
 	}
 
 	/**
@@ -325,6 +328,7 @@ public abstract class PogManager implements IPogManager {
 
 	/**
 	 * Filter a pog list.
+	 * 
 	 * @param pogsToSearch pog list to search
 	 * @param raceFilter race filter
 	 * @param classFilter class filter
@@ -460,6 +464,7 @@ public abstract class PogManager implements IPogManager {
 		return (roomObjectClasses.values().toArray(rtn));
 
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -472,6 +477,7 @@ public abstract class PogManager implements IPogManager {
 		return (roomObjectRaces.values().toArray(rtn));
 
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -506,5 +512,20 @@ public abstract class PogManager implements IPogManager {
 			roomObjectTemplatePogs.addPog(pog);
 		}
 		rebuildMonsterCollections();
+	}
+
+	/**
+	 * Is this Pog a template.
+	 * @param pogData pog to check
+	 * @return true if template
+	 */
+	@Override
+	public boolean isTemplate(final PogData pogData) {
+		if (pogData.isThisAMonster()) {
+			return (monsterTemplateMap.containsKey(pogData.getUUID()));
+		} else if (pogData.isThisARoomObject()) {
+			return (roomObjectTemplateMap.containsKey(pogData.getUUID()));
+		}
+		return (false);
 	}
 }

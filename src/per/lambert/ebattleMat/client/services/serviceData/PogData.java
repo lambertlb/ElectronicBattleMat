@@ -6,6 +6,7 @@ import com.google.gwt.core.client.JsonUtils;
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 
 /**
  * pog data.
@@ -238,6 +239,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * set UUID of template pog.
+	 * 
 	 * @param templateUUID UUID of template pog.
 	 */
 	public final native void setTemplateUUID(String templateUUID) /*-{
@@ -246,6 +248,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Get dungeon level this pog is on.
+	 * 
 	 * @return dungeon level this pog is on.
 	 */
 	public final native int getDungeonLevel() /*-{
@@ -257,6 +260,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * set dungeon level this pog is on.
+	 * 
 	 * @param dungeonLevel dungeon level this pog is on.
 	 */
 	public final native void setDungeonLevel(int dungeonLevel) /*-{
@@ -265,6 +269,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Is this dungeon master flag set.
+	 * 
 	 * @param flagToTest flag to test.
 	 * @return true if set.
 	 */
@@ -274,6 +279,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Is this player master flag set.
+	 * 
 	 * @param flagToTest flag to test.
 	 * @return true if set.
 	 */
@@ -297,6 +303,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Set player flag.
+	 * 
 	 * @param flags to set
 	 */
 	public final native void setPlayerFlagsNative(int flags) /*-{
@@ -305,6 +312,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Set dungeon master flag flag.
+	 * 
 	 * @param flags to set
 	 */
 	public final native void setDungeonMasterFlagsNative(int flags) /*-{
@@ -313,6 +321,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Get player flags.
+	 * 
 	 * @return player flags.
 	 */
 	@SuppressWarnings("RedundantModifier")
@@ -325,6 +334,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Get dungeon master flags.
+	 * 
 	 * @return dungeon master flags.
 	 */
 	@SuppressWarnings("RedundantModifier")
@@ -337,6 +347,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Set player flag.
+	 * 
 	 * @param flagToSet player flag to set
 	 */
 	public final void setFlags(final PlayerFlag flagToSet) {
@@ -347,6 +358,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Set dungeon master flag.
+	 * 
 	 * @param flagToSet dungeon master flag to set
 	 */
 	public final void setFlags(final DungeonMasterFlag flagToSet) {
@@ -357,6 +369,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Clear player flags.
+	 * 
 	 * @param flagToClear player flags to clear.
 	 */
 	public final void clearFlags(final PlayerFlag flagToClear) {
@@ -367,6 +380,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Clear dungeon master flags.
+	 * 
 	 * @param flagToClear dungeon master flags to clear.
 	 */
 	public final void clearFlags(final DungeonMasterFlag flagToClear) {
@@ -377,6 +391,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Get pog class.
+	 * 
 	 * @return pog class.
 	 */
 	public final native String getPogClass() /*-{
@@ -388,6 +403,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * set pog class.
+	 * 
 	 * @param pogClass to set
 	 */
 	public final native void setPogClass(String pogClass) /*-{
@@ -396,6 +412,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * get pog race.
+	 * 
 	 * @return pog race.
 	 */
 	public final native String getRace() /*-{
@@ -407,6 +424,7 @@ public class PogData extends JavaScriptObject {
 
 	/**
 	 * Set pog race.
+	 * 
 	 * @param race pog race.
 	 */
 	public final native void setRace(String race) /*-{
@@ -435,6 +453,7 @@ public class PogData extends JavaScriptObject {
 		}
 		return (getUUID().equals(toCompare.getUUID()));
 	}
+
 	/**
 	 * Update everything but UUIDs.
 	 * 
@@ -463,4 +482,11 @@ public class PogData extends JavaScriptObject {
 		setDungeonLevel(withUpdates.getDungeonLevel());
 	}
 
+	/**
+	 * Is this pog a template.
+	 * @return true if template
+	 */
+	public final boolean isTemplate() {
+		 return (ServiceManager.getDungeonManager().isTemplate(this));
+	}
 }

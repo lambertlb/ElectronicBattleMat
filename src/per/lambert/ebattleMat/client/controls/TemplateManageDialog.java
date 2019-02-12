@@ -257,7 +257,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 
 		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
 
-		dmFlagsButton = new Button("Player flags");
+		dmFlagsButton = new Button("DM flags");
 		dmFlagsButton.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(9, 1, dmFlagsButton);
 		/**
