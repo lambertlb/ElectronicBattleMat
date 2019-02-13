@@ -1,6 +1,7 @@
 package per.lambert.ebattleMat.client.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -273,11 +274,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
-	 * counter to use for retrieving resources. By appending this number onto URL you are guaranteed to get from server vs cache.
-	 */
-	private int resourceCount = 1;
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -548,7 +544,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (resourceItem.startsWith("http")) {
 			return resourceItem;
 		}
-		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + resourceCount++;
+		Date now = new Date();
+		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + now.getTime();
 		return (resourceUrl);
 	}
 
