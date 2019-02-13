@@ -1012,11 +1012,14 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public PogPlace computePlace(final PogData pog) {
-		if (editMode) {
-			return (PogPlace.DUNGEON_INSTANCE);
+		if (pog.isTemplate()) {
+			return (PogPlace.COMMON_RESOURCE);
 		}
 		if (pog.isThisAPlayer()) {
 			return (PogPlace.SESSION_RESOURCE);
+		}
+		if (editMode) {
+			return (PogPlace.DUNGEON_INSTANCE);
 		}
 		if (isDungeonMaster) {
 			return (PogPlace.SESSION_INSTANCE);

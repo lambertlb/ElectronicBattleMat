@@ -455,6 +455,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		super.show();
 		initialize();
 		center();
+		selectPog();
 	}
 
 	/**
@@ -573,6 +574,15 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (data == null) {
 			return;
 		}
+		selectPog(data);
+	}
+
+	/**
+	 * Select this pog to edit.
+	 * 
+	 * @param data pog data
+	 */
+	private void selectPog(final PogData data) {
 		pogData = data;
 		pogCanvas.setPogData(data);
 		templateName.setValue(pogData.getPogName());
@@ -617,7 +627,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	protected void onOkClick(final ClickEvent event) {
 		super.onOkClick(event);
 		getDialogData();
-		ServiceManager.getDungeonManager().addOrUpdatePog(pogData, place);
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogData);
 		ServiceManager.getDungeonManager().setSelectedPog(pogData);
 		close();
 	}
@@ -646,6 +656,19 @@ public class TemplateManageDialog extends OkCancelDialog {
 			if (index > 1) {
 				pogData.setFlags(index == 3 ? PlayerFlag.HAS_NO_GENDER : PlayerFlag.IS_FEMALE);
 			}
+		}
+	}
+
+	/**
+	 * Set selected pog if correct type.
+	 */
+	private void selectPog() {
+		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
+		if (pog == null) {
+			return;
+		}
+		if (pog.getPogType() == pogType) {
+			selectPog(pog);
 		}
 	}
 }
