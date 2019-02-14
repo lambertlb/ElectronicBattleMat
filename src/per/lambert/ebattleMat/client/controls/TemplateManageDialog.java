@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
@@ -668,6 +669,9 @@ public class TemplateManageDialog extends OkCancelDialog {
 			return;
 		}
 		if (pog.getPogType() == pogType) {
+			selectPog(pog);
+		}
+		if (pogType == ElectronicBattleMat.POG_TYPE_MONSTER && pog.isThisAPlayer()) {
 			selectPog(pog);
 		}
 	}

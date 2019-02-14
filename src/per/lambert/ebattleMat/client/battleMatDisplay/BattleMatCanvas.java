@@ -297,6 +297,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 					dungeonDataChanged();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.PogWasSelected) {
+					newSelectedPog();
+					return;
+				}
 			}
 		});
 	}
@@ -933,6 +937,31 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		for (PogData player : players) {
 			if (player != null) {
 				addPogToCanvas(player);
+			}
+		}
+	}
+	
+	/**
+	 * Currently selected pog canvas.
+	 */
+	private PogCanvas selectedPogCanvas;
+	
+	/**
+	 * Handle newly selected pog.
+	 */
+	protected void newSelectedPog() {
+		if (selectedPogCanvas != null) {
+			selectedPogCanvas.removeStyleName("selectedePog");
+			selectedPogCanvas = null;
+		}
+		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
+		if (pog == null) {
+			return;
+		}
+		for (PogCanvas pogCanvas : pogs) {
+			if (pogCanvas.getPogData().isEquals(pog)) {
+				selectedPogCanvas = pogCanvas;
+				selectedPogCanvas.addStyleName("selectedePog");
 			}
 		}
 	}

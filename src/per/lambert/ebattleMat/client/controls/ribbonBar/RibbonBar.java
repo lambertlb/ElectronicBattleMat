@@ -249,7 +249,7 @@ public class RibbonBar extends Composite {
 		});
 		characterCreate = new CharacterCreateDialog();
 
-		monsterManageButton = new Button("Monster Templates");
+		monsterManageButton = new Button("Monster Editor...");
 		monsterManageButton.addStyleName("ribbonBarLabel");
 		monsterManageButton.addClickHandler(new ClickHandler() {
 
@@ -260,7 +260,7 @@ public class RibbonBar extends Composite {
 		});
 		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER);
 
-		roomObjectsManageButton = new Button("Room Object Templates");
+		roomObjectsManageButton = new Button("Room Object Editor...");
 		roomObjectsManageButton.addStyleName("ribbonBarLabel");
 		roomObjectsManageButton.addClickHandler(new ClickHandler() {
 
@@ -271,7 +271,7 @@ public class RibbonBar extends Composite {
 		});
 		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_ROOMOBJECT);
 
-		playerFlagsButton = new Button("Player flags");
+		playerFlagsButton = new Button("Player Controlled Properties...");
 		playerFlagsButton.setStyleName("ribbonBarLabel");
 		playerFlagsButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -291,7 +291,7 @@ public class RibbonBar extends Composite {
 			}
 		});
 
-		dmFlagsButton = new Button("DM flags");
+		dmFlagsButton = new Button("DM Controlled Properties..");
 		dmFlagsButton.setStyleName("ribbonBarLabel");
 		dmFlagsButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -387,12 +387,10 @@ public class RibbonBar extends Composite {
 	 * Setup for dungeon master.
 	 */
 	private void setupForDungeonMaster() {
-		if (ServiceManager.getDungeonManager().isEditMode()) {
-			setupForEditDungeon();
-			return;
+		setupForEditDungeon();
+		if (!ServiceManager.getDungeonManager().isEditMode()) {
+			ribbonGrid.setWidget(1, 3, fowToggle);
 		}
-		setupForSession();
-		ribbonGrid.setWidget(0, 2, fowToggle);
 	}
 
 	/**
@@ -400,29 +398,22 @@ public class RibbonBar extends Composite {
 	 */
 	private void setupForEditDungeon() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(0, 1, levelOptions);
-		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
-		ribbonGrid.setWidget(0, 2, roomObjectsManageButton);
-		ribbonGrid.setWidget(1, 2, monsterManageButton);
-		ribbonGrid.setWidget(0, 3, playerFlagsButton);
-		ribbonGrid.setWidget(1, 3, dmFlagsButton);
-	}
-
-	/**
-	 * Setyp session section.
-	 */
-	private void setupForSession() {
-		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(1, 0, manageDungeonsButton);
-		ribbonGrid.setWidget(0, 1, characterSelect);
-		ribbonGrid.setWidget(1, 1, createCharacter);
+		ribbonGrid.setWidget(1, 0, levelOptions);
+		ribbonGrid.setWidget(0, 1, roomObjectsManageButton);
+		ribbonGrid.setWidget(1, 1, monsterManageButton);
+		ribbonGrid.setWidget(0, 2, playerFlagsButton);
+		ribbonGrid.setWidget(1, 2, dmFlagsButton);
+		ribbonGrid.setWidget(0, 3, manageDungeonsButton);
 	}
 
 	/**
 	 * Setup for player.
 	 */
 	private void setupForPlayer() {
-		setupForSession();
+		ribbonGrid.setWidget(0, 0, levelSelect);
+		ribbonGrid.setWidget(1, 0, playerFlagsButton);
+		ribbonGrid.setWidget(0, 1, characterSelect);
+		ribbonGrid.setWidget(1, 1, createCharacter);
 	}
 
 	/**
