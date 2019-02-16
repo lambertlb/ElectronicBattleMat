@@ -7,6 +7,8 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.BorderStyle;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
 import com.google.gwt.event.dom.client.DragOverEvent;
@@ -522,15 +524,15 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void adjustPogs() {
 		for (PogCanvas pog : pogs) {
-			int x = (int) (columnToPixel(pog.getPogColumn()));
-			int y = (int) (rowToPixel(pog.getPogRow()));
+			int x = (int) (columnToPixel(pog.getPogColumn())) + 2;
+			int y = (int) (rowToPixel(pog.getPogRow())) + 2;
 			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_RIGHT)) {
 				x += (adjustedGridSize() / 2);
 			} else if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_TOP)) {
 				y -= (adjustedGridSize() / 2);
 			}
 			this.setWidgetPosition(pog, x, y);
-			pog.setPogWidth((int) adjustedGridSize());
+			pog.setPogWidth((int) adjustedGridSize() - 6);
 		}
 	}
 
@@ -764,10 +766,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private PogCanvas addPogToCanvas(final PogData clonePog) {
 		PogCanvas scalablePog = new PogCanvas(clonePog);
-		scalablePog.setPogWidth((int) gridSpacing - 10);
+		scalablePog.setPogWidth((int) gridSpacing - 16);
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
-		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()), (int) rowToPixel(scalablePog.getPogRow()));
+		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + 3, (int) rowToPixel(scalablePog.getPogRow() + 3));
+//		scalablePog.addStyleName("selectedPog");
+		scalablePog.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
+		scalablePog.getElement().getStyle().setBorderWidth(3, Unit.PX);
+		scalablePog.getElement().getStyle().setBorderColor("grey");
 		return (scalablePog);
 	}
 
@@ -875,8 +881,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Dungeon data changed.
 	 */
 	public void dungeonDataUpdated() {
+		deSelectPog();
 		removePogs();
 		addPogs();
+		newSelectedPog();
 	}
 
 	/**
@@ -950,10 +958,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Handle newly selected pog.
 	 */
 	protected void newSelectedPog() {
-		if (selectedPogCanvas != null) {
-			selectedPogCanvas.removeStyleName("selectedePog");
-			selectedPogCanvas = null;
-		}
+		deSelectPog();
 		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (pog == null) {
 			return;
@@ -961,8 +966,18 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		for (PogCanvas pogCanvas : pogs) {
 			if (pogCanvas.getPogData().isEquals(pog)) {
 				selectedPogCanvas = pogCanvas;
-				selectedPogCanvas.addStyleName("selectedePog");
+				selectedPogCanvas.getElement().getStyle().setBorderColor("black");
 			}
+		}
+	}
+
+	/**
+	 * de-select current pog.
+	 */
+	private void deSelectPog() {
+		if (selectedPogCanvas != null) {
+			selectedPogCanvas.getElement().getStyle().setBorderColor("grey");
+			selectedPogCanvas = null;
 		}
 	}
 }

@@ -2,6 +2,7 @@ package per.lambert.ebattleMat.client.battleMatDisplay;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -184,6 +185,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * True to force a background color even if transparent is set.
 	 */
 	private boolean forceBackgroundColor = false;
+	/**
+	 * Width of pog displayed image.
+	 */
+	private int scaledWidth = 50;
 
 	/**
 	 * get force background color.
@@ -464,7 +469,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param width of pog
 	 */
 	public void setPogWidth(final int width) {
-		int scaledWidth = width;
+		scaledWidth = width;
 		if (!showNormalSizeOnly) {
 			scaledWidth *= pogData.getPogSize();
 		}
@@ -513,32 +518,57 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		if (showImage) {
 			backContext.drawImage(imageElement, 0, 0);
 		}
-		handleAllDrawing(backContext, context);
+		handleAllDrawing();
+	}
+
+	/**
+	 * Draw overlays on cavas over picture.
+	 */
+	private void drawOverlays() {
+		if (showNormalSizeOnly) {
+			return;
+		}
+		if (pogData.isFlagSet(PlayerFlag.DEAD)) {
+			addDeadOverlay();
+		}
+	}
+
+	/**
+	 * Add dead pog overlay.
+	 */
+	private void addDeadOverlay() {
+		int halfWidth = scaledWidth / 2;
+		context.setStrokeStyle(CssColor.make(255,0,0));
+		context.setFillStyle(CssColor.make(255,0,0));
+		context.setLineWidth(3);
+		context.beginPath();
+		context.arc(halfWidth, halfWidth, halfWidth, 0, 2 * Math.PI);
+		context.moveTo(scaledWidth, 0);
+		context.lineTo(0, scaledWidth);
+		context.stroke();
 	}
 
 	/**
 	 * Handle all canvas drawing.
-	 * 
-	 * @param back canvas.
-	 * @param front canvas.
 	 */
-	public final void handleAllDrawing(final Context2d back, final Context2d front) {
+	public final void handleAllDrawing() {
 		if (!pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
-			front.setFillStyle("white");
-			front.fillRect(0, 0, parentWidth, parentHeight);
+			context.setFillStyle("white");
+			context.fillRect(0, 0, parentWidth, parentHeight);
 		}
 		double opacity = 1.0;
-		if (!ServiceManager.getDungeonManager().isEditMode() && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER))) {
+		if (!showNormalSizeOnly && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER))) {
 			opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
 		}
 		pogDrawPanel.getElement().getStyle().setOpacity(opacity);
-		front.drawImage(back.getCanvas(), 0, 0);
+		context.drawImage(backContext.getCanvas(), 0, 0);
+		drawOverlays();
 	}
 
 	/**
 	 * Show the image if true.
 	 * 
-	 * @param showing trueif image should be shown
+	 * @param showing true if image should be shown
 	 */
 	public void showImage(final boolean showing) {
 		showImage = showing;

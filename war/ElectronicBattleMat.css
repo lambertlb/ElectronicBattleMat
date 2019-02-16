@@ -52,7 +52,8 @@ h1 {
 	padding-top: 5px;
 }
 
-.selectedePog {
-	border-color: block;
+.selectedPog {
+	border-color: transparent;
 	border-style: solid;
+	border-width: 3px;
 }
