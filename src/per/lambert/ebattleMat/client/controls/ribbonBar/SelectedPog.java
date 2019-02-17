@@ -112,6 +112,6 @@ public class SelectedPog extends Composite {
 		scalablePog.setPogData(selectePog);
 		Widget parent = hostPanel.getParent().getParent();
 		int height = parent.getOffsetHeight();
-		scalablePog.setPogWidth(height);
+		scalablePog.setPogWidth(height, 1.0);
 	}
 }

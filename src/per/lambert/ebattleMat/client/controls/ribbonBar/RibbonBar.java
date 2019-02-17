@@ -281,7 +281,7 @@ public class RibbonBar extends Composite {
 			}
 		});
 
-		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
+		playerFlagDialog = new FlagBitsDialog("Player Controlled Properties", PlayerFlag.getValues());
 		playerFlagDialog.addOkClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -301,7 +301,7 @@ public class RibbonBar extends Composite {
 			}
 		});
 
-		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+		dmFlagDialog = new FlagBitsDialog("Dungeon Master Controlled Properties", DungeonMasterFlag.getValues());
 		dmFlagDialog.addOkClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {

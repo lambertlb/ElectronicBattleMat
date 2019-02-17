@@ -105,6 +105,14 @@ public abstract class PogManager implements IPogManager {
 	}
 
 	/**
+	 * So sub-classes can set.
+	 * @param selectedPog selected pog.
+	 */
+	protected void setSelectedPogInternal(final PogData selectedPog) {
+		this.selectedPog = selectedPog;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -488,7 +496,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public String[] getTemplateGenders() {
-		return (new String[] {"Male", "Female", "Neutral" });
+		return (new String[] { "Male", "Female", "Neutral" });
 	}
 
 	/**
@@ -498,7 +506,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public String[] getPogSizes() {
-		return (new String[] {"Normal", "Large", "Huge", "Gargantuan" });
+		return (new String[] { "Normal", "Large", "Huge", "Gargantuan" });
 	}
 
 	/**
@@ -521,6 +529,7 @@ public abstract class PogManager implements IPogManager {
 
 	/**
 	 * Is this Pog a template.
+	 * 
 	 * @param pogData pog to check
 	 * @return true if template
 	 */

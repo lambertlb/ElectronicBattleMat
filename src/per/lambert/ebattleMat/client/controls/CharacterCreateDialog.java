@@ -14,16 +14,14 @@ import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
- * Character creation dialog.
- * Its main responsibility is to create a character that the player or DM can use
- * for this one dungeon session.
+ * Character creation dialog. Its main responsibility is to create a character that the player or DM can use for this one dungeon session.
+ * 
  * @author LLambert
  *
  */
 public class CharacterCreateDialog extends OkCancelDialog {
 	/**
-	 * Center grid with all the content.
-	 * It comes from the parent dialog
+	 * Center grid with all the content. It comes from the parent dialog
 	 */
 	private Grid centerGrid;
 	/**
@@ -132,8 +130,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * initialize content.
-	 * Needed since the dialog can be reused.
+	 * initialize content. Needed since the dialog can be reused.
 	 */
 	private void initialize() {
 		pogData = ServiceManager.getDungeonManager().createPlayer();
@@ -166,6 +163,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 
 	/**
 	 * Validate character name.
+	 * 
 	 * @return true if valid.
 	 */
 	private boolean validateCharacterName() {
@@ -179,8 +177,8 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Validate Url of picture.
-	 * THis makes sure it is a picture type we support
+	 * Validate Url of picture. THis makes sure it is a picture type we support
+	 * 
 	 * @return true if ok.
 	 */
 	private boolean validateUrl() {
@@ -199,10 +197,11 @@ public class CharacterCreateDialog extends OkCancelDialog {
 
 	/**
 	 * Show the pog image for the url.
+	 * 
 	 * @param isValid is valid url
 	 */
 	private void showPog(final boolean isValid) {
-		pogCanvas.setPogWidth(200);
+		pogCanvas.setPogWidth(200.0, 1.0);
 		pogCanvas.showImage(isValid);
 		if (isValid) {
 			pogCanvas.setPogImageUrl(characterPicture.getValue());

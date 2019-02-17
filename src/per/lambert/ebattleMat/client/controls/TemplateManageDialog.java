@@ -502,7 +502,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * @param valid true if image if valid
 	 */
 	private void showPog(final boolean valid) {
-		pogCanvas.setPogWidth(computePogSize());
+		pogCanvas.setPogWidth(computePogSize(), 1.0);
 		pogCanvas.showImage(valid);
 		if (valid) {
 			pogCanvas.setPogImageUrl(templatePicture.getValue());

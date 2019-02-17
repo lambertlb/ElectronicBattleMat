@@ -188,10 +188,15 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	/**
 	 * Width of pog displayed image.
 	 */
-	private int scaledWidth = 50;
+	private double scaledWidth = 50;
+	/**
+	 * Current zoom factor.
+	 */
+	private double zoomFactor = 1;
 
 	/**
 	 * get force background color.
+	 * 
 	 * @return true if force background color.
 	 */
 	public boolean getForceBackgroundColor() {
@@ -200,6 +205,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * set force background color.
+	 * 
 	 * @param forceBackgroundColor to set
 	 */
 	public void setForceBackgroundColor(final boolean forceBackgroundColor) {
@@ -467,9 +473,11 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Set width of pog.
 	 * 
 	 * @param width of pog
+	 * @param zoomFactor zoom factor
 	 */
-	public void setPogWidth(final int width) {
+	public void setPogWidth(final double width, final double zoomFactor) {
 		scaledWidth = width;
+		this.zoomFactor = zoomFactor;
 		if (!showNormalSizeOnly) {
 			scaledWidth *= pogData.getPogSize();
 		}
@@ -537,10 +545,14 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Add dead pog overlay.
 	 */
 	private void addDeadOverlay() {
-		int halfWidth = scaledWidth / 2;
-		context.setStrokeStyle(CssColor.make(255,0,0));
-		context.setFillStyle(CssColor.make(255,0,0));
-		context.setLineWidth(3);
+		double halfWidth = scaledWidth / 2;
+		context.setStrokeStyle(CssColor.make(255, 0, 0));
+		context.setFillStyle(CssColor.make(255, 0, 0));
+		double lineWidth = zoomFactor * 3;
+		if (lineWidth < 1) {
+			lineWidth = 1.0;
+		}
+		context.setLineWidth(lineWidth);
 		context.beginPath();
 		context.arc(halfWidth, halfWidth, halfWidth, 0, 2 * Math.PI);
 		context.moveTo(scaledWidth, 0);

@@ -208,6 +208,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Selected row.
 	 */
 	private int selectedRow;
+	/**
+	 * Width of pog border.
+	 */
+	private double pogBorderWidth = 3;
 
 	/**
 	 * Widget for scaling an image. This supports zoom and pan
@@ -523,16 +527,28 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Adjust pog positions. Pog data has the column and row and the widget need to be moved to the proper pixel.
 	 */
 	private void adjustPogs() {
+		computPogBorderWidth();
 		for (PogCanvas pog : pogs) {
-			int x = (int) (columnToPixel(pog.getPogColumn())) + 2;
-			int y = (int) (rowToPixel(pog.getPogRow())) + 2;
+			int x = (int) (columnToPixel(pog.getPogColumn()));
+			int y = (int) (rowToPixel(pog.getPogRow()));
 			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_RIGHT)) {
 				x += (adjustedGridSize() / 2);
 			} else if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_TOP)) {
 				y -= (adjustedGridSize() / 2);
 			}
 			this.setWidgetPosition(pog, x, y);
-			pog.setPogWidth((int) adjustedGridSize() - 6);
+			pog.setPogWidth((adjustedGridSize() - (2 * pogBorderWidth)), totalZoom);
+			pog.getElement().getStyle().setBorderWidth(pogBorderWidth, Unit.PX);
+		}
+	}
+
+	/**
+	 * Compute width of border.
+	 */
+	private void computPogBorderWidth() {
+		pogBorderWidth = totalZoom * 3;
+		if (totalZoom < 1.0) {
+			totalZoom = 1.0;
 		}
 	}
 
@@ -689,7 +705,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private PogCanvas updateOrCreatePogCanvasForTHisCell() {
 		PogCanvas existingPog = findCanvasForDraggedPog();
-		if (existingPog == null) {
+		if (existingPog == null || !existingPog.getPogData().isThisAPlayer()) {
 			existingPog = addClonePogToCanvas(ServiceManager.getDungeonManager().getPogBeingDragged());
 		} else { // ensure it is on top
 			remove(existingPog);
@@ -766,11 +782,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private PogCanvas addPogToCanvas(final PogData clonePog) {
 		PogCanvas scalablePog = new PogCanvas(clonePog);
-		scalablePog.setPogWidth((int) gridSpacing - 16);
+		scalablePog.setPogWidth(gridSpacing - 16, totalZoom);
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + 3, (int) rowToPixel(scalablePog.getPogRow() + 3));
-//		scalablePog.addStyleName("selectedPog");
+		// scalablePog.addStyleName("selectedPog");
 		scalablePog.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
 		scalablePog.getElement().getStyle().setBorderWidth(3, Unit.PX);
 		scalablePog.getElement().getStyle().setBorderColor("grey");
@@ -948,12 +964,12 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			}
 		}
 	}
-	
+
 	/**
 	 * Currently selected pog canvas.
 	 */
 	private PogCanvas selectedPogCanvas;
-	
+
 	/**
 	 * Handle newly selected pog.
 	 */

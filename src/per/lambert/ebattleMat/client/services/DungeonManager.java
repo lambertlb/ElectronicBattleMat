@@ -1059,6 +1059,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return;
 		}
 		addOrUpdatePogToServer(pog, place);
+		if (pog.isEquals(getSelectedPog())) {
+			setSelectedPogInternal(pog);
+		}
 	}
 
 	/**
