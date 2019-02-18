@@ -43,8 +43,9 @@ public interface IPogManager {
 	 * Set pog being dragged.
 	 * 
 	 * @param pogBeingDragged pog being dragged.
+	 * @param fromRibbonBar was dragged from ribbon bar
 	 */
-	void setPogBeingDragged(PogData pogBeingDragged);
+	void setPogBeingDragged(PogData pogBeingDragged, boolean fromRibbonBar);
 
 	/**
 	 * get pog being dragged.
@@ -149,8 +150,16 @@ public interface IPogManager {
 
 	/**
 	 * Is this Pog a template.
+	 * 
 	 * @param pogData pog to check
 	 * @return true if template
 	 */
 	boolean isTemplate(PogData pogData);
+
+	/**
+	 * Pog being dragged is from ribbon bar.
+	 * 
+	 * @return true if from ribbon bar
+	 */
+	boolean isFromRibbonBar();
 }

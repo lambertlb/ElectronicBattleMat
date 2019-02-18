@@ -201,7 +201,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	 * @param isValid is valid url
 	 */
 	private void showPog(final boolean isValid) {
-		pogCanvas.setPogWidth(200.0, 1.0);
+		pogCanvas.setPogSizing(200.0, 0.0, 1.0);
 		pogCanvas.showImage(isValid);
 		if (isValid) {
 			pogCanvas.setPogImageUrl(characterPicture.getValue());

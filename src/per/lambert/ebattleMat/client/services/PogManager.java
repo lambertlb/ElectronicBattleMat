@@ -106,6 +106,7 @@ public abstract class PogManager implements IPogManager {
 
 	/**
 	 * So sub-classes can set.
+	 * 
 	 * @param selectedPog selected pog.
 	 */
 	protected void setSelectedPogInternal(final PogData selectedPog) {
@@ -143,7 +144,7 @@ public abstract class PogManager implements IPogManager {
 	}
 
 	/**
-	 * Pog bein draggede.
+	 * Pog bein dragged.
 	 */
 	private PogData pogBeingDragged;
 
@@ -151,8 +152,22 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setPogBeingDragged(final PogData pogBeingDragged) {
+	public void setPogBeingDragged(final PogData pogBeingDragged, final boolean fromRibbonBar) {
 		this.pogBeingDragged = pogBeingDragged;
+		this.fromRibbonBar = fromRibbonBar;
+	}
+
+	/**
+	 * Pog was dragged from ribbon bar.
+	 */
+	private boolean fromRibbonBar;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isFromRibbonBar() {
+		return fromRibbonBar;
 	}
 
 	/**

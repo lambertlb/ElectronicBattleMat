@@ -431,7 +431,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		selectedDungeon = null;
 		selectedSession = null;
 		setSelectedPog(null);
-		setPogBeingDragged(null);
+		setPogBeingDragged(null, false);
 	}
 
 	/**
@@ -1098,7 +1098,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			addOrUpdatePogToSessionResource(pog); // shouldn't get here but what the heck just in case.
 			return;
 		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
+//		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
 	}
 
 	/**
@@ -1148,7 +1148,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
-				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+				if (editMode) {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+				}
 			}
 
 			@Override

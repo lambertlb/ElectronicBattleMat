@@ -20,8 +20,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 /**
  * Control for handling selected pog.
  * 
- * This will scale the picture to the size of the host panel.
- * It will scale to keep proportions the same.
+ * This will scale the picture to the size of the host panel. It will scale to keep proportions the same.
  * 
  * @author LLambert
  *
@@ -35,6 +34,7 @@ public class SelectedPog extends Composite {
 
 	/**
 	 * Interface for UI binder.
+	 * 
 	 * @author LLambert
 	 *
 	 */
@@ -109,9 +109,9 @@ public class SelectedPog extends Composite {
 		}
 
 		scalablePog.showImage(true);
-		scalablePog.setPogData(selectePog);
+		scalablePog.setPogData(selectePog, true);
 		Widget parent = hostPanel.getParent().getParent();
 		int height = parent.getOffsetHeight();
-		scalablePog.setPogWidth(height, 1.0);
+		scalablePog.setPogSizing(height, 0.0, 1.0);
 	}
 }

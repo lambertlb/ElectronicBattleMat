@@ -150,6 +150,22 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param pogData pog data
 	 */
 	public void setPogData(final PogData pogData) {
+		setPogData(pogData, false);
+	}
+
+	/**
+	 * Was pog from ribbon bar.
+	 */
+	private boolean fromRibbonBar;
+
+	/**
+	 * set pog data.
+	 * 
+	 * @param pogData pog data
+	 * @param fromRibbonBar true if from ribbon bar
+	 */
+	public void setPogData(final PogData pogData, final boolean fromRibbonBar) {
+		this.fromRibbonBar = fromRibbonBar;
 		setupWithPogData(pogData);
 		drawEverything();
 	}
@@ -303,7 +319,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 					event.preventDefault();
 					return;
 				}
-				ServiceManager.getDungeonManager().setPogBeingDragged(pogData);
+				ServiceManager.getDungeonManager().setPogBeingDragged(pogData, fromRibbonBar);
 				event.getDataTransfer().setDragImage(canvas.getElement(), 0, 0);
 			}
 		});
@@ -473,14 +489,16 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Set width of pog.
 	 * 
 	 * @param width of pog
+	 * @param borderSize size of border
 	 * @param zoomFactor zoom factor
 	 */
-	public void setPogWidth(final double width, final double zoomFactor) {
+	public void setPogSizing(final double width, final double borderSize, final double zoomFactor) {
 		scaledWidth = width;
 		this.zoomFactor = zoomFactor;
 		if (!showNormalSizeOnly) {
 			scaledWidth *= pogData.getPogSize();
 		}
+		scaledWidth -= 2 * borderSize;
 		pogMainPanel.setWidth(scaledWidth + "px");
 		pogMainPanel.setHeight(scaledWidth + "px");
 		drawEverything();

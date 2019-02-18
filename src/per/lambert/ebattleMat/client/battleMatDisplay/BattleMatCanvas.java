@@ -537,7 +537,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				y -= (adjustedGridSize() / 2);
 			}
 			this.setWidgetPosition(pog, x, y);
-			pog.setPogWidth((adjustedGridSize() - (2 * pogBorderWidth)), totalZoom);
+			pog.setPogSizing(adjustedGridSize(), pogBorderWidth, totalZoom);
 			pog.getElement().getStyle().setBorderWidth(pogBorderWidth, Unit.PX);
 		}
 	}
@@ -547,8 +547,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void computPogBorderWidth() {
 		pogBorderWidth = totalZoom * 3;
-		if (totalZoom < 1.0) {
-			totalZoom = 1.0;
+		if (pogBorderWidth < 1.0) {
+			pogBorderWidth = 1.0;
 		}
 	}
 
@@ -705,7 +705,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private PogCanvas updateOrCreatePogCanvasForTHisCell() {
 		PogCanvas existingPog = findCanvasForDraggedPog();
-		if (existingPog == null || !existingPog.getPogData().isThisAPlayer()) {
+		if (existingPog == null || (!existingPog.getPogData().isThisAPlayer()) && ServiceManager.getDungeonManager().isFromRibbonBar()) {
 			existingPog = addClonePogToCanvas(ServiceManager.getDungeonManager().getPogBeingDragged());
 		} else { // ensure it is on top
 			remove(existingPog);
@@ -782,13 +782,13 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private PogCanvas addPogToCanvas(final PogData clonePog) {
 		PogCanvas scalablePog = new PogCanvas(clonePog);
-		scalablePog.setPogWidth(gridSpacing - 16, totalZoom);
+//		scalablePog.setPogSizing(gridSpacing - 16, totalZoom);
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + 3, (int) rowToPixel(scalablePog.getPogRow() + 3));
 		// scalablePog.addStyleName("selectedPog");
 		scalablePog.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
-		scalablePog.getElement().getStyle().setBorderWidth(3, Unit.PX);
+//		scalablePog.getElement().getStyle().setBorderWidth(3, Unit.PX);
 		scalablePog.getElement().getStyle().setBorderColor("grey");
 		return (scalablePog);
 	}

@@ -38,7 +38,6 @@ public final class PlayerFlag extends FlagBits {
 	 * Pog is invisible.
 	 */
 	public static final PlayerFlag INVISIBLE = new PlayerFlag("Invisible"); // 8
-
 	/**
 	 * Map of names vs flag bit.
 	 */
