@@ -511,7 +511,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public String[] getTemplateGenders() {
-		return (new String[] { "Male", "Female", "Neutral" });
+		return (new String[] {"Male", "Female", "Neutral" });
 	}
 
 	/**
@@ -521,7 +521,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public String[] getPogSizes() {
-		return (new String[] { "Normal", "Large", "Huge", "Gargantuan" });
+		return (new String[] {"Normal", "Large", "Huge", "Gargantuan" });
 	}
 
 	/**

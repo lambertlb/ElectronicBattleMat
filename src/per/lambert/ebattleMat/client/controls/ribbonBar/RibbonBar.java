@@ -19,6 +19,7 @@ import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
 import per.lambert.ebattleMat.client.controls.FlagBitsDialog;
 import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
+import per.lambert.ebattleMat.client.controls.SelectedPogFloatingWindow;
 import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
 import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -139,6 +140,14 @@ public class RibbonBar extends Composite {
 	 * Dialog for DM flags.
 	 */
 	private FlagBitsDialog dmFlagDialog;
+	/**
+	 * show selected pog.
+	 */
+	private CheckBox showSelectedPog;
+	/**
+	 * Selected pog floating window.
+	 */
+	private SelectedPogFloatingWindow pogWindow;
 
 	/**
 	 * Constructor.
@@ -218,7 +227,7 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setCellPadding(0);
 		ribbonGrid.setCellSpacing(0);
 		ribbonGrid.addStyleName("ribbonBarLabel");
-		selectedPog = new SelectedPog();
+		selectedPog = new SelectedPog(panel);
 		levelSelect = new ListBox();
 		levelSelect.setVisibleItemCount(1);
 		levelSelect.addStyleName("ribbonBarLabel");
@@ -310,6 +319,19 @@ public class RibbonBar extends Composite {
 				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 			}
 		});
+		showSelectedPog = new CheckBox("Show Selected Pog");
+		showSelectedPog.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				if (showSelectedPog.getValue()) {
+					pogWindow.show();
+				} else {
+					pogWindow.hide();
+				}
+			}
+		});
+		pogWindow = new SelectedPogFloatingWindow();
 		pogSelection();
 	}
 
@@ -404,6 +426,8 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(0, 2, playerFlagsButton);
 		ribbonGrid.setWidget(1, 2, dmFlagsButton);
 		ribbonGrid.setWidget(0, 3, manageDungeonsButton);
+		ribbonGrid.setWidget(1, 3, showSelectedPog);
+		
 	}
 
 	/**

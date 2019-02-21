@@ -56,14 +56,14 @@ public class DungeonLevel {
 	/**
 	 * size of grid cell.
 	 */
-	private int gridSize;
+	private double gridSize;
 
 	/**
 	 * get size of grid cell.
 	 * 
 	 * @return size of grid cell
 	 */
-	public int getGridSize() {
+	public double getGridSize() {
 		return gridSize;
 	}
 
@@ -72,21 +72,21 @@ public class DungeonLevel {
 	 * 
 	 * @param gridSize size of grid cell
 	 */
-	public void setGridSize(final int gridSize) {
+	public void setGridSize(final double gridSize) {
 		this.gridSize = gridSize;
 	}
 
 	/**
 	 * X offset for top left of grid.
 	 */
-	private int gridOffsetX;
+	private double gridOffsetX;
 
 	/**
 	 * get X offset for top left of grid.
 	 * 
 	 * @return X offset for top left of grid.
 	 */
-	public int getGridOffsetX() {
+	public double getGridOffsetX() {
 		return gridOffsetX;
 	}
 
@@ -95,21 +95,21 @@ public class DungeonLevel {
 	 * 
 	 * @param gridOffsetX X offset for top left of grid.
 	 */
-	public void setGridOffsetX(final int gridOffsetX) {
+	public void setGridOffsetX(final double gridOffsetX) {
 		this.gridOffsetX = gridOffsetX;
 	}
 
 	/**
 	 * Y offset for top left of grid.
 	 */
-	private int gridOffsetY;
+	private double gridOffsetY;
 
 	/**
 	 * get Y offset for top left of grid.
 	 * 
 	 * @return Y offset for top left of grid.
 	 */
-	public int getGridOffsetY() {
+	public double getGridOffsetY() {
 		return gridOffsetY;
 	}
 
@@ -118,7 +118,7 @@ public class DungeonLevel {
 	 * 
 	 * @param gridOffsetY Y offset for top left of grid.
 	 */
-	public void setGridOffsetY(final int gridOffsetY) {
+	public void setGridOffsetY(final double gridOffsetY) {
 		this.gridOffsetY = gridOffsetY;
 	}
 

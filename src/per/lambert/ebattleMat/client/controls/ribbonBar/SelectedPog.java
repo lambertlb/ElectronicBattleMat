@@ -59,11 +59,19 @@ public class SelectedPog extends Composite {
 	 * Canvas for showing pog.
 	 */
 	private PogCanvas scalablePog = new PogCanvas();
+	
+	/**
+	 * widget to use for resizing.
+	 */
+	private Widget resizeWidget;
 
 	/**
 	 * Constructor.
+	 * 
+	 * @param resizeWidget widget to use for resizing.
 	 */
-	public SelectedPog() {
+	public SelectedPog(final Widget resizeWidget) {
+		this.resizeWidget = resizeWidget;
 		initWidget(uiBinder.createAndBindUi(this));
 		scalablePog.setShowNormalSizeOnly(true);
 		scalablePog.setForceBackgroundColor(true);
@@ -102,7 +110,7 @@ public class SelectedPog extends Composite {
 	/**
 	 * Pog has been selected.
 	 */
-	private void pogSelected() {
+	public void pogSelected() {
 		PogData selectePog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (selectePog == null || hostPanel == null) {
 			return;
@@ -110,8 +118,17 @@ public class SelectedPog extends Composite {
 
 		scalablePog.showImage(true);
 		scalablePog.setPogData(selectePog, true);
-		Widget parent = hostPanel.getParent().getParent();
-		int height = parent.getOffsetHeight();
+		reDraw();
+	}
+
+	/**
+	 * Redraw pog.
+	 */
+	public void reDraw() {
+		int height = resizeWidget.getOffsetHeight();
+		if (height < 20) {
+			height = 20;
+		}
 		scalablePog.setPogSizing(height, 0.0, 1.0);
 	}
 }

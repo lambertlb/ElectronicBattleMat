@@ -227,4 +227,11 @@ public class OkCancelDialog extends ResizableDialog {
 			widget.getElement().setAttribute("disabled", "disabled");
 		}
 	}
+	/**
+	 * Get widget used for resizing.
+	 * @return widget to used for resizing.
+	 */
+	public Widget getResizeWidget() {
+		return (dockLayoutPanel);
+	}
 }
