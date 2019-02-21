@@ -85,7 +85,7 @@ public class OkCancelDialog extends ResizableDialog {
 		setText(caption);
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
 		setSize("" + width + "px", "" + height + "px");
-		createContent();
+		createContent(okVisible, cancelVisble);
 		ok.setVisible(okVisible);
 		cancel.setVisible(cancelVisble);
 		dockLayoutPanel.setWidth("" + width + "px");
@@ -94,12 +94,15 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * Create content.
+	 * @param okVisible true if OK button is visible.
+	 * @param cancelVisble true if Cancel button is visible
 	 */
-	private void createContent() {
+	private void createContent(final boolean okVisible, final boolean cancelVisble) {
 		dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.setStyleName("popupPanel");
 		southContent = new HorizontalPanel();
-		dockLayoutPanel.addSouth(southContent, 30);
+		double southSize = (okVisible || cancelVisble) ? 30.0 : 0.0;
+		dockLayoutPanel.addSouth(southContent, southSize);
 		ok = new Button("Ok");
 		ok.addClickHandler(new ClickHandler() {
 

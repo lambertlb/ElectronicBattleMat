@@ -546,7 +546,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Compute width of border.
 	 */
 	private void computPogBorderWidth() {
-		pogBorderWidth = totalZoom * 3;
+		pogBorderWidth = totalZoom * getStartingBorderWidth();
 		if (pogBorderWidth < 1.0) {
 			pogBorderWidth = 1.0;
 		}
@@ -782,13 +782,13 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private PogCanvas addPogToCanvas(final PogData clonePog) {
 		PogCanvas scalablePog = new PogCanvas(clonePog);
-//		scalablePog.setPogSizing(gridSpacing - 16, totalZoom);
+		// scalablePog.setPogSizing(gridSpacing - 16, totalZoom);
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + 3, (int) rowToPixel(scalablePog.getPogRow() + 3));
 		// scalablePog.addStyleName("selectedPog");
 		scalablePog.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
-//		scalablePog.getElement().getStyle().setBorderWidth(3, Unit.PX);
+		// scalablePog.getElement().getStyle().setBorderWidth(3, Unit.PX);
 		scalablePog.getElement().getStyle().setBorderColor("grey");
 		return (scalablePog);
 	}
@@ -800,6 +800,15 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private double adjustedGridSize() {
 		return (gridSpacing * totalZoom);
+	}
+
+	/**
+	 * Starting border width.
+	 * 
+	 * @return starting border width
+	 */
+	private double getStartingBorderWidth() {
+		return (gridSpacing / 15);
 	}
 
 	/**
