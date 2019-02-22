@@ -80,11 +80,11 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Minimum wisth of window.
 	 */
-	private static final int MIN_WIDTH = 100;
+	private static final int MIN_WIDTH = 300;
 	/**
 	 * Minimum heifht of window.
 	 */
-	private static final int MIN_HEIGHT = 100;
+	private static final int MIN_HEIGHT = 300;
 	/**
 	 * Starting X of drag.
 	 */
