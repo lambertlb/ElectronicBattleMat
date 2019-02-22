@@ -84,8 +84,6 @@ public class OkCancelDialog extends ResizableDialog {
 		super();
 		setText(caption);
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
-//		setSize("" + width + "px", "" + height + "px");
-		setSize("100%", "100%");
 		createContent(okVisible, cancelVisble);
 		ok.setVisible(okVisible);
 		cancel.setVisible(cancelVisble);

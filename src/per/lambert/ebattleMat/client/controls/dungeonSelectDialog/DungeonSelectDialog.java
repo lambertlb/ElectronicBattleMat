@@ -433,4 +433,18 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		hide();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinWidth() {
+		return 400;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinHeight() {
+		return 400;
+	}
 }

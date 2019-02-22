@@ -675,4 +675,18 @@ public class TemplateManageDialog extends OkCancelDialog {
 			selectPog(pog);
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinWidth() {
+		return 400;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinHeight() {
+		return 400;
+	}
 }

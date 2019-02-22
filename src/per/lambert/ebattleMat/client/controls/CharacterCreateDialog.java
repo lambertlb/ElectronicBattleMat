@@ -57,7 +57,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	 * Constructor for character creation.
 	 */
 	public CharacterCreateDialog() {
-		super("Character Creation", true, true);
+		super("Character Creation", true, true, 400, 400);
 		load();
 	}
 
@@ -77,12 +77,15 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		centerGrid = getCenterGrid();
 		centerGrid.clear();
 		centerGrid.resize(10, 2);
+		centerGrid.getColumnFormatter().setWidth(0, "20px");
+//		centerGrid.getColumnFormatter().setWidth(1, "90%");
 		characterNameLabel = new Label("Character Name: ");
 		characterNameLabel.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(0, 0, characterNameLabel);
 		characterName = new TextBox();
 		characterName.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(0, 1, characterName);
+		characterName.setWidth("100%");
 
 		characterPictureLabel = new Label("Character Picture: ");
 		characterPictureLabel.setStyleName("ribbonBarLabel");
@@ -90,6 +93,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		characterPicture = new TextBox();
 		characterPicture.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(1, 1, characterPicture);
+		characterPicture.setWidth("100%");
 
 		pogPanel = new FlowPanel();
 		centerGrid.setWidget(4, 0, pogPanel);
@@ -201,7 +205,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	 * @param isValid is valid url
 	 */
 	private void showPog(final boolean isValid) {
-		pogCanvas.setPogSizing(200.0, 0.0, 1.0);
+		pogCanvas.setPogSizing(computePogSize(), 0.0, 1.0);
 		pogCanvas.showImage(isValid);
 		if (isValid) {
 			pogCanvas.setPogImageUrl(characterPicture.getValue());
@@ -242,5 +246,43 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	 */
 	public void close() {
 		hide();
+	}
+
+	/**
+	 * Compute area pog can have.
+	 * 
+	 * @return area pog can have.
+	 */
+	private int computePogSize() {
+		int pogTop = pogCanvas.getAbsoluteTop();
+		int okTop = getOkTop();
+		int deltaTop = okTop - pogTop;
+		if (deltaTop < 50) {
+			return (50);
+		}
+		return deltaTop - 10;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onWindowResized() {
+		super.onWindowResized();
+		pogCanvas.setPogSizing(computePogSize(), 0.0, 1.0);
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinWidth() {
+		return 400;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinHeight() {
+		return 400;
 	}
 }

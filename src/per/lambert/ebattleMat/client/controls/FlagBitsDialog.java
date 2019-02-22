@@ -55,7 +55,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 	 * @param flagBits collection of flags
 	 */
 	public FlagBitsDialog(final String flagName, final Collection<FlagBits> flagBits) {
-		super(flagName, true, true);
+		super(flagName, true, true, 400, 400);
 		this.flagBits = flagBits;
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z + 1);
 		load();
@@ -76,7 +76,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 	private void createContent() {
 		centerGrid = getCenterGrid();
 		centerGrid.clear();
-		int amountOfFlagsPerColumn = (flagBits.size())  / 2;
+		int amountOfFlagsPerColumn = (flagBits.size()) / 2;
 		centerGrid.resize(amountOfFlagsPerColumn, 3);
 		int row = 0;
 		int column = 0;
@@ -188,5 +188,21 @@ public class FlagBitsDialog extends OkCancelDialog {
 				++column;
 			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinWidth() {
+		return 400;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinHeight() {
+		return 400;
 	}
 }

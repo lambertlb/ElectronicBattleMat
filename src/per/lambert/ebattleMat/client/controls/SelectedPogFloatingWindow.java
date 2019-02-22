@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.controls;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Grid;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
@@ -24,7 +25,7 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	 * Constructor.
 	 */
 	public SelectedPogFloatingWindow() {
-		super("Selected Pog", false, false);
+		super("Selected Pog", false, false, 70, 70);
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z - 1);
 		load();
 		setModal(false);
@@ -81,5 +82,27 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	public void show() {
 		super.show();
 		selectedPog.pogSelected();
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onCancelClick(final ClickEvent event) {
+		hide();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinWidth() {
+		return 70;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinHeight() {
+		return 70;
 	}
 }

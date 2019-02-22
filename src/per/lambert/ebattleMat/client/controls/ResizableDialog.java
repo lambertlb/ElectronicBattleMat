@@ -3,6 +3,7 @@ package per.lambert.ebattleMat.client.controls;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -11,18 +12,11 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * DialogBox has a grid that contains the the grow handles following is the coordinates for the the various handles.
- *  0,2 Top Right
- *  0,1 Top Center
- *  0,0 Top Left
- *  1,0 Middle Left
- *  1,2 Middle Right
- *  2,2 Bottom Right
- *  2,1 Bottom Center
- *  2,0 Bottom Left
+ * DialogBox has a grid that contains the the grow handles following is the coordinates for the the various handles. 0,2 Top Right 0,1 Top Center 0,0 Top Left 1,0 Middle Left 1,2 Middle Right 2,2 Bottom Right 2,1 Bottom Center 2,0 Bottom Left
  * 
  * @author LLambert
  *
@@ -31,6 +25,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Position of resize.
+	 * 
 	 * @author LLambert
 	 *
 	 */
@@ -80,11 +75,11 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Minimum wisth of window.
 	 */
-	private static final int MIN_WIDTH = 300;
+	private static final int MIN_WIDTH = 100;
 	/**
 	 * Minimum heifht of window.
 	 */
-	private static final int MIN_HEIGHT = 300;
+	private static final int MIN_HEIGHT = 100;
 	/**
 	 * Starting X of drag.
 	 */
@@ -113,6 +108,46 @@ public class ResizableDialog extends DialogBox {
 	 * Width of client window.
 	 */
 	private int clientWidth;
+
+	/**
+	 * Content holder.
+	 */
+	private FlowPanel content;
+
+	/**
+	 * Constructor.
+	 */
+	public ResizableDialog() {
+		content = new FlowPanel();
+		content.setSize("100%", "100%");
+		content.getElement().getStyle().setPosition(Position.RELATIVE);
+		super.setWidget(content);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setWidget(final Widget widget) {
+		content.clear();
+		content.add(widget);
+	}
+
+	/**
+	 * Get minimum width.
+	 * @return minimum width.
+	 */
+	public int getMinWidth() {
+		return (MIN_WIDTH);
+	}
+
+	/**
+	 * Get minimum height.
+	 * @return minimum height.
+	 */
+	public int getMinHeight() {
+		return (MIN_HEIGHT);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -169,21 +204,23 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Set new size of window.
+	 * 
 	 * @param deltaX delta X
 	 * @param deltaY delta Y
 	 */
 	private void resizeWindow(final int deltaX, final int deltaY) {
-		Widget widget = getWidget();
-		int width = widget.getOffsetWidth() + deltaX;
-		width = width < MIN_WIDTH ? MIN_WIDTH : width;
-		widget.setWidth(width + "px");
-		int height = widget.getOffsetHeight() + deltaY;
-		height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
-		widget.setHeight(height + "px");
+		int width = content.getOffsetWidth() + deltaX;
+		width = width < getMinWidth() ? getMinWidth() : width;
+		content.setWidth(width + "px");
+		int height = content.getOffsetHeight() + deltaY;
+		height = height < getMinHeight() ? getMinHeight() : height;
+		content.setHeight(height + "px");
+		onWindowResized();
 	}
 
 	/**
 	 * compute Resize Position.
+	 * 
 	 * @param event native event.
 	 * @return position of window being resized.
 	 */
@@ -206,6 +243,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Compute delta from starting positions.
+	 * 
 	 * @param event native event.
 	 * @param row to examine.
 	 * @param column column to examine.
@@ -218,6 +256,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to top of window.
+	 * 
 	 * @param event native event.
 	 * @return true if top was changed.
 	 */
@@ -229,6 +268,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to top left of window.
+	 * 
 	 * @param event native event.
 	 * @return true if top left was changed.
 	 */
@@ -241,6 +281,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to top right of window.
+	 * 
 	 * @param event native event.
 	 * @return true if top right was changed.
 	 */
@@ -253,6 +294,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to bottom left of window.
+	 * 
 	 * @param event native event.
 	 * @return true if bottom left was changed.
 	 */
@@ -265,6 +307,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to bottom right of window.
+	 * 
 	 * @param event native event.
 	 * @return true if bottom right was changed.
 	 */
@@ -276,6 +319,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to bottom of window.
+	 * 
 	 * @param event native event.
 	 * @return true if bottom was changed.
 	 */
@@ -287,6 +331,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to left of window.
+	 * 
 	 * @param event native event.
 	 * @return true if left was changed.
 	 */
@@ -298,6 +343,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Was change to right of window.
+	 * 
 	 * @param event native event.
 	 * @return true if right was changed.
 	 */
@@ -356,17 +402,19 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Get width of dialog.
+	 * 
 	 * @return width of dialog
 	 */
 	protected int getDialogWidth() {
-		return (getWidget().getOffsetWidth());
+		return (content.getOffsetWidth());
 	}
 
 	/**
 	 * Get height of dialog.
+	 * 
 	 * @return height of dialog
 	 */
 	protected int getDialogHeight() {
-		return (getWidget().getOffsetHeight());
+		return (content.getOffsetHeight());
 	}
 }

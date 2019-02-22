@@ -111,7 +111,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 * Constructor for level option control.
 	 */
 	public LevelOptionsDialog() {
-		super("Level Options", true, true);
+		super("Level Options", true, true, 400, 450);
 		load();
 	}
 
@@ -414,6 +414,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 
 	/**
 	 * Is this a valid picture extension.
+	 * 
 	 * @param filename to test
 	 */
 	private void isValidPictureExtension(final String filename) {
@@ -439,6 +440,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 
 	/**
 	 * Get correct level number.
+	 * 
 	 * @return correct level number as string.
 	 */
 	private String getCorrectLevelString() {
@@ -476,6 +478,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 
 	/**
 	 * Up load file.
+	 * 
 	 * @param serverPath path on server
 	 */
 	private void uploadFile(final String serverPath) {
@@ -490,6 +493,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 
 	/**
 	 * Upload complete.
+	 * 
 	 * @param event with data
 	 */
 	protected void uploadComplete(final SubmitCompleteEvent event) {
@@ -533,5 +537,21 @@ public class LevelOptionsDialog extends OkCancelDialog {
 		addLevelDataToForm();
 		newLevel = true;
 		validateContent();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinWidth() {
+		return 450;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinHeight() {
+		return 400;
 	}
 }
