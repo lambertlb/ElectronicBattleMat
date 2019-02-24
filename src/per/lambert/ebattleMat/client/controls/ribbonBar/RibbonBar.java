@@ -19,6 +19,7 @@ import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
 import per.lambert.ebattleMat.client.controls.FlagBitsDialog;
 import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
+import per.lambert.ebattleMat.client.controls.NotesFloatingWindow;
 import per.lambert.ebattleMat.client.controls.SelectedPogFloatingWindow;
 import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
 import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
@@ -148,6 +149,14 @@ public class RibbonBar extends Composite {
 	 * Selected pog floating window.
 	 */
 	private SelectedPogFloatingWindow pogWindow;
+	/**
+	 * show selected pog.
+	 */
+	private CheckBox showPogNotes;
+	/**
+	 * Selected pog notes floating window.
+	 */
+	private NotesFloatingWindow pogNotes;
 
 	/**
 	 * Constructor.
@@ -320,6 +329,7 @@ public class RibbonBar extends Composite {
 			}
 		});
 		showSelectedPog = new CheckBox("Show Selected Pog");
+		showSelectedPog.setStyleName("ribbonBarLabel");
 		showSelectedPog.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -332,6 +342,21 @@ public class RibbonBar extends Composite {
 			}
 		});
 		pogWindow = new SelectedPogFloatingWindow();
+
+		showPogNotes = new CheckBox("Show Pog Notes");
+		showPogNotes.setStyleName("ribbonBarLabel");
+		showPogNotes.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				if (showPogNotes.getValue()) {
+					pogNotes.show();
+				} else {
+					pogNotes.hide();
+				}
+			}
+		});
+		pogNotes = new NotesFloatingWindow();
 		pogSelection();
 	}
 
@@ -426,8 +451,8 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(0, 2, playerFlagsButton);
 		ribbonGrid.setWidget(1, 2, dmFlagsButton);
 		ribbonGrid.setWidget(0, 3, manageDungeonsButton);
-		ribbonGrid.setWidget(1, 3, showSelectedPog);
-		
+		ribbonGrid.setWidget(0, 4, showSelectedPog);
+		ribbonGrid.setWidget(1, 4, showPogNotes);
 	}
 
 	/**

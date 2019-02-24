@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.controls;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -77,8 +78,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		centerGrid = getCenterGrid();
 		centerGrid.clear();
 		centerGrid.resize(10, 2);
-		centerGrid.getColumnFormatter().setWidth(0, "20px");
-//		centerGrid.getColumnFormatter().setWidth(1, "90%");
+		centerGrid.getColumnFormatter().setWidth(0, "90px");
 		characterNameLabel = new Label("Character Name: ");
 		characterNameLabel.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(0, 0, characterNameLabel);
@@ -97,6 +97,8 @@ public class CharacterCreateDialog extends OkCancelDialog {
 
 		pogPanel = new FlowPanel();
 		centerGrid.setWidget(4, 0, pogPanel);
+		Element element = centerGrid.getCellFormatter().getElement(4, 0);
+		element.setAttribute("colspan", "2");
 		pogCanvas = new PogCanvas();
 		pogPanel.add(pogCanvas);
 	}
@@ -262,6 +264,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		}
 		return deltaTop - 10;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -270,6 +273,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		super.onWindowResized();
 		pogCanvas.setPogSizing(computePogSize(), 0.0, 1.0);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */

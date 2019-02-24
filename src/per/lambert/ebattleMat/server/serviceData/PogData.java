@@ -61,6 +61,10 @@ public class PogData {
 	 * Race of pog.
 	 */
 	private String race;
+	/**
+	 * Pog notes.
+	 */
+	private String notes;
 
 	/**
 	 * Constructor.
@@ -114,6 +118,7 @@ public class PogData {
 		this.pogColumn = withUpdates.pogColumn;
 		this.pogRow = withUpdates.pogRow;
 		dungeonLevel = withUpdates.dungeonLevel;
+		notes = withUpdates.notes;
 	}
 
 	/**

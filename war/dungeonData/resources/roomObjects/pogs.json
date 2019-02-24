@@ -13,7 +13,8 @@
 			"uuid": "Secret_Door_Right",
 			"templateUUID": "Secret_Door_Right",
 			"pogClass": "Secretdoor",
-			"race": ""
+			"race": "",
+			"notes": "This is a magic <b>secret</b> door to the evil realm of NYM!"
 		},
 		{
 			"pogSize": 1,

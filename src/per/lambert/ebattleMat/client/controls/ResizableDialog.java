@@ -417,4 +417,16 @@ public class ResizableDialog extends DialogBox {
 	protected int getDialogHeight() {
 		return (content.getOffsetHeight());
 	}
+	/**
+	 * Enable or disable a widget.
+	 * @param widget to enable or disable
+	 * @param enable true to enable
+	 */
+	public static void enableWidget(final Widget widget, final boolean enable) {
+		if (enable) {
+			widget.getElement().removeAttribute("disabled");
+		} else {
+			widget.getElement().setAttribute("disabled", "disabled");
+		}
+	}
 }

@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
@@ -141,6 +142,14 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Dialog for DM flags.
 	 */
 	private FlagBitsDialog dmFlagDialog;
+	/**
+	 * Call up notes.
+	 */
+	private Button notesButton;
+	/**
+	 * Dialog for notes.
+	 */
+	private NotesFloatingWindow notesDialog;
 
 	/**
 	 * Constructor.
@@ -261,10 +270,14 @@ public class TemplateManageDialog extends OkCancelDialog {
 		dmFlagsButton = new Button("DM flags");
 		dmFlagsButton.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(9, 1, dmFlagsButton);
-		/**
-		 * Dialog for DM flags.
-		 */
 		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+
+		notesButton = new Button("Notes");
+		notesButton.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(9, 2, notesButton);
+		notesDialog = new NotesFloatingWindow();
+		notesDialog.setModal(true);
+		notesDialog.getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z + 1);
 
 		pogPanel = new FlowPanel();
 		centerGrid.setWidget(10, 0, pogPanel);
@@ -360,6 +373,26 @@ public class TemplateManageDialog extends OkCancelDialog {
 			@Override
 			public void onClick(final ClickEvent event) {
 				pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
+			}
+		});
+		notesButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.show();
+			}
+		});
+		notesDialog.addSaveClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.hide();
+			}
+		});
+		notesDialog.addCancelClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.hide();
 			}
 		});
 	}
@@ -675,6 +708,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 			selectPog(pog);
 		}
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -682,6 +716,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	public int getMinWidth() {
 		return 400;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */

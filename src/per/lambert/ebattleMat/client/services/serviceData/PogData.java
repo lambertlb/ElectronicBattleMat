@@ -480,6 +480,7 @@ public class PogData extends JavaScriptObject {
 		setPogColumn(withUpdates.getPogColumn());
 		setPogRow(withUpdates.getPogRow());
 		setDungeonLevel(withUpdates.getDungeonLevel());
+		setNotes(withUpdates.getNotes());
 	}
 
 	/**
@@ -489,4 +490,24 @@ public class PogData extends JavaScriptObject {
 	public final boolean isTemplate() {
 		 return (ServiceManager.getDungeonManager().isTemplate(this));
 	}
+	/**
+	 * get pog notes.
+	 * 
+	 * @return pog notes.
+	 */
+	public final native String getNotes() /*-{
+		if (this.notes === undefined) {
+			this.notes = "";
+		}
+		return (this.notes);
+	}-*/;
+
+	/**
+	 * Set pog notes.
+	 * 
+	 * @param notes pog notes.
+	 */
+	public final native void setNotes(String notes) /*-{
+		this.notes = notes;
+	}-*/;
 }

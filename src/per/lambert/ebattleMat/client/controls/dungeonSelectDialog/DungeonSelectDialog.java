@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.controls.OkCancelDialog;
@@ -316,18 +315,6 @@ public class DungeonSelectDialog extends OkCancelDialog {
 
 		Element element2 = centerGrid.getCellFormatter().getElement(6, 0);
 		element2.setAttribute("colspan", "3");
-	}
-	/**
-	 * Enable or disable a widget.
-	 * @param widget to enable or disable
-	 * @param enable true to enable
-	 */
-	public static void enableWidget(final Widget widget, final boolean enable) {
-		if (enable) {
-			widget.getElement().removeAttribute("disabled");
-		} else {
-			widget.getElement().setAttribute("disabled", "disabled");
-		}
 	}
 	/**
 	 * Close this dialog.

@@ -93,6 +93,7 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * Create content.
+	 * 
 	 * @param okVisible true if OK button is visible.
 	 * @param cancelVisble true if Cancel button is visible
 	 */
@@ -127,7 +128,15 @@ public class OkCancelDialog extends ResizableDialog {
 		centerGrid.setWidth("100%");
 		centerContent.add(centerGrid);
 		dockLayoutPanel.add(centerContent);
-		setWidget(dockLayoutPanel);
+		super.setWidget(dockLayoutPanel);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setWidget(final Widget widgetToSet) {
+		centerContent.clear();
+		centerContent.add(widgetToSet);
 	}
 
 	/**
@@ -211,11 +220,13 @@ public class OkCancelDialog extends ResizableDialog {
 
 	/**
 	 * Add an ok click handler.
+	 * 
 	 * @param clickHandler to add
 	 */
-	public void	addOkClickHandler(final ClickHandler clickHandler) {
+	public void addOkClickHandler(final ClickHandler clickHandler) {
 		ok.addClickHandler(clickHandler);
 	}
+
 	/**
 	 * Enable or Disable widget.
 	 * 
@@ -229,8 +240,10 @@ public class OkCancelDialog extends ResizableDialog {
 			widget.getElement().setAttribute("disabled", "disabled");
 		}
 	}
+
 	/**
 	 * Get widget used for resizing.
+	 * 
 	 * @return widget to used for resizing.
 	 */
 	public Widget getResizeWidget() {
