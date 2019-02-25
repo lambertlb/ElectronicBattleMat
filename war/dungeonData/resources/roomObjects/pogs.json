@@ -14,7 +14,7 @@
 			"templateUUID": "Secret_Door_Right",
 			"pogClass": "Secretdoor",
 			"race": "",
-			"notes": "This is a magic <b>secret</b> door to the evil realm of NYM!"
+			"notes": "This is a magic \u003cb\u003esecret\u003c/b\u003e door to the evil realm of NYM!"
 		},
 		{
 			"pogSize": 1,
@@ -30,6 +30,20 @@
 			"templateUUID": "Secret_Door_Top",
 			"pogClass": "Secretdoor",
 			"race": ""
+		},
+		{
+			"pogSize": 1,
+			"pogColumn": 0,
+			"pogRow": 0,
+			"playerFlags": 0,
+			"dungeonMasterFlags": 19,
+			"dungeonLevel": 0,
+			"pogName": "Notes",
+			"pogImageUrl": "dungeonData/resources/roomObjects/Notes.png",
+			"pogType": "ROOMOBJECT",
+			"uuid": "11a35391-e498-4217-90d3-125d0b2ea089",
+			"templateUUID": "11a35391-e498-4217-90d3-125d0b2ea089",
+			"pogClass": "Notes"
 		}
 	]
 }

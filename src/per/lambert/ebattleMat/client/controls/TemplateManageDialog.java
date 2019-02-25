@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
@@ -150,6 +149,11 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Dialog for notes.
 	 */
 	private NotesFloatingWindow notesDialog;
+	
+	/**
+	 * selected pog is a template.
+	 */
+	private boolean templateSelected;
 
 	/**
 	 * Constructor.
@@ -412,10 +416,11 @@ public class TemplateManageDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Setup for noew pog.
+	 * Setup for new pog.
 	 */
 	private void setForNewPog() {
 		pogData = ServiceManager.getDungeonManager().createTemplatePog(pogType);
+		templateSelected = true;
 		pogCanvas.setPogData(pogData);
 		templateName.setValue("Enter Template Name");
 		templateName.removeStyleName("badLabel");
@@ -608,6 +613,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (data == null) {
 			return;
 		}
+		templateSelected = true;
 		selectPog(data);
 	}
 
@@ -661,7 +667,11 @@ public class TemplateManageDialog extends OkCancelDialog {
 	protected void onOkClick(final ClickEvent event) {
 		super.onOkClick(event);
 		getDialogData();
-		ServiceManager.getDungeonManager().addOrUpdatePog(pogData);
+		if (templateSelected) {
+			ServiceManager.getDungeonManager().addOrUpdatePog(pogData, PogPlace.COMMON_RESOURCE);
+		} else {
+			ServiceManager.getDungeonManager().addOrUpdatePog(pogData);
+		}
 		ServiceManager.getDungeonManager().setSelectedPog(pogData);
 		close();
 	}
@@ -701,12 +711,11 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (pog == null) {
 			return;
 		}
-		if (pog.getPogType() == pogType) {
-			selectPog(pog);
+		if (pog.getPogType() != pogType) {
+			return;
 		}
-		if (pogType == ElectronicBattleMat.POG_TYPE_MONSTER && pog.isThisAPlayer()) {
-			selectPog(pog);
-		}
+		templateSelected = pog.isTemplate();
+		selectPog(pog);
 	}
 
 	/**

@@ -8,7 +8,6 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -32,10 +31,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	private PogData selectedPog;
 	/**
-	 * Widget to hold content.
-	 */
-	private HTML theText;
-	/**
 	 * Panel to capture key events.
 	 */
 	private FocusPanel editPanel;
@@ -47,11 +42,17 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Layout panel.
 	 */
 	private DockLayoutPanel dockLayoutPanel;
+	/**
+	 * Panel for buttons.
+	 */
 	private HorizontalPanel buttonPanel;
 	/**
 	 * Save changes button.
 	 */
 	private Button save;
+	/**
+	 * Cancel button.
+	 */
 	private Button cancel;
 
 	/**
@@ -86,9 +87,9 @@ public class NotesFloatingWindow extends OkCancelDialog {
 				handleTextChanged(event);
 			}
 		});
-		theText = new HTML();
-		theText.setSize("100%", "100%");
-		editPanel.add(theText);
+//		theText = new HTML();
+//		theText.setSize("100%", "100%");
+//		editPanel.add(theText);
 		scrollPanel = new ScrollPanel(editPanel);
 		scrollPanel.setSize("100%", "100%");
 
@@ -156,7 +157,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Save changed notes.
 	 */
 	protected void saveNotes() {
-		selectedPog.setNotes(theText.getHTML());
+		selectedPog.setNotes(editPanel.getElement().getInnerText());
 		ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 		enableWidget(save, false);
 	}
@@ -201,7 +202,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 		if (selectedPog != null) {
 			textToSet = selectedPog.getNotes();
 		}
-		theText.setHTML(textToSet);
+		editPanel.getElement().setInnerText(textToSet);
 		makeContentEditable(ServiceManager.getDungeonManager().isDungeonMaster());
 		enableWidget(save, false);
 	}
