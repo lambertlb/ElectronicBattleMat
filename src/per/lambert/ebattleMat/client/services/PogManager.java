@@ -93,11 +93,6 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public void setSelectedPog(final PogData selectedPog) {
-		if (!ServiceManager.getDungeonManager().isDungeonMaster()) {
-			if (selectedPog != null && !selectedPog.isThisAPlayer()) {
-				return;
-			}
-		}
 		if (selectedPog == null || !selectedPog.isEquals(this.selectedPog)) {
 			this.selectedPog = selectedPog;
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));

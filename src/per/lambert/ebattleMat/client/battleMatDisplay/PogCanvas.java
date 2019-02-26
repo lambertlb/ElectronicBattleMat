@@ -587,12 +587,21 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			context.fillRect(0, 0, parentWidth, parentHeight);
 		}
 		double opacity = 1.0;
-		if (!showNormalSizeOnly && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER))) {
+		if (isInVisibleToPlayer()) {
 			opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
 		}
 		pogDrawPanel.getElement().getStyle().setOpacity(opacity);
 		context.drawImage(backContext.getCanvas(), 0, 0);
 		drawOverlays();
+	}
+
+	/**
+	 * Is pog currently invisible to player.
+	 * 
+	 * @return true if is
+	 */
+	public boolean isInVisibleToPlayer() {
+		return (!showNormalSizeOnly && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)));
 	}
 
 	/**

@@ -436,8 +436,11 @@ public class RibbonBar extends Composite {
 	private void setupForDungeonMaster() {
 		setupForEditDungeon();
 		if (!ServiceManager.getDungeonManager().isEditMode()) {
-			ribbonGrid.setWidget(1, 3, fowToggle);
+			ribbonGrid.setWidget(1, 4, fowToggle);
 		}
+		ribbonGrid.setWidget(0, 4, manageDungeonsButton);
+		ribbonGrid.setWidget(0, 5, characterSelect);
+		ribbonGrid.setWidget(1, 5, createCharacter);
 	}
 
 	/**
@@ -450,9 +453,8 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(1, 1, monsterManageButton);
 		ribbonGrid.setWidget(0, 2, playerFlagsButton);
 		ribbonGrid.setWidget(1, 2, dmFlagsButton);
-		ribbonGrid.setWidget(0, 3, manageDungeonsButton);
-		ribbonGrid.setWidget(0, 4, showSelectedPog);
-		ribbonGrid.setWidget(1, 4, showPogNotes);
+		ribbonGrid.setWidget(0, 3, showSelectedPog);
+		ribbonGrid.setWidget(1, 3, showPogNotes);
 	}
 
 	/**
@@ -463,6 +465,8 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(1, 0, playerFlagsButton);
 		ribbonGrid.setWidget(0, 1, characterSelect);
 		ribbonGrid.setWidget(1, 1, createCharacter);
+		ribbonGrid.setWidget(0, 2, showSelectedPog);
+		ribbonGrid.setWidget(1, 2, showPogNotes);
 	}
 
 	/**

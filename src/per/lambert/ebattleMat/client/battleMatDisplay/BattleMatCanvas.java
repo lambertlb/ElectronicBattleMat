@@ -538,7 +538,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			}
 			this.setWidgetPosition(pog, x, y);
 			pog.setPogSizing(adjustedGridSize(), pogBorderWidth, totalZoom);
-			pog.getElement().getStyle().setBorderWidth(pogBorderWidth, Unit.PX);
+			if (pog.isInVisibleToPlayer()) {
+				pog.getElement().getStyle().setBorderWidth(0, Unit.PX);
+			} else {
+				pog.getElement().getStyle().setBorderWidth(pogBorderWidth, Unit.PX);
+			}
 		}
 	}
 
