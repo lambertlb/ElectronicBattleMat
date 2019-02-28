@@ -3,4 +3,5 @@
 /src/main/webapp/WEB-INF/classes/
 /src/main/webapp/WEB-INF/deploy/
 /target/
+src/main/gwt-unitCache/
 
