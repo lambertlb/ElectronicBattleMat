@@ -1,8 +1,6 @@
-/test-classes/
 /gwt-unitCache/
-/war/electronicbattlemat/
-/war/WEB-INF/classes/
-war/WEB-INF/deploy/
-/war/com.google.gwt.sample.stockwatcher.StockWatcher.JUnit/
-ElectronicBattleMat/war/WEB-INF/
+/src/main/webapp/electronicbattlemat/
+/src/main/webapp/WEB-INF/classes/
+/src/main/webapp/WEB-INF/deploy/
+/target/
 
