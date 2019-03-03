@@ -1,2 +1,2 @@
-cd C:\Workspace\ElectronicBattleMat\war
+cd C:\Workspace\ElectronicBattleMat\src\main\webapp
 jar cv * > /tempfiles/ebatmat/ElectronicBattleMat.war
