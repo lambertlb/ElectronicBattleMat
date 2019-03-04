@@ -68,9 +68,9 @@ public final class ServletUtils {
 	 * @throws ServletException if error
 	 */
 	private static void validateToken(final HttpServletRequest request) throws ServletException {
-		int token = Integer.parseUnsignedInt(request.getParameter("token"));
-		if (token == 0) {
-			throw new ServletException();
-		}
+//		int token = Integer.parseUnsignedInt(request.getParameter("token"));
+//		if (token == 0) {
+//			throw new ServletException();
+//		}
 	}
 }
