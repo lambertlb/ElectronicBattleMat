@@ -20,6 +20,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<!-- <jettyVersion>9.3.9.v20160517</jettyVersion> -->
 		<jetty-version>9.4.12.v20180830</jetty-version>
+		<gwt.style>DETAILED</gwt.style>
 	</properties>
 
 	<dependencyManagement>
@@ -117,7 +118,7 @@
 						<goals>
 							<goal>import-sources</goal>
 							<goal>compile</goal>
-							<goal>import-test-sources</goal>
+<!-- 							<goal>import-test-sources</goal> -->
 							<goal>test</goal>
 						</goals>
 					</execution>

@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import per.lambert.ebattleMat.client.controls.labeledTextBox.LabeledTextBox;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.DataRequester;
@@ -484,7 +485,8 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	private void uploadFile(final String serverPath) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("filePath", serverPath);
-		String url = DataRequester.buildUrl("FILEUPLOAD", parameters);
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		String url = dataRequester.buildUrl("FILEUPLOAD", parameters);
 		fileUpLoadControl.setAction(url);
 		fileUpLoadControl.setEncoding(FormPanel.ENCODING_MULTIPART);
 		fileUpLoadControl.setMethod(FormPanel.METHOD_POST);

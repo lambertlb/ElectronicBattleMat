@@ -10,6 +10,7 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
@@ -61,14 +62,69 @@ public class DataRequester implements IDataRequester {
 	 * @param parameters parameters for the request
 	 * @return URL for server
 	 */
-	public static String buildUrl(final String requestType, final Map<String, String> parameters) {
+	@Override
+	public String buildUrl(final String requestType, final Map<String, String> parameters) {
 		parameters.put("token", "" + ServiceManager.getDungeonManager().getToken());
 		parameters.put("request", "" + requestType);
-		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("electronicbattlemat/dungeons");
-		addParametersToURL(parameters, urlBuilder);
+		String url = constructURL(parameters, "electronicbattlemat/dungeons");
+		return url;
+	}
+
+	/**
+	 * Construct url to service.
+	 * 
+	 * @param parameters parameters to use
+	 * @param additional addition to url
+	 * @return URL
+	 */
+	private String constructURL(final Map<String, String> parameters, final String additional) {
+		final UrlBuilder urlBuilder = new UrlBuilder();
+
+		urlBuilder.setProtocol(Location.getProtocol());
+		urlBuilder.setHost(Location.getHost());
+		String port = Location.getPort();
+		if (port != null && !port.isEmpty()) {
+			urlBuilder.setPort(Integer.parseInt(port));
+		}
+		urlBuilder.setPath(constructPath() + additional);
+
+		if (parameters != null) {
+			addParametersToURL(parameters, urlBuilder);
+		}
 		String url = urlBuilder.buildString();
 		return url;
+	}
+
+	/**
+	 * Get proper web path.
+	 * 
+	 * @return proper web path
+	 */
+	private String constructPath() {
+		String path = Location.getPath();
+		if (path.toLowerCase().endsWith(".html")) {
+			int index = path.lastIndexOf("/");
+			path = path.substring(0, index + 1);
+		}
+		return path;
+	}
+
+	/**
+	 * Path to web service.
+	 */
+	private String webPath;
+
+	/**
+	 * Get path to service.
+	 * 
+	 * @return path to service
+	 */
+	@Override
+	public String getWebPath() {
+		if (webPath == null) {
+			webPath = constructURL(null, "");
+		}
+		return (webPath);
 	}
 
 	/**
@@ -103,6 +159,7 @@ public class DataRequester implements IDataRequester {
 
 	/**
 	 * Add paramters to URL.
+	 * 
 	 * @param parameters parameters for url
 	 * @param urlBuilder url builder
 	 */

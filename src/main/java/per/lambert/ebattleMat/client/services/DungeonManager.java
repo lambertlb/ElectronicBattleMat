@@ -555,7 +555,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	@Override
 	public String getUrlToDungeonData() {
 		String directoryForDungeon = getDirectoryForCurrentDungeon();
-		String resourceUrl = directoryForDungeon + "/";
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		String resourceUrl = dataRequester.getWebPath() + directoryForDungeon + "/";
 		return (resourceUrl);
 	}
 
