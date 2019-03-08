@@ -324,7 +324,6 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return player flags.
 	 */
-	@SuppressWarnings("RedundantModifier")
 	public final native int getPlayerFlags() /*-{
 		if (this.playerFlags === undefined) {
 			this.playerFlags = 0;
@@ -337,7 +336,6 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return dungeon master flags.
 	 */
-	@SuppressWarnings("RedundantModifier")
 	public final native int getDungeonMasterFlags() /*-{
 		if (this.dungeonMasterFlags === undefined) {
 			this.dungeonMasterFlags = 0;
