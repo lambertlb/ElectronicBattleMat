@@ -146,7 +146,7 @@
 					<classpathScope>compile+runtime</classpathScope>
 					<!-- URL(s) that should be opened by DevMode (gwt:devmode). -->
 					<startupUrls>
-						<startupUrl>ElectronicBattleMat.html</startupUrl>
+						<startupUrl>index.html</startupUrl>
 					</startupUrls>
 				</configuration>
 			</plugin>

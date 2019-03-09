@@ -52,7 +52,7 @@ public final class ServerApp {
 			return;
 		}
 		System.out.println("Enter the following URL to access dungeons");
-		System.out.println("http://" + ipAddress + ":8088/ElectronicBattleMat.html");
+		System.out.println("http://" + ipAddress + ":8088");
 		System.out.println("");
 		System.out.println("");
 	}
