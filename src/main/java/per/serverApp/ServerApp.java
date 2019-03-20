@@ -64,7 +64,6 @@ public final class ServerApp {
 	 */
 	private static String getIpAddress() {
 		InetAddress ip;
-		String hostname;
 		try {
 			ip = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {

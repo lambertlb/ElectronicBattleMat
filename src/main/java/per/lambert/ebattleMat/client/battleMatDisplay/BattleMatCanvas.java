@@ -38,6 +38,21 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.touchHelper.TouchHelper;
+import per.lambert.ebattleMat.client.touchHelper.DoubleTapEvent;
+import per.lambert.ebattleMat.client.touchHelper.DoubleTapHandler;
+import per.lambert.ebattleMat.client.touchHelper.PanEndEvent;
+import per.lambert.ebattleMat.client.touchHelper.PanEndHandler;
+import per.lambert.ebattleMat.client.touchHelper.PanEvent;
+import per.lambert.ebattleMat.client.touchHelper.PanHandler;
+import per.lambert.ebattleMat.client.touchHelper.PanStartEvent;
+import per.lambert.ebattleMat.client.touchHelper.PanStartHandler;
+import per.lambert.ebattleMat.client.touchHelper.ZoomEndEvent;
+import per.lambert.ebattleMat.client.touchHelper.ZoomEndHandler;
+import per.lambert.ebattleMat.client.touchHelper.ZoomEvent;
+import per.lambert.ebattleMat.client.touchHelper.ZoomHandler;
+import per.lambert.ebattleMat.client.touchHelper.ZoomStartEvent;
+import per.lambert.ebattleMat.client.touchHelper.ZoomStartHandler;
 
 /**
  * @author LLambert Class to manage a scaled image with overlays.
@@ -212,6 +227,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Width of pog border.
 	 */
 	private double pogBorderWidth = 3;
+	/**
+	 * Helper for mobile touches.
+	 */
+	private TouchHelper touchHelper;
 
 	/**
 	 * Widget for scaling an image. This supports zoom and pan
@@ -231,6 +250,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		fowCanvas.setStyleName("noEvents");
 		intializeView();
 		showGrid = false;
+		touchHelper = new TouchHelper(canvas);
 		setupDragAndDrop();
 		setupEventHandling();
 	}
@@ -309,6 +329,62 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				}
 			}
 		});
+		addTouchHandlerEvents();
+	}
+
+	/**
+	 * Add touch handlers.
+	 */
+	private void addTouchHandlerEvents() {
+		touchHelper.addDoubleTapHandler(new DoubleTapHandler() {
+
+			@Override
+			public void onDoubleTap(final DoubleTapEvent event) {
+				doDoubleTap(event);
+			}
+		});
+		touchHelper.addPanStartHandler(new PanStartHandler() {
+
+			@Override
+			public void onPanStart(final PanStartEvent event) {
+				doPanStart(event);
+			}
+		});
+		touchHelper.addPanEndHandler(new PanEndHandler() {
+
+			@Override
+			public void onPanEnd(final PanEndEvent event) {
+				doPanEnd(event);
+			}
+		});
+		touchHelper.addPanHandler(new PanHandler() {
+
+			@Override
+			public void onPan(final PanEvent event) {
+				doPan(event);
+			}
+		});
+		touchHelper.addZoomHandler(new ZoomHandler() {
+
+			@Override
+			public void onZoom(final ZoomEvent event) {
+				doZoom(event);
+			}
+		});
+		touchHelper.addZoomStartHandler(new ZoomStartHandler() {
+
+			@Override
+			public void onZoomStart(final ZoomStartEvent event) {
+				doZoomStart(event);
+			}
+		});
+		touchHelper.addZoomEndHandler(new ZoomEndHandler() {
+
+			@Override
+			public void onZoomEnd(final ZoomEndEvent event) {
+				doZoomEnd(event);
+			}
+		});
 	}
 
 	/**
@@ -369,21 +445,30 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (move >= 0) {
 			zoom = 1 / DEFAULT_ZOOM;
 		}
+		scaleCanvas(xPos, yPos, zoom);
+	}
 
+	/**
+	 * Scale canvas base on delta mouse positions.
+	 * 
+	 * @param xPos current X
+	 * @param yPos current Y
+	 * @param zoom zoom factor
+	 */
+	private void scaleCanvas(final double xPos, final double yPos, final double zoom) {
 		double newX = (xPos - offsetX) / totalZoom;
 		double newY = (yPos - offsetY) / totalZoom;
 		double xPosition = (-newX * zoom) + newX;
 		double yPosition = (-newY * zoom) + newY;
 
-		zoom = zoom * totalZoom;
-		if (zoom < maxZoom) {
-			zoom = maxZoom;
+		double newZoom = zoom * totalZoom;
+		if (newZoom < maxZoom) {
+			newZoom = maxZoom;
 		} else {
 			offsetX += (xPosition * totalZoom);
 			offsetY += (yPosition * totalZoom);
 		}
-		totalZoom = zoom;
-		getGridData();
+		totalZoom = newZoom;
 		drawEverything();
 	}
 
@@ -454,6 +539,16 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void handleMouseMove(final MouseMoveEvent event) {
 		double xPos = event.getRelativeX(image.getElement());
 		double yPos = event.getRelativeY(image.getElement());
+		handleCanvasMove(xPos, yPos);
+	}
+
+	/**
+	 * Handle panning canvas.
+	 * 
+	 * @param xPos center X of pan
+	 * @param yPos center Y of pan
+	 */
+	private void handleCanvasMove(final double xPos, final double yPos) {
 		offsetX += (xPos - mouseDownXPos);
 		offsetY += (yPos - mouseDownYPos);
 		try {
@@ -1008,5 +1103,84 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			selectedPogCanvas.getElement().getStyle().setBorderColor("grey");
 			selectedPogCanvas = null;
 		}
+	}
+
+	/**
+	 * Handle double tap.
+	 * 
+	 * @param event with data.
+	 */
+	protected void doDoubleTap(final DoubleTapEvent event) {
+		offsetX = 0;
+		offsetY = 0;
+		calculateStartingZoom();
+		drawEverything();
+	}
+
+	/**
+	 * Handle Pan start.
+	 * 
+	 * @param event with data
+	 */
+	protected void doPanStart(final PanStartEvent event) {
+		mouseDownXPos = event.getTouchInformation().getPageX();
+		mouseDownYPos = event.getTouchInformation().getPageY();
+		this.mouseDown = true;
+	}
+
+	/**
+	 * Handle Pan end.
+	 * 
+	 * @param event with data
+	 */
+	protected void doPanEnd(final PanEndEvent event) {
+		this.mouseDown = false;
+	}
+
+	/**
+	 * Handle Pan.
+	 * 
+	 * @param event with data
+	 */
+	protected void doPan(final PanEvent event) {
+		double xPos = event.getTouchInformation().getPageX();
+		double yPos = event.getTouchInformation().getPageY();
+		handleCanvasMove(xPos, yPos);
+	}
+
+	/**
+	 * Distance between fingers.
+	 */
+	private double distance;
+
+	/**
+	 * Handle zoom start event.
+	 * 
+	 * @param event with data
+	 */
+	protected void doZoomStart(final ZoomStartEvent event) {
+		distance = event.getZoomInformation().getStartingDistance();
+	}
+
+	/**
+	 * Handle zoom end event.
+	 * 
+	 * @param event with data
+	 */
+	protected void doZoomEnd(final ZoomEndEvent event) {
+	}
+
+	/**
+	 * Handle zoom event.
+	 * 
+	 * @param event with data
+	 */
+	protected void doZoom(final ZoomEvent event) {
+		double currentDistance = event.getZoomInformation().getCurrentDistance();
+		int move = (int) (distance - currentDistance);
+		double xPos = event.getZoomInformation().currentCenterX();
+		double yPos = event.getZoomInformation().currentCenterY();
+		scaleCanvas(xPos, yPos, currentDistance / distance);
+		distance = currentDistance;
 	}
 }
