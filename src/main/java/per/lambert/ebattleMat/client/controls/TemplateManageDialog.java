@@ -609,12 +609,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 */
 	protected void templateSelected() {
 		ServiceManager.getDungeonManager().setSelectedTemplate(place, pogType, filteredTemplateList.getSelectedValue());
-		PogData data = ServiceManager.getDungeonManager().getSelectedPog();
-		if (data == null) {
-			return;
-		}
-		templateSelected = true;
-		selectPog(data);
+		selectPog();
 	}
 
 	/**

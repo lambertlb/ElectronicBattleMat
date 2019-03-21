@@ -1,1 +1,181 @@
-{"uuid":"dungeon1-template","dungeonName":"Dungeon1","dungeonLevels":[{"levelDrawing":"level1.jpg","levelName":"Entrance","gridSize":50.0,"gridOffsetX":11.0,"gridOffsetY":11.0,"columns":31,"rows":31,"monsters":{"pogList":[{"pogSize":1,"pogColumn":4,"pogRow":2,"playerFlags":0,"dungeonMasterFlags":0,"dungeonLevel":0,"pogName":"Orc Fighter","pogImageUrl":"http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg","pogType":"MONSTER","uuid":"8933d0b2-f6e3-4b0d-92f3-1c737b8ffb27","templateUUID":"61fc86ec-2fa2-43ef-bdf7-6171047c7018","pogClass":"Fighter","race":"Orc"},{"pogSize":1,"pogColumn":6,"pogRow":2,"playerFlags":0,"dungeonMasterFlags":0,"dungeonLevel":0,"pogName":"Orc Fighter","pogImageUrl":"http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg","pogType":"MONSTER","uuid":"e3150df8-f310-446f-a86f-42a44970b475","templateUUID":"61fc86ec-2fa2-43ef-bdf7-6171047c7018","pogClass":"Fighter","race":"Orc","notes":""},{"pogSize":1,"pogColumn":6,"pogRow":3,"playerFlags":0,"dungeonMasterFlags":0,"dungeonLevel":0,"pogName":"Orc Fighter","pogImageUrl":"http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg","pogType":"MONSTER","uuid":"463a7eb0-a0d8-442a-b9d3-27f925eef512","templateUUID":"61fc86ec-2fa2-43ef-bdf7-6171047c7018","pogClass":"Fighter","race":"Orc","notes":""}]},"roomObjects":{"pogList":[{"pogSize":1,"pogColumn":12,"pogRow":2,"playerFlags":0,"dungeonMasterFlags":19,"dungeonLevel":0,"pogName":"Notes","pogImageUrl":"dungeonData/resources/roomObjects/Notes.png","pogType":"ROOMOBJECT","uuid":"93067e63-4696-4b31-8621-6e74a870767f","templateUUID":"11a35391-e498-4217-90d3-125d0b2ea089","pogClass":"Notes","race":"","notes":"Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!"},{"pogSize":1,"pogColumn":16,"pogRow":2,"playerFlags":0,"dungeonMasterFlags":3,"dungeonLevel":0,"pogName":"Trap","pogImageUrl":"dungeonData/resources/roomObjects/Trap.png","pogType":"ROOMOBJECT","uuid":"fb07199b-8c67-49c5-a97e-8faaab9bda56","templateUUID":"df427e70-07fd-491b-9913-5c00918b9e72","pogClass":"Trap","race":"","notes":""}]}},{"levelDrawing":"level2.jpg","levelName":"Deep Dark (2)","gridSize":50.0,"gridOffsetX":0.0,"gridOffsetY":0.0,"columns":39,"rows":22,"monsters":{"pogList":[{"pogSize":1,"pogColumn":10,"pogRow":3,"playerFlags":0,"dungeonMasterFlags":0,"dungeonLevel":1,"pogName":"Orc Fighter","pogImageUrl":"http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg","pogType":"MONSTER","uuid":"5a56ca3f-f180-4aef-ae9c-7673d7beddc0","templateUUID":"61fc86ec-2fa2-43ef-bdf7-6171047c7018","pogClass":"Fighter","race":"Orc"}]},"roomObjects":{"pogList":[]}},{"levelDrawing":"level3.jpg","levelName":"Flooded Area (3)","gridSize":50.0,"gridOffsetX":0.0,"gridOffsetY":0.0,"columns":39,"rows":22,"monsters":{"pogList":[]},"roomObjects":{"pogList":[]}}],"showGrid":true}
+{
+	"uuid": "dungeon1-template",
+	"dungeonName": "Dungeon1",
+	"dungeonLevels": [
+		{
+			"levelDrawing": "level1.jpg",
+			"levelName": "Entrance",
+			"gridSize": 50.0,
+			"gridOffsetX": 11.0,
+			"gridOffsetY": 11.0,
+			"columns": 31,
+			"rows": 31,
+			"monsters": {
+				"pogList": [
+					{
+						"pogSize": 1,
+						"pogColumn": 4,
+						"pogRow": 2,
+						"playerFlags": 0,
+						"dungeonMasterFlags": 0,
+						"dungeonLevel": 0,
+						"pogName": "Orc Fighter",
+						"pogImageUrl": "http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg",
+						"pogType": "MONSTER",
+						"uuid": "8933d0b2-f6e3-4b0d-92f3-1c737b8ffb27",
+						"templateUUID": "61fc86ec-2fa2-43ef-bdf7-6171047c7018",
+						"pogClass": "Fighter",
+						"race": "Orc"
+					},
+					{
+						"pogSize": 1,
+						"pogColumn": 6,
+						"pogRow": 2,
+						"playerFlags": 0,
+						"dungeonMasterFlags": 0,
+						"dungeonLevel": 0,
+						"pogName": "Orc Fighter",
+						"pogImageUrl": "http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg",
+						"pogType": "MONSTER",
+						"uuid": "e3150df8-f310-446f-a86f-42a44970b475",
+						"templateUUID": "61fc86ec-2fa2-43ef-bdf7-6171047c7018",
+						"pogClass": "Fighter",
+						"race": "Orc",
+						"notes": ""
+					},
+					{
+						"pogSize": 1,
+						"pogColumn": 7,
+						"pogRow": 4,
+						"playerFlags": 0,
+						"dungeonMasterFlags": 0,
+						"dungeonLevel": 0,
+						"pogName": "Orc Fighter",
+						"pogImageUrl": "http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg",
+						"pogType": "MONSTER",
+						"uuid": "463a7eb0-a0d8-442a-b9d3-27f925eef512",
+						"templateUUID": "61fc86ec-2fa2-43ef-bdf7-6171047c7018",
+						"pogClass": "Fighter",
+						"race": "Orc",
+						"notes": ""
+					},
+					{
+						"pogSize": 1,
+						"pogColumn": 5,
+						"pogRow": 3,
+						"playerFlags": 0,
+						"dungeonMasterFlags": 0,
+						"dungeonLevel": 0,
+						"pogName": "Orc Fighter",
+						"pogImageUrl": "http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg",
+						"pogType": "MONSTER",
+						"uuid": "d1fe2835-d55d-48bc-892f-d9288b0d7ae4",
+						"templateUUID": "61fc86ec-2fa2-43ef-bdf7-6171047c7018",
+						"pogClass": "Fighter",
+						"race": "Orc",
+						"notes": ""
+					},
+					{
+						"pogSize": 2,
+						"pogColumn": 8,
+						"pogRow": 5,
+						"playerFlags": 2,
+						"dungeonMasterFlags": 0,
+						"dungeonLevel": 0,
+						"pogName": "Female Kobold",
+						"pogImageUrl": "https://pre00.deviantart.net/9204/th/pre/f/2016/172/6/a/kalbold_femalekoboldfighter_color_01_by_prodigyduck-da75cmb.png",
+						"pogType": "MONSTER",
+						"uuid": "2daff302-5c49-437e-97f8-9f0c0710accd",
+						"templateUUID": "Female-Kobold",
+						"pogClass": "Fighter",
+						"race": "Kobold",
+						"notes": ""
+					}
+				]
+			},
+			"roomObjects": {
+				"pogList": [
+					{
+						"pogSize": 1,
+						"pogColumn": 12,
+						"pogRow": 2,
+						"playerFlags": 0,
+						"dungeonMasterFlags": 19,
+						"dungeonLevel": 0,
+						"pogName": "Notes",
+						"pogImageUrl": "dungeonData/resources/roomObjects/Notes.png",
+						"pogType": "ROOMOBJECT",
+						"uuid": "93067e63-4696-4b31-8621-6e74a870767f",
+						"templateUUID": "11a35391-e498-4217-90d3-125d0b2ea089",
+						"pogClass": "Notes",
+						"race": "",
+						"notes": "Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!Enter here and die!"
+					},
+					{
+						"pogSize": 1,
+						"pogColumn": 16,
+						"pogRow": 2,
+						"playerFlags": 0,
+						"dungeonMasterFlags": 3,
+						"dungeonLevel": 0,
+						"pogName": "Trap",
+						"pogImageUrl": "dungeonData/resources/roomObjects/Trap.png",
+						"pogType": "ROOMOBJECT",
+						"uuid": "fb07199b-8c67-49c5-a97e-8faaab9bda56",
+						"templateUUID": "df427e70-07fd-491b-9913-5c00918b9e72",
+						"pogClass": "Trap",
+						"race": "",
+						"notes": ""
+					}
+				]
+			}
+		},
+		{
+			"levelDrawing": "level2.jpg",
+			"levelName": "Deep Dark (2)",
+			"gridSize": 50.0,
+			"gridOffsetX": 0.0,
+			"gridOffsetY": 0.0,
+			"columns": 39,
+			"rows": 22,
+			"monsters": {
+				"pogList": [
+					{
+						"pogSize": 1,
+						"pogColumn": 10,
+						"pogRow": 3,
+						"playerFlags": 0,
+						"dungeonMasterFlags": 0,
+						"dungeonLevel": 1,
+						"pogName": "Orc Fighter",
+						"pogImageUrl": "http://static4.paizo.com/image/content/PathfinderTales/PZO8500-CrisisOfFaith-Corogan.jpg",
+						"pogType": "MONSTER",
+						"uuid": "5a56ca3f-f180-4aef-ae9c-7673d7beddc0",
+						"templateUUID": "61fc86ec-2fa2-43ef-bdf7-6171047c7018",
+						"pogClass": "Fighter",
+						"race": "Orc"
+					}
+				]
+			},
+			"roomObjects": {
+				"pogList": []
+			}
+		},
+		{
+			"levelDrawing": "level3.jpg",
+			"levelName": "Flooded Area (3)",
+			"gridSize": 50.0,
+			"gridOffsetX": 0.0,
+			"gridOffsetY": 0.0,
+			"columns": 39,
+			"rows": 22,
+			"monsters": {
+				"pogList": []
+			},
+			"roomObjects": {
+				"pogList": []
+			}
+		}
+	],
+	"showGrid": true
+}
