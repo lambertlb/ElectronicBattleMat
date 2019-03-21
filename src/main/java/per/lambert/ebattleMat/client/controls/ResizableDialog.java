@@ -15,6 +15,14 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.touchHelper.PanEndEvent;
+import per.lambert.ebattleMat.client.touchHelper.PanEndHandler;
+import per.lambert.ebattleMat.client.touchHelper.PanEvent;
+import per.lambert.ebattleMat.client.touchHelper.PanHandler;
+import per.lambert.ebattleMat.client.touchHelper.PanStartEvent;
+import per.lambert.ebattleMat.client.touchHelper.PanStartHandler;
+import per.lambert.ebattleMat.client.touchHelper.TouchHelper;
+
 /**
  * DialogBox has a grid that contains the the grow handles following is the coordinates for the the various handles. 0,2 Top Right 0,1 Top Center 0,0 Top Left 1,0 Middle Left 1,2 Middle Right 2,2 Bottom Right 2,1 Bottom Center 2,0 Bottom Left
  * 
@@ -115,6 +123,11 @@ public class ResizableDialog extends DialogBox {
 	private FlowPanel content;
 
 	/**
+	 * Helper for mobile touches.
+	 */
+	private TouchHelper touchHelper;
+
+	/**
 	 * Constructor.
 	 */
 	public ResizableDialog() {
@@ -122,6 +135,28 @@ public class ResizableDialog extends DialogBox {
 		content.setSize("100%", "100%");
 		content.getElement().getStyle().setPosition(Position.RELATIVE);
 		super.setWidget(content);
+		touchHelper = new TouchHelper(this);
+		touchHelper.addPanStartHandler(new PanStartHandler() {
+
+			@Override
+			public void onPanStart(final PanStartEvent event) {
+				doPanStart(event);
+			}
+		});
+		touchHelper.addPanEndHandler(new PanEndHandler() {
+
+			@Override
+			public void onPanEnd(final PanEndEvent event) {
+				doPanEnd(event);
+			}
+		});
+		touchHelper.addPanHandler(new PanHandler() {
+
+			@Override
+			public void onPan(final PanEvent event) {
+				doPan(event);
+			}
+		});
 	}
 
 	/**
@@ -135,6 +170,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Get minimum width.
+	 * 
 	 * @return minimum width.
 	 */
 	public int getMinWidth() {
@@ -143,6 +179,7 @@ public class ResizableDialog extends DialogBox {
 
 	/**
 	 * Get minimum height.
+	 * 
 	 * @return minimum height.
 	 */
 	public int getMinHeight() {
@@ -154,8 +191,8 @@ public class ResizableDialog extends DialogBox {
 	 */
 	@Override
 	protected void beginDragging(final MouseDownEvent event) {
-		resizePosition = computeResizePosition(event.getNativeEvent());
-		if (resizePosition == ResizePosition.UNDEFINED) {
+		resizePosition = computeResizePosition(event.getClientX(), event.getClientY());
+		if (resizePosition != ResizePosition.BOTTOMRIGHT) {
 			super.beginDragging(event);
 			return;
 		}
@@ -169,7 +206,7 @@ public class ResizableDialog extends DialogBox {
 	 */
 	@Override
 	protected void continueDragging(final MouseMoveEvent event) {
-		if (resizePosition == ResizePosition.UNDEFINED) {
+		if (resizePosition != ResizePosition.BOTTOMRIGHT) {
 			super.continueDragging(event);
 			return;
 		}
@@ -185,7 +222,7 @@ public class ResizableDialog extends DialogBox {
 	 */
 	@Override
 	protected void endDragging(final MouseUpEvent event) {
-		if (resizePosition == ResizePosition.UNDEFINED) {
+		if (resizePosition != ResizePosition.BOTTOMRIGHT) {
 			super.endDragging(event);
 			return;
 		}
@@ -224,10 +261,13 @@ public class ResizableDialog extends DialogBox {
 	 * @param event native event.
 	 * @return position of window being resized.
 	 */
-	private ResizePosition computeResizePosition(final NativeEvent event) {
+	private ResizePosition computeResizePosition(final int clientX, final int clientY) {
 		computeNewWindowSize();
-		if (isBottomRight(event)) {
+		if (isBottomRight(clientX, clientY)) {
 			return ResizePosition.BOTTOMRIGHT;
+		}
+		if (isTop(clientX, clientY)) {
+			return ResizePosition.TOP;
 		}
 		return ResizePosition.UNDEFINED;
 	}
@@ -244,14 +284,15 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Compute delta from starting positions.
 	 * 
-	 * @param event native event.
+	 * @param clientX X position in client.
+	 * @param clientY Y position in client.
 	 * @param row to examine.
 	 * @param column column to examine.
 	 */
-	private void computeDeltas(final NativeEvent event, final int row, final int column) {
+	private void computeDeltas(final int clientX, final int clientY, final int row, final int column) {
 		Element growElement = this.getCellElement(row, column).getParentElement();
-		deltaXFromStarting = event.getClientX() - growElement.getAbsoluteLeft() + growElement.getScrollLeft() + growElement.getOwnerDocument().getScrollLeft();
-		deltaYFromStarting = event.getClientY() - growElement.getAbsoluteTop() + growElement.getScrollTop() + growElement.getOwnerDocument().getScrollTop();
+		deltaXFromStarting = clientX - growElement.getAbsoluteLeft() + growElement.getScrollLeft() + growElement.getOwnerDocument().getScrollLeft();
+		deltaYFromStarting = clientY - growElement.getAbsoluteTop() + growElement.getScrollTop() + growElement.getOwnerDocument().getScrollTop();
 	}
 
 	/**
@@ -261,9 +302,9 @@ public class ResizableDialog extends DialogBox {
 	 * @return true if top was changed.
 	 */
 	@SuppressWarnings("unused")
-	private boolean isTop(final NativeEvent event) {
-		computeDeltas(event, 0, 1);
-		return (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight);
+	private boolean isTop(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 0, 1);
+		return (deltaYFromStarting >= 0 && deltaYFromStarting < 25);
 	}
 
 	/**
@@ -273,8 +314,8 @@ public class ResizableDialog extends DialogBox {
 	 * @return true if top left was changed.
 	 */
 	@SuppressWarnings("unused")
-	private boolean isTopLeft(final NativeEvent event) {
-		computeDeltas(event, 0, 0);
+	private boolean isTopLeft(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 0, 0);
 		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight + MARGIN)
 				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth + MARGIN));
 	}
@@ -286,8 +327,8 @@ public class ResizableDialog extends DialogBox {
 	 * @return true if top right was changed.
 	 */
 	@SuppressWarnings("unused")
-	private boolean isTopRight(final NativeEvent event) {
-		computeDeltas(event, 0, 2);
+	private boolean isTopRight(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 0, 2);
 		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight + MARGIN)
 				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= -MARGIN && deltaXFromStarting < clientWidth));
 	}
@@ -299,8 +340,8 @@ public class ResizableDialog extends DialogBox {
 	 * @return true if bottom left was changed.
 	 */
 	@SuppressWarnings("unused")
-	private boolean isBottomLeft(final NativeEvent event) {
-		computeDeltas(event, 2, 0);
+	private boolean isBottomLeft(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 2, 0);
 		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= -MARGIN && deltaYFromStarting < clientHeight)
 				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth + MARGIN));
 	}
@@ -311,8 +352,8 @@ public class ResizableDialog extends DialogBox {
 	 * @param event native event.
 	 * @return true if bottom right was changed.
 	 */
-	private boolean isBottomRight(final NativeEvent event) {
-		computeDeltas(event, 2, 2);
+	private boolean isBottomRight(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 2, 2);
 		return ((deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth && deltaYFromStarting >= -MARGIN && deltaYFromStarting < clientHeight)
 				|| (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight && deltaXFromStarting >= -MARGIN && deltaXFromStarting < clientWidth));
 	}
@@ -324,8 +365,8 @@ public class ResizableDialog extends DialogBox {
 	 * @return true if bottom was changed.
 	 */
 	@SuppressWarnings("unused")
-	private boolean isBottom(final NativeEvent event) {
-		computeDeltas(event, 2, 1);
+	private boolean isBottom(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 2, 1);
 		return (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight);
 	}
 
@@ -336,8 +377,8 @@ public class ResizableDialog extends DialogBox {
 	 * @return true if left was changed.
 	 */
 	@SuppressWarnings("unused")
-	private boolean isLeft(final NativeEvent event) {
-		computeDeltas(event, 1, 0);
+	private boolean isLeft(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 1, 0);
 		return (deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth);
 	}
 
@@ -348,8 +389,8 @@ public class ResizableDialog extends DialogBox {
 	 * @return true if right was changed.
 	 */
 	@SuppressWarnings("unused")
-	private boolean isRight(final NativeEvent event) {
-		computeDeltas(event, 1, 2);
+	private boolean isRight(final int clientX, final int clientY) {
+		computeDeltas(clientX, clientY, 1, 2);
 		return (deltaXFromStarting >= 0 && deltaXFromStarting < clientWidth);
 	}
 
@@ -364,7 +405,7 @@ public class ResizableDialog extends DialogBox {
 		case Event.ONMOUSEMOVE:
 		case Event.ONMOUSEOVER:
 		case Event.ONMOUSEOUT:
-			ResizePosition possible = computeResizePosition(event);
+			ResizePosition possible = computeResizePosition(event.getClientX(), event.getClientY());
 			if (resizePosition != ResizePosition.UNDEFINED || possible != ResizePosition.UNDEFINED) {
 				switch (DOM.eventGetType(event)) {
 				case Event.ONMOUSEOVER:
@@ -394,10 +435,45 @@ public class ResizableDialog extends DialogBox {
 	protected void onPreviewNativeEvent(final NativePreviewEvent event) {
 		NativeEvent nativeEvent = event.getNativeEvent();
 
-		if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && computeResizePosition(event.getNativeEvent()) != ResizePosition.UNDEFINED) {
+		if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && computeResizePosition(nativeEvent.getClientX(), nativeEvent.getClientY()) != ResizePosition.UNDEFINED) {
 			nativeEvent.preventDefault();
 		}
 		super.onPreviewNativeEvent(event);
+	}
+
+	private int startingPanX;
+	private int startingPanY;
+	private boolean doingPan;
+
+	protected void doPanStart(PanStartEvent event) {
+		startingPanX = event.getTouchInformation().getClientX();
+		startingPanY = event.getTouchInformation().getClientY();
+		ResizePosition where = computeResizePosition(startingPanX, startingPanY);
+		if (where == ResizePosition.TOP) {
+			doingPan = true;
+		}
+	}
+
+	protected void doPanEnd(PanEndEvent event) {
+		doingPan = false;
+	}
+
+	protected void doPan(PanEvent event) {
+		if (doingPan) {
+			int xPos = event.getTouchInformation().getClientX();
+			int yPos = event.getTouchInformation().getClientY();
+			moveWindow(xPos, yPos);
+		}
+	}
+
+	private void moveWindow(int xPos, int yPos) {
+		int top = this.getAbsoluteTop();
+		int left = this.getAbsoluteLeft();
+		int deltaX = xPos - startingPanX;
+		int deltaY = yPos - startingPanY;
+		setPopupPosition(left + deltaX, top + deltaY);
+		startingPanX = xPos;
+		startingPanY = yPos;
 	}
 
 	/**
@@ -417,8 +493,10 @@ public class ResizableDialog extends DialogBox {
 	protected int getDialogHeight() {
 		return (content.getOffsetHeight());
 	}
+
 	/**
 	 * Enable or disable a widget.
+	 * 
 	 * @param widget to enable or disable
 	 * @param enable true to enable
 	 */

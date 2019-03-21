@@ -85,11 +85,11 @@ public class TouchHelper {
 	 */
 	public TouchHelper(final Widget widgetToTouch) {
 		HasAllTouchHandlers touchHandlers;
+		this.widgetToTouch = widgetToTouch;
 		if (!(widgetToTouch instanceof HasAllTouchHandlers)) {
-			Window.alert("Does not handle touches");
+			addTouchDOMHandlers(widgetToTouch);
 			return;
 		}
-		this.widgetToTouch = widgetToTouch;
 		touchHandlers = (HasAllTouchHandlers) widgetToTouch;
 
 		touchHandlers.addTouchStartHandler(new TouchStartHandler() {
@@ -120,6 +120,37 @@ public class TouchHelper {
 				doTouchCancel(event);
 			}
 		});
+	}
+
+	private void addTouchDOMHandlers(Widget widgetToTouch) {
+		widgetToTouch.addDomHandler(new TouchStartHandler() {
+
+			@Override
+			public void onTouchStart(final TouchStartEvent event) {
+				doTouchStart(event);
+			}
+		}, TouchStartEvent.getType());
+		widgetToTouch.addDomHandler(new TouchEndHandler() {
+
+			@Override
+			public void onTouchEnd(final TouchEndEvent event) {
+				doTouchEnd(event);
+			}
+		}, TouchEndEvent.getType());
+		widgetToTouch.addDomHandler(new TouchMoveHandler() {
+
+			@Override
+			public void onTouchMove(final TouchMoveEvent event) {
+				doTouchMove(event);
+			}
+		}, TouchMoveEvent.getType());
+		widgetToTouch.addDomHandler(new TouchCancelHandler() {
+
+			@Override
+			public void onTouchCancel(final TouchCancelEvent event) {
+				doTouchCancel(event);
+			}
+		}, TouchCancelEvent.getType());
 	}
 
 	/**
