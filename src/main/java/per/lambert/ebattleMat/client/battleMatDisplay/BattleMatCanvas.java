@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.BorderStyle;
@@ -38,7 +39,6 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
-import per.lambert.ebattleMat.client.touchHelper.TouchHelper;
 import per.lambert.ebattleMat.client.touchHelper.DoubleTapEvent;
 import per.lambert.ebattleMat.client.touchHelper.DoubleTapHandler;
 import per.lambert.ebattleMat.client.touchHelper.PanEndEvent;
@@ -47,6 +47,8 @@ import per.lambert.ebattleMat.client.touchHelper.PanEvent;
 import per.lambert.ebattleMat.client.touchHelper.PanHandler;
 import per.lambert.ebattleMat.client.touchHelper.PanStartEvent;
 import per.lambert.ebattleMat.client.touchHelper.PanStartHandler;
+import per.lambert.ebattleMat.client.touchHelper.TouchHelper;
+import per.lambert.ebattleMat.client.touchHelper.TouchInformation;
 import per.lambert.ebattleMat.client.touchHelper.ZoomEndEvent;
 import per.lambert.ebattleMat.client.touchHelper.ZoomEndHandler;
 import per.lambert.ebattleMat.client.touchHelper.ZoomEvent;
@@ -480,7 +482,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	public final void onMouseDown(final MouseDownEvent event) {
 		mouseDownXPos = event.getRelativeX(image.getElement());
 		mouseDownYPos = event.getRelativeY(image.getElement());
-		checkForFOWHandling(event.getNativeEvent());
+		checkForFOWHandling(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 		this.mouseDown = !toggleFOW;
 	}
 
@@ -489,9 +491,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event event data.
 	 */
-	private void checkForFOWHandling(final NativeEvent event) {
+	private void checkForFOWHandling(final int clientX, final int clientY) {
 		toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
-		computeSelectedColumnAndRow(event.getClientX(), event.getClientY());
+		computeSelectedColumnAndRow(clientX, clientY);
 		clearFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
 		if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
 			handleProperFOWAtSelectedPosition();
@@ -505,7 +507,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (mouseDown) {
 			handleMouseMove(event);
 		} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
-			handleFowMouseMove(event);
+			handleFowMouseMove(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 		}
 	}
 
@@ -514,8 +516,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event event data
 	 */
-	private void handleFowMouseMove(final MouseMoveEvent event) {
-		computeSelectedColumnAndRow(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+	private void handleFowMouseMove(final int clientX, final int clientY) {
+		computeSelectedColumnAndRow(clientX, clientY);
 		handleProperFOWAtSelectedPosition();
 	}
 
@@ -567,6 +569,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param event event data.
 	 */
 	public final void onMouseUp(final MouseUpEvent event) {
+		moveOperationComplete();
+	}
+
+	private void moveOperationComplete() {
 		if (toggleFOW) {
 			ServiceManager.getDungeonManager().saveFow();
 		}
@@ -1117,15 +1123,30 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		drawEverything();
 	}
 
+	public int getRelativeX(TouchInformation touchInformation, Element target) {
+		return touchInformation.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
+	}
+
+	/**
+	 * Gets the mouse y-position relative to a given element.
+	 * 
+	 * @param target the element whose coordinate system is to be used
+	 * @return the relative y-position
+	 */
+	public int getRelativeY(TouchInformation touchInformation, Element target) {
+		return touchInformation.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
+	}
+
 	/**
 	 * Handle Pan start.
 	 * 
 	 * @param event with data
 	 */
 	protected void doPanStart(final PanStartEvent event) {
-		mouseDownXPos = event.getTouchInformation().getPageX();
-		mouseDownYPos = event.getTouchInformation().getPageY();
-		this.mouseDown = true;
+		mouseDownXPos = getRelativeX(event.getTouchInformation(), canvas.getElement());
+		mouseDownYPos = getRelativeY(event.getTouchInformation(), canvas.getElement());
+		checkForFOWHandling(event.getTouchInformation().getClientX(), event.getTouchInformation().getClientY());
+		this.mouseDown = !toggleFOW;
 	}
 
 	/**
@@ -1135,6 +1156,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	protected void doPanEnd(final PanEndEvent event) {
 		this.mouseDown = false;
+		moveOperationComplete();
 	}
 
 	/**
@@ -1143,9 +1165,13 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param event with data
 	 */
 	protected void doPan(final PanEvent event) {
-		double xPos = event.getTouchInformation().getPageX();
-		double yPos = event.getTouchInformation().getPageY();
-		handleCanvasMove(xPos, yPos);
+		if (mouseDown) {
+			double xPos = event.getTouchInformation().getPageX();
+			double yPos = event.getTouchInformation().getPageY();
+			handleCanvasMove(xPos, yPos);
+		} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
+			handleFowMouseMove(event.getTouchInformation().getClientX(), event.getTouchInformation().getClientY());
+		}
 	}
 
 	/**

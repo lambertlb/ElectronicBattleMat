@@ -279,6 +279,13 @@ public class ResizableDialog extends DialogBox {
 		Element growElement = this.getCellElement(2, 2).getParentElement();
 		clientWidth = growElement.getClientWidth();
 		clientHeight = growElement.getClientHeight();
+		// make these bigger for touch
+		if (clientWidth < 25) {
+			clientWidth = 25;
+		}
+		if (clientHeight < 25) {
+			clientHeight = 25;
+		}
 	}
 
 	/**
@@ -304,7 +311,7 @@ public class ResizableDialog extends DialogBox {
 	@SuppressWarnings("unused")
 	private boolean isTop(final int clientX, final int clientY) {
 		computeDeltas(clientX, clientY, 0, 1);
-		return (deltaYFromStarting >= 0 && deltaYFromStarting < 25);
+		return (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight);
 	}
 
 	/**
@@ -443,37 +450,43 @@ public class ResizableDialog extends DialogBox {
 
 	private int startingPanX;
 	private int startingPanY;
-	private boolean doingPan;
+	private boolean windowMove;
+	private boolean windowResize;
 
 	protected void doPanStart(PanStartEvent event) {
 		startingPanX = event.getTouchInformation().getClientX();
 		startingPanY = event.getTouchInformation().getClientY();
 		ResizePosition where = computeResizePosition(startingPanX, startingPanY);
 		if (where == ResizePosition.TOP) {
-			doingPan = true;
+			windowMove = true;
+		} else if (where == ResizePosition.BOTTOMRIGHT) {
+			windowResize = true;
 		}
 	}
 
 	protected void doPanEnd(PanEndEvent event) {
-		doingPan = false;
+		windowMove = false;
+		windowResize = false;
 	}
 
 	protected void doPan(PanEvent event) {
-		if (doingPan) {
-			int xPos = event.getTouchInformation().getClientX();
-			int yPos = event.getTouchInformation().getClientY();
-			moveWindow(xPos, yPos);
-		}
-	}
-
-	private void moveWindow(int xPos, int yPos) {
-		int top = this.getAbsoluteTop();
-		int left = this.getAbsoluteLeft();
+		int xPos = event.getTouchInformation().getClientX();
+		int yPos = event.getTouchInformation().getClientY();
 		int deltaX = xPos - startingPanX;
 		int deltaY = yPos - startingPanY;
-		setPopupPosition(left + deltaX, top + deltaY);
+		if (windowMove) {
+			moveWindow(deltaX, deltaY);
+		} else if (windowResize) {
+			resizeWindow(deltaX, deltaY);
+		}
 		startingPanX = xPos;
 		startingPanY = yPos;
+	}
+
+	private void moveWindow(int deltaX, int deltaY) {
+		int top = this.getAbsoluteTop();
+		int left = this.getAbsoluteLeft();
+		setPopupPosition(left + deltaX, top + deltaY);
 	}
 
 	/**
