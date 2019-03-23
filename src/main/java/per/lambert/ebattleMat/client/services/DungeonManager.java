@@ -532,7 +532,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * 
 	 * @return directory for the current dungeon.
 	 */
-	private String getDirectoryForCurrentDungeon() {
+	@Override
+	public String getDirectoryForCurrentDungeon() {
 		return (uuidTemplatePathMap.get(selectedDungeon.getUUID()));
 	}
 

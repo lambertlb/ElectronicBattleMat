@@ -16,7 +16,6 @@ import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -122,7 +121,11 @@ public class TouchHelper {
 		});
 	}
 
-	private void addTouchDOMHandlers(Widget widgetToTouch) {
+	/**
+	 * Add touch handlers.
+	 * @param widgetToTouch widget that accepts touches.
+	 */
+	private void addTouchDOMHandlers(final Widget widgetToTouch) {
 		widgetToTouch.addDomHandler(new TouchStartHandler() {
 
 			@Override
@@ -202,6 +205,7 @@ public class TouchHelper {
 	 * 
 	 * @param event with data
 	 */
+	@SuppressWarnings("rawtypes")
 	private void computeAction(final TouchEvent event) {
 		Action newAction = Action.INVALID;
 		if (amountOfFingers == 2) {
@@ -218,6 +222,7 @@ public class TouchHelper {
 	 * @param newAction action we are moving to
 	 * @param event with data
 	 */
+	@SuppressWarnings("rawtypes")
 	private void setAction(final Action newAction, final TouchEvent event) {
 		if (newAction == currentAction) {
 			return;
@@ -233,6 +238,7 @@ public class TouchHelper {
 	 * @param newAction to start
 	 * @param event with data
 	 */
+	@SuppressWarnings("rawtypes")
 	private void startupNewAction(final Action newAction, final TouchEvent event) {
 		if (newAction == Action.PAN) {
 			widgetToTouch.fireEvent(new PanStartEvent(((Touch) event.getTouches().get(0)), computeTargetElement(event)));
@@ -246,6 +252,7 @@ public class TouchHelper {
 	 * 
 	 * @param event with data
 	 */
+	@SuppressWarnings("rawtypes")
 	private void closeoutOldAction(final TouchEvent event) {
 		if (currentAction == Action.PAN) {
 			widgetToTouch.fireEvent(new PanEndEvent(computeTargetElement(event)));
@@ -297,6 +304,7 @@ public class TouchHelper {
 	 * @param event with target
 	 * @return target element or null
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Element computeTargetElement(final TouchEvent event) {
 		Element targetElement = null;
 		if (event.getNativeEvent() != null) {

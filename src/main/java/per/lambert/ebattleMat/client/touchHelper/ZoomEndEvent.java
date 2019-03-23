@@ -46,6 +46,7 @@ public class ZoomEndEvent extends GwtEvent<ZoomEndHandler> {
 	 * 
 	 * @param targetElement element that was targeted.
 	 */
+	@SuppressWarnings("rawtypes")
 	public ZoomEndEvent(final TouchEvent targetElement) {
 		this.targetElement = TouchHelper.computeTargetElement(targetElement);
 	}

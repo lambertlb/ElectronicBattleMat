@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jetty-version>9.4.12.v20180830</jetty-version>
 		<!-- Uncomment the following to see full java script -->
-<!-- 		<gwt.style>DETAILED</gwt.style> -->
+		<!-- <gwt.style>DETAILED</gwt.style> -->
 	</properties>
 
 	<dependencyManagement>
@@ -112,7 +112,7 @@
 
 		<plugins>
 
-			<!-- GWT Maven Plugin -->
+			<!-- Compile gwt components -->
 			<plugin>
 				<groupId>net.ltgt.gwt.maven</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -128,7 +128,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<destDir>deliverables</destDir>
+					<destDir>ElectronicBattleMat</destDir>
 					<moduleName>per.lambert.ebattleMat.ElectronicBattleMat</moduleName>
 					<moduleShortName>ElectronicBattleMat</moduleShortName>
 					<failOnError>true</failOnError>
@@ -151,6 +151,7 @@
 				</configuration>
 			</plugin>
 
+			<!-- Build a jetty server so this can be run on a local LAN. -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
@@ -175,7 +176,9 @@
 				</executions>
 			</plugin>
 
-			<!-- copy outputs to deliverables -->
+			<!-- copy outputs to ElectronicBattleMat folder -->
+			<!-- This is so people can just get the deliverables and not have to actually 
+				build the project -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.0.2</version>
@@ -217,6 +220,10 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Clean out all the garbage from previous builds. -->
+			<!-- This is needed because this project is also an eclipse project which 
+				is easier for debugging -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.0.0</version>

@@ -1,10 +1,8 @@
 package per.lambert.ebattleMat.client.touchHelper;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 
 /**
  * Event for handling zoom start.
@@ -61,6 +59,7 @@ public class ZoomStartEvent extends GwtEvent<ZoomStartHandler> {
 	 * @param startingFinger2 starting finger2 position.
 	 * @param targetElement element that was targeted.
 	 */
+	@SuppressWarnings("rawtypes")
 	public ZoomStartEvent(final TouchInformation startingFinger1, final TouchInformation startingFinger2, final TouchEvent targetElement) {
 		this.targetElement = TouchHelper.computeTargetElement(targetElement);
 		zoomInformation = new ZoomInformation(startingFinger1, startingFinger2, targetElement);

@@ -73,6 +73,7 @@ public class ZoomInformation {
 	 * @param startingFinger2 starting finger2 position.
 	 * @param targetElement element that was targeted.
 	 */
+	@SuppressWarnings("rawtypes")
 	public ZoomInformation(final TouchInformation startingFinger1, final TouchInformation startingFinger2, final TouchEvent targetElement) {
 		this.startingFinger1 = startingFinger1.clone();
 		this.startingFinger2 = startingFinger2.clone();

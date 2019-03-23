@@ -428,10 +428,10 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 */
 	private void acceptChanges() {
 		if (fileNeedsToBeUploaded && legalFile) {
-			String baseURL = ServiceManager.getDungeonManager().getUrlToDungeonData();
+			String baseURL = ServiceManager.getDungeonManager().getDirectoryForCurrentDungeon();
 			String levelString = getCorrectLevelString();
 			pictureName = "level" + levelString + "." + fileExtension;
-			String filePath = baseURL + pictureName;
+			String filePath = baseURL + "/" + pictureName;
 			uploadFile(filePath);
 		} else {
 			acceptChangesToDungeonLevel();

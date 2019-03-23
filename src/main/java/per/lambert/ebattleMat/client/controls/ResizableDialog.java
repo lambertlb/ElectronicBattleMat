@@ -116,16 +116,30 @@ public class ResizableDialog extends DialogBox {
 	 * Width of client window.
 	 */
 	private int clientWidth;
-
 	/**
 	 * Content holder.
 	 */
 	private FlowPanel content;
-
 	/**
 	 * Helper for mobile touches.
 	 */
 	private TouchHelper touchHelper;
+	/**
+	 * Starting X for Pan operation.
+	 */
+	private int startingPanX;
+	/**
+	 * Starting Y for Pan operation.
+	 */
+	private int startingPanY;
+	/**
+	 * We are doing a window move operation.
+	 */
+	private boolean windowMove;
+	/**
+	 * Doing window resize operation.
+	 */
+	private boolean windowResize;
 
 	/**
 	 * Constructor.
@@ -258,7 +272,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * compute Resize Position.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return position of window being resized.
 	 */
 	private ResizePosition computeResizePosition(final int clientX, final int clientY) {
@@ -305,7 +320,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to top of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if top was changed.
 	 */
 	@SuppressWarnings("unused")
@@ -317,7 +333,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to top left of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if top left was changed.
 	 */
 	@SuppressWarnings("unused")
@@ -330,7 +347,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to top right of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if top right was changed.
 	 */
 	@SuppressWarnings("unused")
@@ -343,7 +361,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to bottom left of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if bottom left was changed.
 	 */
 	@SuppressWarnings("unused")
@@ -356,7 +375,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to bottom right of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if bottom right was changed.
 	 */
 	private boolean isBottomRight(final int clientX, final int clientY) {
@@ -368,7 +388,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to bottom of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if bottom was changed.
 	 */
 	@SuppressWarnings("unused")
@@ -380,7 +401,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to left of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if left was changed.
 	 */
 	@SuppressWarnings("unused")
@@ -392,7 +414,8 @@ public class ResizableDialog extends DialogBox {
 	/**
 	 * Was change to right of window.
 	 * 
-	 * @param event native event.
+	 * @param clientX x coordinate.
+	 * @param clientY y coordinate.
 	 * @return true if right was changed.
 	 */
 	@SuppressWarnings("unused")
@@ -448,12 +471,11 @@ public class ResizableDialog extends DialogBox {
 		super.onPreviewNativeEvent(event);
 	}
 
-	private int startingPanX;
-	private int startingPanY;
-	private boolean windowMove;
-	private boolean windowResize;
-
-	protected void doPanStart(PanStartEvent event) {
+	/**
+	 * Do Pan Start.
+	 * @param event pan event data
+	 */
+	protected void doPanStart(final PanStartEvent event) {
 		startingPanX = event.getTouchInformation().getClientX();
 		startingPanY = event.getTouchInformation().getClientY();
 		ResizePosition where = computeResizePosition(startingPanX, startingPanY);
@@ -464,12 +486,20 @@ public class ResizableDialog extends DialogBox {
 		}
 	}
 
-	protected void doPanEnd(PanEndEvent event) {
+	/**
+	 * Done panning.
+	 * @param event pan event data
+	 */
+	protected void doPanEnd(final PanEndEvent event) {
 		windowMove = false;
 		windowResize = false;
 	}
 
-	protected void doPan(PanEvent event) {
+	/**
+	 * Do Pan operation.
+	 * @param event pan event data
+	 */
+	protected void doPan(final PanEvent event) {
 		int xPos = event.getTouchInformation().getClientX();
 		int yPos = event.getTouchInformation().getClientY();
 		int deltaX = xPos - startingPanX;
@@ -483,7 +513,12 @@ public class ResizableDialog extends DialogBox {
 		startingPanY = yPos;
 	}
 
-	private void moveWindow(int deltaX, int deltaY) {
+	/**
+	 * Move window.
+	 * @param deltaX delta X of move.
+	 * @param deltaY delta Y of move.
+	 */
+	private void moveWindow(final int deltaX, final int deltaY) {
 		int top = this.getAbsoluteTop();
 		int left = this.getAbsoluteLeft();
 		setPopupPosition(left + deltaX, top + deltaY);

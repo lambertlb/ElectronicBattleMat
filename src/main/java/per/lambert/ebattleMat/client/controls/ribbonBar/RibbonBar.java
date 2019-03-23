@@ -435,12 +435,12 @@ public class RibbonBar extends Composite {
 	 */
 	private void setupForDungeonMaster() {
 		setupForEditDungeon();
+		ribbonGrid.setWidget(0, 4, manageDungeonsButton);
 		if (!ServiceManager.getDungeonManager().isEditMode()) {
 			ribbonGrid.setWidget(1, 4, fowToggle);
+			ribbonGrid.setWidget(0, 5, characterSelect);
+			ribbonGrid.setWidget(1, 5, createCharacter);
 		}
-		ribbonGrid.setWidget(0, 4, manageDungeonsButton);
-		ribbonGrid.setWidget(0, 5, characterSelect);
-		ribbonGrid.setWidget(1, 5, createCharacter);
 	}
 
 	/**
@@ -478,6 +478,7 @@ public class RibbonBar extends Composite {
 		for (String levelName : levelNames) {
 			levelSelect.addItem(levelName);
 		}
+		levelSelect.setSelectedIndex(ServiceManager.getDungeonManager().getCurrentLevel());
 	}
 
 	/**

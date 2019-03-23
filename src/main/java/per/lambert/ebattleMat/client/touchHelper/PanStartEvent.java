@@ -3,7 +3,6 @@ package per.lambert.ebattleMat.client.touchHelper;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 
 /**
  * Event for handling pan start.

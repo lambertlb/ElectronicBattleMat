@@ -405,4 +405,10 @@ public interface IDungeonManager extends IPogManager {
 	 */
 	String[] getTemplaceRaces(PogPlace place, String pogType);
 
+	/**
+	 * Get directory for the current dungeon.
+	 * 
+	 * @return directory for the current dungeon.
+	 */
+	String getDirectoryForCurrentDungeon();
 }

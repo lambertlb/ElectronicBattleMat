@@ -7,9 +7,10 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
 import com.google.gwt.event.dom.client.DragOverEvent;
@@ -387,6 +388,13 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				doZoomEnd(event);
 			}
 		});
+		canvas.addDoubleClickHandler(new DoubleClickHandler() {
+			
+			@Override
+			public void onDoubleClick(final DoubleClickEvent event) {
+				restoreOriginalView();
+			}
+		});
 	}
 
 	/**
@@ -489,7 +497,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Check if we need to handle fog of war.
 	 * 
-	 * @param event event data.
+	 * @param clientX X Coorordinate of operation..
+	 * @param clientY Y Coorordinate of operation..
 	 */
 	private void checkForFOWHandling(final int clientX, final int clientY) {
 		toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
@@ -514,7 +523,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Handle mouse move.
 	 * 
-	 * @param event event data
+	 * @param clientX X Coorordinate of operation..
+	 * @param clientY Y Coorordinate of operation..
 	 */
 	private void handleFowMouseMove(final int clientX, final int clientY) {
 		computeSelectedColumnAndRow(clientX, clientY);
@@ -572,6 +582,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		moveOperationComplete();
 	}
 
+	/**
+	 * Move completion.
+	 */
 	private void moveOperationComplete() {
 		if (toggleFOW) {
 			ServiceManager.getDungeonManager().saveFow();
@@ -1117,23 +1130,36 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param event with data.
 	 */
 	protected void doDoubleTap(final DoubleTapEvent event) {
+		restoreOriginalView();
+	}
+
+	/**
+	 * Restore view to original.
+	 */
+	private void restoreOriginalView() {
 		offsetX = 0;
 		offsetY = 0;
 		calculateStartingZoom();
 		drawEverything();
 	}
 
-	public int getRelativeX(TouchInformation touchInformation, Element target) {
+	/**
+	 * Get X coordinate relative between mouse click and target element.
+	 * @param touchInformation touch information
+	 * @param target widget
+	 * @return X coordinate relative between mouse click and target element. 
+	 */
+	public int getRelativeX(final TouchInformation touchInformation, final Element target) {
 		return touchInformation.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
 	}
 
 	/**
-	 * Gets the mouse y-position relative to a given element.
-	 * 
-	 * @param target the element whose coordinate system is to be used
-	 * @return the relative y-position
+	 * Get Y coordinate relative between mouse click and target element.
+	 * @param touchInformation touch information
+	 * @param target widget
+	 * @return Y coordinate relative between mouse click and target element. 
 	 */
-	public int getRelativeY(TouchInformation touchInformation, Element target) {
+	public int getRelativeY(final TouchInformation touchInformation, final Element target) {
 		return touchInformation.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
 	}
 
@@ -1203,7 +1229,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	protected void doZoom(final ZoomEvent event) {
 		double currentDistance = event.getZoomInformation().getCurrentDistance();
-		int move = (int) (distance - currentDistance);
 		double xPos = event.getZoomInformation().currentCenterX();
 		double yPos = event.getZoomInformation().currentCenterY();
 		scaleCanvas(xPos, yPos, currentDistance / distance);
