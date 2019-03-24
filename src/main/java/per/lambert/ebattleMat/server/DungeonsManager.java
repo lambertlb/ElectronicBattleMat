@@ -302,7 +302,7 @@ public final class DungeonsManager {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String dstDirectory = newDungeonName.replaceAll("\\s+", "_");
+			String dstDirectory = newDungeonName.replaceAll("[^a-zA-Z0-9]", "_");
 			File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(templateDungeonUUID));
 			File destDir = new File(servletPath.getPath() + DUNGEONS_LOCATION + dstDirectory);
 			FileUtils.copyDirectory(srcDir, destDir);
