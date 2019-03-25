@@ -337,7 +337,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param requestData request data
 	 * @param callback user callback
 	 */
-	private void getDungeonList(final Object requestData, final IUserCallback callback) {
+	public void getDungeonList(final Object requestData, final IUserCallback callback) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		dataRequester.requestData("", "GETDUNGEONLIST", parameters, new IUserCallback() {

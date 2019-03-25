@@ -8,6 +8,7 @@ import per.lambert.ebattleMat.client.interfaces.IEventManager;
  * Service manager.
  * 
  * Used to gain access to all available services.
+ * 
  * @author LLambert
  *
  */
@@ -19,6 +20,7 @@ public final class ServiceManager {
 
 	/**
 	 * get instance of event manager.
+	 * 
 	 * @return event manager
 	 */
 	public static IEventManager getEventManager() {
@@ -35,6 +37,7 @@ public final class ServiceManager {
 
 	/**
 	 * Get instance of dungeon manager.
+	 * 
 	 * @return dungeon manager.
 	 */
 	public static IDungeonManager getDungeonManager() {
@@ -50,7 +53,17 @@ public final class ServiceManager {
 	private static IDataRequester dataRequester;
 
 	/**
+	 * set requester or unit test.
+	 * 
+	 * @param dataRequester for test
+	 */
+	public static void setDataRequesterForUnitTest(final IDataRequester dataRequester) {
+		ServiceManager.dataRequester = dataRequester;
+	}
+
+	/**
 	 * get instance of data requester.
+	 * 
 	 * @return data requester.
 	 */
 	public static IDataRequester getDataRequester() {
@@ -59,11 +72,11 @@ public final class ServiceManager {
 		}
 		return (dataRequester);
 	}
-	
+
 	/**
 	 * Constructor.
 	 */
 	private ServiceManager() {
-		
+
 	}
 }
