@@ -21,7 +21,7 @@
 		<!-- Don't let your Mac use a crazy non-standard encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<jetty-version>9.4.12.v20180830</jetty-version>
+		<jetty-version>9.2.11.v20150529</jetty-version>
 		<!-- Uncomment the following to see full java script -->
 		<!-- <gwt.style>DETAILED</gwt.style> -->
 	</properties>
@@ -261,6 +261,13 @@
 							<directory>${basedir}/src/main</directory>
 							<includes>
 								<include>**/gwt-unitCache/**</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>${basedir}</directory>
+							<includes>
+								<include>**/www-test/**</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>

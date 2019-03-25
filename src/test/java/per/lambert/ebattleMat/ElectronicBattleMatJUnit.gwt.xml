@@ -8,4 +8,5 @@
 <module rename-to='electronicbattlemat'>
   <!-- Inherit our applications main module.                      -->
   <inherits name='per.lambert.ebattleMat.ElectronicBattleMat'/>
+
 </module>

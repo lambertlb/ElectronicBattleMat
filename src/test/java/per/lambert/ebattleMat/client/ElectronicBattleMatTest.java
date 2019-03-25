@@ -1,6 +1,8 @@
 package per.lambert.ebattleMat.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.sun.source.tree.AssertTree;
 
 /**
  * GWT JUnit tests must extend GWTTestCase.
@@ -14,6 +16,11 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		return "per.lambert.ebattleMat.ElectronicBattleMatJUnit";
 	}
 
+	/**
+	 * Tests the FieldVerifier.
+	 */
+	public void testFieldVerifier() {
+	}
 
 	/**
 	 * This test will send a request to the server using the greetServer method in
@@ -22,5 +29,4 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	public void testGreetingService() {
 		assertTrue(true);
 	}
-
 }
