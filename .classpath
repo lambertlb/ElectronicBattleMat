@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/commons-fileupload-1.4.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/gson-2.8.5.jar"/>
 	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER/gwt-2.8.2"/>
