@@ -297,10 +297,7 @@ public class DungeonSelectPresenter {
 	 * Edit the selected dungeon.
 	 */
 	public void editDungeon() {
-		ServiceManager.getDungeonManager().setEditMode(true);
-		ServiceManager.getDungeonManager().setDungeonMaster(isDungeonMaster);
-		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
-		ServiceManager.getDungeonManager().editSelectedDungeonUUID();
+		ServiceManager.getDungeonManager().editSelectedDungeonUUID(selectedDungeonUUID);
 		view.close();
 	}
 	/**
@@ -345,20 +342,14 @@ public class DungeonSelectPresenter {
 	 * Join a session.
 	 */
 	public void joinSession() {
-		ServiceManager.getDungeonManager().setEditMode(false);
-		ServiceManager.getDungeonManager().setDungeonMaster(false);
-		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
-		ServiceManager.getDungeonManager().joinSession(newSessionUUID);
+		ServiceManager.getDungeonManager().joinSession(selectedDungeonUUID, newSessionUUID);
 		view.close();
 	}
 	/**
 	 * DM a session.
 	 */
 	public void dmSession() {
-		ServiceManager.getDungeonManager().setEditMode(false);
-		ServiceManager.getDungeonManager().setDungeonMaster(true);
-		ServiceManager.getDungeonManager().selectDungeon(selectedDungeonUUID);
-		ServiceManager.getDungeonManager().joinSession(newSessionUUID);
+		ServiceManager.getDungeonManager().dmSession(selectedDungeonUUID, newSessionUUID);
 		view.close();
 	}
 	/**

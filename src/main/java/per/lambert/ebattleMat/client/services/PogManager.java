@@ -222,7 +222,7 @@ public abstract class PogManager implements IPogManager {
 	/**
 	 * Load in monster Pogs from resource file.
 	 */
-	protected void loadMonsterPogs() {
+	public void loadMonsterPogs() {
 		monsterTemplatePogs = null;
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -287,7 +287,7 @@ public abstract class PogManager implements IPogManager {
 	/**
 	 * Load in room object Pogs from resource file.
 	 */
-	protected void loadRoomObjectPogs() {
+	public void loadRoomObjectPogs() {
 		roomObjectTemplatePogs = null;
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();

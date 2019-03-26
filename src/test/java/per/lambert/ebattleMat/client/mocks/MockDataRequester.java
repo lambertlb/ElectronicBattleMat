@@ -1,4 +1,4 @@
-package per.lambert.ebattleMat.client;
+package per.lambert.ebattleMat.client.mocks;
 
 import java.util.Map;
 

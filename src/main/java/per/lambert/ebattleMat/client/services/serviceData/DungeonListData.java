@@ -14,13 +14,6 @@ public class DungeonListData extends JavaScriptObject {
 	protected DungeonListData() {
 	}
 	/**
-	 * Path to resources on server.
-	 * @return path to resources
-	 */
-	public final native String getServerPath() /*-{
-		return this.serverPath;
-	}-*/;
-	/**
 	 * get array of dungeon names.
 	 * @return array of dungeon names
 	 */

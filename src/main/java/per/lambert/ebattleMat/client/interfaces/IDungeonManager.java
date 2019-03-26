@@ -37,13 +37,6 @@ public interface IDungeonManager extends IPogManager {
 	boolean isDungeonMaster();
 
 	/**
-	 * set true if dungeon master.
-	 * 
-	 * @param isDungeonMaster true if dungeon master
-	 */
-	void setDungeonMaster(boolean isDungeonMaster);
-
-	/**
 	 * Is current dungeon in edit mode.
 	 * 
 	 * @return true if in edit mode.
@@ -51,23 +44,10 @@ public interface IDungeonManager extends IPogManager {
 	boolean isEditMode();
 
 	/**
-	 * Set edit mode of current dungeon.
-	 * 
-	 * @param editMode true if in edit mode.
-	 */
-	void setEditMode(boolean editMode);
-
-	/**
-	 * Select a dungeon UUID for future operations.
-	 * 
-	 * @param dungeonUUID to select
-	 */
-	void selectDungeon(String dungeonUUID);
-
-	/**
 	 * Edit the selected dungeon based on selected UUID.
+	 * @param selectedDungeonUUID UUID of dungeon to edit.
 	 */
-	void editSelectedDungeonUUID();
+	void editSelectedDungeonUUID(String selectedDungeonUUID);
 
 	/**
 	 * get dungeon data for selected dungeon.
@@ -235,8 +215,17 @@ public interface IDungeonManager extends IPogManager {
 	 * Join this session as a player.
 	 * 
 	 * @param sessionUUID UUID of session
+	 * @param selectedDungeonUUID uuid of dungeon for session
 	 */
-	void joinSession(String sessionUUID);
+	void joinSession(String selectedDungeonUUID, String sessionUUID);
+
+	/**
+	 * DM this session as a dungeon master.
+	 * 
+	 * @param sessionUUID UUID of session
+	 * @param selectedDungeonUUID uuid of dungeon for session
+	 */
+	void dmSession(String selectedDungeonUUID, String sessionUUID);
 
 	/**
 	 * Delete the specified session in the dungeon.

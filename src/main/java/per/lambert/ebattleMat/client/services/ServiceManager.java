@@ -31,6 +31,14 @@ public final class ServiceManager {
 	}
 
 	/**
+	 * set event manager for unit test.
+	 * @param eventManager for test
+	 */
+	public static void setEventManagerForUnitTest(final IEventManager eventManager) {
+		ServiceManager.eventManager = eventManager;
+	}
+
+	/**
 	 * dungeon manager.
 	 */
 	private static IDungeonManager dungeonManager;

@@ -2,7 +2,6 @@ package per.lambert.ebattleMat.server.handlers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -41,18 +40,11 @@ public class DungeonListHandler implements IWebRequestHandler {
 		 */
 		private String[] dungeonDirectories;
 		/**
-		 * path to server resources.
-		 */
-		@SuppressWarnings("unused")
-		private String serverPath;
-		/**
 		 * Handle the request.
 		 * @param dungeonListData map of dungeons and UUIDS
 		 * @param dungeonDirectoryData map of dungeon and directory names
-		 * @param serverPath path to server resources
 		 */
-		public DungeonListResponseData(final Map<String,String> dungeonListData, final Map<String,String> dungeonDirectoryData, final String serverPath) {
-			this.serverPath = serverPath;
+		public DungeonListResponseData(final Map<String,String> dungeonListData, final Map<String,String> dungeonDirectoryData) {
 			dungeonNames = new String[dungeonListData.size()];
 			dungeonUUIDS = new String[dungeonListData.size()];
 			dungeonDirectories = new String[dungeonListData.size()];
@@ -76,8 +68,7 @@ public class DungeonListHandler implements IWebRequestHandler {
 	@Override
 	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		DungeonsManager.getDungeonListData(servlet);
-		URL servletPath = servlet.getServletContext().getResource("/");
-		DungeonListResponseData dungeonListResponseData = new DungeonListResponseData(DungeonsManager.getDungeonNameToUUIDMap(), DungeonsManager.getUuidTemplatePathMap(), servletPath.getPath());
+		DungeonListResponseData dungeonListResponseData = new DungeonListResponseData(DungeonsManager.getDungeonNameToUUIDMap(), DungeonsManager.getUuidTemplatePathMap());
 		Gson gson = new Gson();
 		String responseDataString = gson.toJson(dungeonListResponseData);
 

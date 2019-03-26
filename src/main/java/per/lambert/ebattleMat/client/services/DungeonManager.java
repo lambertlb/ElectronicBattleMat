@@ -187,10 +187,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Set state of dungeon master.
+	 * @param isDungeonMaster trueif DM
 	 */
-	@Override
-	public void setDungeonMaster(final boolean isDungeonMaster) {
+	private void setDungeonMaster(final boolean isDungeonMaster) {
 		this.isDungeonMaster = isDungeonMaster;
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DMStateChange, null));
 	}
@@ -206,14 +206,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	@Override
 	public boolean isEditMode() {
 		return editMode;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setEditMode(final boolean editMode) {
-		this.editMode = editMode;
 	}
 
 	/**
@@ -233,22 +225,28 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * Map of UUIDs to dungeon templates.
 	 */
 	private Map<String, String> uuidTemplatePathMap = new HashMap<String, String>();
+
+	/**
+	 * Map map available for unit test.
+	 * 
+	 * @return map of uuids to paths
+	 */
+	public Map<String, String> getUuidTemplatePathMapForUnitTest() {
+		return uuidTemplatePathMap;
+	}
+
 	/**
 	 * UUID of master template.
 	 */
 	private String uuidOfMasterTemplate;
-	/**
-	 * Path to server resources.
-	 */
-	private String serverPath;
 
 	/**
-	 * get Path to server resources.
+	 * Get uuid of master template. Exposed for unit test.
 	 * 
-	 * @return Path to server resources.
+	 * @return uuid of master template.
 	 */
-	public String getServerPath() {
-		return serverPath;
+	public String getUuidOfMasterTemplate() {
+		return uuidOfMasterTemplate;
 	}
 
 	/**
@@ -367,7 +365,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		uuidTemplatePathMap.clear();
 		uuidOfMasterTemplate = null;
 		DungeonListData dungeonListData = JsonUtils.<DungeonListData>safeEval((String) data);
-		serverPath = dungeonListData.getServerPath();
 		for (int i = 0; i < dungeonListData.getDungeonNames().length; ++i) {
 			dungeonToUUIDMap.put(dungeonListData.getDungeonNames()[i], dungeonListData.getDungeonUUIDS()[i]);
 			uuidTemplatePathMap.put(dungeonListData.getDungeonUUIDS()[i], dungeonListData.getDungeonDirectories()[i]);
@@ -376,22 +373,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			}
 		}
 		callback.onSuccess(requestData, null);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void selectDungeon(final String dungeonUUID) {
-		selectedDungeonUUID = dungeonUUID;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void editSelectedDungeonUUID() {
-		loadSelectedDungeon();
 	}
 
 	/**
@@ -813,7 +794,33 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void joinSession(final String sessionUUID) {
+	public void editSelectedDungeonUUID(final String selectedDungeonUUID) {
+		setDungeonMaster(true);
+		editMode = true;
+		this.selectedDungeonUUID = selectedDungeonUUID;
+		selectedSessionUUID = null;
+		loadSelectedDungeon();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void joinSession(final String selectedDungeonUUID, final String sessionUUID) {
+		setDungeonMaster(false);
+		editMode = false;
+		this.selectedDungeonUUID = selectedDungeonUUID;
+		selectedSessionUUID = sessionUUID;
+		loadSelectedDungeon();
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dmSession(final String selectedDungeonUUID, final String sessionUUID) {
+		setDungeonMaster(true);
+		editMode = false;
+		this.selectedDungeonUUID = selectedDungeonUUID;
 		selectedSessionUUID = sessionUUID;
 		loadSelectedDungeon();
 	}
@@ -1100,7 +1107,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			addOrUpdatePogToSessionResource(pog); // shouldn't get here but what the heck just in case.
 			return;
 		}
-//		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
+		// ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
 	}
 
 	/**
