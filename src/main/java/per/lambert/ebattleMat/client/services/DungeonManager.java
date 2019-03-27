@@ -360,7 +360,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param callback user callback
 	 * @param data data from response
 	 */
-	private void handleSuccessfulDungeonList(final Object requestData, final IUserCallback callback, final Object data) {
+	public void handleSuccessfulDungeonList(final Object requestData, final IUserCallback callback, final Object data) {
 		dungeonToUUIDMap.clear();
 		uuidTemplatePathMap.clear();
 		uuidOfMasterTemplate = null;

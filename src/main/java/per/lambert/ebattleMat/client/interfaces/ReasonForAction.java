@@ -85,5 +85,9 @@ public enum ReasonForAction {
 	/**
 	 * Dungeon master state changed.
 	 */
-	DMStateChange
+	DMStateChange,
+	/**
+	 * Last reason used for array sizing.
+	 */
+	LastReason
 }
