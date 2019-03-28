@@ -188,6 +188,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 
 	/**
 	 * Set state of dungeon master.
+	 * 
 	 * @param isDungeonMaster trueif DM
 	 */
 	private void setDungeonMaster(final boolean isDungeonMaster) {
@@ -452,100 +453,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setSessionLevelSize(final int columns, final int rows) {
-		DungeonLevel dungeonLevel = getCurrentLevelData();
-		if (!isDungeonMaster || dungeonLevel == null) {
-			return;
-		}
-		if (dungeonLevel.getColumns() == columns && dungeonLevel.getRows() == rows) {
-			return;
-		}
-		dungeonLevel.setColumns(columns);
-		dungeonLevel.setRows(rows);
-		saveDungeonData();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isFowSet(final int columns, final int rows) {
-		if (editMode) {
-			return (false);
-		}
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (sessionLevel == null) {
-			return (false);
-		}
-		return (sessionLevel.isFowSet(columns, rows));
-	}
-
-	/**
-	 * Fog of war data is dirty.
-	 */
-	private boolean fowDirty;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFow(final int columns, final int rows, final boolean value) {
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (isDungeonMaster && sessionLevel != null) {
-			sessionLevel.updateFOW(columns, rows, value);
-			fowDirty = true;
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void saveFow() {
-		if (isDungeonMaster && fowDirty) {
-			updateFogOfWar();
-		}
-		fowDirty = false;
-	}
-
-	/**
-	 * Get directory for the current dungeon.
-	 * 
-	 * @return directory for the current dungeon.
-	 */
-	@Override
-	public String getDirectoryForCurrentDungeon() {
-		return (uuidTemplatePathMap.get(selectedDungeon.getUUID()));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getUrlToDungeonResource(final String resourceItem) {
-		if (resourceItem.startsWith("http")) {
-			return resourceItem;
-		}
-		Date now = new Date();
-		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + now.getTime();
-		return (resourceUrl);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getUrlToDungeonData() {
-		String directoryForDungeon = getDirectoryForCurrentDungeon();
-		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		String resourceUrl = dataRequester.getWebPath() + directoryForDungeon + "/";
-		return (resourceUrl);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void createNewDungeon(final String dungeonUUID, final String newDungeonName) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", dungeonUUID);
@@ -660,56 +567,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * 
 	 * @param data from response
 	 */
-	private void handleSuccessfulSessionList(final Object data) {
+	public void handleSuccessfulSessionList(final Object data) {
 		sessionListData = JsonUtils.<SessionListData>safeEval((String) data);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionListChanged, null));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isNameValidForNewSession(final String newSessionName) {
-		boolean isValidSessionName = !newSessionName.startsWith("Enter ") && newSessionName.length() > 4;
-		boolean isInCurrentSessionNames = false;
-		boolean isInCurrentSessionDirectories = false;
-		if (isValidSessionName) {
-			isInCurrentSessionNames = isInCurrentSessionNames(newSessionName);
-		}
-		return isValidSessionName && !isInCurrentSessionNames && !isInCurrentSessionDirectories;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isValidNewCharacterName(final String characterName) {
-		boolean isValid = !characterName.startsWith("Enter ") && characterName.length() > 3;
-		return isValid;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isValidNewMonsterName(final String monsterName) {
-		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 3;
-		return isValid;
-	}
-
-	/**
-	 * Is this session name in the current list.
-	 * 
-	 * @param newSessionName new session name
-	 * @return true if in list
-	 */
-	private boolean isInCurrentSessionNames(final String newSessionName) {
-		for (String sessionName : sessionListData.getSessionNames()) {
-			if (sessionName.equals(newSessionName)) {
-				return (true);
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -794,6 +654,147 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void setSessionLevelSize(final int columns, final int rows) {
+		DungeonLevel dungeonLevel = getCurrentLevelData();
+		if (!isDungeonMaster || dungeonLevel == null) {
+			return;
+		}
+		if (dungeonLevel.getColumns() == columns && dungeonLevel.getRows() == rows) {
+			return;
+		}
+		dungeonLevel.setColumns(columns);
+		dungeonLevel.setRows(rows);
+		saveDungeonData();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isFowSet(final int columns, final int rows) {
+		if (editMode) {
+			return (false);
+		}
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return (false);
+		}
+		return (sessionLevel.isFowSet(columns, rows));
+	}
+
+	/**
+	 * Fog of war data is dirty.
+	 */
+	private boolean fowDirty;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setFow(final int columns, final int rows, final boolean value) {
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (isDungeonMaster && sessionLevel != null) {
+			sessionLevel.updateFOW(columns, rows, value);
+			fowDirty = true;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void saveFow() {
+		if (isDungeonMaster && fowDirty) {
+			updateFogOfWar();
+		}
+		fowDirty = false;
+	}
+
+	/**
+	 * Get directory for the current dungeon.
+	 * 
+	 * @return directory for the current dungeon.
+	 */
+	@Override
+	public String getDirectoryForCurrentDungeon() {
+		return (uuidTemplatePathMap.get(selectedDungeon.getUUID()));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getUrlToDungeonResource(final String resourceItem) {
+		if (resourceItem.startsWith("http")) {
+			return resourceItem;
+		}
+		Date now = new Date();
+		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + now.getTime();
+		return (resourceUrl);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getUrlToDungeonData() {
+		String directoryForDungeon = getDirectoryForCurrentDungeon();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		String resourceUrl = dataRequester.getWebPath() + directoryForDungeon + "/";
+		return (resourceUrl);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isNameValidForNewSession(final String newSessionName) {
+		boolean isValidSessionName = !newSessionName.startsWith("Enter ") && newSessionName.length() > 4;
+		boolean isInCurrentSessionNames = false;
+		boolean isInCurrentSessionDirectories = false;
+		if (isValidSessionName) {
+			isInCurrentSessionNames = isInCurrentSessionNames(newSessionName);
+		}
+		return isValidSessionName && !isInCurrentSessionNames && !isInCurrentSessionDirectories;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isValidNewCharacterName(final String characterName) {
+		boolean isValid = !characterName.startsWith("Enter ") && characterName.length() > 3;
+		return isValid;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isValidNewMonsterName(final String monsterName) {
+		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 3;
+		return isValid;
+	}
+
+	/**
+	 * Is this session name in the current list.
+	 * 
+	 * @param newSessionName new session name
+	 * @return true if in list
+	 */
+	private boolean isInCurrentSessionNames(final String newSessionName) {
+		for (String sessionName : sessionListData.getSessionNames()) {
+			if (sessionName.equals(newSessionName)) {
+				return (true);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void editSelectedDungeonUUID(final String selectedDungeonUUID) {
 		setDungeonMaster(true);
 		editMode = true;
@@ -813,6 +814,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		selectedSessionUUID = sessionUUID;
 		loadSelectedDungeon();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */

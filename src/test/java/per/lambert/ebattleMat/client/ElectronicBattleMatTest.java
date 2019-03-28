@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.junit.client.GWTTestCase;
 
@@ -21,6 +22,8 @@ import per.lambert.ebattleMat.client.services.DungeonManager;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
@@ -53,26 +56,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	 */
 	public String getModuleName() {
 		return "per.lambert.ebattleMat.ElectronicBattleMatJUnit";
-	}
-
-	/**
-	 * Set proper bit based on reason.
-	 * 
-	 * @param event with reason
-	 */
-	private void setEventResults(final GwtEvent<?> event) {
-		if (event instanceof ReasonForActionEvent) {
-			eventStates[((ReasonForActionEvent) event).getReasonForAction().ordinal()] = true;
-		}
-	}
-
-	/**
-	 * Make sure we had this event.
-	 * 
-	 * @param reason for event
-	 */
-	private void hadEvent(final ReasonForAction reason) {
-		assertTrue(eventStates[reason.ordinal()]);
 	}
 
 	/**
@@ -279,7 +262,334 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
+	 * Test saving dungeon data after editing.
+	 */
+	public void testSaveSelectedDungeonTemplate() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateDungeonList(dungeonManager);
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
+			}
+		});
+		dungeonManager.editSelectedDungeonUUID("dungeon1-template");
+		assertTrue(dungeonManager.isThereASelectedDungeon());
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "SAVEJSONFILE");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				dataRequesterForTest.setTestCallback(null);
+				callback.onSuccess(null, null);
+			}
+		});
+		dungeonManager.saveDungeonData();
+		hadEvent(ReasonForAction.DungeonDataSaved);
+	}
+
+	/**
+	 * Test setting session level size.
+	 */
+	public void testSetSessionLevelSize() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateDungeonList(dungeonManager);
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
+			}
+		});
+		dungeonManager.editSelectedDungeonUUID("dungeon1-template");
+		assertTrue(dungeonManager.isThereASelectedDungeon());
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				DungeonLevel dungeonLevel = dungeonManager.getCurrentLevelData();
+				assertTrue(dungeonLevel.getColumns() == 50);
+				assertTrue(dungeonLevel.getRows() == 60);
+				callback.onSuccess(null, null);
+			}
+		});
+		dungeonManager.setSessionLevelSize(50, 60);
+		hadEvent(ReasonForAction.DungeonDataSaved);
+	}
+
+	/**
+	 * Test creating new dungeon.
+	 */
+	public void testCreateNewDungeon() {
+		DungeonManager dungeonManager = new DungeonManager();
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "CREATENEWDUNGEON");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("newDungeonName"));
+				assertTrue(parameters.get("newDungeonName") == "New Dungeon");
+
+				// Create new dungeon callback will call get dungeon list so we have to fake return one.
+				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+					@Override
+					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+						dataRequesterForTest.setTestCallback(null);
+						callback.onSuccess(null, MockResponseData.GETDUNGEONLISTRESPONSE);
+					}
+				});
+				callback.onSuccess(null, null);
+			}
+		});
+		dungeonManager.createNewDungeon("dungeon1-template", "New Dungeon");
+		hadEvent(ReasonForAction.DungeonDataCreated);
+	}
+
+	/**
+	 * Test if OK to delete a dungeon.
+	 */
+	public void testOkToDeleteThisTemplate() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateDungeonList(dungeonManager);
+		assertTrue(dungeonManager.okToDeleteThisTemplate("dungeon1-template"));
+		assertFalse(dungeonManager.okToDeleteThisTemplate("template-dungeon"));
+	}
+
+	/**
+	 * Test dungeon template.
+	 */
+	public void testDeleteTemplate() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateDungeonList(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "DELETEDUNGEON");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+
+				// delete dungeon callback will call get dungeon list so we have to fake return one.
+				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+					@Override
+					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+						dataRequesterForTest.setTestCallback(null);
+						callback.onSuccess(null, MockResponseData.GETDUNGEONLISTRESPONSE);
+					}
+				});
+				callback.onSuccess(null, null);
+			}
+		});
+		dungeonManager.deleteTemplate("dungeon1-template");
+		hadEvent(ReasonForAction.DungeonDataDeleted);
+	}
+
+	/**
+	 * Test get session list.
+	 */
+	public void testGetSessionList() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateDungeonList(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "GETSESSIONLIST");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				callback.onSuccess(null, MockResponseData.GETSESSIONLISTRESPONSE);
+			}
+		});
+		dungeonManager.getSessionList("dungeon1-template");
+		hadEvent(ReasonForAction.SessionListChanged);
+	}
+
+	/**
+	 * Test create new session.
+	 */
+	public void testCreateNewSession() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateDungeonList(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "CREATENEWSESSION");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("newSessionName"));
+				assertTrue(parameters.get("newSessionName") == "New Session");
+
+				// creating new session will call get session list
+				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+					@Override
+					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+						callback.onSuccess(null, MockResponseData.GETSESSIONLISTRESPONSE);
+					}
+				});
+				callback.onSuccess(null, null);
+			}
+		});
+		dungeonManager.createNewSession("dungeon1-template", "New Session");
+		hadEvent(ReasonForAction.SessionListChanged);
+	}
+
+	/**
+	 * Test deleting a session.
+	 */
+	public void testDeleteSession() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateDungeonList(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "DELETESESSION");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("sessionUUID"));
+				assertTrue(parameters.get("sessionUUID") == "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
+
+				// deleting session will call get session list
+				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+					@Override
+					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+						callback.onSuccess(null, MockResponseData.GETSESSIONLISTRESPONSE);
+					}
+				});
+				callback.onSuccess(null, null);
+			}
+		});
+		dungeonManager.deleteSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
+		hadEvent(ReasonForAction.SessionListChanged);
+	}
+	/**
+	 * Test DMing a session.
+	 * This is complicated to setup because ot requires the following.
+	 * 1) loaded dungeon list.
+	 * 2) loaded and selected dungeon.
+	 * 3) loaded session list for dungeon.
+	 */
+	public void testDmSession() {
+		DungeonManager dungeonManager = new DungeonManager();
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				if (requestType != "LOADSESSION") {
+					dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
+					return;
+				}
+				assertTrue(requestType == "LOADSESSION");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("sessionUUID"));
+				assertTrue(parameters.get("sessionUUID") == "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
+				assertTrue(parameters.containsKey("version"));
+				assertTrue(parameters.get("version") == "-1");
+				callback.onSuccess(null, MockResponseData.LOADSESSIONDATARESPONSE);
+			}
+		});
+		dungeonManager.dmSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
+		hadEvent(ReasonForAction.DungeonDataReadyToJoin);
+		assertTrue(dungeonManager.getSelectedSession() != null);
+		spotCheckSessionData(dungeonManager.getSelectedSession());
+	}
+
+	/**
+	 * Spot check session data.
+	 * @param selectedSession to check
+	 */
+	private void spotCheckSessionData(final DungeonSessionData selectedSession) {
+		assertTrue(selectedSession.getDungeonUUID() == "dungeon1-template");
+		assertTrue(selectedSession.getSessionUUID() == "362dd584-3449-4687-aeed-d1a2ac2f10bd");
+		assertTrue(selectedSession.getSessionName() == "Session 1");
+		assertTrue(selectedSession.getVersion() == 1);
+		assertTrue(selectedSession.getSessionLevels().length == 3);
+		spotCheckSessionLevel(selectedSession.getSessionLevels()[0]);
+	}
+
+	/**
+	 * Spot check a dungeon level.
+	 * @param dungeonSessionLevel to check
+	 */
+	private void spotCheckSessionLevel(final DungeonSessionLevel dungeonSessionLevel) {
+		assertTrue(dungeonSessionLevel.getFOW() != null);
+		assertTrue(dungeonSessionLevel.getFOW().length != 0);
+		assertTrue(dungeonSessionLevel.getMonsters() != null);
+		assertTrue(dungeonSessionLevel.getMonsters().getPogList().length != 0);
+		assertTrue(dungeonSessionLevel.getRoomObjects() != null);
+		assertTrue(dungeonSessionLevel.getRoomObjects().getPogList().length != 0);
+	}
+
+	/**
 	 * Do some spot checks on dungeon 1 data.
+	 * 
 	 * @param dungeonData to check
 	 */
 	private void checkDungeon1TemplateData(final DungeonData dungeonData) {
@@ -292,6 +602,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 	/**
 	 * Spot check dungeon 1 level 1.
+	 * 
 	 * @param dungeonLevel to check
 	 */
 	private void spotCheckDungeon1Level1(final DungeonLevel dungeonLevel) {
@@ -304,6 +615,26 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		assertTrue(dungeonLevel.getGridOffsetY() == 11.0);
 		assertTrue(dungeonLevel.getMonsters().getPogList().length == 5);
 		assertTrue(dungeonLevel.getRoomObjects().getPogList().length == 2);
+	}
+
+	/**
+	 * Set proper bit based on reason.
+	 * 
+	 * @param event with reason
+	 */
+	private void setEventResults(final GwtEvent<?> event) {
+		if (event instanceof ReasonForActionEvent) {
+			eventStates[((ReasonForActionEvent) event).getReasonForAction().ordinal()] = true;
+		}
+	}
+
+	/**
+	 * Make sure we had this event.
+	 * 
+	 * @param reason for event
+	 */
+	private void hadEvent(final ReasonForAction reason) {
+		assertTrue(eventStates[reason.ordinal()]);
 	}
 
 	/**
