@@ -273,6 +273,20 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
+	 * Fog of war data is dirty.
+	 */
+	private boolean fowDirty;
+
+	/**
+	 * get is fog of war dirty flag for unit test.
+	 * 
+	 * @return fog of war dirty
+	 */
+	public boolean isFowDirty() {
+		return fowDirty;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -671,6 +685,18 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void setFow(final int columns, final int rows, final boolean value) {
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (isDungeonMaster && sessionLevel != null) {
+			sessionLevel.updateFOW(columns, rows, value);
+			fowDirty = true;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isFowSet(final int columns, final int rows) {
 		if (editMode) {
 			return (false);
@@ -680,23 +706,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return (false);
 		}
 		return (sessionLevel.isFowSet(columns, rows));
-	}
-
-	/**
-	 * Fog of war data is dirty.
-	 */
-	private boolean fowDirty;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFow(final int columns, final int rows, final boolean value) {
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (isDungeonMaster && sessionLevel != null) {
-			sessionLevel.updateFOW(columns, rows, value);
-			fowDirty = true;
-		}
 	}
 
 	/**
@@ -724,12 +733,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getUrlToDungeonResource(final String resourceItem) {
-		if (resourceItem.startsWith("http")) {
-			return resourceItem;
-		}
-		Date now = new Date();
-		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + now.getTime();
+	public String getUrlToDungeonData() {
+		String directoryForDungeon = getDirectoryForCurrentDungeon();
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		String resourceUrl = dataRequester.getWebPath() + directoryForDungeon + "/";
 		return (resourceUrl);
 	}
 
@@ -737,10 +744,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getUrlToDungeonData() {
-		String directoryForDungeon = getDirectoryForCurrentDungeon();
-		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		String resourceUrl = dataRequester.getWebPath() + directoryForDungeon + "/";
+	public String getUrlToDungeonResource(final String resourceItem) {
+		if (resourceItem.startsWith("http")) {
+			return resourceItem;
+		}
+		Date now = new Date();
+		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + now.getTime();
 		return (resourceUrl);
 	}
 

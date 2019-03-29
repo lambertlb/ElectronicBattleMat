@@ -1,8 +1,11 @@
 package per.lambert.ebattleMat.client.mocks;
 
 import java.util.Map;
+import java.util.logging.Level;
+
 import com.google.gwt.junit.client.GWTTestCase;
 
+import per.lambert.ebattleMat.client.ElectronicBattleMatTest;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 
@@ -52,7 +55,7 @@ public class MockDataRequester implements IDataRequester {
 	 */
 	@Override
 	public String getWebPath() {
-		return null;
+		return "http://ElectronicBattleMat/";
 	}
 
 	/**
@@ -60,7 +63,7 @@ public class MockDataRequester implements IDataRequester {
 	 */
 	@Override
 	public String buildUrl(final String requestType, final Map<String, String> parameters) {
-		return null;
+		return "http://ElectronicBattleMat/";
 	}
 
 	/**
@@ -73,6 +76,8 @@ public class MockDataRequester implements IDataRequester {
 	public void handleMockDataRequest(final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 		if (requestType == "LOADJSONFILE") {
 			handleLoadJsonFile(parameters, callback);
+		} else if (requestType == "LOADSESSION") {
+			callback.onSuccess(null, MockResponseData.LOADSESSIONDATARESPONSE);
 		}
 	}
 

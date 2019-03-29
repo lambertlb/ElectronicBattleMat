@@ -24,6 +24,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
+import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
@@ -521,12 +522,9 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		dungeonManager.deleteSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
 		hadEvent(ReasonForAction.SessionListChanged);
 	}
+
 	/**
-	 * Test DMing a session.
-	 * This is complicated to setup because ot requires the following.
-	 * 1) loaded dungeon list.
-	 * 2) loaded and selected dungeon.
-	 * 3) loaded session list for dungeon.
+	 * Test DMing a session. This is complicated to setup because it requires the following. 1) loaded dungeon list. 2) loaded and selected dungeon. 3) loaded session list for dungeon.
 	 */
 	public void testDmSession() {
 		DungeonManager dungeonManager = new DungeonManager();
@@ -558,11 +556,182 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		dungeonManager.dmSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
 		hadEvent(ReasonForAction.DungeonDataReadyToJoin);
 		assertTrue(dungeonManager.getSelectedSession() != null);
+		assertTrue(dungeonManager.isDungeonMaster());
+		assertFalse(dungeonManager.isEditMode());
 		spotCheckSessionData(dungeonManager.getSelectedSession());
 	}
 
 	/**
+	 * Test Joining a session. This is complicated to setup because it requires the following. 1) loaded dungeon list. 2) loaded and selected dungeon. 3) loaded session list for dungeon.
+	 */
+	public void testJoinSession() {
+		DungeonManager dungeonManager = new DungeonManager();
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				if (requestType != "LOADSESSION") {
+					dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
+					return;
+				}
+				assertTrue(requestType == "LOADSESSION");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("sessionUUID"));
+				assertTrue(parameters.get("sessionUUID") == "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
+				assertTrue(parameters.containsKey("version"));
+				assertTrue(parameters.get("version") == "-1");
+				callback.onSuccess(null, MockResponseData.LOADSESSIONDATARESPONSE);
+			}
+		});
+		dungeonManager.joinSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
+		hadEvent(ReasonForAction.DungeonDataReadyToJoin);
+		assertTrue(dungeonManager.getSelectedSession() != null);
+		assertFalse(dungeonManager.isDungeonMaster());
+		assertFalse(dungeonManager.isEditMode());
+		spotCheckSessionData(dungeonManager.getSelectedSession());
+	}
+
+	/**
+	 * Test setting fog of war change.
+	 */
+	public void testSetFow() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		assertFalse(dungeonManager.isFowDirty());
+		assertTrue(dungeonManager.isFowSet(1, 1));
+		dungeonManager.setFow(1, 1, false);
+		assertTrue(dungeonManager.isFowDirty());
+		assertFalse(dungeonManager.isFowSet(1, 1));
+	}
+
+	/**
+	 * Test saving fog of war data to server.
+	 */
+	public void testSaveFow() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		assertFalse(dungeonManager.isFowDirty());
+		assertTrue(dungeonManager.isFowSet(1, 1));
+		dungeonManager.setFow(1, 1, false);
+		assertTrue(dungeonManager.isFowDirty());
+		assertFalse(dungeonManager.isFowSet(1, 1));
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "UPDATEFOW");
+				assertTrue(parameters.containsKey("sessionUUID"));
+				assertTrue(parameters.get("sessionUUID") == "362dd584-3449-4687-aeed-d1a2ac2f10bd");
+				FogOfWarData fogOfWarData = JsonUtils.<FogOfWarData>safeEval(requestData);
+				assertFalse(fogOfWarData.getFOW()[1][1]);
+				callback.onSuccess(null, null);
+			}
+		});
+		dungeonManager.saveFow();
+		hadEvent(ReasonForAction.SessionDataSaved);
+		assertFalse(dungeonManager.isFowDirty());
+	}
+
+	/**
+	 * test getting directory to current dungeon.
+	 */
+	public void testGetDirectoryForCurrentDungeon() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		String directoryPath = dungeonManager.getDirectoryForCurrentDungeon();
+		assertTrue(directoryPath == "/dungeonData/dungeons/dungeon1");
+	}
+
+	/**
+	 * test getting url to current dungeon.
+	 */
+	public void testGetUrlToDungeonData() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		String url = dungeonManager.getUrlToDungeonData();
+		assertTrue(url == "http://ElectronicBattleMat//dungeonData/dungeons/dungeon1/");
+	}
+
+	/**
+	 * test getting url to current dungeon resource.
+	 */
+	public void testGetUrlToDungeonResource() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		String url = dungeonManager.getUrlToDungeonResource("item1");
+		assertTrue(url.startsWith("http://ElectronicBattleMat//dungeonData/dungeons/dungeon1/item1?"));
+	}
+
+	/**
+	 * test is Name Valid For New Session.
+	 */
+	public void testIsNameValidForNewSession() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		assertFalse(dungeonManager.isNameValidForNewSession("Session 1"));
+		assertTrue(dungeonManager.isNameValidForNewSession("Session 2"));
+	}
+
+	/**
+	 * test is Name Valid For New character name.
+	 */
+	public void testIsValidNewCharacterName() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		assertFalse(dungeonManager.isValidNewCharacterName("Enter name"));
+		assertTrue(dungeonManager.isValidNewCharacterName("Fred"));
+	}
+
+	/**
+	 * test is Name Valid For New monster name.
+	 */
+	public void testIsValidNewMonsterName() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		assertFalse(dungeonManager.isValidNewMonsterName("Enter name"));
+		assertTrue(dungeonManager.isValidNewMonsterName("BARF"));
+	}
+
+	/**
+	 * test Get Monsters For Current Level.
+	 */
+	public void testGetMonstersForCurrentLevel() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		PogData[] monstersInLevel = dungeonManager.getMonstersForCurrentLevel();
+		assertTrue(monstersInLevel != null);
+		assertTrue(monstersInLevel.length == 5);
+	}
+
+	/**
+	 * test Get Room objects For Current Level.
+	 */
+	public void testGetRoomObjectsForCurrentLevel() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		PogData[] roomObjectsInLevel = dungeonManager.getRoomObjectsForCurrentLevel();
+		assertTrue(roomObjectsInLevel != null);
+		assertTrue(roomObjectsInLevel.length == 2);
+	}
+
+	/**
 	 * Spot check session data.
+	 * 
 	 * @param selectedSession to check
 	 */
 	private void spotCheckSessionData(final DungeonSessionData selectedSession) {
@@ -576,6 +745,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 	/**
 	 * Spot check a dungeon level.
+	 * 
 	 * @param dungeonSessionLevel to check
 	 */
 	private void spotCheckSessionLevel(final DungeonSessionLevel dungeonSessionLevel) {
@@ -655,5 +825,25 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 				assertTrue(false);
 			}
 		}, MockResponseData.GETDUNGEONLISTRESPONSE);
+	}
+
+	/**
+	 * populate session data for tests.
+	 * 
+	 * @param dungeonManager to populate
+	 */
+	private void populateSession(final DungeonManager dungeonManager) {
+		populateDungeonList(dungeonManager);
+		dungeonManager.handleSuccessfulSessionList(MockResponseData.GETSESSIONLISTRESPONSE);
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
+			}
+		});
+		dungeonManager.dmSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
+		dataRequesterForTest.setTestCallback(null);
+		assertTrue(dungeonManager.getSelectedSession() != null);
 	}
 }
