@@ -2,7 +2,6 @@ package per.lambert.ebattleMat.client;
 
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.event.shared.GwtEvent;
@@ -12,6 +11,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.mocks.DataRequesterTestCallback;
 import per.lambert.ebattleMat.client.mocks.EventManagerTestCallback;
@@ -31,11 +31,6 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
  * GWT JUnit tests must extend GWTTestCase.
  */
 public class ElectronicBattleMatTest extends GWTTestCase {
-	/**
-	 * Used for logging from test.
-	 */
-	private Logger logger = Logger.getLogger("NameOfYourLogger");
-
 	/**
 	 * Data requester used for test.
 	 */
@@ -730,6 +725,65 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
+	 * test Get Players For Current Session.
+	 */
+	public void testGetPlayersForCurrentSession() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		PogData[] players = dungeonManager.getPlayersForCurrentSession();
+		assertTrue(players != null);
+		assertTrue(players.length == 2);
+	}
+
+	/**
+	 * test get Dungeon Level Names.
+	 */
+	public void testGetDungeonLevelNames() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		String[] levelNames = dungeonManager.getDungeonLevelNames();
+		assertTrue(levelNames != null);
+		assertTrue(levelNames.length == 3);
+		assertTrue(levelNames[0] == "Entrance");
+		assertTrue(levelNames[1] == "Deep Dark (2)");
+		assertTrue(levelNames[2] == "Flooded Area (3)");
+	}
+
+	/**
+	 * test find player via UUID.
+	 */
+	public void testFindCharacterPog() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		PogData player = dungeonManager.findCharacterPog("3bdce6d8-09a6-4af6-b362-0c375ee5cc5c");
+		assertTrue(player != null);
+		assertTrue(player.getPogName() == "Zorak");
+	}
+
+	/**
+	 * test compute place pog should be stored.
+	 */
+	public void testComputePlace() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		PogData player = dungeonManager.findCharacterPog("3bdce6d8-09a6-4af6-b362-0c375ee5cc5c");
+		PogPlace place = dungeonManager.computePlace(player);
+		assertTrue(place == PogPlace.SESSION_RESOURCE);
+		PogData monsterTemplate = dungeonManager.getMonsterTemplatePogs()[0];
+		assertTrue(monsterTemplate != null);
+		place = dungeonManager.computePlace(monsterTemplate);
+		assertTrue(place == PogPlace.COMMON_RESOURCE);
+		PogData levelMonster = dungeonManager.getMonstersForCurrentLevel()[0];
+		dungeonManager.setEditModeForUnitTest(true);
+		dungeonManager.setDungeonMasterForUnitTest(true);
+		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.DUNGEON_INSTANCE);
+		dungeonManager.setEditModeForUnitTest(false);
+		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.SESSION_INSTANCE);
+		dungeonManager.setDungeonMasterForUnitTest(false);
+		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.INVALID);
+	}
+
+	/**
 	 * Spot check session data.
 	 * 
 	 * @param selectedSession to check
@@ -833,6 +887,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	 * @param dungeonManager to populate
 	 */
 	private void populateSession(final DungeonManager dungeonManager) {
+		ServiceManager.setDungeonManagerForUnitTest(dungeonManager);
 		populateDungeonList(dungeonManager);
 		dungeonManager.handleSuccessfulSessionList(MockResponseData.GETSESSIONLISTRESPONSE);
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {

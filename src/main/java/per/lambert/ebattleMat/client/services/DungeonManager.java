@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
@@ -189,13 +190,21 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	/**
 	 * Set state of dungeon master.
 	 * 
-	 * @param isDungeonMaster trueif DM
+	 * @param isDungeonMaster true if DM
 	 */
 	private void setDungeonMaster(final boolean isDungeonMaster) {
 		this.isDungeonMaster = isDungeonMaster;
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DMStateChange, null));
 	}
 
+	/**
+	 * Set state of dungeon master.
+	 * 
+	 * @param isDungeonMaster true if DM
+	 */
+	public void setDungeonMasterForUnitTest(final boolean isDungeonMaster) {
+		this.isDungeonMaster = isDungeonMaster;
+	}
 	/**
 	 * Are we in edit mode on the dungeon.
 	 */
@@ -207,6 +216,14 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	@Override
 	public boolean isEditMode() {
 		return editMode;
+	}
+
+	/**
+	 * Set eit mode for testing.
+	 * @param editMode trueif edit
+	 */
+	public void setEditModeForUnitTest(final boolean editMode) {
+		this.editMode = editMode;
 	}
 
 	/**

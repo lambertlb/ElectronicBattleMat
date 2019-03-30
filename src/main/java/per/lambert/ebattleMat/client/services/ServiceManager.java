@@ -1,5 +1,8 @@
 package per.lambert.ebattleMat.client.services;
 
+
+import java.util.logging.Logger;
+
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
@@ -32,6 +35,7 @@ public final class ServiceManager {
 
 	/**
 	 * set event manager for unit test.
+	 * 
 	 * @param eventManager for test
 	 */
 	public static void setEventManagerForUnitTest(final IEventManager eventManager) {
@@ -55,6 +59,9 @@ public final class ServiceManager {
 		return (dungeonManager);
 	}
 
+	public static void setDungeonManagerForUnitTest(IDungeonManager dungeonManager) {
+		ServiceManager.dungeonManager = dungeonManager;
+	}
 	/**
 	 * data requester.
 	 */
@@ -79,6 +86,23 @@ public final class ServiceManager {
 			dataRequester = new DataRequester();
 		}
 		return (dataRequester);
+	}
+
+	/**
+	 * Logger for errors.
+	 */
+	private static Logger logger;
+
+	/**
+	 * Get logger.
+	 * 
+	 * @return logger
+	 */
+	public static Logger getLogger() {
+		if (logger == null) {
+			logger = Logger.getLogger("ElectronicBattleMat");
+		}
+		return (logger);
 	}
 
 	/**
