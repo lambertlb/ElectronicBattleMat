@@ -1,7 +1,7 @@
 package per.lambert.ebattleMat.client;
 
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.event.shared.GwtEvent;
@@ -66,7 +66,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
-	 * See if we can access resource files for test.
+	 * test login function..
 	 */
 	public void testLogin() {
 		DungeonManager dungeonManager = new DungeonManager();
@@ -96,10 +96,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
+				assertTrue(true);
 			}
 
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
+				assertTrue(false);
 			}
 		});
 	}
@@ -117,27 +119,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 				assertTrue(parameters.size() == 0);
 				dataRequesterForTest.setTestCallback(null);
 				callback.onSuccess(null, MockResponseData.GETDUNGEONLISTRESPONSE);
-				String uuidOfMasterTemplate = dungeonManager.getUuidOfMasterTemplate();
-				assertTrue(uuidOfMasterTemplate != null && uuidOfMasterTemplate == "template-dungeon");
-
-				Map<String, String> dungeonToUUIDMap = dungeonManager.getDungeonToUUIDMap();
-				assertTrue(dungeonToUUIDMap != null);
-				assertTrue(dungeonToUUIDMap.size() == 3);
-
-				String entry = dungeonToUUIDMap.get("Template Dungeon");
-				assertTrue(entry != null && entry == "template-dungeon");
-				String path = dungeonManager.getUuidTemplatePathMapForUnitTest().get("template-dungeon");
-				assertTrue(path != null && path == "/dungeonData/dungeons/TemplateDungeon");
-
-				entry = dungeonToUUIDMap.get("Dungeon 1");
-				assertTrue(entry != null && entry == "dungeon1-template");
-				path = dungeonManager.getUuidTemplatePathMapForUnitTest().get("dungeon1-template");
-				assertTrue(path != null && path == "/dungeonData/dungeons/dungeon1");
-
-				entry = dungeonToUUIDMap.get("Dungeon 2");
-				assertTrue(entry != null && entry == "3c46b116-dd50-4b33-bfd8-d1a400f35292");
-				path = dungeonManager.getUuidTemplatePathMapForUnitTest().get("3c46b116-dd50-4b33-bfd8-d1a400f35292");
-				assertTrue(path != null && path == "/dungeonData/dungeons/dungeon2");
 			}
 		});
 		dungeonManager.getDungeonList("", new IUserCallback() {
@@ -152,6 +133,27 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 				assertTrue(false);
 			}
 		});
+		String uuidOfMasterTemplate = dungeonManager.getUuidOfMasterTemplate();
+		assertTrue(uuidOfMasterTemplate != null && uuidOfMasterTemplate == "template-dungeon");
+
+		Map<String, String> dungeonToUUIDMap = dungeonManager.getDungeonToUUIDMap();
+		assertTrue(dungeonToUUIDMap != null);
+		assertTrue(dungeonToUUIDMap.size() == 3);
+
+		String entry = dungeonToUUIDMap.get("Template Dungeon");
+		assertTrue(entry != null && entry == "template-dungeon");
+		String path = dungeonManager.getUuidTemplatePathMapForUnitTest().get("template-dungeon");
+		assertTrue(path != null && path == "/dungeonData/dungeons/TemplateDungeon");
+
+		entry = dungeonToUUIDMap.get("Dungeon 1");
+		assertTrue(entry != null && entry == "dungeon1-template");
+		path = dungeonManager.getUuidTemplatePathMapForUnitTest().get("dungeon1-template");
+		assertTrue(path != null && path == "/dungeonData/dungeons/dungeon1");
+
+		entry = dungeonToUUIDMap.get("Dungeon 2");
+		assertTrue(entry != null && entry == "3c46b116-dd50-4b33-bfd8-d1a400f35292");
+		path = dungeonManager.getUuidTemplatePathMapForUnitTest().get("3c46b116-dd50-4b33-bfd8-d1a400f35292");
+		assertTrue(path != null && path == "/dungeonData/dungeons/dungeon2");
 	}
 
 	/**
@@ -320,13 +322,13 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
-				DungeonLevel dungeonLevel = dungeonManager.getCurrentLevelData();
-				assertTrue(dungeonLevel.getColumns() == 50);
-				assertTrue(dungeonLevel.getRows() == 60);
 				callback.onSuccess(null, null);
 			}
 		});
 		dungeonManager.setSessionLevelSize(50, 60);
+		DungeonLevel dungeonLevel = dungeonManager.getCurrentLevelData();
+		assertTrue(dungeonLevel.getColumns() == 50);
+		assertTrue(dungeonLevel.getRows() == 60);
 		hadEvent(ReasonForAction.DungeonDataSaved);
 	}
 
@@ -538,7 +540,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 					dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
 					return;
 				}
-				assertTrue(requestType == "LOADSESSION");
 				assertTrue(parameters.containsKey("dungeonUUID"));
 				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
 				assertTrue(parameters.containsKey("sessionUUID"));
@@ -576,7 +577,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 					dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
 					return;
 				}
-				assertTrue(requestType == "LOADSESSION");
 				assertTrue(parameters.containsKey("dungeonUUID"));
 				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
 				assertTrue(parameters.containsKey("sessionUUID"));
@@ -784,6 +784,204 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
+	 * test add Or Update Pog.
+	 */
+	public void tesAddOrUpdatePog() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "ADDORUPDATEPOG");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("sessionUUID"));
+				assertTrue(parameters.get("sessionUUID") == "362dd584-3449-4687-aeed-d1a2ac2f10bd");
+				assertTrue(parameters.containsKey("currentLevel"));
+				assertTrue(parameters.get("currentLevel") == "0");
+				assertTrue(parameters.containsKey("place"));
+				assertTrue(parameters.get("place") == "COMMON_RESOURCE");
+				callback.onSuccess(null, null);
+			}
+		});
+		PogData monsterTemplate = dungeonManager.getMonsterTemplatePogs()[0];
+		dungeonManager.addOrUpdatePog(monsterTemplate);
+		hadEvent(ReasonForAction.SessionDataSaved);
+	}
+
+	/**
+	 * test add Or Update Pog.
+	 */
+	public void tesAddOrUpdatePog2() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "ADDORUPDATEPOG");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("sessionUUID"));
+				assertTrue(parameters.get("sessionUUID") == "");
+				assertTrue(parameters.containsKey("currentLevel"));
+				assertTrue(parameters.get("currentLevel") == "0");
+				assertTrue(parameters.containsKey("place"));
+				assertTrue(parameters.get("place") == "DUNGEON_INSTANCE");
+				callback.onSuccess(null, null);
+			}
+		});
+		PogData monsterTemplate = dungeonManager.getMonsterTemplatePogs()[0];
+		dungeonManager.setEditModeForUnitTest(true);
+		dungeonManager.setDungeonMasterForUnitTest(true);
+		dungeonManager.addOrUpdatePog(monsterTemplate);
+	}
+
+	/**
+	 * test add Or Update Pog.
+	 */
+	public void tesAddOrUpdatePog3() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
+
+			@Override
+			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
+				assertTrue(requestType == "ADDORUPDATEPOG");
+				assertTrue(parameters.containsKey("dungeonUUID"));
+				assertTrue(parameters.get("dungeonUUID") == "dungeon1-template");
+				assertTrue(parameters.containsKey("sessionUUID"));
+				assertTrue(parameters.get("sessionUUID") == "");
+				assertTrue(parameters.containsKey("currentLevel"));
+				assertTrue(parameters.get("currentLevel") == "0");
+				assertTrue(parameters.containsKey("place"));
+				assertTrue(parameters.get("place") == "INVALID");
+				callback.onSuccess(null, null);
+			}
+		});
+		PogData monsterTemplate = dungeonManager.getMonsterTemplatePogs()[0];
+		dungeonManager.setEditModeForUnitTest(false);
+		dungeonManager.setDungeonMasterForUnitTest(false);
+		dungeonManager.addOrUpdatePog(monsterTemplate);
+	}
+
+	/**
+	 * test get Filtered Templates.
+	 */
+	public void testGetFilteredTemplates() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER, "Kobold", null, null);
+		assertTrue(templates.size() == 2);
+		assertTrue(templates.get(0).getPogName() == "Male Kobold");
+		assertTrue(templates.get(1).getPogName() == "Female Kobold");
+	}
+
+	/**
+	 * test get Filtered Templates.
+	 */
+	public void testGetFilteredTemplates2() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER, null, null, "Female");
+		assertTrue(templates.size() == 1);
+		assertTrue(templates.get(0).getPogName() == "Female Kobold");
+	}
+
+	/**
+	 * test get Filtered Templates.
+	 */
+	public void testGetFilteredTemplates3() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER, null, "Fighter", null);
+		assertTrue(templates.size() == 3);
+		assertTrue(templates.get(0).getPogName() == "Male Kobold");
+		assertTrue(templates.get(1).getPogName() == "Female Kobold");
+		assertTrue(templates.get(2).getPogName() == "Orc Fighter");
+	}
+
+	/**
+	 * test get Filtered Templates.
+	 */
+	public void testGetFilteredTemplates4() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER, null, null, null);
+		assertTrue(templates.size() == 4);
+		assertTrue(templates.get(0).getPogName() == "Male Kobold");
+		assertTrue(templates.get(1).getPogName() == "Female Kobold");
+		assertTrue(templates.get(2).getPogName() == "Orc Fighter");
+		assertTrue(templates.get(3).getPogName() == "Orc Shaman");
+	}
+
+	/**
+	 * test set Selected Template.
+	 */
+	public void testSetSelectedTemplate() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
+
+			@Override
+			public void onEvent(final GwtEvent<?> event) {
+				setEventResults(event);
+			}
+		});
+		assertTrue(dungeonManager.getSelectedPog() == null);
+		dungeonManager.setSelectedTemplate(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER, "Male-Kobold");
+		hadEvent(ReasonForAction.PogWasSelected);
+		assertTrue(dungeonManager.getSelectedPog() != null);
+		assertTrue(dungeonManager.getSelectedPog().getPogName() == "Male Kobold");
+	}
+
+	/**
+	 * test get Template Classes.
+	 */
+	public void testGetTemplateClasses() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		String[] templates = dungeonManager.getTemplateClasses(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER);
+		assertTrue(templates.length == 2);
+		assertTrue(templates[0] == "Fighter");
+		assertTrue(templates[1] == "Shaman");
+	}
+
+	/**
+	 * test get Template Races.
+	 */
+	public void testGetTemplateRaces() {
+		DungeonManager dungeonManager = new DungeonManager();
+		populateSession(dungeonManager);
+		String[] templates = dungeonManager.getTemplateRaces(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER);
+		assertTrue(templates.length == 2);
+		assertTrue(templates[0] == "Kobold");
+		assertTrue(templates[1] == "Orc");
+	}
+
+	/**
 	 * Spot check session data.
 	 * 
 	 * @param selectedSession to check
@@ -887,7 +1085,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	 * @param dungeonManager to populate
 	 */
 	private void populateSession(final DungeonManager dungeonManager) {
-		ServiceManager.setDungeonManagerForUnitTest(dungeonManager);
 		populateDungeonList(dungeonManager);
 		dungeonManager.handleSuccessfulSessionList(MockResponseData.GETSESSIONLISTRESPONSE);
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {

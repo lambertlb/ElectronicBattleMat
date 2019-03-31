@@ -1,14 +1,9 @@
 package per.lambert.ebattleMat.client.mocks;
 
 import java.util.Map;
-import java.util.logging.Level;
 
-import com.google.gwt.junit.client.GWTTestCase;
-
-import per.lambert.ebattleMat.client.ElectronicBattleMatTest;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
-import per.lambert.ebattleMat.client.services.ServiceManager;
 
 /**
  * Mock Data requester.

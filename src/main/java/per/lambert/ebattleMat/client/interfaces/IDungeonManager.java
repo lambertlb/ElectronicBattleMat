@@ -384,7 +384,7 @@ public interface IDungeonManager extends IPogManager {
 	 * @param pogType type of pog
 	 * @return list of classes
 	 */
-	String[] getTemplaceClasses(PogPlace place, String pogType);
+	String[] getTemplateClasses(PogPlace place, String pogType);
 
 	/**
 	 * Get list of races.
@@ -392,7 +392,7 @@ public interface IDungeonManager extends IPogManager {
 	 * @param pogType type of pog
 	 * @return list of races
 	 */
-	String[] getTemplaceRaces(PogPlace place, String pogType);
+	String[] getTemplateRaces(PogPlace place, String pogType);
 
 	/**
 	 * Get directory for the current dungeon.

@@ -456,7 +456,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	private void getRaceList() {
 		raceList.clear();
 		raceList.addItem("Select Race", "");
-		for (String race : ServiceManager.getDungeonManager().getTemplaceRaces(place, pogType)) {
+		for (String race : ServiceManager.getDungeonManager().getTemplateRaces(place, pogType)) {
 			raceList.addItem(race, race);
 		}
 	}
@@ -467,7 +467,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	private void getClassList() {
 		classList.clear();
 		classList.addItem("Select Class", "");
-		for (String pogClass : ServiceManager.getDungeonManager().getTemplaceClasses(place, pogType)) {
+		for (String pogClass : ServiceManager.getDungeonManager().getTemplateClasses(place, pogType)) {
 			classList.addItem(pogClass, pogClass);
 		}
 	}
@@ -709,7 +709,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (pog.getPogType() != pogType) {
 			return;
 		}
-		templateSelected = pog.isTemplate();
+		templateSelected = ServiceManager.getDungeonManager().isTemplate(pog);
 		selectPog(pog);
 	}
 

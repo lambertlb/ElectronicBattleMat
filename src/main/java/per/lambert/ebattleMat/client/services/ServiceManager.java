@@ -1,6 +1,5 @@
 package per.lambert.ebattleMat.client.services;
 
-
 import java.util.logging.Logger;
 
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
@@ -59,9 +58,6 @@ public final class ServiceManager {
 		return (dungeonManager);
 	}
 
-	public static void setDungeonManagerForUnitTest(IDungeonManager dungeonManager) {
-		ServiceManager.dungeonManager = dungeonManager;
-	}
 	/**
 	 * data requester.
 	 */

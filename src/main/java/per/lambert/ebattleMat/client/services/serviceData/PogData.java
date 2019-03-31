@@ -6,7 +6,6 @@ import com.google.gwt.core.client.JsonUtils;
 import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
-import per.lambert.ebattleMat.client.services.ServiceManager;
 
 /**
  * pog data.
@@ -481,13 +480,6 @@ public class PogData extends JavaScriptObject {
 		setNotes(withUpdates.getNotes());
 	}
 
-	/**
-	 * Is this pog a template.
-	 * @return true if template
-	 */
-	public final boolean isTemplate() {
-		 return (ServiceManager.getDungeonManager().isTemplate(this));
-	}
 	/**
 	 * get pog notes.
 	 * 

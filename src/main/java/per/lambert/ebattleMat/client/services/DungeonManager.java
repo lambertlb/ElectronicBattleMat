@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
@@ -1049,7 +1048,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public PogPlace computePlace(final PogData pog) {
-		if (pog.isTemplate()) {
+		if (isTemplate(pog)) {
 			return (PogPlace.COMMON_RESOURCE);
 		}
 		if (pog.isThisAPlayer()) {
@@ -1222,7 +1221,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getTemplaceClasses(final PogPlace place, final String pogType) {
+	public String[] getTemplateClasses(final PogPlace place, final String pogType) {
 		if (place == PogPlace.COMMON_RESOURCE) {
 			return (getCommonClasses(pogType));
 		}
@@ -1233,7 +1232,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getTemplaceRaces(final PogPlace place, final String pogType) {
+	public String[] getTemplateRaces(final PogPlace place, final String pogType) {
 		if (place == PogPlace.COMMON_RESOURCE) {
 			return (getCommonRaces(pogType));
 		}

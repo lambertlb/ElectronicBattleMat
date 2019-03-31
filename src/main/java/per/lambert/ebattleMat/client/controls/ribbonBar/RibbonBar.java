@@ -400,7 +400,7 @@ public class RibbonBar extends Composite {
 	 */
 	protected void pogSelection() {
 		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-		boolean enabled = selectedPog != null ? !selectedPog.isTemplate() : false;
+		boolean enabled = selectedPog != null ? !ServiceManager.getDungeonManager().isTemplate(selectedPog) : false;
 		DungeonSelectDialog.enableWidget(playerFlagsButton, enabled);
 		DungeonSelectDialog.enableWidget(dmFlagsButton, enabled);
 	}
