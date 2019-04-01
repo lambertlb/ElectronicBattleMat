@@ -7,11 +7,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -157,6 +159,10 @@ public class RibbonBar extends Composite {
 	 * Selected pog notes floating window.
 	 */
 	private NotesFloatingWindow pogNotes;
+	/**
+	 * Link to help.
+	 */
+	private Anchor helpLink;
 
 	/**
 	 * Constructor.
@@ -225,6 +231,7 @@ public class RibbonBar extends Composite {
 				manageDungeons.show();
 			}
 		});
+		helpLink = new Anchor("Help", "/help.html", "_blank");
 	}
 
 	/**
@@ -440,9 +447,11 @@ public class RibbonBar extends Composite {
 			ribbonGrid.setWidget(1, 4, fowToggle);
 			ribbonGrid.setWidget(0, 5, characterSelect);
 			ribbonGrid.setWidget(1, 5, createCharacter);
+			ribbonGrid.setWidget(0, 6, helpLink);
 		} else {
 			ribbonGrid.setWidget(0, 6, characterSelect);
 			ribbonGrid.setWidget(1, 6, createCharacter);
+			ribbonGrid.setWidget(0, 7, helpLink);
 		}
 	}
 

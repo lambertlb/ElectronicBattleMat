@@ -93,10 +93,8 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public void setSelectedPog(final PogData selectedPog) {
-		if (selectedPog == null || !selectedPog.isEquals(this.selectedPog)) {
-			this.selectedPog = selectedPog;
-			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
-		}
+		this.selectedPog = selectedPog;
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogWasSelected, null));
 	}
 
 	/**
@@ -506,7 +504,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public String[] getTemplateGenders() {
-		return (new String[] {"Male", "Female", "Neutral" });
+		return (new String[] { "Male", "Female", "Neutral" });
 	}
 
 	/**
@@ -516,7 +514,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public String[] getPogSizes() {
-		return (new String[] {"Normal", "Large", "Huge", "Gargantuan" });
+		return (new String[] { "Normal", "Large", "Huge", "Gargantuan" });
 	}
 
 	/**

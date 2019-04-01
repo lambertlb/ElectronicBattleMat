@@ -706,7 +706,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (pog == null) {
 			return;
 		}
-		if (pog.getPogType() != pogType) {
+		if (pog.getPogType() != pogType && !pog.isThisAPlayer()) {
 			return;
 		}
 		templateSelected = ServiceManager.getDungeonManager().isTemplate(pog);
