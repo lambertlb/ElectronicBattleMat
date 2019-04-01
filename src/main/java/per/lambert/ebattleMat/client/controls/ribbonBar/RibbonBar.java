@@ -440,6 +440,9 @@ public class RibbonBar extends Composite {
 			ribbonGrid.setWidget(1, 4, fowToggle);
 			ribbonGrid.setWidget(0, 5, characterSelect);
 			ribbonGrid.setWidget(1, 5, createCharacter);
+		} else {
+			ribbonGrid.setWidget(0, 6, characterSelect);
+			ribbonGrid.setWidget(1, 6, createCharacter);
 		}
 	}
 

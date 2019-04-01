@@ -1,4 +1,0 @@
-cd C:\Workspace\ElectronicBattleMat\src\main\webapp
-jar cv * > /tempfiles/ebatmat/ElectronicBattleMat.war
-jar cv * > C:\Workspace\ElectronicBattleMat/deliverables/ElectronicBattleMat.war
-mvn clean package

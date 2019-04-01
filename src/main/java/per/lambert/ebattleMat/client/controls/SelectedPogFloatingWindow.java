@@ -5,6 +5,12 @@ import com.google.gwt.user.client.ui.Grid;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.controls.ribbonBar.SelectedPog;
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.services.ServiceManager;
+import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
  * Show selected pog in a floating window.
@@ -29,6 +35,15 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z - 1);
 		load();
 		setModal(false);
+		IEventManager eventManager = ServiceManager.getEventManager();
+		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+			public void onReasonForAction(final ReasonForActionEvent event) {
+				if (event.getReasonForAction() == ReasonForAction.PogWasSelected) {
+					pogSelected();
+					return;
+				}
+			}
+		});
 	}
 
 	/**
@@ -66,6 +81,16 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	private void initialize() {
 	}
 
+	/**
+	 * Pog was selected so set name in title.
+	 */
+	protected void pogSelected() {
+		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+		if (selectedPog == null) {
+			return;
+		}
+		setText(selectedPog.getPogName());
+	}
 	/**
 	 * {@inheritDoc}
 	 */
