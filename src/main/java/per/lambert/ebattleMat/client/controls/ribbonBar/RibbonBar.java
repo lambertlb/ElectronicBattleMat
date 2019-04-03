@@ -444,11 +444,9 @@ public class RibbonBar extends Composite {
 		setupForEditDungeon();
 		ribbonGrid.setWidget(0, 4, manageDungeonsButton);
 		if (!ServiceManager.getDungeonManager().isEditMode()) {
-			ribbonGrid.setWidget(1, 4, fowToggle);
-			ribbonGrid.setWidget(0, 5, characterSelect);
-			ribbonGrid.setWidget(1, 5, createCharacter);
-			ribbonGrid.setWidget(0, 6, helpLink);
+			ribbonGrid.setWidget(0, 5, helpLink);
 		} else {
+			ribbonGrid.setWidget(1, 4, fowToggle);
 			ribbonGrid.setWidget(0, 6, characterSelect);
 			ribbonGrid.setWidget(1, 6, createCharacter);
 			ribbonGrid.setWidget(0, 7, helpLink);

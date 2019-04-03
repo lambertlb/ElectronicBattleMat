@@ -13,6 +13,12 @@
 		<ul>
 			<li><a href="#Overview">Electronic Battle Mat Overview</a></li>
 			<li><a href="#CreateNewDungeon">Creating a New Dungeon</a></li>
+			<li><a href="#EditDungeon">Editing a Dungeon</a></li>
+			<ul>
+				<li><a href="#CreateDungeonLevel">Create a new Dungeon
+						Level</a></li>
+				<li><a href="#EditDungeonLevel">Editing a dungeon level</a></li>
+			</ul>
 		</ul>
 		</p>
 	</div>
@@ -36,10 +42,10 @@
 			In this mode of operation a DM takes control of a session. They can
 			do may things like clear areas of FOG of WAR so players can see
 			stuff. They can make monsters and room objects visible or invisible
-			to players. They can move pogs around the map to show correct positions.
-			They can add new stuff like monsters that were not in the dungeon
-			template <b>SURPRISE this dragon happened by and wants to eat
-				your face</b>.
+			to players. They can move pogs around the map to show correct
+			positions. They can add new stuff like monsters that were not in the
+			dungeon template <b>SURPRISE this dragon happened by and wants to
+				eat your face</b>.
 		</p>
 		<li>Player joining a Session</li>
 		<p>In this mode of operation a player can view the Battle Mat.
@@ -54,7 +60,11 @@
 		Dungeon Manager Dialog when &quot;<b>I am DM</b>&quot; is checked
 	</p>
 	<ol>
-		<li>Select Template Dungeon</li>
+		<li>Check the <b>I am DM</b> check box
+		</li>
+		<p>This opens up all the operations and privileges of a Dungeon
+			Master.</p>
+		<li>Select a Template Dungeon</li>
 		<p>
 			This dungeon will be copied as a starting point for the new dungeon.
 			Typically you would select the &quot;<b>Template Dungeon</b>&quot;.
@@ -77,6 +87,73 @@
 			</p>
 		</li>
 	</ol>
+	<h2 id="EditDungeon">Editing a Dungeon</h2>
+	<p>
+		These are the steps to edit a dungeon. They are performed in the
+		Dungeon Manager Dialog when &quot;<b>I am DM</b>&quot; is checked
+	</p>
+	<ol>
+		<li>Check the <b>I am DM</b> check box
+		</li>
+		<p>This opens up all the operations and privileges of a Dungeon
+			Master.</p>
+		<li>Select a Dungeon to edit</li>
+		<p>
+			In the drop down called &quot;<b>Select a Dungeon for Operations</b>&quot;
+			select a dungeon to edit. This will enable the &quot;<b>Edit
+				Dungeon</b>&quot; button.
+		</p>
+		<li>Press the &quot;<b>Edit Dungeon</b>&quot; button
+		</li>
+		<p>This will load in the dungeon and display the first level map.
+			The ribbon bar will also map to the available operations that the DM
+			can do on the dungeon.</p>
+	</ol>
+	<h3 id="CreateDungeonLevel">Create a new Dungeon Level</h3>
+	<ol>
+		<li>From the ribbon bar click the &quot;&quot;<b>Level
+				Options&quot; button</b>&quot; as show below
+		</li>
+		<img src="help/RibbonBar4.png">
+		<p>
+			<big><b>Caution you are editing the existing level be sure
+					to do the following steps before changing anything!</b></big>
+		</p>
+		<li>In the Level options dialog click the &quot;<b>Create New
+				Level</b>&quot; button
+		</li>
+		<p>This will initialize the dialog and get it ready to create a new
+			level</p>
+		<li>Type the name of the new level into the level name text box</li>
+		<li>Upload a picture for the level</li>
+		<p>
+			The level will already have a picture. It was copied from level 1 on
+			the Template Dungeon but this probably isn't what you want. If you
+			have a png or jpeg picture already you can upload that. If you just
+			want to create a picture starting from the existing one you can
+			download and edit that. To upload a picture hit the &quot;<b>Choose
+				File</b>&quot; button and navigate to your picture.
+		</p>
+		<li>Adjust grid information</li>
+		<p>
+			Electronic battle mat uses a grid to hold pog images. Many times the
+			picture that you upload also has a grid so we want the two to match
+			up. So you will need to play with the grid options to make that
+			happen. &quot;<b>Grid Size</b>&quot; is the amount of pixels that a
+			square in the grid is on every size. A number between 30 and 60 is
+			typical. Many times that grid in a picture doesn't start off exactly
+			in the upper left corner so you can play with "Grid Offest X and Y"
+			to make it line up. These values are double precision so you can
+			enter something like 13.5 to get it very precise.
+		</p>
+		<li>Once everything is entered click the &quot;<b>Ok</b>&quot; button to create the actual level</li>
+		<li>You will need to select the new level in the drop down list to see it.</li>
+		<img src="help/RibbonBar3.png">
+		<p>You might have to go back to the level option dialog several times to get the grid alignment to exactly match up.</p>
+	</ol>
 
+	<h3 id="EditDungeonLevel">Editing a Dungeon Level</h3>
+	<p>From the ribbon bar select the level to edit as show below</p>
+	<img src="help/RibbonBar3.png">
 </body>
 </html>
