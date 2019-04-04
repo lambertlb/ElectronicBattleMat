@@ -18,7 +18,17 @@
 				<li><a href="#CreateDungeonLevel">Create a new Dungeon
 						Level</a></li>
 				<li><a href="#EditDungeonLevel">Editing a dungeon level</a></li>
-				<li><a href="#SelectedPogOperations">Selected Pog Operations</a></li>
+				<li><a href="#SelectedPogOperations">Selected Pog
+						Operations</a></li>
+				<li><a href="#ManagingCommonResourcePogs">Managing Common
+						Resource Pogs</a></li>
+				<ul>
+					<li><a href="#SelectTemplateArea">Select template area</a></li>
+					<li><a href="#EditPogArea">Edit pog area</a></li>
+					<li><a href="#CreateTemplatePog">Create Template pog</a></li>
+				</ul>
+				<li><a href="#DungeonSpecificPogs">Creating Dungeon
+						Specific Pogs</a></li>
 			</ul>
 		</ul>
 		</p>
@@ -133,7 +143,8 @@
 			have a png or jpeg picture already you can upload that. If you just
 			want to create a picture starting from the existing one you can
 			download and edit that. To upload a picture hit the &quot;<b>Choose
-				File</b>&quot; button and navigate to your picture.
+				File</b>&quot; button and navigate to your picture. The picture will not
+			actually get upload until you hit the Ok button.
 		</p>
 		<li>Adjust grid information</li>
 		<p>
@@ -162,36 +173,93 @@
 	<img src="help/RibbonBar3.png">
 	<p>
 		If you want to change the picture of adjust the grid follow steps 4
-		and up in the <a href="#CreateDungeonLevel">Create a new Dungeon
-			Level</a> Mainly the job of editing a dungeon involves placing pogs into
-		the grid over the level picture and adjusting the properties of the
-		pog. You can move a pog around if it is already on the map by left
-		clicking on it, and while holding the mouse button down, move it to a
-		new spot. You can also do this on a touch screen by touching the pog
-		and drag it. You can add new pogs to the map by dragging and dropping
-		one from the <b>Selected Pog Area</b>. See the section below about <a
-			href="#SelectedPogOperations">Selected Pog Operations</a>
+		and higher in the <a href="#CreateDungeonLevel">Create a new
+			Dungeon Level</a> Mainly the job of editing a dungeon involves placing
+		pogs into the grid over the level picture and adjusting the properties
+		of the pog. You can move a pog around if it is already on the map by
+		left clicking on it, and while holding the mouse button down, move it
+		to a new spot. You can also do this on a touch screen by touching the
+		pog and drag it. You can add new pogs to the map by dragging and
+		dropping one from the <b>Selected Pog Area</b>. See the section below
+		about <a href="#SelectedPogOperations">Selected Pog Operations</a>
 	</p>
 	<h3 id="SelectedPogOperations">Selected Pog Operations</h3>
-	<p>There is an area on the ribbon bar that represents the <b>Selected
-		Pog</b> as shown below. Basically the selected pog is the last pog that
-		was operated on.</p>
-	<img src="help/RibbonBar2.png"> In the edit mode there are two
-	ways to set the selected pog.
+	<p>
+		There is an area on the ribbon bar that represents the <b>Selected
+			Pog</b> as shown below. Basically the selected pog is the last pog that
+		was operated on.
+	</p>
+	<img src="help/RibbonBar2.png">
+	<p>In the edit mode there are two ways to set the selected pog.</p>
 	<ol>
 		<li>Click on a pog that is already on the map.</li>
+		<p>The selected pog on the map will have a black border around it
+			to help identify it.</p>
 		<li>Use one of the pog editors as shown below to create, edit or
 			select either a Monster or a Room Object pog. More about these
-			dialogs will be explain in their sections <a
-			href="#Pog Editors">Pog Editors</a>.</li>
+			dialogs will be explain in their sections <a href="#EditPogArea">Pog
+				Editors</a>.
+		</li>
 		<img src="help/RibbonBar6.png">
 		<img src="help/RibbonBar5.png">
 	</ol>
-	<p>Many operations are affected by the selected pog. For example
-		you can select a Monster pog on the map an then hit the Monster editor
-		button to edit that one instance of monster. You can drag from the
-		selected pog area onto the map to create another new instance of the
-		monster including any edits you made to it. See section on <a
-			href="#DungeonSpecificPogs">Creating Dungeon Specific Pogs</a></p>
+	<p>
+		Many operations are affected by the selected pog. For example you can
+		select a Monster pog on the map an then hit the Monster editor button
+		to edit that one instance of monster. You can drag from the selected
+		pog area onto the map to create another new instance of the monster
+		including any edits you made to it. See section on <a
+			href="#DungeonSpecificPogs">Creating Dungeon Specific Pogs</a>
+	</p>
+	<h3 id="ManagingCommonResourcePogs">Managing Common Resource Pogs</h3>
+	<p>A common resource pog is either a monster or a room object that
+		is in a common pool that can be used across all dungeons. The template
+		editors have two major areas as explained below.</p>
+	<h4 id="SelectTemplateArea">Select template area</h4>
+	<img src="help/MonsterTemplateDialog2.png">
+	<p>
+		This area is where you select an existing common template. Since there
+		can be hundreds or thousands of items in the common area a filtering
+		mechanism is supplied to help in the selection. Just select the
+		appropriate filters from the drop down lists and then hit the &quot;<b>Apply
+			Filters</b>&quot; button to populate the drop down list below the button.
+		Then select the appropriate item from the list to make it the selected
+		pog. The edit section of the dialog should then fill in with the
+		correct information.
+	</p>
+	<p>
+		<big><b>CAUTION When this dialog first comes up the
+				information in the edit section will be for the selected pog. This
+				is probably not a common template so make sure you do the selection
+				steps first!</b></big>
+	</p>
+	<h4 id="EditPogArea">Edit Pog area</h4>
+	<img src="help/MonsterTemplateDialog3.png">
+	<p>This area is where you edit information about a pog. A pog needs
+		a unique name and a URL to a valid picture. The picture has to end
+		with extension png, jpg, or jpeg. If a valid url is entered then the
+		picture should show up on the bottom of the dialog. You can also edit
+		some filtering information like class, race, or gender. If this is a
+		common resource pog it will then help with filtering in the selection
+		area. Be careful with the case of the typing. "orc" and "Orc" will show
+		up as two different races in the filter list.</p>
+	<h4 id="CreateTemplatePog">Create Template pog</h4>
+	<p>
+		To create a new template pog in the common area hit the &quot;<b>Create
+			New Template</b>&quot; button. This will clear out the edit section. You
+		will then need to fill in the correct information for the new pog.
+		Once you hit Ok the new common template pog will be created.
+	</p>
+	<h3 id="DungeonSpecificPogs">Creating Dungeon Specific Pogs</h3>
+	<p>Sometimes a dungeon has some quirky pogs that don't really
+		belong in the common pool for other dungeons. To create one is
+		straight forward. Just select any pog of the appropriate type either
+		Monster or Room Object. Then drag it from the selected Pog area on the
+		ribbon bar to a place on the map. This will create a dungeon specific
+		instance. Then make sure to reselect it on the map so it becomes the
+		selected pog. Then call up the appropriate editor from the ribbon bar
+		for example Monster Editor. Then go to the edit section of the dialog
+		and fill in all the new information about this pog.</p>
+
 </body>
 </html>
