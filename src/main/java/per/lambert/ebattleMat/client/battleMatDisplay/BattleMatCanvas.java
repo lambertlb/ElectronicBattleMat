@@ -287,6 +287,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			public void onDrop(final DropEvent event) {
 				event.preventDefault();
 				dropPog(event);
+				ServiceManager.getDungeonManager().setPogBeingDragged(null, false);
 			}
 		}, DropEvent.getType());
 		this.addDomHandler(new DragLeaveHandler() {
@@ -389,7 +390,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			}
 		});
 		canvas.addDoubleClickHandler(new DoubleClickHandler() {
-			
+
 			@Override
 			public void onDoubleClick(final DoubleClickEvent event) {
 				restoreOriginalView();
@@ -797,6 +798,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void dropPog(final DropEvent event) {
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
+		if (pogBeingDragged == null) {
+			return;
+		}
 		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
 		boolean forSetOnGridElement = ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow);
 		boolean isPlayer = pogBeingDragged.isThisAPlayer();
@@ -944,8 +948,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param clientY Top Left Y
 	 */
 	protected void highlightGridSquare(final int clientX, final int clientY) {
-		computeSelectedColumnAndRow(clientX, clientY);
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
+		if (pogBeingDragged == null) {
+			return;
+		}
+		computeSelectedColumnAndRow(clientX, clientY);
 		int pogWidth = pogBeingDragged.getPogSize() - 1;
 		if (selectedColumn < 0 || selectedColumn + pogWidth >= verticalLines || selectedRow < 0 || selectedRow + pogWidth >= horizontalLines) {
 			dragColumn = -1;
@@ -970,7 +977,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void computeSelectedColumnAndRow(final int clientX, final int clientY) {
 		double xCoord = clientX - getAbsoluteLeft();
 		double yCoord = clientY - getAbsoluteTop();
-		selectedColumn = ((int) (((xCoord - offsetX - gridOffsetY)) / adjustedGridSize()));
+		selectedColumn = ((int) (((xCoord - offsetX - gridOffsetX)) / adjustedGridSize()));
 		selectedRow = ((int) (((yCoord - offsetY - gridOffsetY)) / adjustedGridSize()));
 	}
 
@@ -1145,9 +1152,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	/**
 	 * Get X coordinate relative between mouse click and target element.
+	 * 
 	 * @param touchInformation touch information
 	 * @param target widget
-	 * @return X coordinate relative between mouse click and target element. 
+	 * @return X coordinate relative between mouse click and target element.
 	 */
 	public int getRelativeX(final TouchInformation touchInformation, final Element target) {
 		return touchInformation.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
@@ -1155,9 +1163,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	/**
 	 * Get Y coordinate relative between mouse click and target element.
+	 * 
 	 * @param touchInformation touch information
 	 * @param target widget
-	 * @return Y coordinate relative between mouse click and target element. 
+	 * @return Y coordinate relative between mouse click and target element.
 	 */
 	public int getRelativeY(final TouchInformation touchInformation, final Element target) {
 		return touchInformation.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();

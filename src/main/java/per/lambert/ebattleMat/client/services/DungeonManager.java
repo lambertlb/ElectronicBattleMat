@@ -821,10 +821,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public void editSelectedDungeonUUID(final String selectedDungeonUUID) {
-		setDungeonMaster(true);
-		editMode = true;
 		this.selectedDungeonUUID = selectedDungeonUUID;
 		selectedSessionUUID = null;
+		editMode = true;
+		setDungeonMaster(true);
 		loadSelectedDungeon();
 	}
 
@@ -833,10 +833,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public void joinSession(final String selectedDungeonUUID, final String sessionUUID) {
-		setDungeonMaster(false);
-		editMode = false;
 		this.selectedDungeonUUID = selectedDungeonUUID;
 		selectedSessionUUID = sessionUUID;
+		editMode = false;
+		setDungeonMaster(false);
 		loadSelectedDungeon();
 	}
 
@@ -845,10 +845,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public void dmSession(final String selectedDungeonUUID, final String sessionUUID) {
-		setDungeonMaster(true);
-		editMode = false;
 		this.selectedDungeonUUID = selectedDungeonUUID;
 		selectedSessionUUID = sessionUUID;
+		editMode = false;
+		setDungeonMaster(true);
 		loadSelectedDungeon();
 	}
 
