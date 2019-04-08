@@ -1006,6 +1006,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private String computeDragColor() {
 		if (!ServiceManager.getDungeonManager().isDungeonMaster()) {
+			if (!ServiceManager.getDungeonManager().getPogBeingDragged().isThisAPlayer()) {
+				return ("red");
+			}
 			if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow)) {
 				return ("red");
 			}

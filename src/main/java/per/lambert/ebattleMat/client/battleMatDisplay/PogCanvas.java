@@ -315,7 +315,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			@Override
 			public void onDragStart(final DragStartEvent event) {
 				boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
-				if (ServiceManager.getDungeonManager().getFowToggle() || (!isDM && !pogData.isThisAPlayer())) {
+				if (ServiceManager.getDungeonManager().getFowToggle()) {
 					event.preventDefault();
 					return;
 				}
