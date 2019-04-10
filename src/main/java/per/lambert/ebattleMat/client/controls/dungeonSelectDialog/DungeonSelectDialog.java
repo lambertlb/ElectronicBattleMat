@@ -400,7 +400,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 	public void loadSessionList() {
 		setupSessionDisplayForDungeonMaster();
 		sessionDropdownList.clear();
-		sessionDropdownList.addItem("Select a Session to DM");
+		sessionDropdownList.addItem(dungeonSelectPresenter.isDungeonMaster() ? "Select a Session to DM" : "Select a Session to Join");
 		sessionDropdownList.setVisibleItemCount(1);
 		if (!dungeonSelectPresenter.isOkToShowSessions()) {
 			return;
