@@ -32,7 +32,7 @@ public final class ServerApp {
 		Server server = new Server(8088);
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/");
-		webAppContext.setWar(".\\ElectronicBattleMat.war");
+		webAppContext.setWar("./ElectronicBattleMat.war");
 		webAppContext.setParentLoaderPriority(true);
 		webAppContext.setServer(server);
 		webAppContext.setTempDirectory(new File("./ElectronicBattleMatTemp"));
