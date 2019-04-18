@@ -324,7 +324,6 @@ public class ResizableDialog extends DialogBox {
 	 * @param clientY y coordinate.
 	 * @return true if top was changed.
 	 */
-	@SuppressWarnings("unused")
 	private boolean isTop(final int clientX, final int clientY) {
 		computeDeltas(clientX, clientY, 0, 1);
 		return (deltaYFromStarting >= 0 && deltaYFromStarting < clientHeight);
