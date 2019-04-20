@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.server.serviceData.PogData;
@@ -230,11 +230,11 @@ public class SessionInformation {
 	 */
 	public void addOrUpdatePog(final PogData pogData, final int currentLevel) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
-		if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+		if (pogData.isType(Constants.POG_TYPE_MONSTER)) {
 			sessionLevel.getMonsters().addOrUpdate(pogData);
-		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
+		} else if (pogData.isType(Constants.POG_TYPE_ROOMOBJECT)) {
 			sessionLevel.getRoomObjects().addOrUpdate(pogData);
-		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+		} else if (pogData.isType(Constants.POG_TYPE_PLAYER)) {
 			sessionData.getPlayers().addOrUpdate(pogData);
 		}
 		sessionData.increamentVersion();

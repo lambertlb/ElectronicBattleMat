@@ -8,10 +8,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatLayout;
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
@@ -100,7 +100,7 @@ public class SelectedPog extends Composite {
 	 * No pog yet so set the look.
 	 */
 	public void unselectedPogLook() {
-		int height = (int) BattleMatLayout.RIBBON_BAR_SIZE;
+		int height = (int) Constants.RIBBON_BAR_SIZE;
 		pogPanel.setWidth("" + height + "px");
 		if (scalablePog != null) {
 			scalablePog.showImage(false);

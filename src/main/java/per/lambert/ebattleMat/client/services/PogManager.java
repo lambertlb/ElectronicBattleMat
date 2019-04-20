@@ -7,8 +7,8 @@ import java.util.Map;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IPogManager;
@@ -111,7 +111,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public void setCommonTemplate(final String pogType, final String templateUUID) {
-		if (pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
 			setSelectedMonster(templateUUID);
 		} else {
 			setSelectedRoomObject(templateUUID);
@@ -192,7 +192,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public PogData createPlayer() {
-		PogData pogData = createTemplatePog(ElectronicBattleMat.POG_TYPE_PLAYER);
+		PogData pogData = createTemplatePog(Constants.POG_TYPE_PLAYER);
 		return (pogData);
 	}
 
@@ -201,7 +201,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public PogData createMonster() {
-		PogData pogData = createTemplatePog(ElectronicBattleMat.POG_TYPE_MONSTER);
+		PogData pogData = createTemplatePog(Constants.POG_TYPE_MONSTER);
 		return (pogData);
 	}
 
@@ -211,7 +211,7 @@ public abstract class PogManager implements IPogManager {
 	@Override
 	public PogData createTemplatePog(final String type) {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
-		pogData.setTemplateUUID(PogData.generateUUID());
+		pogData.setTemplateUUID(Constants.generateUUID());
 		pogData.setUUID(pogData.getTemplateUUID());
 		pogData.setPogType(type);
 		return (pogData);
@@ -224,7 +224,7 @@ public abstract class PogManager implements IPogManager {
 		monsterTemplatePogs = null;
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEON_MONSTER_LOCATION + "pogs.json");
+		parameters.put("fileName", Constants.DUNGEON_MONSTER_LOCATION + "pogs.json");
 		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
@@ -289,7 +289,7 @@ public abstract class PogManager implements IPogManager {
 		roomObjectTemplatePogs = null;
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("fileName", ElectronicBattleMat.DUNGEON_ROOMOBJECT_LOCATION + "pogs.json");
+		parameters.put("fileName", Constants.DUNGEON_ROOMOBJECT_LOCATION + "pogs.json");
 		dataRequester.requestData("", "LOADJSONFILE", parameters, new IUserCallback() {
 
 			@Override
@@ -343,7 +343,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public ArrayList<PogData> getFilteredCommonTemplates(final String pogType, final String raceFilter, final String classFilter, final String genderFilter) {
-		PogList pogsToSearch = pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER) ? monsterTemplatePogs : roomObjectTemplatePogs;
+		PogList pogsToSearch = pogType.equals(Constants.POG_TYPE_MONSTER) ? monsterTemplatePogs : roomObjectTemplatePogs;
 		return (getFilteredMonsters(pogsToSearch, raceFilter, classFilter, genderFilter));
 	}
 
@@ -479,7 +479,7 @@ public abstract class PogManager implements IPogManager {
 	@Override
 	public String[] getCommonClasses(final String pogType) {
 		String[] rtn = new String[0];
-		if (pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
 			return (monsterClasses.values().toArray(rtn));
 		}
 		return (roomObjectClasses.values().toArray(rtn));
@@ -492,7 +492,7 @@ public abstract class PogManager implements IPogManager {
 	@Override
 	public String[] getCommonRaces(final String pogType) {
 		String[] rtn = new String[0];
-		if (pogType.equals(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
 			return (monsterRaces.values().toArray(rtn));
 		}
 		return (roomObjectRaces.values().toArray(rtn));

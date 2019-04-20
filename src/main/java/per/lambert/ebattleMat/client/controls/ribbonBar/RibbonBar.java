@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
 import per.lambert.ebattleMat.client.controls.FlagBitsDialog;
 import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
@@ -26,6 +25,7 @@ import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
 import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
@@ -282,7 +282,7 @@ public class RibbonBar extends Composite {
 				monsterManage.show();
 			}
 		});
-		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_MONSTER);
+		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER);
 
 		roomObjectsManageButton = new Button("Room Object Editor...");
 		roomObjectsManageButton.addStyleName("ribbonBarLabel");
@@ -293,7 +293,7 @@ public class RibbonBar extends Composite {
 				roomObjectsManage.show();
 			}
 		});
-		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, ElectronicBattleMat.POG_TYPE_ROOMOBJECT);
+		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT);
 
 		playerFlagsButton = new Button("Player Controlled Properties...");
 		playerFlagsButton.setStyleName("ribbonBarLabel");

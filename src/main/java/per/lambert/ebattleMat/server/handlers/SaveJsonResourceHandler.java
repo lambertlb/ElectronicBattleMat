@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
@@ -25,7 +26,7 @@ public class SaveJsonResourceHandler implements IWebRequestHandler {
 	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String resourceName = request.getParameter("resourceName");
 		URL servletPath = servlet.getServletContext().getResource("/");
-		String directory = servletPath.getPath() + DungeonsManager.RESOURCE_LOCATION + "/";
+		String directory = servletPath.getPath() + Constants.SERVER_RESOURCE_LOCATION + "/";
 		String resourcePath;
 		if (resourceName.equalsIgnoreCase("monsters")) {
 			resourcePath = "monsters/pogs.json";

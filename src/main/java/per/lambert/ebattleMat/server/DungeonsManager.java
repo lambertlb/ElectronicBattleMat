@@ -22,7 +22,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.server.serviceData.DungeonData;
 import per.lambert.ebattleMat.server.serviceData.DungeonLevel;
@@ -42,18 +42,6 @@ public final class DungeonsManager {
 	 * lock used to manage concurrency.
 	 */
 	private static ReentrantLock lock = new ReentrantLock();
-	/**
-	 * Location of dungeon information.
-	 */
-	private static final String DUNGEON_DATA_LOCATION = "/" + ElectronicBattleMat.DUNGEON_DATA_LOCATION;
-	/**
-	 * Location of dungeon templaters.
-	 */
-	private static final String DUNGEONS_LOCATION = "/" + ElectronicBattleMat.DUNGEONS_LOCATION;
-	/**
-	 * Location of resources.
-	 */
-	public static final String RESOURCE_LOCATION = "/" + ElectronicBattleMat.RESOURCE_LOCATION;
 	/**
 	 * Map of dungeon UUIDs to dungeon directory path.
 	 */
@@ -201,7 +189,7 @@ public final class DungeonsManager {
 		}
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String directoryPath = servletPath.getPath() + DUNGEONS_LOCATION;
+			String directoryPath = servletPath.getPath() + Constants.SERVER_DUNGEONS_LOCATION;
 			File directory = new File(directoryPath);
 			for (File possibleDungeon : directory.listFiles()) {
 				if (possibleDungeon.isDirectory()) {
@@ -240,7 +228,7 @@ public final class DungeonsManager {
 	private static void addToDungeonCache(final String directoryName, final String dungeonName, final String uuid) {
 		lock.lock();
 		try {
-			uuidTemplatePathMap.put(uuid, DUNGEONS_LOCATION + directoryName);
+			uuidTemplatePathMap.put(uuid, Constants.SERVER_DUNGEONS_LOCATION + directoryName);
 			dungeonNameToUUIDMap.put(uuid, dungeonName);
 		} finally {
 			lock.unlock();
@@ -256,7 +244,7 @@ public final class DungeonsManager {
 	 * @throws IOException thrown if error
 	 */
 	private static DungeonData getDungeonData(final HttpServlet servlet, final String directoryName) throws IOException {
-		String directoryPath = DUNGEONS_LOCATION + directoryName;
+		String directoryPath = Constants.SERVER_DUNGEONS_LOCATION + directoryName;
 		return getDungeonDataFromPath(servlet, directoryPath);
 	}
 
@@ -304,7 +292,7 @@ public final class DungeonsManager {
 			URL servletPath = servlet.getServletContext().getResource("/");
 			String dstDirectory = newDungeonName.replaceAll("[^a-zA-Z0-9]", "_");
 			File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(templateDungeonUUID));
-			File destDir = new File(servletPath.getPath() + DUNGEONS_LOCATION + dstDirectory);
+			File destDir = new File(servletPath.getPath() + Constants.SERVER_DUNGEONS_LOCATION + dstDirectory);
 			FileUtils.copyDirectory(srcDir, destDir);
 			deleteAnyOldSessions(destDir);
 			DungeonData dungeonData = getDungeonData(servlet, dstDirectory);
@@ -374,7 +362,7 @@ public final class DungeonsManager {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
+			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + Constants.SESSIONS_FOLDER;
 			String directoryPath = servletPath.getPath() + sessionsPath;
 			makeSureDirectoryExists(directoryPath);
 			File directory = new File(directoryPath);
@@ -419,7 +407,7 @@ public final class DungeonsManager {
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
 			String templateDirectory = servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID);
-			String sessionDirectory = templateDirectory + ElectronicBattleMat.SESSIONS_FOLDER + newSessionName.replaceAll("\\s+", "_");
+			String sessionDirectory = templateDirectory + Constants.SESSIONS_FOLDER + newSessionName.replaceAll("\\s+", "_");
 			makeSureDirectoryExists(sessionDirectory);
 			DungeonData dungeonData = getDungeonDataFromUUID(servlet, dungeonUUID);
 			DungeonSessionData sessionData = createSessionData(servlet, sessionDirectory, dungeonUUID, newSessionName, dungeonData);
@@ -504,7 +492,7 @@ public final class DungeonsManager {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + ElectronicBattleMat.SESSIONS_FOLDER;
+			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + Constants.SESSIONS_FOLDER;
 			String directoryPath = servletPath.getPath() + sessionsPath;
 			File sessionsDirectory = new File(directoryPath);
 			for (File possibleSession : sessionsDirectory.listFiles()) {
@@ -672,7 +660,7 @@ public final class DungeonsManager {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String filePath = servletPath.getPath() + DUNGEON_DATA_LOCATION + fileName;
+			String filePath = servletPath.getPath() + Constants.SERVER_DUNGEON_DATA_LOCATION + fileName;
 			return (readJsonFile(filePath));
 		} finally {
 			lock.unlock();
@@ -743,7 +731,7 @@ public final class DungeonsManager {
 	 * @throws IOException thrown if error
 	 */
 	private static void deleteAnyOldSessions(final File destinationDirectory) throws IOException {
-		String sessionsPath = destinationDirectory.getPath() + "/" + ElectronicBattleMat.SESSIONS_FOLDER;
+		String sessionsPath = destinationDirectory.getPath() + "/" + Constants.SESSIONS_FOLDER;
 		File sessions = new File(sessionsPath);
 		lock.lock();
 		try {
@@ -805,10 +793,10 @@ public final class DungeonsManager {
 	 * @throws IOException if error
 	 */
 	private static void addOrUpdatePogToCommonResource(final HttpServlet servlet, final PogData pogData) throws IOException {
-		if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
-			addOrUpdatePogToCommonResource(servlet, pogData, ElectronicBattleMat.MONSTER_FOLDER);
-		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
-			addOrUpdatePogToCommonResource(servlet, pogData, ElectronicBattleMat.ROOM_OBJECT_FOLDER);
+		if (pogData.isType(Constants.POG_TYPE_MONSTER)) {
+			addOrUpdatePogToCommonResource(servlet, pogData, Constants.MONSTER_FOLDER);
+		} else if (pogData.isType(Constants.POG_TYPE_ROOMOBJECT)) {
+			addOrUpdatePogToCommonResource(servlet, pogData, Constants.ROOM_OBJECT_FOLDER);
 		}
 	}
 
@@ -821,7 +809,7 @@ public final class DungeonsManager {
 	 * @throws IOException if error
 	 */
 	private static void addOrUpdatePogToCommonResource(final HttpServlet servlet, final PogData pogData, final String folder) throws IOException {
-		String resourcePath = RESOURCE_LOCATION + folder + "pogs.json";
+		String resourcePath = Constants.SERVER_RESOURCE_LOCATION + folder + "pogs.json";
 		URL servletPath = servlet.getServletContext().getResource("/");
 		String filePath = servletPath.getPath() + resourcePath;
 		String fileData = readJsonFile(filePath);
@@ -844,9 +832,9 @@ public final class DungeonsManager {
 	private static void addOrUpdatePogToDungeonInstance(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final int level) throws IOException {
 		DungeonData dungeonData = getDungeonDataFromUUID(servlet, dungeonUUID);
 		DungeonLevel dungeonLevel = dungeonData.getDungeonLevels()[level];
-		if (pogData.isType(ElectronicBattleMat.POG_TYPE_MONSTER)) {
+		if (pogData.isType(Constants.POG_TYPE_MONSTER)) {
 			dungeonLevel.getMonsters().addOrUpdate(pogData);
-		} else if (pogData.isType(ElectronicBattleMat.POG_TYPE_ROOMOBJECT)) {
+		} else if (pogData.isType(Constants.POG_TYPE_ROOMOBJECT)) {
 			dungeonLevel.getRoomObjects().addOrUpdate(pogData);
 		}
 		Gson gson = new Gson();
@@ -883,7 +871,7 @@ public final class DungeonsManager {
 	 */
 	private static void addOrUpdatePogToSessionResource(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final String sessionUUID, final int level) throws IOException {
 		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
-		if (pogData.isType(ElectronicBattleMat.POG_TYPE_PLAYER)) {
+		if (pogData.isType(Constants.POG_TYPE_PLAYER)) {
 			sessionInformation.addOrUpdatePog(pogData, level);
 		}
 	}

@@ -3,7 +3,7 @@ package per.lambert.ebattleMat.client.services.serviceData;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
-import per.lambert.ebattleMat.client.ElectronicBattleMat;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 
@@ -115,7 +115,7 @@ public class PogData extends JavaScriptObject {
 	 */
 	public final boolean isThisAPlayer() {
 		String type = getPogType();
-		return (type.equals(ElectronicBattleMat.POG_TYPE_PLAYER));
+		return (type.equals(Constants.POG_TYPE_PLAYER));
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class PogData extends JavaScriptObject {
 	 */
 	public final boolean isThisAMonster() {
 		String type = getPogType();
-		return (type.equals(ElectronicBattleMat.POG_TYPE_MONSTER));
+		return (type.equals(Constants.POG_TYPE_MONSTER));
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class PogData extends JavaScriptObject {
 	 */
 	public final boolean isThisARoomObject() {
 		String type = getPogType();
-		return (type.equals(ElectronicBattleMat.POG_TYPE_ROOMOBJECT));
+		return (type.equals(Constants.POG_TYPE_ROOMOBJECT));
 	}
 
 	/**
@@ -178,25 +178,6 @@ public class PogData extends JavaScriptObject {
 	 */
 	public final native void setPogRow(int pogRow) /*-{
 		this.pogRow = pogRow;
-	}-*/;
-
-	/**
-	 * Generate UUID.
-	 * 
-	 * @return UUID.
-	 */
-	public static final native String generateUUID() /*-{
-		var d = new Date().getTime();
-		if (typeof performance !== 'undefined'
-				&& typeof performance.now === 'function') {
-			d += performance.now(); //use high-precision timer if available
-		}
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
-				function(c) {
-					var r = (d + Math.random() * 16) % 16 | 0;
-					d = Math.floor(d / 16);
-					return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-				});
 	}-*/;
 
 	/**
@@ -434,7 +415,7 @@ public class PogData extends JavaScriptObject {
 	public final PogData clone() {
 		String pogJson = JsonUtils.stringify(this);
 		PogData theClone = JsonUtils.<PogData>safeEval(pogJson);
-		theClone.setUUID(generateUUID());
+		theClone.setUUID(Constants.generateUUID());
 		return (theClone);
 	}
 

@@ -9,6 +9,8 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
+import per.lambert.ebattleMat.client.interfaces.Constants;
+
 /**
  * Layout for battle mat.
  * 
@@ -36,10 +38,6 @@ public class BattleMatLayout extends ResizeComposite {
 	 * main panel.
 	 */
 	private LayoutPanel mainPanel;
-	/**
-	 * Height of ribbon bar.
-	 */
-	public static final double RIBBON_BAR_SIZE = 50;
 
 	/**
 	 * Sets up the widget. We create the GUI, set up event handling, and call initWidget on the holder panel.
@@ -65,7 +63,7 @@ public class BattleMatLayout extends ResizeComposite {
 		battleMatCanvasPanel.add(battleMatCanvas);
 		mainPanel.add(battleMatCanvasPanel);
 
-		holder.addNorth(topPanel, RIBBON_BAR_SIZE);
+		holder.addNorth(topPanel, Constants.RIBBON_BAR_SIZE);
 		holder.add(mainPanel);
 
 		// MUST CALL THIS METHOD to set the constraints; if you don't not much
