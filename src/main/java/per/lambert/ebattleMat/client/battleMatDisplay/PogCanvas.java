@@ -113,7 +113,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	private boolean showNormalSizeOnly = false;
 
 	/**
-	 * set show normal size only.
+	 * Get show normal size only.
 	 * 
 	 * @return true if set
 	 */
@@ -196,11 +196,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * image has been loaded.
 	 */
 	private boolean imageLoaded = false;
-
-	/**
-	 * True to force a background color even if transparent is set.
-	 */
-	private boolean forceBackgroundColor = false;
 	/**
 	 * Width of pog displayed image.
 	 */
@@ -209,6 +204,11 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Current zoom factor.
 	 */
 	private double zoomFactor = 1;
+
+	/**
+	 * True to force a background color even if transparent is set.
+	 */
+	private boolean forceBackgroundColor = false;
 
 	/**
 	 * get force background color.
@@ -263,44 +263,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Setup view with this data.
-	 * 
-	 * @param pogData data to use.
-	 */
-	private void setupWithPogData(final PogData pogData) {
-		this.pogData = pogData;
-		String backgroundColor = getBackgroundColor(pogData);
-		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
-		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
-		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
-
-		if (pogData.getPogImageUrl() != "") {
-			setPogImageUrl(pogData.getPogImageUrl());
-		} else {
-			showImage = false;
-		}
-		pogMainPanel.setTitle(pogData.getPogName());
-	}
-
-	/**
-	 * Get proper background color.
-	 * 
-	 * @param pogData with DM bits
-	 * @return color
-	 */
-	private String getBackgroundColor(final PogData pogData) {
-		String color = "white";
-		if (forceBackgroundColor) {
-			if (pogData.isFlagSet(DungeonMasterFlag.DARK_BACKGROUND)) {
-				color = "black";
-			}
-		} else if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
-			color = "transparent";
-		}
-		return color;
-	}
-
-	/**
 	 * Create content.
 	 */
 	private void createContent() {
@@ -341,7 +303,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			}
 		});
 		pogDrawPanel.addDomHandler(new MouseUpHandler() {
-
 			@Override
 			public void onMouseUp(final MouseUpEvent event) {
 				if (ServiceManager.getDungeonManager().getFowToggle()) {
@@ -350,7 +311,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			}
 		}, MouseUpEvent.getType());
 		pogDrawPanel.addDomHandler(new MouseMoveHandler() {
-
 			@Override
 			public void onMouseMove(final MouseMoveEvent event) {
 				if (ServiceManager.getDungeonManager().getFowToggle()) {
@@ -358,6 +318,44 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 				}
 			}
 		}, MouseMoveEvent.getType());
+	}
+
+	/**
+	 * Setup view with this data.
+	 * 
+	 * @param pogData data to use.
+	 */
+	private void setupWithPogData(final PogData pogData) {
+		this.pogData = pogData;
+		String backgroundColor = getBackgroundColor(pogData);
+		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
+		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+
+		if (pogData.getPogImageUrl() != "") {
+			setPogImageUrl(pogData.getPogImageUrl());
+		} else {
+			showImage = false;
+		}
+		pogMainPanel.setTitle(pogData.getPogName());
+	}
+
+	/**
+	 * Get proper background color.
+	 * 
+	 * @param pogData with DM bits
+	 * @return color
+	 */
+	private String getBackgroundColor(final PogData pogData) {
+		String color = "white";
+		if (forceBackgroundColor) {
+			if (pogData.isFlagSet(DungeonMasterFlag.DARK_BACKGROUND)) {
+				color = "black";
+			}
+		} else if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
+			color = "transparent";
+		}
+		return color;
 	}
 
 	/**
@@ -509,7 +507,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	private int imageCount = 1;
 
 	/**
-	 * Set URL for image.
+	 * Set URL for image. This will append a number to force the loading of picture from server to bypass caching.
 	 * 
 	 * @param pogImageUrl URL for image
 	 */
@@ -547,7 +545,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Draw overlays on cavas over picture.
+	 * Draw overlays on canvas over picture.
 	 */
 	private void drawOverlays() {
 		if (showNormalSizeOnly) {

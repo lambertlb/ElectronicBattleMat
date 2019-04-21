@@ -187,7 +187,6 @@ public class RibbonBar extends Composite {
 	private void createControls() {
 		createCommonControls();
 		createDMControls();
-		createPlayerControls();
 	}
 
 	/**
@@ -440,8 +439,7 @@ public class RibbonBar extends Composite {
 	 * Setup for dungeon master.
 	 */
 	private void setupForDungeonMaster() {
-		setupForEditDungeon();
-		ribbonGrid.setWidget(0, 4, manageDungeonsButton);
+		setupForCommonDMControls();
 		if (ServiceManager.getDungeonManager().isEditMode()) {
 			ribbonGrid.setWidget(0, 5, helpLink);
 		} else {
@@ -453,9 +451,9 @@ public class RibbonBar extends Composite {
 	}
 
 	/**
-	 * Setup for editing dungeons.
+	 * Setup controls for all DM modes.
 	 */
-	private void setupForEditDungeon() {
+	private void setupForCommonDMControls() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
 		ribbonGrid.setWidget(1, 0, levelOptions);
 		ribbonGrid.setWidget(0, 1, roomObjectsManageButton);
@@ -464,6 +462,7 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setWidget(1, 2, dmFlagsButton);
 		ribbonGrid.setWidget(0, 3, showSelectedPog);
 		ribbonGrid.setWidget(1, 3, showPogNotes);
+		ribbonGrid.setWidget(0, 4, manageDungeonsButton);
 	}
 
 	/**
@@ -519,11 +518,4 @@ public class RibbonBar extends Composite {
 			ServiceManager.getDungeonManager().setSelectedPog(characterPog);
 		}
 	}
-
-	/**
-	 * Create player controls.
-	 */
-	private void createPlayerControls() {
-	}
-
 }

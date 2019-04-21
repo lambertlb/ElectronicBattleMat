@@ -99,7 +99,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private boolean showGrid = false;
 	/**
-	 * Adjusted grid spacing so the grid lines matches exactly to one side.
+	 * Adjusted grid spacing so the grid lines matches exactly to one that might already be in a picture.
 	 */
 	private double gridSpacing = 50;
 	/**
@@ -107,7 +107,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private Canvas canvas = Canvas.createIfSupported();
 	/**
-	 * background canvas for temporary drawing.
+	 * background canvas for temporary drawing and then scaled and drawn on the main canvas.
 	 */
 	private Canvas backCanvas = Canvas.createIfSupported();
 	/**
@@ -115,7 +115,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private Canvas fowCanvas = Canvas.createIfSupported();
 	/**
-	 * line style yellow.
+	 * line style grey.
 	 */
 	private final CssColor gridColor = CssColor.make("grey");
 	/**
@@ -139,7 +139,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private int parentHeight = 0;
 	/**
-	 * image context for drawing.
+	 * image element for drawing.
 	 */
 	private ImageElement imageElement;
 	/**
@@ -147,23 +147,23 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private double totalZoom = 1;
 	/**
-	 * Maximum zoom factor. We do not allow zooming out farther than the initial calculated zoom that fills the parent.
+	 * Maximum zoom factor.
 	 */
 	private double maxZoom = .5;
 	/**
-	 * Offset of image in the horizontal direction.
+	 * Offset of image in the horizontal direction. Used for panning the image.
 	 */
 	private double offsetX = 0;
 	/**
-	 * Offset of image in the vertical direction.
+	 * Offset of image in the vertical direction. Used for panning the image.
 	 */
 	private double offsetY = 0;
 	/**
-	 * grid origin offset X.
+	 * grid origin offset X. Used to align the overlay grid with a grid that maybe in picture.
 	 */
 	private double gridOffsetX = 0;
 	/**
-	 * grid origin offset Y.
+	 * grid origin offset Y. Used to align the overlay grid with a grid that maybe in picture.
 	 */
 	private double gridOffsetY = 0;
 	/**
@@ -199,7 +199,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private Image image = new Image();
 	/**
-	 * panel to managing the grey out area.
+	 * panel to managing the grey out area when pog is being dragged.
 	 */
 	private LayoutPanel greyOutPanel;
 	/**
@@ -236,7 +236,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private TouchHelper touchHelper;
 
 	/**
-	 * Widget for scaling an image. This supports zoom and pan
+	 * Widget for managing all battle mat activities.
 	 */
 	public BattleMatCanvas() {
 
@@ -281,7 +281,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				highlightGridSquare(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 			}
 		}, DragOverEvent.getType());
-
 		this.addDomHandler(new DropHandler() {
 			@Override
 			public void onDrop(final DropEvent event) {
@@ -291,7 +290,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			}
 		}, DropEvent.getType());
 		this.addDomHandler(new DragLeaveHandler() {
-
 			@Override
 			public void onDragLeave(final DragLeaveEvent event) {
 			}
@@ -341,56 +339,48 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void addTouchHandlerEvents() {
 		touchHelper.addDoubleTapHandler(new DoubleTapHandler() {
-
 			@Override
 			public void onDoubleTap(final DoubleTapEvent event) {
 				doDoubleTap(event);
 			}
 		});
 		touchHelper.addPanStartHandler(new PanStartHandler() {
-
 			@Override
 			public void onPanStart(final PanStartEvent event) {
 				doPanStart(event);
 			}
 		});
 		touchHelper.addPanEndHandler(new PanEndHandler() {
-
 			@Override
 			public void onPanEnd(final PanEndEvent event) {
 				doPanEnd(event);
 			}
 		});
 		touchHelper.addPanHandler(new PanHandler() {
-
 			@Override
 			public void onPan(final PanEvent event) {
 				doPan(event);
 			}
 		});
 		touchHelper.addZoomHandler(new ZoomHandler() {
-
 			@Override
 			public void onZoom(final ZoomEvent event) {
 				doZoom(event);
 			}
 		});
 		touchHelper.addZoomStartHandler(new ZoomStartHandler() {
-
 			@Override
 			public void onZoomStart(final ZoomStartEvent event) {
 				doZoomStart(event);
 			}
 		});
 		touchHelper.addZoomEndHandler(new ZoomEndHandler() {
-
 			@Override
 			public void onZoomEnd(final ZoomEndEvent event) {
 				doZoomEnd(event);
 			}
 		});
 		canvas.addDoubleClickHandler(new DoubleClickHandler() {
-
 			@Override
 			public void onDoubleClick(final DoubleClickEvent event) {
 				restoreOriginalView();
@@ -427,15 +417,15 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		canvas.setHeight(parentHeight + "px");
 		canvas.setCoordinateSpaceHeight(parentHeight);
 
-		fowCanvas.setWidth(parentWidth + "px");
-		fowCanvas.setCoordinateSpaceWidth(parentWidth);
-		fowCanvas.setHeight(parentHeight + "px");
-		fowCanvas.setCoordinateSpaceHeight(parentHeight);
-
 		backCanvas.setWidth(parentWidth + "px");
 		backCanvas.setCoordinateSpaceWidth(parentWidth);
 		backCanvas.setHeight(parentHeight + "px");
 		backCanvas.setCoordinateSpaceHeight(parentHeight);
+
+		fowCanvas.setWidth(parentWidth + "px");
+		fowCanvas.setCoordinateSpaceWidth(parentWidth);
+		fowCanvas.setHeight(parentHeight + "px");
+		fowCanvas.setCoordinateSpaceHeight(parentHeight);
 
 		calculateStartingZoom();
 		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
@@ -443,36 +433,41 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Handle mouse wheel.
-	 * 
-	 * @param event event data.
+	 * Calculate the starting zoom factor so that one side of the image exactly fills the parent.
+	 */
+	private void calculateStartingZoom() {
+		totalZoom = 1;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public final void onMouseWheel(final MouseWheelEvent event) {
 		int move = event.getDeltaY();
 		double xPos = (event.getRelativeX(canvas.getElement()));
 		double yPos = (event.getRelativeY(canvas.getElement()));
 
-		double zoom = DEFAULT_ZOOM;
+		double deltaZoom = DEFAULT_ZOOM;
 		if (move >= 0) {
-			zoom = 1 / DEFAULT_ZOOM;
+			deltaZoom = 1 / DEFAULT_ZOOM;
 		}
-		scaleCanvas(xPos, yPos, zoom);
+		zoomCanvas(xPos, yPos, deltaZoom);
 	}
 
 	/**
-	 * Scale canvas base on delta mouse positions.
+	 * Zoom canvas base on delta mouse positions.
 	 * 
 	 * @param xPos current X
 	 * @param yPos current Y
-	 * @param zoom zoom factor
+	 * @param deltaZoom delta zoom factor
 	 */
-	private void scaleCanvas(final double xPos, final double yPos, final double zoom) {
+	private void zoomCanvas(final double xPos, final double yPos, final double deltaZoom) {
 		double newX = (xPos - offsetX) / totalZoom;
 		double newY = (yPos - offsetY) / totalZoom;
-		double xPosition = (-newX * zoom) + newX;
-		double yPosition = (-newY * zoom) + newY;
+		double xPosition = (-newX * deltaZoom) + newX;
+		double yPosition = (-newY * deltaZoom) + newY;
 
-		double newZoom = zoom * totalZoom;
+		double newZoom = deltaZoom * totalZoom;
 		if (newZoom < maxZoom) {
 			newZoom = maxZoom;
 		} else {
@@ -484,9 +479,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Handle mouse down.
-	 * 
-	 * @param event event data.
+	 * {@inheritDoc}
 	 */
 	public final void onMouseDown(final MouseDownEvent event) {
 		mouseDownXPos = event.getRelativeX(image.getElement());
@@ -498,8 +491,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Check if we need to handle fog of war.
 	 * 
-	 * @param clientX X Coorordinate of operation..
-	 * @param clientY Y Coorordinate of operation..
+	 * @param clientX X Coordinate of operation.
+	 * @param clientY Y Coordinate of operation.
 	 */
 	private void checkForFOWHandling(final int clientX, final int clientY) {
 		toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
@@ -515,17 +508,17 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	public final void onMouseMove(final MouseMoveEvent event) {
 		if (mouseDown) {
-			handleMouseMove(event);
+			handleMouseMoveWhilePanning(event);
 		} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
 			handleFowMouseMove(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 		}
 	}
 
 	/**
-	 * Handle mouse move.
+	 * Handle mouse move dealing with fog of war.
 	 * 
-	 * @param clientX X Coorordinate of operation..
-	 * @param clientY Y Coorordinate of operation..
+	 * @param clientX X Coordinate of operation.
+	 * @param clientY Y Coordinate of operation.
 	 */
 	private void handleFowMouseMove(final int clientX, final int clientY) {
 		computeSelectedColumnAndRow(clientX, clientY);
@@ -545,48 +538,41 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Handle mouse move.
+	 * Handle mouse move while panning.
 	 * 
 	 * @param event event data
 	 */
-	private void handleMouseMove(final MouseMoveEvent event) {
+	private void handleMouseMoveWhilePanning(final MouseMoveEvent event) {
 		double xPos = event.getRelativeX(image.getElement());
 		double yPos = event.getRelativeY(image.getElement());
-		handleCanvasMove(xPos, yPos);
+		handleCanvasMoveWhilePanning(xPos, yPos);
 	}
 
 	/**
-	 * Handle panning canvas.
+	 * Handle panning canvas while panning.
 	 * 
 	 * @param xPos center X of pan
 	 * @param yPos center Y of pan
 	 */
-	private void handleCanvasMove(final double xPos, final double yPos) {
+	private void handleCanvasMoveWhilePanning(final double xPos, final double yPos) {
 		offsetX += (xPos - mouseDownXPos);
 		offsetY += (yPos - mouseDownYPos);
-		try {
-			drawEverything();
-		} catch (Exception ex) {
-			mouseDownXPos = xPos;
-			mouseDownYPos = yPos;
-		}
+		drawEverything();
 		mouseDownXPos = xPos;
 		mouseDownYPos = yPos;
 	}
 
 	/**
-	 * Handle mouse up.
-	 * 
-	 * @param event event data.
+	 * {@inheritDoc}
 	 */
 	public final void onMouseUp(final MouseUpEvent event) {
-		moveOperationComplete();
+		panOperationComplete();
 	}
 
 	/**
-	 * Move completion.
+	 * pan completion.
 	 */
-	private void moveOperationComplete() {
+	private void panOperationComplete() {
 		if (toggleFOW) {
 			ServiceManager.getDungeonManager().saveFow();
 		}
@@ -636,39 +622,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		drawGridLines();
 		adjustPogs();
 		drawFogOfWar();
-	}
-
-	/**
-	 * Adjust pog positions. Pog data has the column and row and the widget need to be moved to the proper pixel.
-	 */
-	private void adjustPogs() {
-		computPogBorderWidth();
-		for (PogCanvas pog : pogs) {
-			int x = (int) (columnToPixel(pog.getPogColumn()));
-			int y = (int) (rowToPixel(pog.getPogRow()));
-			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_RIGHT)) {
-				x += (adjustedGridSize() / 2);
-			} else if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_TOP)) {
-				y -= (adjustedGridSize() / 2);
-			}
-			this.setWidgetPosition(pog, x, y);
-			pog.setPogSizing(adjustedGridSize(), pogBorderWidth, totalZoom);
-			if (pog.isInVisibleToPlayer()) {
-				pog.getElement().getStyle().setBorderWidth(0, Unit.PX);
-			} else {
-				pog.getElement().getStyle().setBorderWidth(pogBorderWidth, Unit.PX);
-			}
-		}
-	}
-
-	/**
-	 * Compute width of border.
-	 */
-	private void computPogBorderWidth() {
-		pogBorderWidth = totalZoom * getStartingBorderWidth();
-		if (pogBorderWidth < 1.0) {
-			pogBorderWidth = 1.0;
-		}
 	}
 
 	/**
@@ -733,7 +686,49 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Draw fog of war. If this is DM let he see through it.
+	 * Adjust pog positions. Pog data has the column and row and the widget needs to be moved to the proper pixel.
+	 */
+	private void adjustPogs() {
+		computPogBorderWidth();
+		for (PogCanvas pog : pogs) {
+			int x = (int) (columnToPixel(pog.getPogColumn()));
+			int y = (int) (rowToPixel(pog.getPogRow()));
+			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_RIGHT)) {
+				x += (adjustedGridSize() / 2);
+			} else if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_TOP)) {
+				y -= (adjustedGridSize() / 2);
+			}
+			this.setWidgetPosition(pog, x, y);
+			pog.setPogSizing(adjustedGridSize(), pogBorderWidth, totalZoom);
+			if (pog.isInVisibleToPlayer()) {
+				pog.getElement().getStyle().setBorderWidth(0, Unit.PX);
+			} else {
+				pog.getElement().getStyle().setBorderWidth(pogBorderWidth, Unit.PX);
+			}
+		}
+	}
+
+	/**
+	 * Compute width of border.
+	 */
+	private void computPogBorderWidth() {
+		pogBorderWidth = totalZoom * getStartingBorderWidth();
+		if (pogBorderWidth < 1.0) {
+			pogBorderWidth = 1.0;
+		}
+	}
+
+	/**
+	 * Starting border width.
+	 * 
+	 * @return starting border width
+	 */
+	private double getStartingBorderWidth() {
+		return (gridSpacing / 15);
+	}
+
+	/**
+	 * Draw fog of war. If this is DM let them see through it.
 	 */
 	private void drawFogOfWar() {
 		if (ServiceManager.getDungeonManager().isEditMode()) {
@@ -754,7 +749,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Draw fog of war for this cell.
+	 * Draw fog of war for this cell. If the fog of war bit is not set then make the cell transparent.
 	 * 
 	 * @param isSet true if need to be draw.
 	 * @param size width and height of cell
@@ -785,14 +780,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Calculate the starting zoom factor so that one side of the image exactly fills the parent.
-	 */
-	private void calculateStartingZoom() {
-		totalZoom = 1;
-	}
-
-	/**
-	 * Drop a pog into the cell.
+	 * Drop a pog into a cell.
 	 * 
 	 * @param event event data
 	 */
@@ -802,18 +790,19 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
-		boolean forSetOnGridElement = ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow);
+		boolean fowSetOnGridElement = ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow);
 		boolean isPlayer = pogBeingDragged.isThisAPlayer();
 		if (!isDM) {
-			if (forSetOnGridElement || !isPlayer) {
+			if (fowSetOnGridElement || !isPlayer) {
+				// player only allowed to drag PLAYER pogs.
 				removeHighlightGridSquare();
 				return;
 			}
 		}
-		if (dragColumn < 0 || dragRow < 0) {
+		if (dragColumn < 0 || dragRow < 0) { // no dragging off screen.
 			return;
 		}
-		PogCanvas dragPog = updateOrCreatePogCanvasForTHisCell();
+		PogCanvas dragPog = updateOrCreatePogCanvasForThisCell();
 		if (dragPog != null) {
 			removeHighlightGridSquare();
 			drawEverything();
@@ -825,7 +814,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @return pog canvas in the cell
 	 */
-	private PogCanvas updateOrCreatePogCanvasForTHisCell() {
+	private PogCanvas updateOrCreatePogCanvasForThisCell() {
 		PogCanvas existingPog = findCanvasForDraggedPog();
 		if (existingPog == null || (!existingPog.getPogData().isThisAPlayer()) && ServiceManager.getDungeonManager().isFromRibbonBar()) {
 			existingPog = addClonePogToCanvas(ServiceManager.getDungeonManager().getPogBeingDragged());
@@ -864,7 +853,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * get proper Z for pog based onb type.
+	 * get proper Z for pog based on type.
 	 * 
 	 * @param pogData pog data
 	 * @return Proper Z
@@ -904,13 +893,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private PogCanvas addPogToCanvas(final PogData clonePog) {
 		PogCanvas scalablePog = new PogCanvas(clonePog);
-		// scalablePog.setPogSizing(gridSpacing - 16, totalZoom);
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
 		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + 3, (int) rowToPixel(scalablePog.getPogRow() + 3));
-		// scalablePog.addStyleName("selectedPog");
 		scalablePog.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
-		// scalablePog.getElement().getStyle().setBorderWidth(3, Unit.PX);
 		scalablePog.getElement().getStyle().setBorderColor("grey");
 		return (scalablePog);
 	}
@@ -922,15 +908,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private double adjustedGridSize() {
 		return (gridSpacing * totalZoom);
-	}
-
-	/**
-	 * Starting border width.
-	 * 
-	 * @return starting border width
-	 */
-	private double getStartingBorderWidth() {
-		return (gridSpacing / 15);
 	}
 
 	/**
@@ -1000,7 +977,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Get color for drag indicator. Players are only all to drag over non-fog of war areas.
+	 * Get color for drag indicator. Players are only allowed to drag over non-fog of war areas.
 	 * 
 	 * @return color string
 	 */
@@ -1120,6 +1097,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			if (pogCanvas.getPogData().isEquals(pog)) {
 				selectedPogCanvas = pogCanvas;
 				selectedPogCanvas.getElement().getStyle().setBorderColor("black");
+				break;
 			}
 		}
 	}
@@ -1194,7 +1172,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	protected void doPanEnd(final PanEndEvent event) {
 		this.mouseDown = false;
-		moveOperationComplete();
+		panOperationComplete();
 	}
 
 	/**
@@ -1206,7 +1184,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (mouseDown) {
 			double xPos = event.getTouchInformation().getPageX();
 			double yPos = event.getTouchInformation().getPageY();
-			handleCanvasMove(xPos, yPos);
+			handleCanvasMoveWhilePanning(xPos, yPos);
 		} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
 			handleFowMouseMove(event.getTouchInformation().getClientX(), event.getTouchInformation().getClientY());
 		}
@@ -1243,7 +1221,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		double currentDistance = event.getZoomInformation().getCurrentDistance();
 		double xPos = event.getZoomInformation().currentCenterX();
 		double yPos = event.getZoomInformation().currentCenterY();
-		scaleCanvas(xPos, yPos, currentDistance / distance);
+		zoomCanvas(xPos, yPos, currentDistance / distance);
 		distance = currentDistance;
 	}
 }

@@ -52,7 +52,6 @@ public class ElectronicBattleMat implements EntryPoint {
 				ServiceManager.getDungeonManager().doTimedTasks();
 			}
 		};
-
 		taskTimer.scheduleRepeating(1000);
 	}
 

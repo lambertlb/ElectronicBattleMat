@@ -92,28 +92,24 @@ public class TouchHelper {
 		touchHandlers = (HasAllTouchHandlers) widgetToTouch;
 
 		touchHandlers.addTouchStartHandler(new TouchStartHandler() {
-
 			@Override
 			public void onTouchStart(final TouchStartEvent event) {
 				doTouchStart(event);
 			}
 		});
 		touchHandlers.addTouchEndHandler(new TouchEndHandler() {
-
 			@Override
 			public void onTouchEnd(final TouchEndEvent event) {
 				doTouchEnd(event);
 			}
 		});
 		touchHandlers.addTouchMoveHandler(new TouchMoveHandler() {
-
 			@Override
 			public void onTouchMove(final TouchMoveEvent event) {
 				doTouchMove(event);
 			}
 		});
 		touchHandlers.addTouchCancelHandler(new TouchCancelHandler() {
-
 			@Override
 			public void onTouchCancel(final TouchCancelEvent event) {
 				doTouchCancel(event);
@@ -127,28 +123,24 @@ public class TouchHelper {
 	 */
 	private void addTouchDOMHandlers(final Widget widgetToTouch) {
 		widgetToTouch.addDomHandler(new TouchStartHandler() {
-
 			@Override
 			public void onTouchStart(final TouchStartEvent event) {
 				doTouchStart(event);
 			}
 		}, TouchStartEvent.getType());
 		widgetToTouch.addDomHandler(new TouchEndHandler() {
-
 			@Override
 			public void onTouchEnd(final TouchEndEvent event) {
 				doTouchEnd(event);
 			}
 		}, TouchEndEvent.getType());
 		widgetToTouch.addDomHandler(new TouchMoveHandler() {
-
 			@Override
 			public void onTouchMove(final TouchMoveEvent event) {
 				doTouchMove(event);
 			}
 		}, TouchMoveEvent.getType());
 		widgetToTouch.addDomHandler(new TouchCancelHandler() {
-
 			@Override
 			public void onTouchCancel(final TouchCancelEvent event) {
 				doTouchCancel(event);
