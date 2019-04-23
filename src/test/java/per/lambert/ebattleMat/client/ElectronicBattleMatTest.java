@@ -758,7 +758,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		populateSession(dungeonManager);
 		PogData player = dungeonManager.findCharacterPog("3bdce6d8-09a6-4af6-b362-0c375ee5cc5c");
 		assertTrue(player != null);
-		assertTrue(player.getPogName() == "Zorak");
+		assertTrue(player.getName() == "Zorak");
 	}
 
 	/**
@@ -896,8 +896,8 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		populateSession(dungeonManager);
 		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, "Kobold", null, null);
 		assertTrue(templates.size() == 2);
-		assertTrue(templates.get(0).getPogName() == "Male Kobold");
-		assertTrue(templates.get(1).getPogName() == "Female Kobold");
+		assertTrue(templates.get(0).getName() == "Male Kobold");
+		assertTrue(templates.get(1).getName() == "Female Kobold");
 	}
 
 	/**
@@ -908,7 +908,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		populateSession(dungeonManager);
 		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, null, null, "Female");
 		assertTrue(templates.size() == 1);
-		assertTrue(templates.get(0).getPogName() == "Female Kobold");
+		assertTrue(templates.get(0).getName() == "Female Kobold");
 	}
 
 	/**
@@ -919,9 +919,9 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		populateSession(dungeonManager);
 		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, null, "Fighter", null);
 		assertTrue(templates.size() == 3);
-		assertTrue(templates.get(0).getPogName() == "Male Kobold");
-		assertTrue(templates.get(1).getPogName() == "Female Kobold");
-		assertTrue(templates.get(2).getPogName() == "Orc Fighter");
+		assertTrue(templates.get(0).getName() == "Male Kobold");
+		assertTrue(templates.get(1).getName() == "Female Kobold");
+		assertTrue(templates.get(2).getName() == "Orc Fighter");
 	}
 
 	/**
@@ -932,10 +932,10 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		populateSession(dungeonManager);
 		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, null, null, null);
 		assertTrue(templates.size() == 4);
-		assertTrue(templates.get(0).getPogName() == "Male Kobold");
-		assertTrue(templates.get(1).getPogName() == "Female Kobold");
-		assertTrue(templates.get(2).getPogName() == "Orc Fighter");
-		assertTrue(templates.get(3).getPogName() == "Orc Shaman");
+		assertTrue(templates.get(0).getName() == "Male Kobold");
+		assertTrue(templates.get(1).getName() == "Female Kobold");
+		assertTrue(templates.get(2).getName() == "Orc Fighter");
+		assertTrue(templates.get(3).getName() == "Orc Shaman");
 	}
 
 	/**
@@ -955,7 +955,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		dungeonManager.setSelectedTemplate(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, "Male-Kobold");
 		hadEvent(ReasonForAction.PogWasSelected);
 		assertTrue(dungeonManager.getSelectedPog() != null);
-		assertTrue(dungeonManager.getSelectedPog().getPogName() == "Male Kobold");
+		assertTrue(dungeonManager.getSelectedPog().getName() == "Male Kobold");
 	}
 
 	/**

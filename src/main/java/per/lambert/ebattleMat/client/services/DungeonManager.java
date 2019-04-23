@@ -1095,7 +1095,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return;
 		}
 		addOrUpdatePogToServer(pog, place);
-		if (pog.isEquals(getSelectedPog())) {
+		if (pog.isEqual(getSelectedPog())) {
 			setSelectedPogInternal(pog);
 		}
 	}
@@ -1109,11 +1109,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		DungeonLevel dungeonLevel = getCurrentLevelData();
 		if (pog.isThisAMonster()) {
 			dungeonLevel.getMonsters().addOrUpdate(pog);
-		}
-		if (findRoomObjectPog(pog.getUUID()) == null) {
+		} else if (findRoomObjectPog(pog.getUUID()) == null) {
 			dungeonLevel.getRoomObjects().addOrUpdate(pog);
 		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
 	}
 
 	/**
@@ -1134,7 +1132,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			addOrUpdatePogToSessionResource(pog); // shouldn't get here but what the heck just in case.
 			return;
 		}
-		// ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
 	}
 
 	/**

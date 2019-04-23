@@ -27,7 +27,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return pog name.
 	 */
-	public final native String getPogName() /*-{
+	public final native String getName() /*-{
 		if (this.pogName === undefined) {
 			this.pogName = "";
 		}
@@ -39,7 +39,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @param pogName pog name.
 	 */
-	public final native void setPogName(String pogName) /*-{
+	public final native void setName(String pogName) /*-{
 		this.pogName = pogName;
 	}-*/;
 
@@ -50,7 +50,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return pog image URL.
 	 */
-	public final native String getPogImageUrl() /*-{
+	public final native String getImageUrl() /*-{
 		if (this.pogImageUrl === undefined) {
 			this.pogImageUrl = "";
 		}
@@ -62,7 +62,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @param pogImageUrl to set
 	 */
-	public final native void setPogImageUrl(String pogImageUrl) /*-{
+	public final native void setImageUrl(String pogImageUrl) /*-{
 		this.pogImageUrl = pogImageUrl;
 	}-*/;
 
@@ -71,7 +71,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return pog type
 	 */
-	public final native String getPogType() /*-{
+	public final native String getType() /*-{
 		if (this.pogType === undefined) {
 			this.pogType = "";
 		}
@@ -83,7 +83,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @param pogType to set
 	 */
-	public final native void setPogType(String pogType) /*-{
+	public final native void setType(String pogType) /*-{
 		this.pogType = pogType;
 	}-*/;
 
@@ -92,7 +92,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return pog size in grid squares.
 	 */
-	public final native int getPogSize() /*-{
+	public final native int getSize() /*-{
 		if (this.pogSize === undefined) {
 			this.pogSize = 1;
 		}
@@ -104,7 +104,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @param pogSize pog size in grid squares.
 	 */
-	public final native void setPogSize(int pogSize) /*-{
+	public final native void setSize(int pogSize) /*-{
 		this.pogSize = pogSize;
 	}-*/;
 
@@ -114,7 +114,7 @@ public class PogData extends JavaScriptObject {
 	 * @return true if player
 	 */
 	public final boolean isThisAPlayer() {
-		String type = getPogType();
+		String type = getType();
 		return (type.equals(Constants.POG_TYPE_PLAYER));
 	}
 
@@ -124,7 +124,7 @@ public class PogData extends JavaScriptObject {
 	 * @return true if monster
 	 */
 	public final boolean isThisAMonster() {
-		String type = getPogType();
+		String type = getType();
 		return (type.equals(Constants.POG_TYPE_MONSTER));
 	}
 
@@ -134,7 +134,7 @@ public class PogData extends JavaScriptObject {
 	 * @return true if room object.
 	 */
 	public final boolean isThisARoomObject() {
-		String type = getPogType();
+		String type = getType();
 		return (type.equals(Constants.POG_TYPE_ROOMOBJECT));
 	}
 
@@ -143,7 +143,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return column pog is in.
 	 */
-	public final native int getPogColumn() /*-{
+	public final native int getColumn() /*-{
 		if (this.pogColumn === undefined) {
 			this.pogColumn = -1;
 		}
@@ -155,7 +155,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @param pogColumn column pog is in.
 	 */
-	public final native void setPogColumn(int pogColumn) /*-{
+	public final native void setColumn(int pogColumn) /*-{
 		this.pogColumn = pogColumn;
 	}-*/;
 
@@ -164,7 +164,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @return row pog is in.
 	 */
-	public final native int getPogRow() /*-{
+	public final native int getRow() /*-{
 		if (this.pogRow === undefined) {
 			this.pogRow = -1;
 		}
@@ -176,7 +176,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @param pogRow row pog is in.
 	 */
-	public final native void setPogRow(int pogRow) /*-{
+	public final native void setRow(int pogRow) /*-{
 		this.pogRow = pogRow;
 	}-*/;
 
@@ -410,56 +410,25 @@ public class PogData extends JavaScriptObject {
 	}-*/;
 
 	/**
-	 * {@inheritDoc}
+	 * Set pog gender.
+	 * 
+	 * @param gender pog gender.
 	 */
-	public final PogData clone() {
-		String pogJson = JsonUtils.stringify(this);
-		PogData theClone = JsonUtils.<PogData>safeEval(pogJson);
-		theClone.setUUID(Constants.generateUUID());
-		return (theClone);
-	}
+	public final native void setGender(String gender) /*-{
+		this.gender = gender;
+	}-*/;
 
 	/**
-	 * Are these the same?
+	 * get pog gender.
 	 * 
-	 * @param toCompare to compare
-	 * @return true if same uuid
+	 * @return pog gender.
 	 */
-	public final boolean isEquals(final PogData toCompare) {
-		if (toCompare == null) {
-			return (false);
+	public final native String getGender() /*-{
+		if (this.gender === undefined) {
+			this.gender = "Male";
 		}
-		return (getUUID().equals(toCompare.getUUID()));
-	}
-
-	/**
-	 * Update everything but UUIDs.
-	 * 
-	 * @param pogData with data
-	 */
-	public final void fullUpdate(final PogData pogData) {
-		updatePog(pogData);
-		setPlayerFlagsNative(pogData.getPlayerFlags());
-		setDungeonMasterFlagsNative(pogData.getDungeonMasterFlags());
-		setPogName(pogData.getPogName());
-		setPogImageUrl(pogData.getPogImageUrl());
-		setPogType(pogData.getPogType());
-		setRace(pogData.getRace());
-		setPogClass(pogData.getPogClass());
-		setPogSize(pogData.getPogSize());
-	}
-
-	/**
-	 * Update pog with new data.
-	 * 
-	 * @param withUpdates with updates
-	 */
-	public final void updatePog(final PogData withUpdates) {
-		setPogColumn(withUpdates.getPogColumn());
-		setPogRow(withUpdates.getPogRow());
-		setDungeonLevel(withUpdates.getDungeonLevel());
-		setNotes(withUpdates.getNotes());
-	}
+		return (this.gender);
+	}-*/;
 
 	/**
 	 * get pog notes.
@@ -481,4 +450,79 @@ public class PogData extends JavaScriptObject {
 	public final native void setNotes(String notes) /*-{
 		this.notes = notes;
 	}-*/;
+
+	/**
+	 * get pog dmNotes.
+	 * 
+	 * @return pog dmNotes.
+	 */
+	public final native String getDmNotes() /*-{
+		if (this.dmNotes === undefined) {
+			this.notes = "";
+		}
+		return (this.dmNotes);
+	}-*/;
+
+	/**
+	 * Set pog dmNotes.
+	 * 
+	 * @param dmNotes pog dmNotes.
+	 */
+	public final native void setDmNotes(String dmNotes) /*-{
+		this.dmNotes = dmNotes;
+	}-*/;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final PogData clone() {
+		String pogJson = JsonUtils.stringify(this);
+		PogData theClone = JsonUtils.<PogData>safeEval(pogJson);
+		theClone.setUUID(Constants.generateUUID());
+		return (theClone);
+	}
+
+	/**
+	 * Are these the same?
+	 * 
+	 * @param toCompare to compare
+	 * @return true if same uuid
+	 */
+	public final boolean isEqual(final PogData toCompare) {
+		if (toCompare == null) {
+			return (false);
+		}
+		return (getUUID().equals(toCompare.getUUID()));
+	}
+
+	/**
+	 * Update everything but UUIDs.
+	 * 
+	 * @param pogData with data
+	 */
+	public final void fullUpdate(final PogData pogData) {
+		updatePog(pogData);
+		setPlayerFlagsNative(pogData.getPlayerFlags());
+		setDungeonMasterFlagsNative(pogData.getDungeonMasterFlags());
+		setName(pogData.getName());
+		setImageUrl(pogData.getImageUrl());
+		setType(pogData.getType());
+		setRace(pogData.getRace());
+		setPogClass(pogData.getPogClass());
+		setSize(pogData.getSize());
+		setGender(pogData.getGender());
+	}
+
+	/**
+	 * Update pog with new data.
+	 * 
+	 * @param withUpdates with updates
+	 */
+	public final void updatePog(final PogData withUpdates) {
+		setColumn(withUpdates.getColumn());
+		setRow(withUpdates.getRow());
+		setDungeonLevel(withUpdates.getDungeonLevel());
+		setNotes(withUpdates.getNotes());
+		setDmNotes(withUpdates.getDmNotes());
+	}
 }

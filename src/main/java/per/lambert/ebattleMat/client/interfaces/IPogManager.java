@@ -1,6 +1,7 @@
 package per.lambert.ebattleMat.client.interfaces;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
@@ -96,7 +97,7 @@ public interface IPogManager {
 	 * 
 	 * @return list of monster genders.
 	 */
-	String[] getTemplateGenders();
+	Collection<Gender> getTemplateGenders();
 
 	/**
 	 * Get pog sizes.

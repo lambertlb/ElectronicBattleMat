@@ -21,6 +21,7 @@ import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
+import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
@@ -149,7 +150,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Dialog for notes.
 	 */
 	private NotesFloatingWindow notesDialog;
-	
+
 	/**
 	 * selected pog is a template.
 	 */
@@ -478,11 +479,9 @@ public class TemplateManageDialog extends OkCancelDialog {
 	private void getGenderList() {
 		genderList.clear();
 		gender.clear();
-		genderList.addItem("Select Gender", "");
-		gender.addItem("Select Gender", "");
-		for (String pogGender : ServiceManager.getDungeonManager().getTemplateGenders()) {
-			genderList.addItem(pogGender, pogGender);
-			gender.addItem(pogGender, pogGender);
+		for (Gender pogGender : ServiceManager.getDungeonManager().getTemplateGenders()) {
+			genderList.addItem(pogGender.getName(), pogGender.getName());
+			gender.addItem(pogGender.getName(), pogGender.getName());
 		}
 	}
 
@@ -600,7 +599,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		filteredTemplateList.addItem("Filter Templates", "");
 		ArrayList<PogData> filteredTemplates = ServiceManager.getDungeonManager().getFilteredTemplates(place, pogType, raceList.getSelectedValue(), classList.getSelectedValue(), genderList.getSelectedValue());
 		for (PogData template : filteredTemplates) {
-			filteredTemplateList.addItem(template.getPogName(), template.getUUID());
+			filteredTemplateList.addItem(template.getName(), template.getUUID());
 		}
 	}
 
@@ -620,12 +619,12 @@ public class TemplateManageDialog extends OkCancelDialog {
 	private void selectPog(final PogData data) {
 		pogData = data;
 		pogCanvas.setPogData(data);
-		templateName.setValue(pogData.getPogName());
-		templatePicture.setValue(pogData.getPogImageUrl());
+		templateName.setValue(pogData.getName());
+		templatePicture.setValue(pogData.getImageUrl());
 		race.setValue(pogData.getRace());
 		templateClass.setValue(pogData.getPogClass());
 		getGender();
-		int pogSize = pogData.getPogSize() - 1;
+		int pogSize = pogData.getSize() - 1;
 		if (pogSize < 0) {
 			pogSize = 0;
 		}
@@ -646,13 +645,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Get gender.
 	 */
 	private void getGender() {
-		if (pogData.isFlagSet(PlayerFlag.HAS_NO_GENDER)) {
-			gender.setSelectedIndex(3);
-		} else if (pogData.isFlagSet(PlayerFlag.IS_FEMALE)) {
-			gender.setSelectedIndex(2);
-		} else {
-			gender.setSelectedIndex(1);
-		}
+		gender.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
 	}
 
 	/**
@@ -675,8 +668,8 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Get data from dialog.
 	 */
 	private void getDialogData() {
-		pogData.setPogName(templateName.getValue());
-		pogData.setPogImageUrl(templatePicture.getValue());
+		pogData.setName(templateName.getValue());
+		pogData.setImageUrl(templatePicture.getValue());
 		String raceString = race.getValue();
 		if (!raceString.startsWith("Enter")) {
 			pogData.setRace(raceString);
@@ -685,17 +678,13 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (!classString.startsWith("Enter")) {
 			pogData.setPogClass(classString);
 		}
-		pogData.setPogSize(size.getSelectedIndex() + 1);
+		int index = gender.getSelectedIndex();
+		String genderName = Gender.valueOf(index).getName();
+		pogData.setGender(genderName);
+
+		pogData.setSize(size.getSelectedIndex() + 1);
 		pogData.setPlayerFlagsNative(playerFlagDialog.getBits());
 		pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
-		int index = gender.getSelectedIndex();
-		if (index >= 1) {
-			pogData.clearFlags(PlayerFlag.HAS_NO_GENDER);
-			pogData.clearFlags(PlayerFlag.IS_FEMALE);
-			if (index > 1) {
-				pogData.setFlags(index == 3 ? PlayerFlag.HAS_NO_GENDER : PlayerFlag.IS_FEMALE);
-			}
-		}
 	}
 
 	/**
@@ -706,7 +695,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		if (pog == null) {
 			return;
 		}
-		if (pog.getPogType() != pogType && !pog.isThisAPlayer()) {
+		if (pog.getType() != pogType && !pog.isThisAPlayer()) {
 			return;
 		}
 		templateSelected = ServiceManager.getDungeonManager().isTemplate(pog);

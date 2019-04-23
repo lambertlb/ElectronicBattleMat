@@ -62,9 +62,17 @@ public class PogData {
 	 */
 	private String race;
 	/**
+	 * Gender of pog.
+	 */
+	private String gender;
+	/**
 	 * Pog notes.
 	 */
 	private String notes;
+	/**
+	 * DM Pog notes.
+	 */
+	private String dmNotes;
 
 	/**
 	 * Constructor.
@@ -106,6 +114,7 @@ public class PogData {
 		pogType = pogData.pogType;
 		race = pogData.race;
 		pogClass = pogData.pogClass;
+		gender = pogData.gender;
 		pogSize = pogData.pogSize;
 	}
 
@@ -119,6 +128,7 @@ public class PogData {
 		this.pogRow = withUpdates.pogRow;
 		dungeonLevel = withUpdates.dungeonLevel;
 		notes = withUpdates.notes;
+		dmNotes = withUpdates.dmNotes;
 	}
 
 	/**

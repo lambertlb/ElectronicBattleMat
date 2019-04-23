@@ -226,9 +226,9 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	 * Accept changes made in the dialog.
 	 */
 	private void acceptChanges() {
-		pogData.setPogName(characterName.getValue());
-		pogData.setPogImageUrl(characterPicture.getValue());
-		pogData.setPogSize(1);
+		pogData.setName(characterName.getValue());
+		pogData.setImageUrl(characterPicture.getValue());
+		pogData.setSize(1);
 		pogData.setDungeonLevel(-1);
 		ServiceManager.getDungeonManager().addOrUpdatePog(pogData);
 		ServiceManager.getDungeonManager().setSelectedPog(pogData);

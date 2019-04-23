@@ -32,7 +32,7 @@ public class PogList extends JavaScriptObject {
 	public final void addOrUpdate(final PogData pog) {
 		PogData[] list = getPogList();
 		for (PogData pogInList : list) {
-			if (pogInList.isEquals(pog)) {
+			if (pogInList.isEqual(pog)) {
 				pogInList.fullUpdate(pog);
 				return;
 			}

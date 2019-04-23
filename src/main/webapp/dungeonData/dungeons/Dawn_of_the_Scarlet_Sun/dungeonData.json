@@ -16,7 +16,7 @@
 						"pogSize": 1,
 						"pogColumn": 0,
 						"pogRow": 5,
-						"playerFlags": 2,
+						"playerFlags": 0,
 						"dungeonMasterFlags": 0,
 						"dungeonLevel": 0,
 						"pogName": "Kasadia",
@@ -26,13 +26,14 @@
 						"templateUUID": "Female-Kobold",
 						"pogClass": "Fighter",
 						"race": "Human",
+						"gender": "Female",
 						"notes": ""
 					},
 					{
 						"pogSize": 1,
 						"pogColumn": 34,
 						"pogRow": 14,
-						"playerFlags": 2,
+						"playerFlags": 0,
 						"dungeonMasterFlags": 1,
 						"dungeonLevel": 0,
 						"pogName": "Zadendi",
@@ -42,13 +43,14 @@
 						"templateUUID": "Female-Kobold",
 						"pogClass": "Fighter",
 						"race": "Human",
+						"gender": "Female",
 						"notes": "Str 16, Dex 14, Con 15, Int 8, Wis 14, Cha 10Base Atk +3; CMB +6; CMD 19Feats Dodge, Skill Focus (Stealth), Power Attack, ToughnessSkills Bluff +8, Knowledge (nobility) +3, Knowledge (religion) +6,Perception +8, Stealth +12"
 					},
 					{
 						"pogSize": 1,
 						"pogColumn": 33,
 						"pogRow": 16,
-						"playerFlags": 2,
+						"playerFlags": 0,
 						"dungeonMasterFlags": 1,
 						"dungeonLevel": 0,
 						"pogName": "Avalexi",
@@ -58,6 +60,7 @@
 						"templateUUID": "Female-Kobold",
 						"pogClass": "Assassin",
 						"race": "Succubus",
+						"gender": "Female",
 						"notes": "AC 26, touch 15, flat-footed 21 (+4 armor, +5 Dex, +7 natural)hp 122 (10 HD; 8d10+2d8+70)Fort +10, Ref +12, Will +9DR 10/cold iron or good; Immune electricity, fire, poison;Resist acid 10, cold 10; SR 18"
 					},
 					{
@@ -193,7 +196,7 @@
 						"pogSize": 1,
 						"pogColumn": 31,
 						"pogRow": 2,
-						"playerFlags": 2,
+						"playerFlags": 0,
 						"dungeonMasterFlags": 1,
 						"dungeonLevel": 1,
 						"pogName": "Avalexi",
@@ -203,6 +206,7 @@
 						"templateUUID": "Female-Kobold",
 						"pogClass": "Assassin",
 						"race": "Succubus",
+						"gender": "Female",
 						"notes": "AC 26, touch 15, flat-footed 21 (+4 armor, +5 Dex, +7 natural)hp 122 (10 HD; 8d10+2d8+70)Fort +10, Ref +12, Will +9DR 10/cold iron or good; Immune electricity, fire, poison;Resist acid 10, cold 10; SR 18"
 					},
 					{

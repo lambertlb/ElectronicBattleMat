@@ -1,6 +1,7 @@
 package per.lambert.ebattleMat.client.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,11 +10,11 @@ import com.google.gwt.core.client.JsonUtils;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.Constants;
+import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IPogManager;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
-import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
@@ -213,7 +214,7 @@ public abstract class PogManager implements IPogManager {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
 		pogData.setTemplateUUID(Constants.generateUUID());
 		pogData.setUUID(pogData.getTemplateUUID());
-		pogData.setPogType(type);
+		pogData.setType(type);
 		return (pogData);
 	}
 
@@ -357,16 +358,6 @@ public abstract class PogManager implements IPogManager {
 	 * @return pog that match
 	 */
 	private ArrayList<PogData> getFilteredMonsters(final PogList pogsToSearch, final String raceFilter, final String classFilter, final String genderFilter) {
-		boolean needGenderFilter = false;
-		PlayerFlag genderFlag = PlayerFlag.NONE;
-		if (genderFilter != null && !genderFilter.isEmpty()) {
-			needGenderFilter = true;
-			if (genderFilter.equalsIgnoreCase("Neutral")) {
-				genderFlag = PlayerFlag.HAS_NO_GENDER;
-			} else if (genderFilter.equalsIgnoreCase("Female")) {
-				genderFlag = PlayerFlag.IS_FEMALE;
-			}
-		}
 		ArrayList<PogData> filteredMonsters = new ArrayList<PogData>();
 		for (PogData monster : pogsToSearch.getPogList()) {
 			if (raceFilter != null && !raceFilter.isEmpty()) {
@@ -379,14 +370,8 @@ public abstract class PogManager implements IPogManager {
 					continue;
 				}
 			}
-			if (needGenderFilter) {
-				if (genderFlag == PlayerFlag.NONE) {
-					boolean isFemale = monster.isFlagSet(PlayerFlag.IS_FEMALE);
-					boolean neutral = monster.isFlagSet(PlayerFlag.HAS_NO_GENDER);
-					if (isFemale || neutral) {
-						continue;
-					}
-				} else if (!monster.isFlagSet(genderFlag)) {
+			if (genderFilter != null && !genderFilter.isEmpty()) {
+				if (!monster.getGender().equalsIgnoreCase(genderFilter)) {
 					continue;
 				}
 			}
@@ -503,8 +488,8 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String[] getTemplateGenders() {
-		return (new String[] {"Male", "Female", "Neutral" });
+	public Collection<Gender> getTemplateGenders() {
+		return (Gender.getValues());
 	}
 
 	/**

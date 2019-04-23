@@ -700,7 +700,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			}
 			this.setWidgetPosition(pog, x, y);
 			pog.setPogSizing(adjustedGridSize(), pogBorderWidth, totalZoom);
-			if (pog.isInVisibleToPlayer()) {
+			if (!ServiceManager.getDungeonManager().isDungeonMaster() && pog.isInVisibleToPlayer()) {
 				pog.getElement().getStyle().setBorderWidth(0, Unit.PX);
 			} else {
 				pog.getElement().getStyle().setBorderWidth(pogBorderWidth, Unit.PX);
@@ -930,7 +930,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		computeSelectedColumnAndRow(clientX, clientY);
-		int pogWidth = pogBeingDragged.getPogSize() - 1;
+		int pogWidth = pogBeingDragged.getSize() - 1;
 		if (selectedColumn < 0 || selectedColumn + pogWidth >= verticalLines || selectedRow < 0 || selectedRow + pogWidth >= horizontalLines) {
 			dragColumn = -1;
 			dragRow = -1;
@@ -967,7 +967,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
-		double size = adjustedGridSize() * pogBeingDragged.getPogSize();
+		double size = adjustedGridSize() * pogBeingDragged.getSize();
 		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
 		greyOutPanel.getElement().getStyle().setBackgroundColor(computeDragColor());
 		greyOutPanel.setWidth("" + size + "px");
@@ -1094,7 +1094,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		for (PogCanvas pogCanvas : pogs) {
-			if (pogCanvas.getPogData().isEquals(pog)) {
+			if (pogCanvas.getPogData().isEqual(pog)) {
 				selectedPogCanvas = pogCanvas;
 				selectedPogCanvas.getElement().getStyle().setBorderColor("black");
 				break;

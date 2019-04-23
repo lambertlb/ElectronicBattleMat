@@ -89,7 +89,7 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 		if (selectedPog == null) {
 			return;
 		}
-		setText(selectedPog.getPogName());
+		setText(selectedPog.getName());
 	}
 	/**
 	 * {@inheritDoc}

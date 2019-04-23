@@ -27,17 +27,9 @@ public final class PlayerFlag extends FlagBits {
 	 */
 	public static final PlayerFlag DEAD = new PlayerFlag("Dead"); // 1
 	/**
-	 * Pog is female.
-	 */
-	public static final PlayerFlag IS_FEMALE = new PlayerFlag("Is Female"); // 2
-	/**
-	 * Pog has no gender.
-	 */
-	public static final PlayerFlag HAS_NO_GENDER = new PlayerFlag("Has no gender"); // 4
-	/**
 	 * Pog is invisible.
 	 */
-	public static final PlayerFlag INVISIBLE = new PlayerFlag("Invisible"); // 8
+	public static final PlayerFlag INVISIBLE = new PlayerFlag("Invisible"); // 2
 	/**
 	 * Map of names vs flag bit.
 	 */

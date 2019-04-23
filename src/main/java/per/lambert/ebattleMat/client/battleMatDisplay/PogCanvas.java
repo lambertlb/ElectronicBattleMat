@@ -176,7 +176,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return size of pog in pixels.
 	 */
 	public int getPogSize() {
-		return pogData.getPogSize();
+		return pogData.getSize();
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param pogSize size of pixel.
 	 */
 	public void setPogSize(final int pogSize) {
-		pogData.setPogSize(pogSize);
+		pogData.setSize(pogSize);
 	}
 
 	/**
@@ -332,12 +332,12 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
 		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
 
-		if (pogData.getPogImageUrl() != "") {
-			setPogImageUrl(pogData.getPogImageUrl());
+		if (pogData.getImageUrl() != "") {
+			setPogImageUrl(pogData.getImageUrl());
 		} else {
 			showImage = false;
 		}
-		pogMainPanel.setTitle(pogData.getPogName());
+		pogMainPanel.setTitle(pogData.getName());
 	}
 
 	/**
@@ -431,8 +431,8 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param nameoFPog name of pog.
 	 */
 	public void setPogName(final String nameoFPog) {
-		pogData.setPogName(nameoFPog);
-		pogMainPanel.setTitle(pogData.getPogName());
+		pogData.setName(nameoFPog);
+		pogMainPanel.setTitle(pogData.getName());
 	}
 
 	/**
@@ -441,7 +441,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return pog name
 	 */
 	public String getPogName() {
-		return (pogData.getPogName());
+		return (pogData.getName());
 	}
 
 	/**
@@ -451,8 +451,8 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param row to use
 	 */
 	public void setPogPosition(final int column, final int row) {
-		pogData.setPogColumn(column);
-		pogData.setPogRow(row);
+		pogData.setColumn(column);
+		pogData.setRow(row);
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return column
 	 */
 	public int getPogColumn() {
-		return (pogData.getPogColumn());
+		return (pogData.getColumn());
 	}
 
 	/**
@@ -479,7 +479,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return row
 	 */
 	public int getPogRow() {
-		return (pogData.getPogRow());
+		return (pogData.getRow());
 	}
 
 	/**
@@ -493,7 +493,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		scaledWidth = width;
 		this.zoomFactor = zoomFactor;
 		if (!showNormalSizeOnly) {
-			scaledWidth *= pogData.getPogSize();
+			scaledWidth *= pogData.getSize();
 		}
 		scaledWidth -= 2 * borderSize;
 		pogMainPanel.setWidth(scaledWidth + "px");
@@ -513,7 +513,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	public void setPogImageUrl(final String pogImageUrl) {
 		imageLoaded = false;
-		pogData.setPogImageUrl(pogImageUrl);
+		pogData.setImageUrl(pogImageUrl);
 		String imageUrl;
 		if (pogImageUrl.contains("?")) {
 			imageUrl = pogImageUrl + "," + imageCount++;
