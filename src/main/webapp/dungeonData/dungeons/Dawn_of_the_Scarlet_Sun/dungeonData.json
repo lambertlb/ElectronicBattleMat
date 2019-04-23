@@ -23,7 +23,6 @@
 						"pogImageUrl": "dungeonData/dungeons/Dawn_of_the_Scarlet_Sun/Kasadia.png",
 						"pogType": "MONSTER",
 						"uuid": "51aba7b4-c75f-42ff-8467-33ae96296910",
-						"templateUUID": "Female-Kobold",
 						"pogClass": "Fighter",
 						"race": "Human",
 						"gender": "Female",
@@ -40,7 +39,6 @@
 						"pogImageUrl": "dungeonData/dungeons/Dawn_of_the_Scarlet_Sun/Zadendi.png",
 						"pogType": "MONSTER",
 						"uuid": "9119ea5e-69f7-4d11-8245-9201960bd929",
-						"templateUUID": "Female-Kobold",
 						"pogClass": "Fighter",
 						"race": "Human",
 						"gender": "Female",
@@ -57,7 +55,6 @@
 						"pogImageUrl": "dungeonData/dungeons/Dawn_of_the_Scarlet_Sun/Avalexi.png",
 						"pogType": "MONSTER",
 						"uuid": "4f99e064-c6dd-4771-8168-cbf39e40ad8f",
-						"templateUUID": "Female-Kobold",
 						"pogClass": "Assassin",
 						"race": "Succubus",
 						"gender": "Female",
@@ -74,7 +71,6 @@
 						"pogImageUrl": "https://i.etsystatic.com/15283293/r/il/49546c/1367528065/il_794xN.1367528065_fj7e.jpg",
 						"pogType": "MONSTER",
 						"uuid": "f91b7172-66a8-4bd2-9240-c87e8abe4e27",
-						"templateUUID": "45c14221-50a1-44ca-9374-1429cce95646",
 						"pogClass": "Gargoyle",
 						"race": "Gargoyle",
 						"notes": "AC 20, touch 14, flat-footed 16 (+3 Dex, +1dodge, +6 natural) hp 57 (5d10+30)Fort +6, Ref +7, Will +5DR 10/magic; Immune poison; Resistacid 10, cold 10, electricity 10, fire10; SR 17"
@@ -90,7 +86,6 @@
 						"pogImageUrl": "https://s-media-cache-ak0.pinimg.com/originals/22/8f/60/228f60010ba515612dfbd986cbf46389.jpg",
 						"pogType": "MONSTER",
 						"uuid": "b7e408dc-fe8e-4e25-8f57-449346fdc37a",
-						"templateUUID": "ec0c3de2-be12-49f7-989e-704a753074ed",
 						"pogClass": "Wight",
 						"race": "Wight",
 						"notes": ""
@@ -106,7 +101,6 @@
 						"pogImageUrl": "https://s-media-cache-ak0.pinimg.com/originals/22/8f/60/228f60010ba515612dfbd986cbf46389.jpg",
 						"pogType": "MONSTER",
 						"uuid": "d7bf377f-eda8-47f0-ba5d-d0390ff93605",
-						"templateUUID": "ec0c3de2-be12-49f7-989e-704a753074ed",
 						"pogClass": "Wight",
 						"race": "Wight",
 						"notes": ""
@@ -122,7 +116,6 @@
 						"pogImageUrl": "https://s-media-cache-ak0.pinimg.com/originals/22/8f/60/228f60010ba515612dfbd986cbf46389.jpg",
 						"pogType": "MONSTER",
 						"uuid": "982248cf-347c-4c92-83b3-560b8bf63156",
-						"templateUUID": "ec0c3de2-be12-49f7-989e-704a753074ed",
 						"pogClass": "Wight",
 						"race": "Wight",
 						"notes": ""
@@ -142,7 +135,6 @@
 						"pogImageUrl": "dungeonData/resources/roomObjects/Notes.png",
 						"pogType": "ROOMOBJECT",
 						"uuid": "296283d8-e4cd-407a-a784-4d09407f5824",
-						"templateUUID": "11a35391-e498-4217-90d3-125d0b2ea089",
 						"pogClass": "Notes",
 						"race": "",
 						"notes": "For the past few days, the city of Magnimar has been in the grip of terror. A murderer stalks the city’s streets in the gloaming pre-dawn hours, and each morning it seems a new and freshly mutilated victim appears in an alley. There have been four bodies discovered to date—all worshipers of the goddess of healing and redemption, Sarenrae. The city guard desperately wants to catch the murderer, yet he is a cagey and elusive foe. In order to expedite the search, they have turned to you—known allies of Magnimar and strong heroes of the people—to aid them in stopping the culprit before he slays again."
@@ -158,7 +150,6 @@
 						"pogImageUrl": "dungeonData/resources/roomObjects/Trap.png",
 						"pogType": "ROOMOBJECT",
 						"uuid": "f3ccbca6-c7f7-40cd-8005-5246ce96df60",
-						"templateUUID": "df427e70-07fd-491b-9913-5c00918b9e72",
 						"pogClass": "Trap",
 						"race": "",
 						"notes": "Glyph of warding Effect spell effect (glyph of warding, 2d8 sonic damage, 5-ft.radius, Reflex DC 15 half )"
@@ -174,7 +165,6 @@
 						"pogImageUrl": "dungeonData/resources/roomObjects/Trap.png",
 						"pogType": "ROOMOBJECT",
 						"uuid": "5e8ad8de-43e3-4ae1-b4fc-fe21d94644f0",
-						"templateUUID": "df427e70-07fd-491b-9913-5c00918b9e72",
 						"pogClass": "Trap",
 						"race": "",
 						"notes": "Glyph of warding Effect spell effect (glyph of warding, 2d8 sonic damage, 5-ft.radius, Reflex DC 15 half )"
@@ -203,7 +193,6 @@
 						"pogImageUrl": "dungeonData/dungeons/Dawn_of_the_Scarlet_Sun/Avalexi.png",
 						"pogType": "MONSTER",
 						"uuid": "e4a5cc10-84bb-44b8-bc05-2daad130d0fe",
-						"templateUUID": "Female-Kobold",
 						"pogClass": "Assassin",
 						"race": "Succubus",
 						"gender": "Female",
@@ -220,7 +209,6 @@
 						"pogImageUrl": "https://i.etsystatic.com/15283293/r/il/49546c/1367528065/il_794xN.1367528065_fj7e.jpg",
 						"pogType": "MONSTER",
 						"uuid": "70aca1ee-d5ed-4e50-83f2-5f5267f4c9f4",
-						"templateUUID": "45c14221-50a1-44ca-9374-1429cce95646",
 						"pogClass": "Gargoyle",
 						"race": "Gargoyle",
 						"notes": "AC 20, touch 14, flat-footed 16 (+3 Dex, +1dodge, +6 natural) hp 57 (5d10+30)Fort +6, Ref +7, Will +5DR 10/magic; Immune poison; Resistacid 10, cold 10, electricity 10, fire10; SR 17"

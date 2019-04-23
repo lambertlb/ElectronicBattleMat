@@ -212,8 +212,7 @@ public abstract class PogManager implements IPogManager {
 	@Override
 	public PogData createTemplatePog(final String type) {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
-		pogData.setTemplateUUID(Constants.generateUUID());
-		pogData.setUUID(pogData.getTemplateUUID());
+		pogData.setUUID(Constants.generateUUID());
 		pogData.setType(type);
 		return (pogData);
 	}

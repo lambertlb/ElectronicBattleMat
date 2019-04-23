@@ -204,29 +204,6 @@ public class PogData extends JavaScriptObject {
 	}-*/;
 
 	/**
-	 * get UUID of template pog.
-	 * 
-	 * All instances of the same kind of pog will have the same template UUID.
-	 * 
-	 * @return UUID of template pog.
-	 */
-	public final native String getTemplateUUID() /*-{
-		if (this.templateUUID === undefined) {
-			return ("");
-		}
-		return (this.templateUUID);
-	}-*/;
-
-	/**
-	 * set UUID of template pog.
-	 * 
-	 * @param templateUUID UUID of template pog.
-	 */
-	public final native void setTemplateUUID(String templateUUID) /*-{
-		this.templateUUID = templateUUID;
-	}-*/;
-
-	/**
 	 * Get dungeon level this pog is on.
 	 * 
 	 * @return dungeon level this pog is on.

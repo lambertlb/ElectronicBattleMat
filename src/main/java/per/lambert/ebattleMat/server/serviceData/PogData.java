@@ -50,10 +50,6 @@ public class PogData {
 	 */
 	private String uuid;
 	/**
-	 * UUID of template this pog was created from.
-	 */
-	private String templateUUID;
-	/**
 	 * Class of pog.
 	 */
 	private String pogClass;
@@ -95,7 +91,6 @@ public class PogData {
 	 * @param pogData with data to copy.
 	 */
 	private void copyData(final PogData pogData) {
-		templateUUID = pogData.templateUUID;
 		uuid = pogData.uuid;
 		fullUpdate(pogData);
 	}
