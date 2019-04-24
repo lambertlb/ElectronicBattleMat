@@ -435,7 +435,7 @@ public class PogData extends JavaScriptObject {
 	 */
 	public final native String getDmNotes() /*-{
 		if (this.dmNotes === undefined) {
-			this.notes = "";
+			this.dmNotes = "";
 		}
 		return (this.dmNotes);
 	}-*/;

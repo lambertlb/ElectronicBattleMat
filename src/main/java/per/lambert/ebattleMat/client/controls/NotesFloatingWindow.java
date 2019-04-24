@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -35,9 +36,17 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	private FocusPanel editPanel;
 	/**
+	 * Panel to capture key events.
+	 */
+	private FocusPanel dmEditPanel;
+	/**
 	 * Panel for scroll area.
 	 */
 	private ScrollPanel scrollPanel;
+	/**
+	 * Panel for scroll area.
+	 */
+	private ScrollPanel dmScrollPanel;
 	/**
 	 * Layout panel.
 	 */
@@ -54,6 +63,10 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Cancel button.
 	 */
 	private Button cancel;
+	/**
+	 * Tab panel.
+	 */
+	private TabLayoutPanel tabPanel;
 
 	/**
 	 * Constructor.
@@ -87,17 +100,30 @@ public class NotesFloatingWindow extends OkCancelDialog {
 				handleTextChanged(event);
 			}
 		});
-//		theText = new HTML();
-//		theText.setSize("100%", "100%");
-//		editPanel.add(theText);
 		scrollPanel = new ScrollPanel(editPanel);
 		scrollPanel.setSize("100%", "100%");
+
+		dmEditPanel = new FocusPanel();
+		dmEditPanel.setSize("100%", "100%");
+		dmEditPanel.addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				handleTextChanged(event);
+			}
+		});
+		dmScrollPanel = new ScrollPanel(dmEditPanel);
+		dmScrollPanel.setSize("100%", "100%");
 
 		dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.setStyleName("popupPanel");
 		dockLayoutPanel.setSize("100%", "100%");
 		addButtonSupport();
-		dockLayoutPanel.add(scrollPanel);
+
+		tabPanel = new TabLayoutPanel(2.5, Unit.EM);
+		tabPanel.setSize("100%", "100%");
+
+		dockLayoutPanel.add(tabPanel);
 
 		setWidget(dockLayoutPanel);
 	}
@@ -158,6 +184,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	protected void saveNotes() {
 		selectedPog.setNotes(editPanel.getElement().getInnerText());
+		selectedPog.setDmNotes(dmEditPanel.getElement().getInnerText());
 		ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 		enableWidget(save, false);
 	}
@@ -198,11 +225,14 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	private void getTextFromSelectedPog() {
 		String textToSet = "";
+		String dmTextToSet = "";
 		selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (selectedPog != null) {
 			textToSet = selectedPog.getNotes();
+			dmTextToSet = selectedPog.getDmNotes();
 		}
 		editPanel.getElement().setInnerText(textToSet);
+		dmEditPanel.getElement().setInnerText(dmTextToSet);
 		makeContentEditable(ServiceManager.getDungeonManager().isDungeonMaster());
 		enableWidget(save, false);
 	}
@@ -215,15 +245,17 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	private void makeContentEditable(final boolean editable) {
 		if (editable) {
 			editPanel.getElement().setAttribute("contenteditable", "true");
+			dmEditPanel.getElement().setAttribute("contenteditable", "true");
 		} else {
 			editPanel.getElement().setAttribute("contenteditable", "false");
+			dmEditPanel.getElement().setAttribute("contenteditable", "false");
 		}
 	}
 
 	/**
 	 * Handle text changed event.
 	 * 
-	 * @param event with ley information
+	 * @param event with the information
 	 */
 	protected void handleTextChanged(final KeyUpEvent event) {
 		if (save != null) {
@@ -236,6 +268,11 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	@Override
 	public void show() {
+		tabPanel.clear();
+		tabPanel.add(scrollPanel, "Notes");
+		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+			tabPanel.add(dmScrollPanel, "DM Notes");
+		}
 		super.show();
 		getTextFromSelectedPog();
 	}
