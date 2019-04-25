@@ -40,7 +40,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 /**
  * Pog canvas.
  * 
- * This is used to display the picture for a Pog.
+ * This is used to display the picture for a Pog. It will scale the picture to a scale factor dictated by it's owner.
  * 
  * @author LLambert
  *
@@ -82,6 +82,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private Image image = new Image();
 	/**
+	 * Image count. Used to avoid browser caching images during editing.
+	 */
+	private int imageCount = 1;
+	/**
 	 * image context for drawing.
 	 */
 	private ImageElement imageElement;
@@ -106,6 +110,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * current zoom factor for image.
 	 */
 	private double totalZoom = 1;
+	/**
+	 * Offset for clearing rectangle.
+	 */
+	private static final int CLEAR_OFFEST = -10;
 
 	/**
 	 * Show as normal size only.
@@ -154,7 +162,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Was pog from ribbon bar.
+	 * Was pog from ribbon bar. This is needed to inform Dungeon manager so it knows how to handle drag and drop properly.
 	 */
 	private boolean fromRibbonBar;
 
@@ -171,18 +179,18 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Get size of pog in pixels.
+	 * Get size of pog.
 	 * 
-	 * @return size of pog in pixels.
+	 * @return size of pog.
 	 */
 	public int getPogSize() {
 		return pogData.getSize();
 	}
 
 	/**
-	 * Set size of pixel.
+	 * Set pog size.
 	 * 
-	 * @param pogSize size of pixel.
+	 * @param pogSize pog size.
 	 */
 	public void setPogSize(final int pogSize) {
 		pogData.setSize(pogSize);
@@ -204,7 +212,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Current zoom factor.
 	 */
 	private double zoomFactor = 1;
-
 	/**
 	 * True to force a background color even if transparent is set.
 	 */
@@ -502,11 +509,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Image count.
-	 */
-	private int imageCount = 1;
-
-	/**
 	 * Set URL for image. This will append a number to force the loading of picture from server to bypass caching.
 	 * 
 	 * @param pogImageUrl URL for image
@@ -524,11 +526,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Offset for clearing rectangle.
-	 */
-	private static final int CLEAR_OFFEST = -10;
-
-	/**
 	 * refresh view.
 	 */
 	public void drawEverything() {
@@ -542,6 +539,32 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			backContext.drawImage(imageElement, 0, 0);
 		}
 		handleAllDrawing();
+	}
+
+	/**
+	 * Handle all canvas drawing.
+	 */
+	public final void handleAllDrawing() {
+		if (!pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
+			context.setFillStyle("white");
+			context.fillRect(0, 0, parentWidth, parentHeight);
+		}
+		double opacity = 1.0;
+		if (isInVisibleToPlayer()) {
+			opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
+		}
+		pogDrawPanel.getElement().getStyle().setOpacity(opacity);
+		context.drawImage(backContext.getCanvas(), 0, 0);
+		drawOverlays();
+	}
+
+	/**
+	 * Is pog currently invisible to player.
+	 * 
+	 * @return true if is
+	 */
+	public boolean isInVisibleToPlayer() {
+		return (!showNormalSizeOnly && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)));
 	}
 
 	/**
@@ -573,32 +596,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		context.moveTo(scaledWidth, 0);
 		context.lineTo(0, scaledWidth);
 		context.stroke();
-	}
-
-	/**
-	 * Handle all canvas drawing.
-	 */
-	public final void handleAllDrawing() {
-		if (!pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
-			context.setFillStyle("white");
-			context.fillRect(0, 0, parentWidth, parentHeight);
-		}
-		double opacity = 1.0;
-		if (isInVisibleToPlayer()) {
-			opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
-		}
-		pogDrawPanel.getElement().getStyle().setOpacity(opacity);
-		context.drawImage(backContext.getCanvas(), 0, 0);
-		drawOverlays();
-	}
-
-	/**
-	 * Is pog currently invisible to player.
-	 * 
-	 * @return true if is
-	 */
-	public boolean isInVisibleToPlayer() {
-		return (!showNormalSizeOnly && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)));
 	}
 
 	/**

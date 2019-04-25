@@ -65,7 +65,6 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 * Current level we are working on.
 	 */
 	private DungeonLevel currentLevel;
-
 	/**
 	 * Show grid on dungeon levels.
 	 */
@@ -167,7 +166,6 @@ public class LevelOptionsDialog extends OkCancelDialog {
 		createNewLevelButton = new Button("Create New Level");
 		createNewLevelButton.setStyleName("ribbonBarLabel");
 		createNewLevelButton.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				handleCreateNewLevel();
@@ -182,14 +180,12 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	private void createUploadLevel() {
 		fileUpLoadControl = new FileUpLoadControl("Select level Picture:  ");
 		fileUpLoadControl.addChangeHandler(new ChangeHandler() {
-
 			@Override
 			public void onChange(final ChangeEvent event) {
 				fileSelected();
 			}
 		});
 		fileUpLoadControl.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-
 			@Override
 			public void onSubmitComplete(final SubmitCompleteEvent event) {
 				uploadComplete(event);
@@ -207,7 +203,6 @@ public class LevelOptionsDialog extends OkCancelDialog {
 		downloadLevelPicture = new Button("Download Level Picture");
 		downloadLevelPicture.setStyleName("ribbonBarLabel");
 		downloadLevelPicture.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentLevelData();
@@ -232,18 +227,6 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 */
 	private void createGridSizeEntry() {
 		gridSize = new LabeledTextBox("Grid Size", 0.0);
-		gridSize.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(final ChangeEvent event) {
-			}
-		});
-		gridSize.addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-			}
-		});
 		centerGrid.setWidget(1, 1, gridSize);
 	}
 
@@ -252,18 +235,6 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 */
 	private void createGridOffsetX() {
 		gridOffsetX = new LabeledTextBox("Grid Offset X", 0.0);
-		gridOffsetX.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(final ChangeEvent event) {
-			}
-		});
-		gridOffsetX.addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-			}
-		});
 		centerGrid.setWidget(2, 0, gridOffsetX);
 	}
 
@@ -272,18 +243,6 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 */
 	private void createGridOffsetY() {
 		gridOffsetY = new LabeledTextBox("Grid Offset Y", 0.0);
-		gridOffsetY.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(final ChangeEvent event) {
-			}
-		});
-		gridOffsetY.addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-			}
-		});
 		centerGrid.setWidget(2, 1, gridOffsetY);
 	}
 
@@ -295,14 +254,12 @@ public class LevelOptionsDialog extends OkCancelDialog {
 		levelNameLabel.setStyleName("ribbonBarLabel");
 		levelName = new TextBox();
 		levelName.addValueChangeHandler(new ValueChangeHandler<String>() {
-
 			@Override
 			public void onValueChange(final ValueChangeEvent<String> event) {
 				validateContent();
 			}
 		});
 		levelName.addKeyUpHandler(new KeyUpHandler() {
-
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				validateContent();

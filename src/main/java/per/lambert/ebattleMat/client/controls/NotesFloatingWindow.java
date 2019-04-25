@@ -94,7 +94,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 		editPanel = new FocusPanel();
 		editPanel.setSize("100%", "100%");
 		editPanel.addKeyUpHandler(new KeyUpHandler() {
-
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				handleTextChanged(event);
@@ -106,7 +105,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 		dmEditPanel = new FocusPanel();
 		dmEditPanel.setSize("100%", "100%");
 		dmEditPanel.addKeyUpHandler(new KeyUpHandler() {
-
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				handleTextChanged(event);
@@ -123,8 +121,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 		tabPanel = new TabLayoutPanel(2.5, Unit.EM);
 		tabPanel.setSize("100%", "100%");
 
-		dockLayoutPanel.add(tabPanel);
-
 		setWidget(dockLayoutPanel);
 	}
 
@@ -133,10 +129,8 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	private void addButtonSupport() {
 		buttonPanel = new HorizontalPanel();
-		dockLayoutPanel.addSouth(buttonPanel, 30);
 		save = new Button("Save");
 		save.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				saveNotes();
@@ -145,7 +139,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 		buttonPanel.add(save);
 		cancel = new Button("Cancel");
 		save.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				onCancel();
@@ -210,6 +203,16 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Must be run before reusing the view.
 	 */
 	private void initialize() {
+		tabPanel.clear();
+		tabPanel.add(scrollPanel, "Notes");
+		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+			tabPanel.add(dmScrollPanel, "DM Notes");
+		}
+		dockLayoutPanel.clear();
+		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+			dockLayoutPanel.addSouth(buttonPanel, 30);
+		}
+		dockLayoutPanel.add(tabPanel);
 	}
 
 	/**
@@ -268,11 +271,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	@Override
 	public void show() {
-		tabPanel.clear();
-		tabPanel.add(scrollPanel, "Notes");
-		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
-			tabPanel.add(dmScrollPanel, "DM Notes");
-		}
+		initialize();
 		super.show();
 		getTextFromSelectedPog();
 	}

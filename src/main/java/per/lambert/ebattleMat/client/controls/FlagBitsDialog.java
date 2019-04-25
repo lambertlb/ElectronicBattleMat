@@ -10,7 +10,7 @@ import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.interfaces.FlagBits;
 
 /**
- * Dialog to manage integer of bits controled by the flags.
+ * Dialog to manage integer of bits controlled by the flags.
  * 
  * @author LLambert
  *

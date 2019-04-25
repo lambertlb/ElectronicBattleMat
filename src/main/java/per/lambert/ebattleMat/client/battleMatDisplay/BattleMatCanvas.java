@@ -215,7 +215,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private boolean toggleFOW;
 	/**
-	 * clear fog or war.
+	 * true if clearing fog or war.
 	 */
 	private boolean clearFOW;
 	/**
@@ -227,6 +227,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private int selectedRow;
 	/**
+	 * Currently selected pog canvas.
+	 */
+	private PogCanvas selectedPogCanvas;
+	/**
 	 * Width of pog border.
 	 */
 	private double pogBorderWidth = 3;
@@ -234,6 +238,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Helper for mobile touches.
 	 */
 	private TouchHelper touchHelper;
+	/**
+	 * Distance between fingers.
+	 */
+	private double distanceBetweenFingers;
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -275,7 +283,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void setupDragAndDrop() {
 		this.addDomHandler(new DragOverHandler() {
-
 			@Override
 			public void onDragOver(final DragOverEvent event) {
 				highlightGridSquare(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
@@ -297,7 +304,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Setup even handlers.
+	 * Setup event handlers.
 	 */
 	private void setupEventHandling() {
 		image.addLoadHandler(new LoadHandler() {
@@ -433,7 +440,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Calculate the starting zoom factor so that one side of the image exactly fills the parent.
+	 * Calculate the starting zoom factor.
 	 */
 	private void calculateStartingZoom() {
 		totalZoom = 1;
@@ -549,7 +556,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Handle panning canvas while panning.
+	 * Handle moving canvas while panning.
 	 * 
 	 * @param xPos center X of pan
 	 * @param yPos center Y of pan
@@ -597,19 +604,19 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void calculateDimensions() {
 		getGridData();
-		showGrid = ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid();
 		verticalLines = (int) (imageWidth / gridSpacing) + 1;
 		horizontalLines = (int) (imageHeight / gridSpacing) + 1;
 		ServiceManager.getDungeonManager().setSessionLevelSize(verticalLines, horizontalLines);
 	}
 
 	/**
-	 * Get grid data.
+	 * Get grid data from dungeon manager.
 	 */
 	private void getGridData() {
 		gridOffsetX = ServiceManager.getDungeonManager().getCurrentLevelData().getGridOffsetX() * totalZoom;
 		gridOffsetY = ServiceManager.getDungeonManager().getCurrentLevelData().getGridOffsetY() * totalZoom;
 		gridSpacing = ServiceManager.getDungeonManager().getCurrentLevelData().getGridSize();
+		showGrid = ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid();
 	}
 
 	/**
@@ -736,7 +743,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		IDungeonManager dungeonManager = ServiceManager.getDungeonManager();
 		double size = adjustedGridSize();
-		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+		if (dungeonManager.isDungeonMaster()) {
 			fowCanvas.getElement().getStyle().setOpacity(0.5);
 		} else {
 			fowCanvas.getElement().getStyle().setOpacity(1.0);
@@ -794,7 +801,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		boolean isPlayer = pogBeingDragged.isThisAPlayer();
 		if (!isDM) {
 			if (fowSetOnGridElement || !isPlayer) {
-				// player only allowed to drag PLAYER pogs.
+				// players are only allowed to drag PLAYER pogsn onto visible cells.
 				removeHighlightGridSquare();
 				return;
 			}
@@ -869,7 +876,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Add a pog to the canvas. if the pog is not a player then clone the data from the template. This is because there can only be one player instance but there can be many of the other types.
+	 * Add a pog to the canvas. if the pog is not a player then clone the data. This is because there can only be one player instance but there can be many of the other types.
 	 * 
 	 * @param pogData pog data
 	 * @return pog canvas
@@ -1080,11 +1087,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Currently selected pog canvas.
-	 */
-	private PogCanvas selectedPogCanvas;
-
-	/**
 	 * Handle newly selected pog.
 	 */
 	protected void newSelectedPog() {
@@ -1191,17 +1193,12 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Distance between fingers.
-	 */
-	private double distance;
-
-	/**
 	 * Handle zoom start event.
 	 * 
 	 * @param event with data
 	 */
 	protected void doZoomStart(final ZoomStartEvent event) {
-		distance = event.getZoomInformation().getStartingDistance();
+		distanceBetweenFingers = event.getZoomInformation().getStartingDistance();
 	}
 
 	/**
@@ -1221,7 +1218,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		double currentDistance = event.getZoomInformation().getCurrentDistance();
 		double xPos = event.getZoomInformation().currentCenterX();
 		double yPos = event.getZoomInformation().currentCenterY();
-		zoomCanvas(xPos, yPos, currentDistance / distance);
-		distance = currentDistance;
+		zoomCanvas(xPos, yPos, currentDistance / distanceBetweenFingers);
+		distanceBetweenFingers = currentDistance;
 	}
 }

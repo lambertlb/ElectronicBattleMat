@@ -34,11 +34,11 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	 */
 	private TextBox characterName;
 	/**
-	 * Label for Level picture.
+	 * Label for character picture.
 	 */
 	private Label characterPictureLabel;
 	/**
-	 * Text box for level picture URL.
+	 * Text box for character picture URL.
 	 */
 	private TextBox characterPicture;
 	/**
@@ -183,8 +183,9 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Validate Url of picture. THis makes sure it is a picture type we support
+	 * Validate Url of picture. This makes sure it is a picture type we support
 	 * 
+	 * TODO move to Dungeon Manager.
 	 * @return true if ok.
 	 */
 	private boolean validateUrl() {
@@ -252,6 +253,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 
 	/**
 	 * Compute area pog can have.
+	 * It does this by seeing how much room is between the top of the canvas and the top of the ok button.
 	 * 
 	 * @return area pog can have.
 	 */
