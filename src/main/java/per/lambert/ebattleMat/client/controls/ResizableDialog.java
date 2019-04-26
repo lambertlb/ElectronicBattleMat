@@ -24,7 +24,8 @@ import per.lambert.ebattleMat.client.touchHelper.PanStartHandler;
 import per.lambert.ebattleMat.client.touchHelper.TouchHelper;
 
 /**
- * DialogBox has a grid that contains the the grow handles following is the coordinates for the the various handles. 0,2 Top Right 0,1 Top Center 0,0 Top Left 1,0 Middle Left 1,2 Middle Right 2,2 Bottom Right 2,1 Bottom Center 2,0 Bottom Left
+ * DialogBox has a grid that contains the the grow handles following is the coordinates for the the various handles.
+ * 0,2 Top Right 0,1 Top Center 0,0 Top Left 1,0 Middle Left 1,2 Middle Right 2,2 Bottom Right 2,1 Bottom Center 2,0 Bottom Left
  * 
  * @author LLambert
  *
@@ -81,11 +82,11 @@ public class ResizableDialog extends DialogBox {
 	 */
 	private static final int MARGIN = 5;
 	/**
-	 * Minimum wisth of window.
+	 * Minimum width of window.
 	 */
 	private static final int MIN_WIDTH = 100;
 	/**
-	 * Minimum heifht of window.
+	 * Minimum height of window.
 	 */
 	private static final int MIN_HEIGHT = 100;
 	/**
@@ -151,21 +152,18 @@ public class ResizableDialog extends DialogBox {
 		super.setWidget(content);
 		touchHelper = new TouchHelper(this);
 		touchHelper.addPanStartHandler(new PanStartHandler() {
-
 			@Override
 			public void onPanStart(final PanStartEvent event) {
 				doPanStart(event);
 			}
 		});
 		touchHelper.addPanEndHandler(new PanEndHandler() {
-
 			@Override
 			public void onPanEnd(final PanEndEvent event) {
 				doPanEnd(event);
 			}
 		});
 		touchHelper.addPanHandler(new PanHandler() {
-
 			@Override
 			public void onPan(final PanEvent event) {
 				doPan(event);
@@ -463,7 +461,6 @@ public class ResizableDialog extends DialogBox {
 	@Override
 	protected void onPreviewNativeEvent(final NativePreviewEvent event) {
 		NativeEvent nativeEvent = event.getNativeEvent();
-
 		if (!event.isCanceled() && (event.getTypeInt() == Event.ONMOUSEDOWN) && computeResizePosition(nativeEvent.getClientX(), nativeEvent.getClientY()) != ResizePosition.UNDEFINED) {
 			nativeEvent.preventDefault();
 		}

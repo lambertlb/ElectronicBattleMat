@@ -19,8 +19,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.controls.OkCancelDialog;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 /**
@@ -104,6 +104,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 	 * Grid has been populated.
 	 */
 	private boolean gridPopulated;
+
 	/**
 	 * Constructor for Dungeon Select control.
 	 */
@@ -111,11 +112,12 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		super("Dungeon Template Management", false, true, 400, 400);
 		load();
 	}
+
 	/**
 	 * Load in content.
 	 */
 	private void load() {
-		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
+		getElement().getStyle().setZIndex(Constants.DIALOG_Z);
 		dungeonSelectPresenter = new DungeonSelectPresenter();
 		dungeonSelectPresenter.setView(this);
 		createContent();
@@ -124,6 +126,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		setupEventHandlers();
 		initialize();
 	}
+
 	/**
 	 * Initialize view.
 	 * 
@@ -133,6 +136,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		setToDungeonMasterState();
 		center();
 	}
+
 	/**
 	 * Create content.
 	 * 
@@ -157,6 +161,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		sessionLabel = new Label("Session Management");
 		templateLabel = new Label("Dungeon Template Management");
 	}
+
 	/**
 	 * Setup event handlers.
 	 */
@@ -260,6 +265,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 			}
 		});
 	}
+
 	/**
 	 * populate grid.
 	 */
@@ -281,6 +287,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		sessionLabel.addStyleName("sessionLabel");
 		templateLabel.addStyleName("sessionLabel");
 	}
+
 	/**
 	 * Populate common content for player and DM.
 	 */
@@ -289,6 +296,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		centerGrid.setWidget(1, 0, templateLabel);
 		centerGrid.setWidget(2, 0, dungeonDropdownList);
 	}
+
 	/**
 	 * Populate grid for a player.
 	 */
@@ -297,6 +305,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		centerGrid.setWidget(3, 0, sessionDropdownList);
 		centerGrid.setWidget(4, 0, joinASessionButton);
 	}
+
 	/**
 	 * Populate grid for a dungeon master.
 	 */
@@ -316,6 +325,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		Element element2 = centerGrid.getCellFormatter().getElement(6, 0);
 		element2.setAttribute("colspan", "3");
 	}
+
 	/**
 	 * Close this dialog.
 	 */
@@ -323,6 +333,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		dungeonSelectPresenter.close();
 		hide();
 	}
+
 	/**
 	 * setup based on dungeon master state.
 	 */
@@ -334,6 +345,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 			setupDisplayForPlayer();
 		}
 	}
+
 	/**
 	 * setup for dungeon master.
 	 */
@@ -347,6 +359,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		}
 		setupSessionDisplayForDungeonMaster();
 	}
+
 	/**
 	 * load in list of dungeons.
 	 */
@@ -359,6 +372,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		}
 		dungeonDropdownList.setVisibleItemCount(1);
 	}
+
 	/**
 	 * setup display for a player.
 	 */
@@ -366,15 +380,17 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		enableWidget(sessionDropdownList, dungeonSelectPresenter.isOkToShowSessions());
 		enableWidget(joinASessionButton, dungeonSelectPresenter.isOkToJoinSession());
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void show() {
 		super.show();
 		dungeonSelectPresenter.refreshView();
-		getElement().getStyle().setZIndex(100);
+		getElement().getStyle().setZIndex(Constants.DIALOG_Z + 2);
 		initialize();
 	}
+
 	/**
 	 * Setup session section as dungeon master.
 	 */
@@ -388,12 +404,14 @@ public class DungeonSelectDialog extends OkCancelDialog {
 			resetNewSessionText();
 		}
 	}
+
 	/**
 	 * Reset the text for a nw session.
 	 */
 	public void resetNewSessionText() {
 		newSessionName.setText("Enter Session Name");
 	}
+
 	/**
 	 * Load list with sessions for this dungeon.
 	 */
@@ -412,6 +430,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 			}
 		}
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -427,6 +446,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 	public int getMinWidth() {
 		return 400;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */

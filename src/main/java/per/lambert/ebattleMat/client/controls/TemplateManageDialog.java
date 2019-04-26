@@ -16,12 +16,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
+import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
-import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
@@ -32,7 +32,6 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
  *
  */
 public class TemplateManageDialog extends OkCancelDialog {
-
 	/**
 	 * grid for content.
 	 */
@@ -65,7 +64,6 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Pog data.
 	 */
 	private PogData pogData;
-
 	/**
 	 * Which pog templates to use.
 	 */
@@ -160,7 +158,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Constructor.
 	 * 
 	 * @param place Which pog templates to edit.
-	 * @param pogType type og pog templates
+	 * @param pogType type of pog templates
 	 */
 	public TemplateManageDialog(final PogPlace place, final String pogType) {
 		super("Manage " + pogType + " Templates", true, true, 400, 400);
@@ -282,7 +280,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		centerGrid.setWidget(9, 2, notesButton);
 		notesDialog = new NotesFloatingWindow();
 		notesDialog.setModal(true);
-		notesDialog.getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z + 1);
+		notesDialog.getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
 
 		pogPanel = new FlowPanel();
 		centerGrid.setWidget(10, 0, pogPanel);
@@ -329,7 +327,6 @@ public class TemplateManageDialog extends OkCancelDialog {
 			}
 		});
 		templatePicture.addKeyUpHandler(new KeyUpHandler() {
-
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				validateForm();
@@ -387,14 +384,12 @@ public class TemplateManageDialog extends OkCancelDialog {
 			}
 		});
 		notesDialog.addSaveClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				notesDialog.hide();
 			}
 		});
 		notesDialog.addCancelClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				notesDialog.hide();
@@ -516,7 +511,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 
 	/**
 	 * Validate URL.
-	 * 
+	 * TODO move to dungeon manager
 	 * @return true if valid
 	 */
 	private boolean validateUrl() {
@@ -623,7 +618,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		templatePicture.setValue(pogData.getImageUrl());
 		race.setValue(pogData.getRace());
 		templateClass.setValue(pogData.getPogClass());
-		getGender();
+		gender.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
 		int pogSize = pogData.getSize() - 1;
 		if (pogSize < 0) {
 			pogSize = 0;
@@ -639,13 +634,6 @@ public class TemplateManageDialog extends OkCancelDialog {
 	private void setFlagsDialogData() {
 		playerFlagDialog.setBits(pogData.getPlayerFlags());
 		dmFlagDialog.setBits(pogData.getDungeonMasterFlags());
-	}
-
-	/**
-	 * Get gender.
-	 */
-	private void getGender() {
-		gender.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
 	}
 
 	/**

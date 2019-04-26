@@ -26,21 +26,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class LoginControl extends PopupPanel {
 	/**
-	 * My style.
-	 * 
-	 * @author LLambert
-	 *
-	 */
-	interface MyStyle extends CssResource {
-		/**
-		 * Get style for session label.
-		 * 
-		 * @return style name.
-		 */
-		String sessionLabel();
-	}
-
-	/**
 	 * interface to binder.
 	 * 
 	 * @author LLambert
@@ -71,7 +56,7 @@ public class LoginControl extends PopupPanel {
 	 */
 	@SuppressWarnings("VisibilityModifier")
 	@UiField(provided = true)
-	TextBox txtPassword;
+	PasswordTextBox txtPassword;
 	/**
 	 * label for user name.
 	 */
@@ -96,7 +81,6 @@ public class LoginControl extends PopupPanel {
 	@SuppressWarnings("VisibilityModifier")
 	@UiField
 	HeadingElement headerTitle;
-
 	/**
 	 * Presenter for view.
 	 */
@@ -107,12 +91,9 @@ public class LoginControl extends PopupPanel {
 	 */
 	public LoginControl() {
 		setStyleName("");
-
-		txtPassword = new PasswordTextBox();
-
-		add(binder.createAndBindUi(this));
-		txtUserName.setFocus(true);
 		this.setGlassEnabled(true);
+		txtPassword = new PasswordTextBox();
+		add(binder.createAndBindUi(this));
 		center();
 		Window.addResizeHandler(repositionOnResize);
 	}
@@ -126,6 +107,7 @@ public class LoginControl extends PopupPanel {
 		setLocalizedStrings();
 		presenter = new LoginPresenter();
 		presenter.setView(this);
+		txtUserName.setFocus(true);
 	}
 
 	/**

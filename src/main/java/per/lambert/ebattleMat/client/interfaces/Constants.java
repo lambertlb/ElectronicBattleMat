@@ -8,6 +8,30 @@ package per.lambert.ebattleMat.client.interfaces;
  */
 public final class Constants {
 	/**
+	 * Z order for player.
+	 */
+	public static final int PLAYERS_Z = 5;
+	/**
+	 * Z order for Monsters.
+	 */
+	public static final int MONSTERS_Z = 3;
+	/**
+	 * Z order for room objects.
+	 */
+	public static final int ROOMOBJECTS_Z = 1;
+	/**
+	 * Z order for grey out area.
+	 */
+	public static final int GREYOUT_Z = 9;
+	/**
+	 * Z order for fog of war.
+	 */
+	public static final int FOW_Z = 8;
+	/**
+	 * Z order for dialogs.
+	 */
+	public static final int DIALOG_Z = 10;
+	/**
 	 * Location of dungeon data.
 	 */
 	public static final String DUNGEON_DATA_LOCATION = "dungeonData/";

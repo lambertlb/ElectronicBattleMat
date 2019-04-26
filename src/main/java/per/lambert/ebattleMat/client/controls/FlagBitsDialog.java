@@ -6,7 +6,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Grid;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.FlagBits;
 
 /**
@@ -57,7 +57,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 	public FlagBitsDialog(final String flagName, final Collection<FlagBits> flagBits) {
 		super(flagName, true, true, 400, 400);
 		this.flagBits = flagBits;
-		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z + 1);
+		getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
 		load();
 	}
 

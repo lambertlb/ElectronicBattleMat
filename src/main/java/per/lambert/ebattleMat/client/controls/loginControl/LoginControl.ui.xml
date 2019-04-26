@@ -146,7 +146,7 @@
 						<label class="{myStyle.loginLabel}" ui:field="labelPassword" />
 					</div>
 					<div class="{myStyle.col-1}">
-						<gwt:TextBox ui:field="txtPassword" />
+						<gwt:PasswordTextBox ui:field="txtPassword" />
 					</div>
 				</div>
 				<div class="{myStyle.flexrow}">

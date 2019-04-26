@@ -12,9 +12,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
@@ -73,7 +73,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 */
 	public NotesFloatingWindow() {
 		super("Pog Notes", false, false, 200, 200);
-		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z - 1);
+		getElement().getStyle().setZIndex(Constants.DIALOG_Z - 1);
 		load();
 		setModal(false);
 	}

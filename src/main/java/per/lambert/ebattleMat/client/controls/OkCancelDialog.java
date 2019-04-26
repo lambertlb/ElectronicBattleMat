@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.battleMatDisplay.BattleMatCanvas;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 
 /**
  * Base dialog for dialogs needing OK and cancel buttons.
@@ -83,7 +83,7 @@ public class OkCancelDialog extends ResizableDialog {
 	public OkCancelDialog(final String caption, final boolean okVisible, final boolean cancelVisble, final int height, final int width) {
 		super();
 		setText(caption);
-		getElement().getStyle().setZIndex(BattleMatCanvas.DIALOG_Z);
+		getElement().getStyle().setZIndex(Constants.DIALOG_Z);
 		createContent(okVisible, cancelVisble);
 		ok.setVisible(okVisible);
 		cancel.setVisible(cancelVisble);

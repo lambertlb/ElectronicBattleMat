@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Text Box with a preceeding label.
+ * Text Box with a preceding label.
  * 
  * @author LLambert
  *

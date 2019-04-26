@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
@@ -70,30 +71,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Default zoom constant.
 	 */
 	private static final double DEFAULT_ZOOM = 1.1;
-	/**
-	 * Z order for player.
-	 */
-	private static final int PLAYERS_Z = 5;
-	/**
-	 * Z order for Monsters.
-	 */
-	private static final int MONSTERS_Z = 3;
-	/**
-	 * Z order for room objects.
-	 */
-	private static final int ROOMOBJECTS_Z = 1;
-	/**
-	 * Z order for grey out area.
-	 */
-	private static final int GREYOUT_Z = 9;
-	/**
-	 * Z order for fog of war.
-	 */
-	private static final int FOW_Z = 8;
-	/**
-	 * Z order for dialogs.
-	 */
-	public static final int DIALOG_Z = 10;
 	/**
 	 * Show grid.
 	 */
@@ -254,10 +231,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		canvas.addMouseUpHandler(this);
 		hidePanel = new LayoutPanel();
 		greyOutPanel = new LayoutPanel();
-		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
+		greyOutPanel.getElement().getStyle().setZIndex(Constants.GREYOUT_Z);
 		hidePanel.add(image);
 		hidePanel.setVisible(false);
-		fowCanvas.getElement().getStyle().setZIndex(FOW_Z);
+		fowCanvas.getElement().getStyle().setZIndex(Constants.FOW_Z);
 		fowCanvas.setStyleName("noEvents");
 		intializeView();
 		showGrid = false;
@@ -867,12 +844,12 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private int getPogZ(final PogData pogData) {
 		if (pogData.isThisAMonster()) {
-			return (MONSTERS_Z);
+			return (Constants.MONSTERS_Z);
 		}
 		if (pogData.isThisAPlayer()) {
-			return (PLAYERS_Z);
+			return (Constants.PLAYERS_Z);
 		}
-		return (ROOMOBJECTS_Z);
+		return (Constants.ROOMOBJECTS_Z);
 	}
 
 	/**
@@ -975,7 +952,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
 		double size = adjustedGridSize() * pogBeingDragged.getSize();
-		greyOutPanel.getElement().getStyle().setZIndex(GREYOUT_Z);
+		greyOutPanel.getElement().getStyle().setZIndex(Constants.GREYOUT_Z);
 		greyOutPanel.getElement().getStyle().setBackgroundColor(computeDragColor());
 		greyOutPanel.setWidth("" + size + "px");
 		greyOutPanel.setHeight("" + size + "px");
