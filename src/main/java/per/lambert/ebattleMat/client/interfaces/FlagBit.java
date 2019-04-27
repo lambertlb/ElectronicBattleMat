@@ -1,14 +1,14 @@
 package per.lambert.ebattleMat.client.interfaces;
 
 /**
- * Base class for managing flag bits.
+ * Base class for managing flag bit.
  * 
  * This will simulate an enumeration but has the advantage of being sub-classed.
  * 
  * @author LLambert
  *
  */
-public abstract class FlagBits {
+public abstract class FlagBit {
 	/**
 	 * Value of item.
 	 */
@@ -43,7 +43,7 @@ public abstract class FlagBits {
 	 * @param flagName of value
 	 * @param value of ordinal
 	 */
-	protected FlagBits(final String flagName, final int value) {
+	protected FlagBit(final String flagName, final int value) {
 		this.value = value;
 		name = flagName;
 	}

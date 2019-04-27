@@ -6,17 +6,17 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 
 /**
  * Event for handling reason for action.
+ * 
  * @author LLambert
  *
  */
 public class ReasonForActionEvent extends GwtEvent<ReasonForActionEventHandler> {
-
 	/**
 	 * Type of event.
 	 */
 	private static Type<ReasonForActionEventHandler> reasonForActionEventType = new Type<ReasonForActionEventHandler>();
 	/**
-	 * Resong for event.
+	 * Reason for event.
 	 */
 	private ReasonForAction reason;
 	/**
@@ -26,6 +26,7 @@ public class ReasonForActionEvent extends GwtEvent<ReasonForActionEventHandler> 
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param reason for event
 	 * @param data for event
 	 */
@@ -36,13 +37,16 @@ public class ReasonForActionEvent extends GwtEvent<ReasonForActionEventHandler> 
 
 	/**
 	 * Get reason for action.
+	 * 
 	 * @return reason for action.
 	 */
 	public final ReasonForAction getReasonForAction() {
 		return reason;
 	}
 
-	/** Get data for event.
+	/**
+	 * Get data for event.
+	 * 
 	 * @return data for event.
 	 */
 	public final Object getData() {
@@ -67,6 +71,7 @@ public class ReasonForActionEvent extends GwtEvent<ReasonForActionEventHandler> 
 
 	/**
 	 * Get reason for event type.
+	 * 
 	 * @return type for reason of event
 	 */
 	public static Type<ReasonForActionEventHandler> getReasonForActionEventType() {

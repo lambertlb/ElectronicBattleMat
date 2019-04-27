@@ -108,10 +108,12 @@ public abstract class PogManager implements IPogManager {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Set selected pog.
+	 * 
+	 * @param pogType type of pog
+	 * @param templateUUID uuid of pog
 	 */
-	@Override
-	public void setCommonTemplate(final String pogType, final String templateUUID) {
+	protected void setCommonTemplate(final String pogType, final String templateUUID) {
 		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
 			setSelectedMonster(templateUUID);
 		} else {

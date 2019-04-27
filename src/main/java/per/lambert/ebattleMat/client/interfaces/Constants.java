@@ -92,11 +92,11 @@ public final class Constants {
 	 */
 	public static final String SERVER_DUNGEON_DATA_LOCATION = "/" + DUNGEON_DATA_LOCATION;
 	/**
-	 * Location of dungeon templates.
+	 * Location of dungeon templates on server.
 	 */
 	public static final String SERVER_DUNGEONS_LOCATION = "/" + DUNGEONS_LOCATION;
 	/**
-	 * Location of resources.
+	 * Location of resources on server.
 	 */
 	public static final String SERVER_RESOURCE_LOCATION = "/" + RESOURCE_LOCATION;
 

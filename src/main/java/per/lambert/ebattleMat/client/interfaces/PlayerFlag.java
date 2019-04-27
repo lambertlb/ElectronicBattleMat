@@ -8,12 +8,12 @@ import java.util.Map;
 /**
  * Enumeration for player flags.
  * 
- * This is a bit mask so it can have up to 23 options.
+ * This is a bit mask so it can have up to 32 options.
  * 
  * @author LLambert
  *
  */
-public final class PlayerFlag extends FlagBits {
+public final class PlayerFlag extends FlagBit {
 	/**
 	 * Next available value.
 	 */
@@ -33,21 +33,21 @@ public final class PlayerFlag extends FlagBits {
 	/**
 	 * Map of names vs flag bit.
 	 */
-	private static Map<String, FlagBits> nameMap;
+	private static Map<String, FlagBit> nameMap;
 
 	/**
 	 * expose to sub-classes.
 	 * 
 	 * @return map of names
 	 */
-	protected static Map<String, FlagBits> getNameMap() {
+	protected static Map<String, FlagBit> getNameMap() {
 		return nameMap;
 	}
 
 	/**
 	 * Value vs flag bit.
 	 */
-	private static Map<Integer, FlagBits> valueMap;
+	private static Map<Integer, FlagBit> valueMap;
 
 	/**
 	 * Constructor.
@@ -62,11 +62,11 @@ public final class PlayerFlag extends FlagBits {
 			nextValue <<= 1;
 		}
 		if (nameMap == null) {
-			nameMap = new LinkedHashMap<String, FlagBits>();
-			valueMap = new LinkedHashMap<Integer, FlagBits>();
+			nameMap = new LinkedHashMap<String, FlagBit>();
+			valueMap = new LinkedHashMap<Integer, FlagBit>();
 		}
-		nameMap.put(flagName, (FlagBits) this);
-		valueMap.put(getValue(), (FlagBits) this);
+		nameMap.put(flagName, (FlagBit) this);
+		valueMap.put(getValue(), (FlagBit) this);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public final class PlayerFlag extends FlagBits {
 	 * @param name to get
 	 * @return flag bit
 	 */
-	public static FlagBits valueOf(final String name) {
+	public static FlagBit valueOf(final String name) {
 		return (nameMap.get(name));
 	}
 
@@ -85,7 +85,7 @@ public final class PlayerFlag extends FlagBits {
 	 * @param ordinal to get
 	 * @return flag bit
 	 */
-	public static FlagBits valueOf(final int ordinal) {
+	public static FlagBit valueOf(final int ordinal) {
 		return (valueMap.get(ordinal));
 	}
 
@@ -94,9 +94,9 @@ public final class PlayerFlag extends FlagBits {
 	 * 
 	 * @return collection of flags.
 	 */
-	public static Collection<FlagBits> getValues() {
-		ArrayList<FlagBits> list = new ArrayList<FlagBits>();
-		for (FlagBits flagBit : getNameMap().values()) {
+	public static Collection<FlagBit> getValues() {
+		ArrayList<FlagBit> list = new ArrayList<FlagBit>();
+		for (FlagBit flagBit : getNameMap().values()) {
 			list.add(flagBit);
 		}
 		return (list);

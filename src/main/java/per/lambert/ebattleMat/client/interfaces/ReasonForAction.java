@@ -27,7 +27,7 @@ public enum ReasonForAction {
 	 */
 	DungeonDataReadyToEdit,
 	/**
-	 * Session has been loaded for the first time and is ready to be joined.
+	 * Dungeon session has been loaded for the first time and is ready to be joined.
 	 */
 	DungeonDataReadyToJoin,
 	/**

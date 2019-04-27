@@ -126,14 +126,6 @@ public interface IPogManager {
 	ArrayList<PogData> getFilteredCommonTemplates(String pogType, String raceFilter, String classFilter, String genderFilter);
 
 	/**
-	 * Set selected pog.
-	 * 
-	 * @param pogType type of pog
-	 * @param templateUUID uuid of pog
-	 */
-	void setCommonTemplate(String pogType, String templateUUID);
-
-	/**
 	 * get common template classes.
 	 * 
 	 * @param pogType to get

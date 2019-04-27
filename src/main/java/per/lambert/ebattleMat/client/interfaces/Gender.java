@@ -71,23 +71,23 @@ public final class Gender {
 	}
 
 	/**
-	 * Value vs flag bit.
+	 * Value vs name.
 	 */
 	private static Map<Integer, Gender> valueMap;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param flagName flag name
+	 * @param genderName gender name
 	 */
-	private Gender(final String flagName) {
+	private Gender(final String genderName) {
 		this.value = nextValue++;
-		name = flagName;
+		name = genderName;
 		if (nameMap == null) {
 			nameMap = new LinkedHashMap<String, Gender>();
 			valueMap = new LinkedHashMap<Integer, Gender>();
 		}
-		nameMap.put(flagName, this);
+		nameMap.put(genderName, this);
 		valueMap.put(getValue(), this);
 	}
 
@@ -105,10 +105,10 @@ public final class Gender {
 	}
 
 	/**
-	 * Get flag bit for this ordinal.
+	 * Get gender this ordinal.
 	 * 
 	 * @param ordinal to get
-	 * @return flag bit
+	 * @return gender
 	 */
 	public static Gender valueOf(final int ordinal) {
 		if (ordinal < 0 || ordinal >= nextValue) {
@@ -118,9 +118,9 @@ public final class Gender {
 	}
 
 	/**
-	 * Get collection of flags.
+	 * Get collection of genders.
 	 * 
-	 * @return collection of flags.
+	 * @return collection of genders.
 	 */
 	public static Collection<Gender> getValues() {
 		ArrayList<Gender> list = new ArrayList<Gender>();
@@ -129,5 +129,4 @@ public final class Gender {
 		}
 		return (list);
 	}
-
 }

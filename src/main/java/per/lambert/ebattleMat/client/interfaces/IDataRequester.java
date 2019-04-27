@@ -25,7 +25,7 @@ public interface IDataRequester {
 	String getWebPath();
 
 	/**
-	 * Build the URL for this request type. This will add the following additional parameters. token is authorization token for this login request is the request to the server
+	 * Build the URL for this request type. This will add the following additional parameters.
 	 * 
 	 * @param requestType request type to server
 	 * @param parameters parameters for the request

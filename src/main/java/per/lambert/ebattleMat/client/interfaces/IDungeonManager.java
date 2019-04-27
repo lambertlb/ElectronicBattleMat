@@ -10,7 +10,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
 /**
- * @author LLambert Interface to user management services
+ * @author LLambert Interface to dungeon management services
  */
 public interface IDungeonManager extends IPogManager {
 	/**
@@ -112,20 +112,20 @@ public interface IDungeonManager extends IPogManager {
 	/**
 	 * Is fog of war set for this cell?
 	 * 
-	 * @param columns of cell
-	 * @param rows of cell
+	 * @param column of cell
+	 * @param row of cell
 	 * @return true if set
 	 */
-	boolean isFowSet(int columns, int rows);
+	boolean isFowSet(int column, int row);
 
 	/**
 	 * Set fog of war for this cell.
 	 * 
-	 * @param columns of cell
-	 * @param rows of cell
+	 * @param column of cell
+	 * @param row of cell
 	 * @param value true if set
 	 */
-	void setFow(int columns, int rows, boolean value);
+	void setFow(int column, int row, boolean value);
 
 	/**
 	 * get toggle for fog of war.
@@ -150,7 +150,7 @@ public interface IDungeonManager extends IPogManager {
 	void createNewDungeon(String dungeonUUID, String newDungeonName);
 
 	/**
-	 * Get URL to this resource item.
+	 * Get URL to this dungeon specific resource item.
 	 * 
 	 * @param resourceItem needing URL
 	 * @return URL to resource
@@ -236,7 +236,7 @@ public interface IDungeonManager extends IPogManager {
 	void deleteSession(String dungeonUUID, String sessionUUID);
 
 	/**
-	 * Get list of monster on current level.
+	 * Get list of monsters on current level.
 	 * 
 	 * if in edit mode this will be list of monster in template else it will be a list of monster in session.
 	 * 
@@ -245,14 +245,14 @@ public interface IDungeonManager extends IPogManager {
 	PogData[] getMonstersForCurrentLevel();
 
 	/**
-	 * Get list of player in this session.
+	 * Get list of players in this session.
 	 * 
-	 * @return list of player in this session.
+	 * @return list of players in this session.
 	 */
 	PogData[] getPlayersForCurrentSession();
 
 	/**
-	 * get list room objects on current level.
+	 * get list of room objects on current level.
 	 * 
 	 * if in edit mode this will be list of room objects in template else it will be a list of room objects in session.
 	 * 
@@ -324,7 +324,7 @@ public interface IDungeonManager extends IPogManager {
 	boolean isValidNewCharacterName(String characterName);
 
 	/**
-	 * FInd character pog in dungeon.
+	 * Find character pog in dungeon.
 	 * @param uuid of character
 	 * @return pog data if found
 	 */

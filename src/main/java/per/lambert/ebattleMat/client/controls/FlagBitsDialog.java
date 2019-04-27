@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Grid;
 
 import per.lambert.ebattleMat.client.interfaces.Constants;
-import per.lambert.ebattleMat.client.interfaces.FlagBits;
+import per.lambert.ebattleMat.client.interfaces.FlagBit;
 
 /**
  * Dialog to manage integer of bits controlled by the flags.
@@ -19,7 +19,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 	/**
 	 * Collection of flags.
 	 */
-	private Collection<FlagBits> flagBits;
+	private Collection<FlagBit> flagBits;
 	/**
 	 * Bits that reflect the flags.
 	 */
@@ -54,7 +54,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 	 * @param flagName name of dialog
 	 * @param flagBits collection of flags
 	 */
-	public FlagBitsDialog(final String flagName, final Collection<FlagBits> flagBits) {
+	public FlagBitsDialog(final String flagName, final Collection<FlagBit> flagBits) {
 		super(flagName, true, true, 400, 400);
 		this.flagBits = flagBits;
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
@@ -80,7 +80,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 		centerGrid.resize(amountOfFlagsPerColumn, 3);
 		int row = 0;
 		int column = 0;
-		for (FlagBits flag : flagBits) {
+		for (FlagBit flag : flagBits) {
 			if (flag.getValue() == 0) {
 				continue;
 			}
@@ -151,7 +151,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 		int amountOfFlagsPerColumn = (flagBits.size()) / 2;
 		int row = 0;
 		int column = 0;
-		for (FlagBits flag : flagBits) {
+		for (FlagBit flag : flagBits) {
 			if (flag.getValue() == 0) {
 				continue;
 			}
@@ -173,7 +173,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 		int amountOfFlagsPerColumn = (flagBits.size()) / 2;
 		int row = 0;
 		int column = 0;
-		for (FlagBits flag : flagBits) {
+		for (FlagBit flag : flagBits) {
 			if (flag.getValue() == 0) {
 				continue;
 			}

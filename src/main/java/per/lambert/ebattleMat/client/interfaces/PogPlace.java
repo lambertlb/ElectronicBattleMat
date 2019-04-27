@@ -8,19 +8,19 @@ package per.lambert.ebattleMat.client.interfaces;
  */
 public enum PogPlace {
 	/**
-	 * Resides in Common resource available to all dungeons.
+	 * Resides in Common resource area available to all dungeons.
 	 */
 	COMMON_RESOURCE,
 	/**
-	 * Resides in resource area.
+	 * Resides in dungeon specific resource area.
 	 */
 	DUNGEON_RESOURCE,
 	/**
-	 * Resides in dungeon template area.
+	 * Resides in dungeon instance area.
 	 */
 	DUNGEON_INSTANCE,
 	/**
-	 * Resides in Common Session data area.
+	 * Resides in Session common resource area.
 	 */
 	SESSION_RESOURCE,
 	/**

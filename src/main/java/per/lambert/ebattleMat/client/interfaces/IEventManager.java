@@ -5,7 +5,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
- * Interface to error manager.
+ * Interface to event manager.
  * 
  * @author LLambert
  *

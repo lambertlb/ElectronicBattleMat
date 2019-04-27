@@ -125,7 +125,6 @@ public class RibbonBar extends Composite {
 	 * Monster manage dialog.
 	 */
 	private TemplateManageDialog roomObjectsManage;
-
 	/**
 	 * Button for player flags.
 	 */
@@ -198,7 +197,6 @@ public class RibbonBar extends Composite {
 		fowToggle.getElement().getStyle().setBackgroundColor("white");
 		fowToggle.setTitle("Toggle Fog of War");
 		fowToggle.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				ServiceManager.getDungeonManager().setFowToggle(fowToggle.getValue());
@@ -206,7 +204,6 @@ public class RibbonBar extends Composite {
 		});
 		levelOptions = new Button("Level Options");
 		levelOptions.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				if (levelOptionsDialog == null) {
@@ -219,7 +216,6 @@ public class RibbonBar extends Composite {
 		manageDungeonsButton = new Button("Manage Dungeons");
 		manageDungeonsButton.addStyleName("ribbonBarLabel");
 		manageDungeonsButton.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(final ClickEvent event) {
 				if (manageDungeons == null) {
@@ -333,6 +329,7 @@ public class RibbonBar extends Composite {
 				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 			}
 		});
+		
 		showSelectedPog = new CheckBox("Show Selected Pog");
 		showSelectedPog.setStyleName("ribbonBarLabel");
 		showSelectedPog.addClickHandler(new ClickHandler() {

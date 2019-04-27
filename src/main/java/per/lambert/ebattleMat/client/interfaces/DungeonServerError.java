@@ -1,7 +1,7 @@
 package per.lambert.ebattleMat.client.interfaces;
 
 /**
- * Defines values for all errors that can occur in the ZFS application.
+ * Defines values for all errors that can occur in the application.
  *
  */
 public enum DungeonServerError {
