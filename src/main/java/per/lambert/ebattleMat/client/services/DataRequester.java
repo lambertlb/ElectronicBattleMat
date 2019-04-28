@@ -23,6 +23,10 @@ import per.lambert.ebattleMat.client.interfaces.IUserCallback;
  *
  */
 public class DataRequester implements IDataRequester {
+	/**
+	 * Path to web service.
+	 */
+	private String webPath;
 
 	/**
 	 * {@inheritDoc}
@@ -33,7 +37,6 @@ public class DataRequester implements IDataRequester {
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
 		try {
 			builder.sendRequest(requestData, new RequestCallback() {
-
 				// (i) callback handler when there is an error
 				public void onError(final Request request, final Throwable exception) {
 					handleCallbackError(DungeonServerError.Undefined1, null, callback);
@@ -48,14 +51,15 @@ public class DataRequester implements IDataRequester {
 					}
 				}
 			});
-
 		} catch (RequestException e) {
 			handleCallbackError(DungeonServerError.Undefined1, e, callback);
 		}
 	}
 
 	/**
-	 * Build the URL for this request type. This will add the following additional parameters. token is authorization token for this login request is the request to the server
+	 * Build the URL for this request type.
+	 * 
+	 * This will add the following additional parameters. Token is authorization token for this login request is the request to the server
 	 * 
 	 * @param requestType request type to server
 	 * @param parameters parameters for the request
@@ -78,7 +82,6 @@ public class DataRequester implements IDataRequester {
 	 */
 	private String constructURL(final Map<String, String> parameters, final String additional) {
 		final UrlBuilder urlBuilder = new UrlBuilder();
-
 		urlBuilder.setProtocol(Location.getProtocol());
 		urlBuilder.setHost(Location.getHost());
 		String port = Location.getPort();
@@ -86,7 +89,6 @@ public class DataRequester implements IDataRequester {
 			urlBuilder.setPort(Integer.parseInt(port));
 		}
 		urlBuilder.setPath(constructPath() + additional);
-
 		if (parameters != null) {
 			addParametersToURL(parameters, urlBuilder);
 		}
@@ -107,11 +109,6 @@ public class DataRequester implements IDataRequester {
 		}
 		return path;
 	}
-
-	/**
-	 * Path to web service.
-	 */
-	private String webPath;
 
 	/**
 	 * Get path to service.
@@ -135,7 +132,6 @@ public class DataRequester implements IDataRequester {
 	 */
 	protected void handleCallbackError(final DungeonServerError dungeonError, final Throwable exception, final IUserCallback userCallback) {
 		userCallback.onError(this, new IErrorInformation() {
-
 			@Override
 			public Throwable getException() {
 				return exception;

@@ -203,15 +203,6 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PogData createMonster() {
-		PogData pogData = createTemplatePog(Constants.POG_TYPE_MONSTER);
-		return (pogData);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public PogData createTemplatePog(final String type) {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
 		pogData.setUUID(Constants.generateUUID());
@@ -379,84 +370,6 @@ public abstract class PogManager implements IPogManager {
 			filteredMonsters.add(monster);
 		}
 		return (filteredMonsters);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addOrUpdatePogResource(final PogData pog) {
-		if (pog.isThisAMonster()) {
-			addOrUpdateMonster(pog);
-			return;
-		}
-		addOrUpdateRoomObject(pog);
-	}
-
-	/**
-	 * Add or update Pog.
-	 * 
-	 * @param pog to add
-	 */
-	private void addOrUpdateMonster(final PogData pog) {
-		if (findMonsterPog(pog.getUUID()) == null) {
-			monsterTemplatePogs.addPog(pog);
-			addMonsterToCollections(pog);
-		}
-		saveMonsterResources();
-	}
-
-	/**
-	 * Save Monster resources.
-	 */
-	private void saveMonsterResources() {
-		String jsonData = JsonUtils.stringify(monsterTemplatePogs);
-		saveResources("monsters", jsonData);
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
-	}
-
-	/**
-	 * Add or update room object.
-	 * 
-	 * @param pog to update.
-	 */
-	private void addOrUpdateRoomObject(final PogData pog) {
-		if (findRoomObjectPog(pog.getUUID()) == null) {
-			roomObjectTemplatePogs.addPog(pog);
-			addRoomObjectToCollections(pog);
-		}
-		saveRoomObjectResources();
-	}
-
-	/**
-	 * Save Room Object resources.
-	 */
-	private void saveRoomObjectResources() {
-		String jsonData = JsonUtils.stringify(roomObjectTemplatePogs);
-		saveResources("roomObjects", jsonData);
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.RoomObjectPogsLoaded, null));
-	}
-
-	/**
-	 * Save resources.
-	 * 
-	 * @param resourceName to save
-	 * @param jsonData JSON Data
-	 */
-	private void saveResources(final String resourceName, final String jsonData) {
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("resourceName", resourceName);
-		IDataRequester dataRequester = ServiceManager.getDataRequester();
-		dataRequester.requestData(jsonData, "SAVEJSONRESOURCE", parameters, new IUserCallback() {
-
-			@Override
-			public void onSuccess(final Object sender, final Object data) {
-			}
-
-			@Override
-			public void onError(final Object sender, final IErrorInformation error) {
-			}
-		});
 	}
 
 	/**

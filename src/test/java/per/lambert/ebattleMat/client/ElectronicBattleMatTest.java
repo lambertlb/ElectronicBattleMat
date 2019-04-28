@@ -254,7 +254,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonData dungeonData = dungeonManager.getSelectedDungeon();
 		assertTrue(dungeonData != null);
 		assertTrue(dungeonManager.getCurrentLevel() == 0);
-		assertTrue(dungeonManager.getNextLevelNumber() == 4);
+		assertTrue(dungeonManager.getNextAvailableLevelNumber() == 4);
 		assertTrue(dungeonManager.isDungeonMaster());
 		assertTrue(dungeonManager.isEditMode());
 		checkDungeon1TemplateData(dungeonData);
@@ -327,7 +327,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 			}
 		});
 		dungeonManager.setSessionLevelSize(50, 60);
-		DungeonLevel dungeonLevel = dungeonManager.getCurrentLevelData();
+		DungeonLevel dungeonLevel = dungeonManager.getCurrentDungeonLevelData();
 		assertTrue(dungeonLevel.getColumns() == 50);
 		assertTrue(dungeonLevel.getRows() == 60);
 		hadEvent(ReasonForAction.DungeonDataSaved);

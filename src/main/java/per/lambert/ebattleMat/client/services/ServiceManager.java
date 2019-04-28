@@ -105,6 +105,5 @@ public final class ServiceManager {
 	 * Constructor.
 	 */
 	private ServiceManager() {
-
 	}
 }

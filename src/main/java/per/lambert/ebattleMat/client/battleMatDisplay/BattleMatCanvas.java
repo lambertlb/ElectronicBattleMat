@@ -590,9 +590,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Get grid data from dungeon manager.
 	 */
 	private void getGridData() {
-		gridOffsetX = ServiceManager.getDungeonManager().getCurrentLevelData().getGridOffsetX() * totalZoom;
-		gridOffsetY = ServiceManager.getDungeonManager().getCurrentLevelData().getGridOffsetY() * totalZoom;
-		gridSpacing = ServiceManager.getDungeonManager().getCurrentLevelData().getGridSize();
+		gridOffsetX = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridOffsetX() * totalZoom;
+		gridOffsetY = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridOffsetY() * totalZoom;
+		gridSpacing = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridSize();
 		showGrid = ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid();
 	}
 
@@ -982,7 +982,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	public void dungeonDataChanged() {
 		intializeView();
-		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
+		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
 		if (dungeonLevel == null) {
 			return;
 		}

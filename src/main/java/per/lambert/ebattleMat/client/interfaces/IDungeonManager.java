@@ -89,7 +89,7 @@ public interface IDungeonManager extends IPogManager {
 	 * 
 	 * @return dungeon data for current level.
 	 */
-	DungeonLevel getCurrentLevelData();
+	DungeonLevel getCurrentDungeonLevelData();
 
 	/**
 	 * Save dungeon data to server.
@@ -306,7 +306,7 @@ public interface IDungeonManager extends IPogManager {
 	 * 
 	 * @return next available dungeon level number.
 	 */
-	int getNextLevelNumber();
+	int getNextAvailableLevelNumber();
 
 	/**
 	 * Add this new level to dungeon.

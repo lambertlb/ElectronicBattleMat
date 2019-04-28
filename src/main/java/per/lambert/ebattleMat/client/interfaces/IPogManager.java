@@ -56,18 +56,18 @@ public interface IPogManager {
 	PogData getPogBeingDragged();
 
 	/**
+	 * Pog being dragged is from ribbon bar.
+	 * 
+	 * @return true if from ribbon bar
+	 */
+	boolean isFromRibbonBar();
+
+	/**
 	 * Create player pog.
 	 * 
 	 * @return player pog
 	 */
 	PogData createPlayer();
-
-	/**
-	 * Create monster Pog.
-	 * 
-	 * @return monster Pog.
-	 */
-	PogData createMonster();
 
 	/**
 	 * Find monster pog with this UUID.
@@ -84,13 +84,6 @@ public interface IPogManager {
 	 * @return room object pog with this UUID.
 	 */
 	PogData findRoomObjectPog(String pogUUID);
-
-	/**
-	 * Add Pog to proper resource list.
-	 * 
-	 * @param pog to add
-	 */
-	void addOrUpdatePogResource(PogData pog);
 
 	/**
 	 * Get list of monster genders.
@@ -148,11 +141,4 @@ public interface IPogManager {
 	 * @return true if template
 	 */
 	boolean isTemplate(PogData pogData);
-
-	/**
-	 * Pog being dragged is from ribbon bar.
-	 * 
-	 * @return true if from ribbon bar
-	 */
-	boolean isFromRibbonBar();
 }

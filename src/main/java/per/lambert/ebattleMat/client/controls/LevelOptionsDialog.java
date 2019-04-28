@@ -205,7 +205,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 		downloadLevelPicture.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentLevelData();
+				DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
 				ServiceManager.getDungeonManager().downloadDungeonFile(levelData.getLevelDrawing());
 			}
 		});
@@ -334,7 +334,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 * Gather data.
 	 */
 	private void gatherData() {
-		currentLevel = ServiceManager.getDungeonManager().getCurrentLevelData();
+		currentLevel = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
 		if (currentLevel == null) {
 			return;
 		}
@@ -402,7 +402,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 */
 	private String getCorrectLevelString() {
 		if (newLevel) {
-			return ("" + (ServiceManager.getDungeonManager().getNextLevelNumber()));
+			return ("" + (ServiceManager.getDungeonManager().getNextAvailableLevelNumber()));
 		} else {
 			return ("" + (ServiceManager.getDungeonManager().getCurrentLevel() + 1));
 		}
@@ -412,7 +412,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 * accept Changes To Dungeon Level.
 	 */
 	private void acceptChangesToDungeonLevel() {
-		DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentLevelData();
+		DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
 		if (levelData == null) {
 			close();
 			return;
