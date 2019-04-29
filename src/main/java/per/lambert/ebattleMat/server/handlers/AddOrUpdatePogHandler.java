@@ -18,7 +18,6 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  *
  */
 public class AddOrUpdatePogHandler implements IWebRequestHandler {
-
 	/**
 	 * {@inheritDoc}
 	 */

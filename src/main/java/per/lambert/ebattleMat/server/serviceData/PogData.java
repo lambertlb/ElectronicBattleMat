@@ -10,30 +10,6 @@ import java.util.UUID;
  */
 public class PogData {
 	/**
-	 * Size of pog in grid squares.
-	 */
-	private int pogSize;
-	/**
-	 * Column pog is in grid.
-	 */
-	private int pogColumn;
-	/**
-	 * Row pog is in grid.
-	 */
-	private int pogRow;
-	/**
-	 * Flag bits for player.
-	 */
-	private int playerFlags;
-	/**
-	 * Flag bits for dungeon master.
-	 */
-	private int dungeonMasterFlags;
-	/**
-	 * Level of dungeon pog is on.
-	 */
-	private int dungeonLevel;
-	/**
 	 * Name of pog.
 	 */
 	private String pogName;
@@ -46,9 +22,33 @@ public class PogData {
 	 */
 	private String pogType;
 	/**
+	 * Size of pog in grid squares.
+	 */
+	private int pogSize;
+	/**
+	 * Column pog is in grid.
+	 */
+	private int pogColumn;
+	/**
+	 * Row pog is in grid.
+	 */
+	private int pogRow;
+	/**
 	 * UUID of pog instance.
 	 */
 	private String uuid;
+	/**
+	 * Level of dungeon pog is on.
+	 */
+	private int dungeonLevel;
+	/**
+	 * Flag bits for dungeon master.
+	 */
+	private int dungeonMasterFlags;
+	/**
+	 * Flag bits for player.
+	 */
+	private int playerFlags;
 	/**
 	 * Class of pog.
 	 */

@@ -19,11 +19,11 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
 
 /**
  * File upload handler.
+ * 
  * @author LLambert
  *
  */
 public class FileUploadHandler implements IWebRequestHandler {
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -37,7 +37,6 @@ public class FileUploadHandler implements IWebRequestHandler {
 		FileOutputStream fileOutSt = null;
 		try {
 			FileItemIterator iter = upload.getItemIterator(request);
-
 			while (iter.hasNext()) {
 				FileItemStream item = iter.next();
 				InputStream stream = item.openStream();
@@ -51,7 +50,9 @@ public class FileUploadHandler implements IWebRequestHandler {
 				while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
 					fileOutSt.write(buffer, 0, len);
 				}
-			}
+				fileOutSt.close();
+				fileOutSt = null;
+		}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {

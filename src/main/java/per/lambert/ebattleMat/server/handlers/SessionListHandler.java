@@ -21,7 +21,6 @@ import java.util.Map;
  *
  */
 public class SessionListHandler implements IWebRequestHandler {
-
 	/**
 	 * response data for session list.
 	 * @author LLambert

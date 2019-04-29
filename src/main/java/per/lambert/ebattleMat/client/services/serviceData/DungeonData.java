@@ -4,6 +4,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Java script class to manage Dungeon data from server.
+ * 
  * @author LLambert
  *
  */
@@ -17,6 +18,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * Get UUID for this dungeon.
+	 * 
 	 * @return uuid for dungeon
 	 */
 	public final native String getUUID() /*-{
@@ -28,6 +30,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * Set UUID for this dungeon.
+	 * 
 	 * @param uuid for dungeon
 	 */
 	public final native void setUUID(String uuid) /*-{
@@ -36,6 +39,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * Get name of dungeon.
+	 * 
 	 * @return name of dungeon
 	 */
 	public final native String getDungeonName() /*-{
@@ -47,6 +51,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * Set dungeon name.
+	 * 
 	 * @param dungeonName to set
 	 */
 	public final native void setDungeonName(String dungeonName) /*-{
@@ -55,6 +60,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * get information about dungeon levels.
+	 * 
 	 * @return dungeon levels
 	 */
 	public final native DungeonLevel[] getDungeonlevels() /*-{
@@ -66,6 +72,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * Add a new dungeon level.
+	 * 
 	 * @param newLevel new level to add
 	 */
 	public final native void addDungeonlevel(DungeonLevel newLevel) /*-{
@@ -74,6 +81,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * Show grid on dungeon levels.
+	 * 
 	 * @param showGrid true to show
 	 */
 	public final native void setShowGrid(boolean showGrid) /*-{
@@ -86,6 +94,7 @@ public class DungeonData extends JavaScriptObject {
 
 	/**
 	 * Get show grid flag.
+	 * 
 	 * @return true if grid is to be shown
 	 */
 	public final native boolean getShowGrid() /*-{

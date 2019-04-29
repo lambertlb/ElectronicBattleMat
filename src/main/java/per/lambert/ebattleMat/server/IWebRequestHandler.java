@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * interface that all web requests must inherit from.
+ * interface that all web requests.
+ * Must inherit from to add a new request.
  * 
  * @author LLambert
  * 

@@ -32,6 +32,24 @@ public class DungeonLevel extends DungeonSessionLevel {
 	}-*/;
 
 	/**
+	 * get level name.
+	 * 
+	 * @return level name
+	 */
+	public final native String getLevelName() /*-{
+		return this.levelName;
+	}-*/;
+
+	/**
+	 * set level name.
+	 * 
+	 * @param levelName to set
+	 */
+	public final native void setLevelName(String levelName) /*-{
+		this.levelName = levelName;
+	}-*/;
+
+	/**
 	 * get size of grid cell.
 	 * 
 	 * @return size of grid cell
@@ -50,24 +68,6 @@ public class DungeonLevel extends DungeonSessionLevel {
 	 */
 	public final native void setGridSize(double gridSize) /*-{
 		this.gridSize = gridSize;
-	}-*/;
-
-	/**
-	 * get level name.
-	 * 
-	 * @return level name
-	 */
-	public final native String getLevelName() /*-{
-		return this.levelName;
-	}-*/;
-
-	/**
-	 * set level name.
-	 * 
-	 * @param levelName to set
-	 */
-	public final native void setLevelName(String levelName) /*-{
-		this.levelName = levelName;
 	}-*/;
 
 	/**

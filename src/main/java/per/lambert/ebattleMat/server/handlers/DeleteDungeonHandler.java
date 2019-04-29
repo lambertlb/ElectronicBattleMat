@@ -18,15 +18,14 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  *
  */
 public class DeleteDungeonHandler implements IWebRequestHandler {
-
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
-		PrintWriter out = resp.getWriter();
 		DungeonsManager.deleteDungeon(servlet, dungeonUUID);
+		PrintWriter out = resp.getWriter();
 		out.print("");
 		out.flush();
 	}

@@ -20,7 +20,6 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  *
  */
 public class CreateNewDungeonHandler implements IWebRequestHandler {
-
 	/**
 	 * {@inheritDoc}
 	 */

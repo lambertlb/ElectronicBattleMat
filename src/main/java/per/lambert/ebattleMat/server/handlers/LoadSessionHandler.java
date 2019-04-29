@@ -17,7 +17,6 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  *
  */
 public class LoadSessionHandler implements IWebRequestHandler {
-
 	/**
 	 * {@inheritDoc}
 	 */

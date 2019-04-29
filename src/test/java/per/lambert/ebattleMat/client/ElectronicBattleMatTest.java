@@ -79,7 +79,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "LOGIN");
@@ -94,7 +93,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 			}
 		});
 		dungeonManager.login("username", "password", new IUserCallback() {
-
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				assertTrue(true);
@@ -113,7 +111,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	public void testGettingDungeonList() {
 		DungeonManager dungeonManager = new DungeonManager();
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "GETDUNGEONLIST");
@@ -123,12 +120,10 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 			}
 		});
 		dungeonManager.getDungeonList("", new IUserCallback() {
-
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				assertTrue(true);
 			}
-
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 				assertTrue(false);
@@ -163,14 +158,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	public void testLoadingMonsterPogs() {
 		DungeonManager dungeonManager = new DungeonManager();
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "LOADJSONFILE");
@@ -197,14 +190,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	public void testLoadingRoomObjectsPogs() {
 		DungeonManager dungeonManager = new DungeonManager();
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "LOADJSONFILE");
@@ -230,14 +221,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateDungeonList(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
@@ -267,7 +256,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateDungeonList(dungeonManager);
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
@@ -276,14 +264,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		dungeonManager.editSelectedDungeonUUID("dungeon1-template");
 		assertTrue(dungeonManager.isThereASelectedDungeon());
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "SAVEJSONFILE");
@@ -304,7 +290,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateDungeonList(dungeonManager);
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
@@ -313,14 +298,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		dungeonManager.editSelectedDungeonUUID("dungeon1-template");
 		assertTrue(dungeonManager.isThereASelectedDungeon());
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				callback.onSuccess(null, null);
@@ -339,14 +322,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	public void testCreateNewDungeon() {
 		DungeonManager dungeonManager = new DungeonManager();
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "CREATENEWDUNGEON");
@@ -357,7 +338,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 				// Create new dungeon callback will call get dungeon list so we have to fake return one.
 				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 					@Override
 					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 						dataRequesterForTest.setTestCallback(null);
@@ -388,14 +368,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateDungeonList(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "DELETEDUNGEON");
@@ -404,7 +382,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 				// delete dungeon callback will call get dungeon list so we have to fake return one.
 				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 					@Override
 					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 						dataRequesterForTest.setTestCallback(null);
@@ -425,14 +402,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateDungeonList(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "GETSESSIONLIST");
@@ -452,14 +427,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateDungeonList(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "CREATENEWSESSION");
@@ -470,7 +443,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 				// creating new session will call get session list
 				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 					@Override
 					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 						callback.onSuccess(null, MockResponseData.GETSESSIONLISTRESPONSE);
@@ -490,14 +462,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateDungeonList(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "DELETESESSION");
@@ -508,7 +478,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 
 				// deleting session will call get session list
 				dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 					@Override
 					public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 						callback.onSuccess(null, MockResponseData.GETSESSIONLISTRESPONSE);
@@ -522,22 +491,23 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
-	 * Test DMing a session. This is complicated to setup because it requires the following. 1) loaded dungeon list. 2) loaded and selected dungeon. 3) loaded session list for dungeon.
+	 * Test DMing a session.
+	 * 
+	 * This is complicated to setup because it requires the following. 1) loaded dungeon list. 2) loaded and selected dungeon. 3) loaded session list for dungeon.
 	 */
 	public void testDmSession() {
 		DungeonManager dungeonManager = new DungeonManager();
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				if (requestType != "LOADSESSION") {
+					// defer all other requests to generic mock request handler.
 					dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
 					return;
 				}
@@ -559,22 +529,23 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
-	 * Test Joining a session. This is complicated to setup because it requires the following. 1) loaded dungeon list. 2) loaded and selected dungeon. 3) loaded session list for dungeon.
+	 * Test Joining a session.
+	 * 
+	 * This is complicated to setup because it requires the following. 1) loaded dungeon list. 2) loaded and selected dungeon. 3) loaded session list for dungeon.
 	 */
 	public void testJoinSession() {
 		DungeonManager dungeonManager = new DungeonManager();
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				if (requestType != "LOADSESSION") {
+					// defer all other requests to generic mock request handler.
 					dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);
 					return;
 				}
@@ -620,14 +591,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		assertTrue(dungeonManager.isFowDirty());
 		assertFalse(dungeonManager.isFowSet(1, 1));
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "UPDATEFOW");
@@ -791,14 +760,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateSession(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "ADDORUPDATEPOG");
@@ -825,14 +792,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateSession(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "ADDORUPDATEPOG");
@@ -860,14 +825,12 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateSession(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
 			}
 		});
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				assertTrue(requestType == "ADDORUPDATEPOG");
@@ -945,7 +908,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		DungeonManager dungeonManager = new DungeonManager();
 		populateSession(dungeonManager);
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
@@ -1067,12 +1029,10 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	 */
 	private void populateDungeonList(final DungeonManager dungeonManager) {
 		dungeonManager.handleSuccessfulDungeonList("", new IUserCallback() {
-
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				assertTrue(true);
 			}
-
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 				assertTrue(false);
@@ -1089,7 +1049,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		populateDungeonList(dungeonManager);
 		dungeonManager.handleSuccessfulSessionList(MockResponseData.GETSESSIONLISTRESPONSE);
 		dataRequesterForTest.setTestCallback(new DataRequesterTestCallback() {
-
 			@Override
 			public void onCall(final String requestData, final String requestType, final Map<String, String> parameters, final IUserCallback callback) {
 				dataRequesterForTest.handleMockDataRequest(requestType, parameters, callback);

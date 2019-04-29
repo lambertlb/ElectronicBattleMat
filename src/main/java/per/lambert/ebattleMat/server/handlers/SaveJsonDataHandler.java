@@ -16,7 +16,6 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  *
  */
 public class SaveJsonDataHandler implements IWebRequestHandler {
-
 	/**
 	 * {@inheritDoc}
 	 */

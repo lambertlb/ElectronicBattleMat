@@ -34,6 +34,11 @@ import per.lambert.ebattleMat.server.serviceData.PogList;
 /**
  * Manager for dungeon information.
  * 
+ * This is a static class that serves as a central handlers for all service requests.
+ * It does a lock on the data so requests are serialized.
+ * This means that if two people make changes to the same dungeon data then last one wins.
+ * This will also cache session data to minimize the amount of data being accessed on disk.
+ * 
  * @author LLambert
  *
  */
@@ -61,11 +66,6 @@ public final class DungeonsManager {
 	 */
 	private static Map<String, SessionInformation> sessionCache = new HashMap<String, SessionInformation>();
 	/**
-	 * used to initialize static data.
-	 */
-	@SuppressWarnings("unused")
-	private static boolean initialized = initializeDungeonManager();
-	/**
 	 * Timer for periodic tasks.
 	 */
 	private static Timer timer;
@@ -84,7 +84,14 @@ public final class DungeonsManager {
 	}
 
 	/**
-	 * Hide constructor.
+	 * used to initialize static data.
+	 * This forces the initialization code to run when this class is loaded the first time.
+	 */
+	@SuppressWarnings("unused")
+	private static boolean initialized = initializeDungeonManager();
+
+	/**
+	 * Hide constructor because this is a singleton.
 	 */
 	private DungeonsManager() {
 
@@ -93,7 +100,7 @@ public final class DungeonsManager {
 	/**
 	 * initialize dungeon data.
 	 * 
-	 * @return boolean to make sure this is called at startup.
+	 * @return boolean to make sure this is called at class load.
 	 */
 	private static boolean initializeDungeonManager() {
 		TimerTask repeatedTask = new TimerTask() {
@@ -110,12 +117,13 @@ public final class DungeonsManager {
 	}
 
 	/**
-	 * Periodic taks.
+	 * Periodic tasks.
 	 */
 	protected static void periodicTimer() {
 		lock.lock();
 		try {
 			checkIfTimeToSaveSessionData();
+			checkIfNeedToPurgeCachedData();
 		} finally {
 			lock.unlock();
 		}
@@ -128,6 +136,16 @@ public final class DungeonsManager {
 		for (SessionInformation sessionInformation : sessionCache.values()) {
 			sessionInformation.saveIfDirty();
 		}
+	}
+	
+	
+	/**
+	 * Purge out old data that is not being used anymore.
+	 * 
+	 * There might be sessions that are over so no reason to hold onto data. 
+	 */
+	private static void checkIfNeedToPurgeCachedData() {
+		// TODO purge out stale data.
 	}
 
 	/**
@@ -290,7 +308,7 @@ public final class DungeonsManager {
 		lock.lock();
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
-			String dstDirectory = newDungeonName.replaceAll("[^a-zA-Z0-9]", "_");
+			String dstDirectory = newDungeonName.replaceAll("[^a-zA-Z0-9]", "_"); // get rid of garbage characters in name
 			File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(templateDungeonUUID));
 			File destDir = new File(servletPath.getPath() + Constants.SERVER_DUNGEONS_LOCATION + dstDirectory);
 			FileUtils.copyDirectory(srcDir, destDir);
@@ -407,7 +425,7 @@ public final class DungeonsManager {
 		try {
 			URL servletPath = servlet.getServletContext().getResource("/");
 			String templateDirectory = servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID);
-			String sessionDirectory = templateDirectory + Constants.SESSIONS_FOLDER + newSessionName.replaceAll("\\s+", "_");
+			String sessionDirectory = templateDirectory + Constants.SESSIONS_FOLDER + newSessionName.replaceAll("[^a-zA-Z0-9]", "_");
 			makeSureDirectoryExists(sessionDirectory);
 			DungeonData dungeonData = getDungeonDataFromUUID(servlet, dungeonUUID);
 			DungeonSessionData sessionData = createSessionData(servlet, sessionDirectory, dungeonUUID, newSessionName, dungeonData);
@@ -477,6 +495,8 @@ public final class DungeonsManager {
 
 	/**
 	 * Get session information.
+	 * 
+	 * Get from cache if there else load from disk.
 	 * 
 	 * @param servlet servlet data
 	 * @param dungeonUUID UUID of dungeon with sessions
@@ -574,7 +594,7 @@ public final class DungeonsManager {
 	/**
 	 * get session data as string.
 	 * 
-	 * This will check version. if the version number hand't change it will just return empty string.
+	 * This will check version. if the version number hasn't changed it will just return empty string.
 	 * 
 	 * @param servlet servlet data
 	 * @param dungeonUUID UUID of dungeon with sessions.
@@ -685,10 +705,12 @@ public final class DungeonsManager {
 		} catch (IOException e) {
 			if (output != null) {
 				output.close();
+				output = null;
 			}
 		} finally {
 			if (output != null) {
 				output.close();
+				output = null;
 			}
 			lock.unlock();
 		}
@@ -725,7 +747,7 @@ public final class DungeonsManager {
 	}
 
 	/**
-	 * Delete all old session that might exist.
+	 * Delete all old sessions that might exist.
 	 * 
 	 * @param destinationDirectory to delete
 	 * @throws IOException thrown if error

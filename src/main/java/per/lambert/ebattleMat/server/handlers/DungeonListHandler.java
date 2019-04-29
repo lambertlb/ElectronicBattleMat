@@ -20,7 +20,6 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  *
  */
 public class DungeonListHandler implements IWebRequestHandler {
-
 	/**
 	 * Response for getting a dungeon list.
 	 * @author LLambert
@@ -71,7 +70,6 @@ public class DungeonListHandler implements IWebRequestHandler {
 		DungeonListResponseData dungeonListResponseData = new DungeonListResponseData(DungeonsManager.getDungeonNameToUUIDMap(), DungeonsManager.getUuidTemplatePathMap());
 		Gson gson = new Gson();
 		String responseDataString = gson.toJson(dungeonListResponseData);
-
 		PrintWriter out = resp.getWriter();
 		out.print(responseDataString);
 		out.flush();

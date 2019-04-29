@@ -20,16 +20,22 @@ import per.lambert.ebattleMat.server.handlers.LoadJsonDataHandler;
 import per.lambert.ebattleMat.server.handlers.LoadSessionHandler;
 import per.lambert.ebattleMat.server.handlers.LoginHandler;
 import per.lambert.ebattleMat.server.handlers.SaveJsonDataHandler;
-import per.lambert.ebattleMat.server.handlers.SaveJsonResourceHandler;
 import per.lambert.ebattleMat.server.handlers.SessionListHandler;
 import per.lambert.ebattleMat.server.handlers.UpdateFOWHander;
 
 /**
- * Servlet expose to outside.
+ * Servlet exposed to outside.
  * @author LLambert
  *
  */
 public class Dungeons extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	/**
+	 * Collection of services exposed.
+	 * 
+	 * This is a map of service request id with instances of request handlers.
+	 */
+	private Map<String, IWebRequestHandler> webServices;
 	/**
 	 * Constructor for servlet.
 	 */
@@ -47,7 +53,6 @@ public class Dungeons extends HttpServlet {
 		webServices.put("LOADSESSION", new LoadSessionHandler());
 		webServices.put("UPDATEFOW", new UpdateFOWHander());
 		webServices.put("FILEUPLOAD", new FileUploadHandler());
-		webServices.put("SAVEJSONRESOURCE", new SaveJsonResourceHandler());
 		webServices.put("ADDORUPDATEPOG", new AddOrUpdatePogHandler());
 	}
 
@@ -60,11 +65,4 @@ public class Dungeons extends HttpServlet {
 		response.setContentType("application/xml");
 		ServletUtils.handlePostRequest(request, response, webServices, this);
 	}
-
-	private static final long serialVersionUID = 1L;
-	/**
-	 * Collection of sevices exposed.
-	 */
-	private Map<String, IWebRequestHandler> webServices;
-
 }

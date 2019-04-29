@@ -18,7 +18,6 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
  *
  */
 public class DeleteSessionHandler implements IWebRequestHandler {
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -26,8 +25,8 @@ public class DeleteSessionHandler implements IWebRequestHandler {
 	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		String sessionUUID = request.getParameter("sessionUUID");
-		PrintWriter out = resp.getWriter();
 		DungeonsManager.deleteSession(servlet, dungeonUUID, sessionUUID);
+		PrintWriter out = resp.getWriter();
 		out.print("");
 		out.flush();
 	}

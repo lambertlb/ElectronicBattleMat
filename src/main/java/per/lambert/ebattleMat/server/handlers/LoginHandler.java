@@ -20,7 +20,6 @@ import per.lambert.ebattleMat.server.serviceData.ServiceResponseData;
  *
  */
 public class LoginHandler implements IWebRequestHandler {
-
 	/**
 	 * Response data for login.
 	 * @author LLambert
@@ -51,6 +50,8 @@ public class LoginHandler implements IWebRequestHandler {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * TODO proper login handling
 	 */
 	@Override
 	public final void handleRequest(final HttpServletRequest request, final HttpServletResponse resp,

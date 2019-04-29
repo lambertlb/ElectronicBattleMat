@@ -14,12 +14,11 @@ import per.lambert.ebattleMat.server.DungeonsManager;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
 /**
- * Handle update fog of war reuqest.
+ * Handle update fog of war request.
  * @author LLambert
  *
  */
 public class UpdateFOWHander implements IWebRequestHandler {
-
 	/**
 	 * Worker class for converting fog of war JSON data.
 	 * @author LLambert
