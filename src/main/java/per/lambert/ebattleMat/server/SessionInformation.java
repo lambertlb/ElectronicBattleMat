@@ -249,6 +249,7 @@ public class SessionInformation {
 				save();
 			} catch (IOException e) {
 			}
+			dirty = false;
 		}
 	}
 

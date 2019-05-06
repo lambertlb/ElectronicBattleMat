@@ -32,12 +32,14 @@ to gwt under Window->Preferences->GWT>GWT Settings hit the add button and naviga
 where you unzipped the SDK.
 
 ## Running Electronic Battle Mat
-There are a couple of ways you can run the web app.
+There are a couple of ways you can run the web app. Both methods require that you have 
+Java installed. This is because the server side servlet is written in java and both 
+web servers require it.
 1. Use the supplied Jetty web service.
 To make things more convenient this project also supplies a small java application called 
 ElectronicBattleMat.jar that can be used to setup a local web server within your network. 
 To run it on windows just double click the StartServer.bat file and answer yes if  a 
-firewall dialog comes up. At the top of the console window to will tell you the url 
+firewall dialog comes up. At the top of the console window it will tell you the url 
 that people within your network will need to use to connect to the app. for example 
     http://192.168.115.128:8088
 2. Install Tomcat [Apache Tomcat](https://tomcat.apache.org/download-80.cgi) and install 

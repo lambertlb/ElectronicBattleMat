@@ -659,17 +659,16 @@ public final class DungeonsManager {
 		lock.lock();
 		try {
 			SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
-			if (sessionInformation == null) {
-				return;
+			if (sessionInformation != null) {
+				sessionInformation.updateFOW(fogOfWar, currentLevel);
 			}
-			sessionInformation.updateFOW(fogOfWar, currentLevel);
 		} finally {
 			lock.unlock();
 		}
 	}
 
 	/**
-	 * get this file as a string.
+	 * get this json file as a string.
 	 * 
 	 * @param servlet servlet data
 	 * @param fileName to read
