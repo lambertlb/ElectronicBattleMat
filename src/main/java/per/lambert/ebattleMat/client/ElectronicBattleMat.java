@@ -14,7 +14,7 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 
 /**
- * Entry point classes define <code>onModuleLoad()</code>.
+ * Entry point class define on <code>onModuleLoad()</code>.
  */
 public class ElectronicBattleMat implements EntryPoint {
 	/**

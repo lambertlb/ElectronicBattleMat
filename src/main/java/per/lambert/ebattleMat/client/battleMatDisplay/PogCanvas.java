@@ -89,7 +89,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * image context for drawing.
 	 */
 	private ImageElement imageElement;
-
 	/**
 	 * Width of actual image.
 	 */
@@ -114,7 +113,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Offset for clearing rectangle.
 	 */
 	private static final int CLEAR_OFFEST = -10;
-
 	/**
 	 * Show as normal size only.
 	 */
@@ -280,6 +278,13 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		pogDrawPanel.add(canvas, 0, 0);
 		setupEventHandling();
 		getElement().setDraggable(Element.DRAGGABLE_TRUE);
+	}
+
+	/**
+	 * Setup event handlers.
+	 */
+	private void setupEventHandling() {
+		canvas.addMouseDownHandler(this);
 		addDragStartHandler(new DragStartHandler() {
 			@Override
 			public void onDragStart(final DragStartEvent event) {
@@ -297,13 +302,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 				event.preventDefault();
 			}
 		});
-		canvas.addMouseDownHandler(this);
-	}
-
-	/**
-	 * Setup event handlers.
-	 */
-	private void setupEventHandling() {
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(final LoadEvent event) {
 				setImage();
@@ -338,7 +336,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
 		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
 		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
-
 		if (pogData.getImageUrl() != "") {
 			setPogImageUrl(pogData.getImageUrl());
 		} else {
@@ -396,18 +393,22 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		parentHeight = pogMainPanel.getOffsetHeight();
 		imageWidth = image.getWidth();
 		imageHeight = image.getHeight();
+		sizeACanvas(canvas);
+		sizeACanvas(backCanvas);
+		calculateZoom();
+		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
+	}
 
+	/**
+	 * Adjust canvas size to parent size.
+	 * 
+	 * @param canvas to adjust
+	 */
+	private void sizeACanvas(final Canvas canvas) {
 		canvas.setWidth(parentWidth + "px");
 		canvas.setCoordinateSpaceWidth(parentWidth);
 		canvas.setHeight(parentHeight + "px");
 		canvas.setCoordinateSpaceHeight(parentHeight);
-
-		backCanvas.setWidth(parentWidth + "px");
-		backCanvas.setCoordinateSpaceWidth(parentWidth);
-		backCanvas.setHeight(parentHeight + "px");
-		backCanvas.setCoordinateSpaceHeight(parentHeight);
-		calculateZoom();
-		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
 	}
 
 	/**
@@ -463,15 +464,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
-	 * Set dungeon level the pog is on.
-	 * 
-	 * @param level in dungeon
-	 */
-	public void setPogDungeonLevel(final int level) {
-		pogData.setDungeonLevel(level);
-	}
-
-	/**
 	 * get column.
 	 * 
 	 * @return column
@@ -487,6 +479,15 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	public int getPogRow() {
 		return (pogData.getRow());
+	}
+
+	/**
+	 * Set dungeon level the pog is on.
+	 * 
+	 * @param level in dungeon
+	 */
+	public void setPogDungeonLevel(final int level) {
+		pogData.setDungeonLevel(level);
 	}
 
 	/**
