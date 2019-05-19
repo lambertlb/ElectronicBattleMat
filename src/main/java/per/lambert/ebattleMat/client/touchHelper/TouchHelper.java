@@ -61,7 +61,7 @@ public class TouchHelper {
 	 */
 	private int amountOfFingers;
 	/**
-	 * Time of last start.
+	 * Time of last touch start.
 	 */
 	private long lastTouchStart;
 	/**

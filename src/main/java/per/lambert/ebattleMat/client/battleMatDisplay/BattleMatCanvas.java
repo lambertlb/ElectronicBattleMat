@@ -59,7 +59,11 @@ import per.lambert.ebattleMat.client.touchHelper.ZoomStartEvent;
 import per.lambert.ebattleMat.client.touchHelper.ZoomStartHandler;
 
 /**
- * @author LLambert Class to manage a scaled image with overlays.
+ * @author LLambert
+ * 
+ *         Class to manage a scaled image with overlays.
+ * 
+ *         This support panning and zooming the all images.
  */
 public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
 
@@ -71,6 +75,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Default zoom constant.
 	 */
 	private static final double DEFAULT_ZOOM = 1.1;
+	/**
+	 * Maximum zoom factor.
+	 */
+	private static final double MAX_ZOOM = .5;
 	/**
 	 * Show grid.
 	 */
@@ -124,10 +132,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private double totalZoom = 1;
 	/**
-	 * Maximum zoom factor.
-	 */
-	private double maxZoom = .5;
-	/**
 	 * Offset of image in the horizontal direction. Used for panning the image.
 	 */
 	private double offsetX = 0;
@@ -144,7 +148,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private double gridOffsetY = 0;
 	/**
-	 * Used by pan control.
+	 * Used by pan images.
 	 */
 	private boolean mouseDown = false;
 	/**
@@ -172,7 +176,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private int dragRow = -1;
 	/**
-	 * Image for dungeon level.
+	 * Image for main canvas.
 	 */
 	private Image image = new Image();
 	/**
@@ -224,11 +228,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Widget for managing all battle mat activities.
 	 */
 	public BattleMatCanvas() {
-
-		canvas.addMouseWheelHandler(this);
-		canvas.addMouseMoveHandler(this);
-		canvas.addMouseDownHandler(this);
-		canvas.addMouseUpHandler(this);
 		hidePanel = new LayoutPanel();
 		greyOutPanel = new LayoutPanel();
 		greyOutPanel.getElement().getStyle().setZIndex(Constants.GREYOUT_Z);
@@ -284,6 +283,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Setup event handlers.
 	 */
 	private void setupEventHandling() {
+		canvas.addMouseWheelHandler(this);
+		canvas.addMouseMoveHandler(this);
+		canvas.addMouseDownHandler(this);
+		canvas.addMouseUpHandler(this);
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(final LoadEvent event) {
 				setImage();
@@ -377,7 +380,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void setImage() {
 		totalZoom = 1;
-		maxZoom = .5;
 		offsetX = 0;
 		offsetY = 0;
 		this.imageElement = (ImageElement) image.getElement().cast();
@@ -395,25 +397,24 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		parentHeight = heightOfParent;
 		imageWidth = image.getWidth();
 		imageHeight = image.getHeight();
+		sizeACanvas(canvas);
+		sizeACanvas(backCanvas);
+		sizeACanvas(fowCanvas);
+		calculateStartingZoom();
+		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
+		drawEverything();
+	}
 
+	/**
+	 * Adjust canvas size to parent size.
+	 * 
+	 * @param canvas to adjust
+	 */
+	private void sizeACanvas(final Canvas canvas) {
 		canvas.setWidth(parentWidth + "px");
 		canvas.setCoordinateSpaceWidth(parentWidth);
 		canvas.setHeight(parentHeight + "px");
 		canvas.setCoordinateSpaceHeight(parentHeight);
-
-		backCanvas.setWidth(parentWidth + "px");
-		backCanvas.setCoordinateSpaceWidth(parentWidth);
-		backCanvas.setHeight(parentHeight + "px");
-		backCanvas.setCoordinateSpaceHeight(parentHeight);
-
-		fowCanvas.setWidth(parentWidth + "px");
-		fowCanvas.setCoordinateSpaceWidth(parentWidth);
-		fowCanvas.setHeight(parentHeight + "px");
-		fowCanvas.setCoordinateSpaceHeight(parentHeight);
-
-		calculateStartingZoom();
-		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
-		drawEverything();
 	}
 
 	/**
@@ -439,7 +440,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Zoom canvas base on delta mouse positions.
+	 * Zoom canvas base on delta positions.
 	 * 
 	 * @param xPos current X
 	 * @param yPos current Y
@@ -452,8 +453,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		double yPosition = (-newY * deltaZoom) + newY;
 
 		double newZoom = deltaZoom * totalZoom;
-		if (newZoom < maxZoom) {
-			newZoom = maxZoom;
+		if (newZoom < MAX_ZOOM) {
+			newZoom = MAX_ZOOM;
 		} else {
 			offsetX += (xPosition * totalZoom);
 			offsetY += (yPosition * totalZoom);
@@ -514,11 +515,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void handleProperFOWAtSelectedPosition() {
 		boolean currentFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
-		if (currentFOW == !clearFOW) {
-			return;
+		if (currentFOW != !clearFOW) {
+			ServiceManager.getDungeonManager().setFow(selectedColumn, selectedRow, !currentFOW);
+			drawFOW(!currentFOW, adjustedGridSize() + 2, selectedColumn, selectedRow);
 		}
-		ServiceManager.getDungeonManager().setFow(selectedColumn, selectedRow, !currentFOW);
-		drawFOW(!currentFOW, adjustedGridSize() + 2, selectedColumn, selectedRow);
 	}
 
 	/**
@@ -670,7 +670,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Adjust pog positions. Pog data has the column and row and the widget needs to be moved to the proper pixel.
+	 * Adjust pog positions.
+	 * 
+	 * Pog data has the column and row and the widget needs to be moved to the proper pixel.
 	 */
 	private void adjustPogs() {
 		computPogBorderWidth();
@@ -679,10 +681,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			int y = (int) (rowToPixel(pog.getPogRow()));
 			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_RIGHT)) {
 				x += (adjustedGridSize() / 2);
-			} else if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_TOP)) {
+			}
+			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_TOP)) {
 				y -= (adjustedGridSize() / 2);
 			}
-			this.setWidgetPosition(pog, x, y);
+			setWidgetPosition(pog, x, y);
 			pog.setPogSizing(adjustedGridSize(), pogBorderWidth, totalZoom);
 			if (!ServiceManager.getDungeonManager().isDungeonMaster() && pog.isInVisibleToPlayer()) {
 				pog.getElement().getStyle().setBorderWidth(0, Unit.PX);
@@ -712,7 +715,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Draw fog of war. If this is DM let them see through it.
+	 * Draw fog of war.
+	 * 
+	 * If this is DM let them see through it.
 	 */
 	private void drawFogOfWar() {
 		if (ServiceManager.getDungeonManager().isEditMode()) {
@@ -733,7 +738,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Draw fog of war for this cell. If the fog of war bit is not set then make the cell transparent.
+	 * Draw fog of war for this cell.
+	 * 
+	 * If the fog of war bit is not set then make the cell transparent.
 	 * 
 	 * @param isSet true if need to be draw.
 	 * @param size width and height of cell
@@ -774,10 +781,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
-		boolean fowSetOnGridElement = ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow);
-		boolean isPlayer = pogBeingDragged.isThisAPlayer();
 		if (!isDM) {
-			if (fowSetOnGridElement || !isPlayer) {
+			if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow) || !pogBeingDragged.isThisAPlayer()) {
 				// players are only allowed to drag PLAYER pogsn onto visible cells.
 				removeHighlightGridSquare();
 				return;
@@ -802,7 +807,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		PogCanvas existingPog = findCanvasForDraggedPog();
 		if (existingPog == null || (!existingPog.getPogData().isThisAPlayer()) && ServiceManager.getDungeonManager().isFromRibbonBar()) {
 			existingPog = addClonePogToCanvas(ServiceManager.getDungeonManager().getPogBeingDragged());
-		} else { // ensure it is on top
+		} else {
+			// ensure it is on top
 			remove(existingPog);
 			add(existingPog);
 		}
@@ -853,7 +859,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Add a pog to the canvas. if the pog is not a player then clone the data. This is because there can only be one player instance but there can be many of the other types.
+	 * Add a pog to the canvas. If the pog is not a player then clone the data. This is because there can only be one player instance but there can be many of the other types.
 	 * 
 	 * @param pogData pog data
 	 * @return pog canvas
@@ -879,7 +885,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		PogCanvas scalablePog = new PogCanvas(clonePog);
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
-		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + 3, (int) rowToPixel(scalablePog.getPogRow() + 3));
+		computPogBorderWidth();
+		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + (int)pogBorderWidth, (int) rowToPixel(scalablePog.getPogRow() + (int)pogBorderWidth));
 		scalablePog.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
 		scalablePog.getElement().getStyle().setBorderColor("grey");
 		return (scalablePog);
@@ -1006,7 +1013,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void removePogs() {
 		for (PogCanvas pog : pogs) {
-			this.remove(pog);
+			remove(pog);
 		}
 		pogs.clear();
 	}
@@ -1111,7 +1118,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Get X coordinate relative between mouse click and target element.
+	 * Get X coordinate relative between touch and target element.
 	 * 
 	 * @param touchInformation touch information
 	 * @param target widget
@@ -1122,7 +1129,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Get Y coordinate relative between mouse click and target element.
+	 * Get Y coordinate relative between touch and target element.
 	 * 
 	 * @param touchInformation touch information
 	 * @param target widget
