@@ -351,23 +351,23 @@ public abstract class PogManager implements IPogManager {
 	 */
 	private ArrayList<PogData> getFilteredMonsters(final PogList pogsToSearch, final String raceFilter, final String classFilter, final String genderFilter) {
 		ArrayList<PogData> filteredMonsters = new ArrayList<PogData>();
-		for (PogData monster : pogsToSearch.getPogList()) {
+		for (PogData pog : pogsToSearch.getPogList()) {
 			if (raceFilter != null && !raceFilter.isEmpty()) {
-				if (!monster.getRace().equalsIgnoreCase(raceFilter)) {
+				if (!pog.getRace().equalsIgnoreCase(raceFilter)) {
 					continue;
 				}
 			}
 			if (classFilter != null && !classFilter.isEmpty()) {
-				if (!monster.getPogClass().equalsIgnoreCase(classFilter)) {
+				if (!pog.getPogClass().equalsIgnoreCase(classFilter)) {
 					continue;
 				}
 			}
 			if (genderFilter != null && !genderFilter.isEmpty()) {
-				if (!monster.getGender().equalsIgnoreCase(genderFilter)) {
+				if (!pog.getGender().equalsIgnoreCase(genderFilter)) {
 					continue;
 				}
 			}
-			filteredMonsters.add(monster);
+			filteredMonsters.add(pog);
 		}
 		return (filteredMonsters);
 	}

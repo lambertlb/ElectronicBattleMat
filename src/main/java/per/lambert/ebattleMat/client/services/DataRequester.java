@@ -153,7 +153,7 @@ public class DataRequester implements IDataRequester {
 	}
 
 	/**
-	 * Add paramters to URL.
+	 * Add parameters to URL.
 	 * 
 	 * @param parameters parameters for url
 	 * @param urlBuilder url builder

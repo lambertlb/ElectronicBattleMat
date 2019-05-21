@@ -185,50 +185,117 @@ public class TemplateManageDialog extends OkCancelDialog {
 		centerGrid.resize(11, 3);
 		centerGrid.getColumnFormatter().setWidth(0, "20px");
 		centerGrid.getColumnFormatter().setWidth(1, "20px");
+		createSectionSelection();
+		createRaceList();
+		createClassList();
+		createGenderList();
+		createApplyFilters();
+		createTemplateList();
+		createSectionLabel();
+		createTemplateName();
+		createTemplatePicture();
+		createRaceText();
+		createClassText();
+		createGenderText();
+		createSizeControls();
+		createNewTemplate();
+		createPlayerFlags();
+		createDMFlags();
+		createNotesDialog();
+		pogPanel = new FlowPanel();
+		centerGrid.setWidget(10, 0, pogPanel);
+		pogCanvas = new PogCanvas();
+		pogCanvas.setShowNormalSizeOnly(true);
+		pogCanvas.setForceBackgroundColor(true);
+		pogPanel.add(pogCanvas);
+	}
 
-		selectionSectionLabel = new Label("Select existing template");
-		selectionSectionLabel.setStyleName("sessionLabel");
-		centerGrid.setWidget(0, 0, selectionSectionLabel);
-		Element element = centerGrid.getCellFormatter().getElement(0, 0);
-		element.setAttribute("colspan", "3");
+	/**
+	 * Create controls for notes dialog.
+	 */
+	private void createNotesDialog() {
+		notesButton = new Button("Notes");
+		notesButton.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(9, 2, notesButton);
+		notesDialog = new NotesFloatingWindow();
+		notesDialog.setModal(true);
+		notesDialog.getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
+	}
 
-		raceList = new ListBox();
-		raceList.setStyleName("ribbonBarLabel");
-		raceList.setVisibleItemCount(1);
-		centerGrid.setWidget(1, 0, raceList);
+	/**
+	 * create controls for DM flags.
+	 */
+	private void createDMFlags() {
+		dmFlagsButton = new Button("DM flags");
+		dmFlagsButton.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(9, 1, dmFlagsButton);
+		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+	}
 
-		classList = new ListBox();
-		classList.setStyleName("ribbonBarLabel");
-		classList.setVisibleItemCount(1);
-		centerGrid.setWidget(1, 1, classList);
+	/**
+	 * Create controls for player flags.
+	 */
+	private void createPlayerFlags() {
+		playerFlagsButton = new Button("Player flags");
+		playerFlagsButton.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(9, 0, playerFlagsButton);
+		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
+	}
 
-		genderList = new ListBox();
-		genderList.setStyleName("ribbonBarLabel");
-		genderList.setVisibleItemCount(1);
-		centerGrid.setWidget(1, 2, genderList);
+	/**
+	 * create new template button.
+	 */
+	private void createNewTemplate() {
+		startNewTemplate = new Button("Create New Template");
+		startNewTemplate.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(8, 2, startNewTemplate);
+	}
 
-		applyFilters = new Button("Apply filters");
-		applyFilters.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(2, 0, applyFilters);
+	/**
+	 * Create pog size controls.
+	 */
+	private void createSizeControls() {
+		sizeLabel = new Label("Pog Size");
+		sizeLabel.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(8, 0, sizeLabel);
+		size = new ListBox();
+		size.setStyleName("ribbonBarLabel");
+		size.setVisibleItemCount(1);
+		centerGrid.setWidget(8, 1, size);
+	}
 
-		filteredTemplateList = new ListBox();
-		filteredTemplateList.setStyleName("ribbonBarLabel");
-		filteredTemplateList.setVisibleItemCount(1);
-		centerGrid.setWidget(3, 0, filteredTemplateList);
+	/**
+	 * Create gender text.
+	 */
+	private void createGenderText() {
+		gender = new ListBox();
+		gender.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(7, 2, gender);
+	}
 
-		editSectionLabel = new Label("Edit Template");
-		editSectionLabel.setStyleName("sessionLabel");
-		centerGrid.setWidget(4, 0, editSectionLabel);
-		element = centerGrid.getCellFormatter().getElement(4, 0);
-		element.setAttribute("colspan", "3");
+	/**
+	 * Create class text.
+	 */
+	private void createClassText() {
+		templateClass = new TextBox();
+		templateClass.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(7, 1, templateClass);
+	}
 
-		templateNameLabel = new Label("Template Name: ");
-		templateNameLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(5, 0, templateNameLabel);
-		templateName = new TextBox();
-		templateName.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(5, 1, templateName);
+	/**
+	 * create race text.
+	 */
+	private void createRaceText() {
+		race = new TextBox();
+		race.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(7, 0, race);
+	}
 
+	/**
+	 * create template picture controls.
+	 */
+	private void createTemplatePicture() {
+		Element element;
 		templatePictureLabel = new Label("Template Picture: ");
 		templatePictureLabel.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(6, 0, templatePictureLabel);
@@ -238,56 +305,90 @@ public class TemplateManageDialog extends OkCancelDialog {
 		centerGrid.setWidget(6, 1, templatePicture);
 		element = centerGrid.getCellFormatter().getElement(6, 1);
 		element.setAttribute("colspan", "2");
+	}
 
-		race = new TextBox();
-		race.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(7, 0, race);
+	/**
+	 * Create template name.
+	 */
+	private void createTemplateName() {
+		templateNameLabel = new Label("Template Name: ");
+		templateNameLabel.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(5, 0, templateNameLabel);
+		templateName = new TextBox();
+		templateName.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(5, 1, templateName);
+	}
 
-		templateClass = new TextBox();
-		templateClass.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(7, 1, templateClass);
+	/**
+	 * Create sevtion label.
+	 */
+	private void createSectionLabel() {
+		editSectionLabel = new Label("Edit Template");
+		editSectionLabel.setStyleName("sessionLabel");
+		centerGrid.setWidget(4, 0, editSectionLabel);
+		Element element;
+		element = centerGrid.getCellFormatter().getElement(4, 0);
+		element.setAttribute("colspan", "3");
+	}
 
-		gender = new ListBox();
-		gender.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(7, 2, gender);
+	/**
+	 * create template list.
+	 */
+	private void createTemplateList() {
+		filteredTemplateList = new ListBox();
+		filteredTemplateList.setStyleName("ribbonBarLabel");
+		filteredTemplateList.setVisibleItemCount(1);
+		centerGrid.setWidget(3, 0, filteredTemplateList);
+	}
 
-		sizeLabel = new Label("Pog Size");
-		sizeLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(8, 0, sizeLabel);
+	/**
+	 * create apply filters button.
+	 */
+	private void createApplyFilters() {
+		applyFilters = new Button("Apply filters");
+		applyFilters.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(2, 0, applyFilters);
+	}
 
-		size = new ListBox();
-		size.setStyleName("ribbonBarLabel");
-		size.setVisibleItemCount(1);
-		centerGrid.setWidget(8, 1, size);
+	/**
+	 * Create gender list.
+	 */
+	private void createGenderList() {
+		genderList = new ListBox();
+		genderList.setStyleName("ribbonBarLabel");
+		genderList.setVisibleItemCount(1);
+		centerGrid.setWidget(1, 2, genderList);
+	}
 
-		startNewTemplate = new Button("Create New Template");
-		startNewTemplate.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(8, 2, startNewTemplate);
+	/**
+	 * Create class list.
+	 */
+	private void createClassList() {
+		classList = new ListBox();
+		classList.setStyleName("ribbonBarLabel");
+		classList.setVisibleItemCount(1);
+		centerGrid.setWidget(1, 1, classList);
+	}
 
-		playerFlagsButton = new Button("Player flags");
-		playerFlagsButton.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(9, 0, playerFlagsButton);
+	/**
+	 * Create race list.
+	 */
+	private void createRaceList() {
+		raceList = new ListBox();
+		raceList.setStyleName("ribbonBarLabel");
+		raceList.setVisibleItemCount(1);
+		centerGrid.setWidget(1, 0, raceList);
+	}
 
-		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
-
-		dmFlagsButton = new Button("DM flags");
-		dmFlagsButton.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(9, 1, dmFlagsButton);
-		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
-
-		notesButton = new Button("Notes");
-		notesButton.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(9, 2, notesButton);
-		notesDialog = new NotesFloatingWindow();
-		notesDialog.setModal(true);
-		notesDialog.getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
-
-		pogPanel = new FlowPanel();
-		centerGrid.setWidget(10, 0, pogPanel);
-		pogCanvas = new PogCanvas();
-		pogCanvas.setShowNormalSizeOnly(true);
-		pogCanvas.setForceBackgroundColor(true);
-		pogPanel.add(pogCanvas);
+	/**
+	 * Create section selection.
+	 */
+	private void createSectionSelection() {
+		selectionSectionLabel = new Label("Select existing template");
+		selectionSectionLabel.setStyleName("sessionLabel");
+		centerGrid.setWidget(0, 0, selectionSectionLabel);
+		Element element = centerGrid.getCellFormatter().getElement(0, 0);
+		element.setAttribute("colspan", "3");
 	}
 
 	/**
@@ -407,7 +508,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 		filteredTemplateList.clear();
 		filteredTemplateList.addItem("Filter Templates", "");
 		fillInSizes();
-		filInFilters();
+		fillInFilters();
 		validateForm();
 	}
 
@@ -440,7 +541,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	/**
 	 * Fill in filters.
 	 */
-	private void filInFilters() {
+	private void fillInFilters() {
 		getRaceList();
 		getClassList();
 		getGenderList();

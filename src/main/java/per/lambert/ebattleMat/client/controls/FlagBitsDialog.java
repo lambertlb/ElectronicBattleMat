@@ -44,6 +44,10 @@ public class FlagBitsDialog extends OkCancelDialog {
 	}
 
 	/**
+	 * Amount of flags per column.
+	 */
+	private int amountOfFlagsPerColumn;
+	/**
 	 * Grid for content.
 	 */
 	private Grid centerGrid;
@@ -57,6 +61,7 @@ public class FlagBitsDialog extends OkCancelDialog {
 	public FlagBitsDialog(final String flagName, final Collection<FlagBit> flagBits) {
 		super(flagName, true, true, 400, 400);
 		this.flagBits = flagBits;
+		amountOfFlagsPerColumn = (flagBits.size()) / 2;
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
 		load();
 	}
@@ -76,7 +81,6 @@ public class FlagBitsDialog extends OkCancelDialog {
 	private void createContent() {
 		centerGrid = getCenterGrid();
 		centerGrid.clear();
-		int amountOfFlagsPerColumn = (flagBits.size()) / 2;
 		centerGrid.resize(amountOfFlagsPerColumn, 3);
 		int row = 0;
 		int column = 0;
@@ -148,7 +152,6 @@ public class FlagBitsDialog extends OkCancelDialog {
 	 */
 	private void fillBitsFromUI() {
 		bits = 0;
-		int amountOfFlagsPerColumn = (flagBits.size()) / 2;
 		int row = 0;
 		int column = 0;
 		for (FlagBit flag : flagBits) {
@@ -170,7 +173,6 @@ public class FlagBitsDialog extends OkCancelDialog {
 	 * Set check boxes to match bits.
 	 */
 	private void setUIFromBits() {
-		int amountOfFlagsPerColumn = (flagBits.size()) / 2;
 		int row = 0;
 		int column = 0;
 		for (FlagBit flag : flagBits) {

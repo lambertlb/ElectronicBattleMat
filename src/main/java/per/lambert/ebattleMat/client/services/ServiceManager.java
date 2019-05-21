@@ -10,6 +10,7 @@ import per.lambert.ebattleMat.client.interfaces.IEventManager;
  * Service manager.
  * 
  * Used to gain access to all available services.
+ * This is used so unit test can switch in mocks for testing.
  * 
  * @author LLambert
  *

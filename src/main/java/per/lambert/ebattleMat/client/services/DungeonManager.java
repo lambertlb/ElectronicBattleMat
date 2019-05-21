@@ -60,7 +60,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
-	 * List of session for this dungeon.
+	 * List of sessions for this dungeon.
 	 */
 	private SessionListData sessionListData;
 
@@ -117,14 +117,14 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	/**
 	 * current level index.
 	 */
-	private int currentLevel;
+	private int currentLevelIndex;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getCurrentLevel() {
-		return currentLevel;
+	public int getCurrentLevelIndex() {
+		return currentLevelIndex;
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public void setCurrentLevel(final int currentLevel) {
-		this.currentLevel = currentLevel;
+		this.currentLevelIndex = currentLevel;
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelectedLevelChanged, null));
 	}
 
@@ -149,8 +149,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public DungeonLevel getCurrentDungeonLevelData() {
-		if (selectedDungeon != null && currentLevel < selectedDungeon.getDungeonlevels().length) {
-			return (selectedDungeon.getDungeonlevels()[currentLevel]);
+		if (selectedDungeon != null && currentLevelIndex < selectedDungeon.getDungeonlevels().length) {
+			return (selectedDungeon.getDungeonlevels()[currentLevelIndex]);
 		}
 		return null;
 	}
@@ -161,8 +161,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @return session data for the current level index.
 	 */
 	private DungeonSessionLevel getCurrentSessionLevelData() {
-		if (selectedSession != null && currentLevel < selectedSession.getSessionLevels().length) {
-			return (selectedSession.getSessionLevels()[currentLevel]);
+		if (selectedSession != null && currentLevelIndex < selectedSession.getSessionLevels().length) {
+			return (selectedSession.getSessionLevels()[currentLevelIndex]);
 		}
 		return null;
 	}
@@ -438,7 +438,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * initialize dungeon data.
 	 */
 	private void initializeDungeonData() {
-		currentLevel = 0;
+		currentLevelIndex = 0;
 		selectedDungeon = null;
 		selectedSession = null;
 		setSelectedPog(null);
@@ -850,7 +850,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (selectedDungeon != null) {
 			Map<String, String> parameters = new HashMap<String, String>();
 			parameters.put("sessionUUID", selectedSession.getSessionUUID());
-			parameters.put("currentLevel", "" + currentLevel);
+			parameters.put("currentLevel", "" + currentLevelIndex);
 			DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 			FogOfWarData fogOfWarData = (FogOfWarData) JavaScriptObject.createObject().cast();
 			fogOfWarData.setFOW(sessionLevel.getFOW());
@@ -921,7 +921,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (editMode || selectedDungeon == null || selectedSession == null) {
 			return null;
 		}
-		int currentLevel = getCurrentLevel();
+		int currentLevel = getCurrentLevelIndex();
 		ArrayList<PogData> playersOnLevel = new ArrayList<PogData>();
 		for (PogData player : selectedSession.getPlayers().getPogList()) {
 			if (player.getDungeonLevel() == currentLevel) {
@@ -1160,7 +1160,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		} else {
 			parameters.put("sessionUUID", "");
 		}
-		parameters.put("currentLevel", "" + currentLevel);
+		parameters.put("currentLevel", "" + currentLevelIndex);
 		parameters.put("place", place.name());
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		String pogDataString = JsonUtils.stringify(pog);

@@ -13,6 +13,7 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
  * Show selected pog in a floating window.
+ * 
  * @author LLambert
  *
  */
@@ -90,6 +91,7 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 		}
 		setText(selectedPog.getName());
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,15 +100,16 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 		super.onWindowResized();
 		selectedPog.reDraw();
 	}
+
 	/**
-	 * Show window.
-	 * {@inheritDoc}
+	 * Show window. {@inheritDoc}
 	 */
 	@Override
 	public void show() {
 		super.show();
 		selectedPog.pogSelected();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -114,6 +117,7 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	public int getMinWidth() {
 		return 70;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */

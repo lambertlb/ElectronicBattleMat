@@ -11,6 +11,38 @@ public class DungeonLevel {
 	 * URL to level picture.
 	 */
 	private String levelDrawing;
+	/**
+	 * Level name.
+	 */
+	private String levelName;
+	/**
+	 * size of grid cell.
+	 */
+	private double gridSize;
+	/**
+	 * X offset for top left of grid.
+	 */
+	private double gridOffsetX;
+	/**
+	 * Y offset for top left of grid.
+	 */
+	private double gridOffsetY;
+	/**
+	 * # of columns in level.
+	 */
+	private int columns;
+	/**
+	 * # of rows in level.
+	 */
+	private int rows;
+	/**
+	 * List of monsters on level.
+	 */
+	private PogList monsters = new PogList();
+	/**
+	 * List of room objects on level.
+	 */
+	private PogList roomObjects = new PogList();
 
 	/**
 	 * get URL to level picture.
@@ -31,11 +63,6 @@ public class DungeonLevel {
 	}
 
 	/**
-	 * Level name.
-	 */
-	private String levelName;
-
-	/**
 	 * get level name.
 	 * 
 	 * @return level name
@@ -52,11 +79,6 @@ public class DungeonLevel {
 	public void setLevelName(final String levelName) {
 		this.levelName = levelName;
 	}
-
-	/**
-	 * size of grid cell.
-	 */
-	private double gridSize;
 
 	/**
 	 * get size of grid cell.
@@ -77,11 +99,6 @@ public class DungeonLevel {
 	}
 
 	/**
-	 * X offset for top left of grid.
-	 */
-	private double gridOffsetX;
-
-	/**
 	 * get X offset for top left of grid.
 	 * 
 	 * @return X offset for top left of grid.
@@ -98,11 +115,6 @@ public class DungeonLevel {
 	public void setGridOffsetX(final double gridOffsetX) {
 		this.gridOffsetX = gridOffsetX;
 	}
-
-	/**
-	 * Y offset for top left of grid.
-	 */
-	private double gridOffsetY;
 
 	/**
 	 * get Y offset for top left of grid.
@@ -123,11 +135,6 @@ public class DungeonLevel {
 	}
 
 	/**
-	 * # of columns in level.
-	 */
-	private int columns;
-
-	/**
 	 * get # of columns in level.
 	 * 
 	 * @return # of columns in level.
@@ -144,11 +151,6 @@ public class DungeonLevel {
 	public void setColumns(final int columns) {
 		this.columns = columns;
 	}
-
-	/**
-	 * # of rows in level.
-	 */
-	private int rows;
 
 	/**
 	 * get # of rows in level.
@@ -169,12 +171,8 @@ public class DungeonLevel {
 	}
 
 	/**
-	 * List of monsters on level.
-	 */
-	private PogList monsters = new PogList();
-
-	/**
 	 * get List of monsters on level.
+	 * 
 	 * @return List of monsters on level.
 	 */
 	public PogList getMonsters() {
@@ -183,6 +181,7 @@ public class DungeonLevel {
 
 	/**
 	 * set List of monsters on level.
+	 * 
 	 * @param monsters List of monsters on level.
 	 */
 	public void setMonsters(final PogList monsters) {
@@ -190,12 +189,8 @@ public class DungeonLevel {
 	}
 
 	/**
-	 * List of room objects on level.
-	 */
-	private PogList roomObjects = new PogList();
-
-	/**
 	 * get List of room objects on level.
+	 * 
 	 * @return List of room objects on level.
 	 */
 	public PogList getRoomObjects() {
@@ -204,6 +199,7 @@ public class DungeonLevel {
 
 	/**
 	 * set List of room objects on level.
+	 * 
 	 * @param roomObjects List of room objects on level.
 	 */
 	public void setRoomObjects(final PogList roomObjects) {

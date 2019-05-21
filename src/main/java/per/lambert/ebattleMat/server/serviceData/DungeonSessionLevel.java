@@ -11,6 +11,14 @@ public class DungeonSessionLevel {
 	 * Array for Fog of War.
 	 */
 	private boolean[][] fogOfWar = new boolean[0][0];
+	/**
+	 * list of monsters.
+	 */
+	private PogList monsters = new PogList();
+	/**
+	 * list of room objects.
+	 */
+	private PogList roomObjects = new PogList();
 
 	/**
 	 * get Array for Fog of War.
@@ -31,11 +39,6 @@ public class DungeonSessionLevel {
 	}
 
 	/**
-	 * list of monsters.
-	 */
-	private PogList monsters = new PogList();
-
-	/**
 	 * get list of monsters.
 	 * 
 	 * @return list of monsters.
@@ -52,11 +55,6 @@ public class DungeonSessionLevel {
 	public void setMonsters(final PogList monsters) {
 		this.monsters = monsters;
 	}
-
-	/**
-	 * list of room objects.
-	 */
-	private PogList roomObjects = new PogList();
 
 	/**
 	 * get list of room objects.

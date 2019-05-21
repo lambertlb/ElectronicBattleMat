@@ -13,6 +13,7 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
 
 /**
  * Load data from JSON string.
+ * 
  * @author LLambert
  *
  */
@@ -27,7 +28,6 @@ public class LoadJsonDataHandler implements IWebRequestHandler {
 		PrintWriter out = resp.getWriter();
 		if (dungeonUUID != null) {
 			out.print(DungeonsManager.getDungeonDataAsString(servlet, dungeonUUID));
-
 		} else {
 			out.print(DungeonsManager.getFileAsString(servlet, fileName));
 		}

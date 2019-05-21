@@ -483,7 +483,7 @@ public class RibbonBar extends Composite {
 		for (String levelName : levelNames) {
 			levelSelect.addItem(levelName);
 		}
-		levelSelect.setSelectedIndex(ServiceManager.getDungeonManager().getCurrentLevel());
+		levelSelect.setSelectedIndex(ServiceManager.getDungeonManager().getCurrentLevelIndex());
 	}
 
 	/**

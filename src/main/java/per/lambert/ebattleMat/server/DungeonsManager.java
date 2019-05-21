@@ -34,10 +34,8 @@ import per.lambert.ebattleMat.server.serviceData.PogList;
 /**
  * Manager for dungeon information.
  * 
- * This is a static class that serves as a central handlers for all service requests.
- * It does a lock on the data so requests are serialized.
- * This means that if two people make changes to the same dungeon data then last one wins.
- * This will also cache session data to minimize the amount of data being accessed on disk.
+ * This is a static class that serves as a central handlers for all service requests. It does a lock on the data so requests are serialized. This means that if two people make changes to the same dungeon data then last one wins. This will also cache
+ * session data to minimize the amount of data being accessed on disk.
  * 
  * @author LLambert
  *
@@ -84,8 +82,7 @@ public final class DungeonsManager {
 	}
 
 	/**
-	 * used to initialize static data.
-	 * This forces the initialization code to run when this class is loaded the first time.
+	 * used to initialize static data. This forces the initialization code to run when this class is loaded the first time.
 	 */
 	@SuppressWarnings("unused")
 	private static boolean initialized = initializeDungeonManager();
@@ -94,7 +91,6 @@ public final class DungeonsManager {
 	 * Hide constructor because this is a singleton.
 	 */
 	private DungeonsManager() {
-
 	}
 
 	/**
@@ -137,12 +133,11 @@ public final class DungeonsManager {
 			sessionInformation.saveIfDirty();
 		}
 	}
-	
-	
+
 	/**
 	 * Purge out old data that is not being used anymore.
 	 * 
-	 * There might be sessions that are over so no reason to hold onto data. 
+	 * There might be sessions that are over so no reason to hold onto data.
 	 */
 	private static void checkIfNeedToPurgeCachedData() {
 		// TODO purge out stale data.
@@ -505,12 +500,12 @@ public final class DungeonsManager {
 	 * @throws IOException thrown if error
 	 */
 	private static SessionInformation getSessionInformation(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID) throws IOException {
-		SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
-		if (sessionInformation != null) {
-			return (sessionInformation);
-		}
 		lock.lock();
 		try {
+			SessionInformation sessionInformation = getSessionFromCache(sessionUUID);
+			if (sessionInformation != null) {
+				return (sessionInformation);
+			}
 			URL servletPath = servlet.getServletContext().getResource("/");
 			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + Constants.SESSIONS_FOLDER;
 			String directoryPath = servletPath.getPath() + sessionsPath;

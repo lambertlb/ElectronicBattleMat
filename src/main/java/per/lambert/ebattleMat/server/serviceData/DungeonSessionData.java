@@ -11,6 +11,26 @@ public class DungeonSessionData {
 	 * session version.
 	 */
 	private int version;
+	/**
+	 * Session name.
+	 */
+	private String sessionName;
+	/**
+	 * dungeon UUID.
+	 */
+	private String dungeonUUID;
+	/**
+	 * session UUID.
+	 */
+	private String sessionUUID;
+	/**
+	 * players in this session.
+	 */
+	private PogList players = new PogList();
+	/**
+	 * Level for this session.
+	 */
+	private DungeonSessionLevel[] sessionLevels;
 
 	/**
 	 * get session version.
@@ -31,11 +51,6 @@ public class DungeonSessionData {
 	}
 
 	/**
-	 * Session name.
-	 */
-	private String sessionName;
-
-	/**
 	 * get Session name.
 	 * 
 	 * @return Session name.
@@ -52,11 +67,6 @@ public class DungeonSessionData {
 	public void setSessionName(final String sessionName) {
 		this.sessionName = sessionName;
 	}
-
-	/**
-	 * dungeon UUID.
-	 */
-	private String dungeonUUID;
 
 	/**
 	 * get dungeon UUID.
@@ -77,11 +87,6 @@ public class DungeonSessionData {
 	}
 
 	/**
-	 * session UUID.
-	 */
-	private String sessionUUID;
-
-	/**
 	 * get session UUID.
 	 * 
 	 * @return session UUID.
@@ -100,11 +105,6 @@ public class DungeonSessionData {
 	}
 
 	/**
-	 * players in this session.
-	 */
-	private PogList players = new PogList();
-
-	/**
 	 * get players in this session.
 	 * 
 	 * @return players in this session.
@@ -121,13 +121,10 @@ public class DungeonSessionData {
 	public void setPlayers(final PogList players) {
 		this.players = players;
 	}
-	/**
-	 * Level for this session.
-	 */
-	private DungeonSessionLevel[] sessionLevels;
 
 	/**
 	 * get Level for this session.
+	 * 
 	 * @return Level for this session.
 	 */
 	public DungeonSessionLevel[] getSessionLevels() {
@@ -136,6 +133,7 @@ public class DungeonSessionData {
 
 	/**
 	 * set Level for this session.
+	 * 
 	 * @param sessionLevels Level for this session.
 	 */
 	public void setSessionLevels(final DungeonSessionLevel[] sessionLevels) {
@@ -144,6 +142,7 @@ public class DungeonSessionData {
 
 	/**
 	 * Constructor for session data.
+	 * 
 	 * @param newSessionName new session name
 	 * @param dungeonUUID dungeon UUID
 	 * @param sessionUUID session UUID

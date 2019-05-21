@@ -18,7 +18,6 @@ public final class ServerApp {
 	 * Constructor.
 	 */
 	private ServerApp() {
-
 	}
 
 	/**

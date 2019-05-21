@@ -404,7 +404,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 		if (newLevel) {
 			return ("" + (ServiceManager.getDungeonManager().getNextAvailableLevelNumber()));
 		} else {
-			return ("" + (ServiceManager.getDungeonManager().getCurrentLevel() + 1));
+			return ("" + (ServiceManager.getDungeonManager().getCurrentLevelIndex() + 1));
 		}
 	}
 
@@ -428,7 +428,6 @@ public class LevelOptionsDialog extends OkCancelDialog {
 		if (newLevel) {
 			ServiceManager.getDungeonManager().addNewLevel(currentLevel);
 		}
-
 		ServiceManager.getDungeonManager().saveDungeonData();
 		close();
 	}

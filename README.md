@@ -45,7 +45,7 @@ To run it on windows just double click the StartServer.bat file and answer yes i
 firewall dialog comes up. At the top of the console window it will tell you the url 
 that people within your network will need to use to connect to get to that main page. For example 
     http://192.168.115.128:8088. **The ElectronicBattlemat.war must be in the same directory as the jar file.**
-2. Install Tomcat [Apache Tomcat](https://tomcat.apache.org/download-80.cgi) and install 
+2. Install [Apache Tomcat](https://tomcat.apache.org/download-80.cgi) and install 
 ElectronicBattleMat.war in the tomcat webapp directory.
 
 ## Included Software Licenses
@@ -55,4 +55,12 @@ ElectronicBattleMat.war in the tomcat webapp directory.
 | **Gson**                | Apache License 2.0 | https://github.com/google/gson                        |
 | **Commons FileUpload**  | Apache License 2.0 | https://commons.apache.org/proper/commons-fileupload/ |
 |                         |                    |                                                       |
+
+### Included Dungeon
+This deliverable also includes a dungeon. I made it from the free module [Dawn of the 
+Scarlet Sun](https://paizo.com/products/btpy8rgh). All pictures and text come from the 
+PDF and should abide by its rules. Later I might give a small tutorial on how I used 
+GIMP 2 to prepare the assets to include in the battle mat. I haven't had time to do this 
+yet.
+
 

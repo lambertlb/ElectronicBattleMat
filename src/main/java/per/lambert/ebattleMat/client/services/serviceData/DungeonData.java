@@ -88,7 +88,6 @@ public class DungeonData extends JavaScriptObject {
 		if (this.showGrid === undefined) {
 			this.showGrid = false;
 		}
-		this.isDirty = showGrid != this.showGrid;
 		this.showGrid = showGrid;
 	}-*/;
 

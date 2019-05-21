@@ -30,7 +30,7 @@ public final class Constants {
 	/**
 	 * Z order for dialogs.
 	 */
-	public static final int DIALOG_Z = 10;
+	public static final int DIALOG_Z = 12;
 	/**
 	 * Location of dungeon data.
 	 */

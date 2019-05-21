@@ -228,20 +228,6 @@ public class OkCancelDialog extends ResizableDialog {
 	}
 
 	/**
-	 * Enable or Disable widget.
-	 * 
-	 * @param widget to enable
-	 * @param enable true if enabled
-	 */
-	public static void enableWidget(final Widget widget, final boolean enable) {
-		if (enable) {
-			widget.getElement().removeAttribute("disabled");
-		} else {
-			widget.getElement().setAttribute("disabled", "disabled");
-		}
-	}
-
-	/**
 	 * Get widget used for resizing.
 	 * 
 	 * @return widget to used for resizing.

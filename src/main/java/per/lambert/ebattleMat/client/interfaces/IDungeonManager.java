@@ -75,7 +75,7 @@ public interface IDungeonManager extends IPogManager {
 	 * 
 	 * @return current level
 	 */
-	int getCurrentLevel();
+	int getCurrentLevelIndex();
 
 	/**
 	 * Set current level for selected dungeon.

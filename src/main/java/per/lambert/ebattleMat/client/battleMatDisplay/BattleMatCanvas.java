@@ -839,7 +839,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void updatePogData(final PogCanvas pog) {
 		pog.setPogPosition(dragColumn, dragRow);
-		pog.getPogData().setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevel());
+		pog.getPogData().setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevelIndex());
 	}
 
 	/**

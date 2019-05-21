@@ -40,7 +40,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	 * Event manager for unit tests.
 	 */
 	private MockEventManager eventManagerForTest = new MockEventManager();
-
 	/**
 	 * keep track of event states.
 	 */
@@ -72,7 +71,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	public void testLogin() {
 		DungeonManager dungeonManager = new DungeonManager();
 		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-
 			@Override
 			public void onEvent(final GwtEvent<?> event) {
 				setEventResults(event);
@@ -124,6 +122,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 			public void onSuccess(final Object sender, final Object data) {
 				assertTrue(true);
 			}
+
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 				assertTrue(false);
@@ -242,7 +241,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		assertTrue(dungeonManager.isThereASelectedDungeon());
 		DungeonData dungeonData = dungeonManager.getSelectedDungeon();
 		assertTrue(dungeonData != null);
-		assertTrue(dungeonManager.getCurrentLevel() == 0);
+		assertTrue(dungeonManager.getCurrentLevelIndex() == 0);
 		assertTrue(dungeonManager.getNextAvailableLevelNumber() == 4);
 		assertTrue(dungeonManager.isDungeonMaster());
 		assertTrue(dungeonManager.isEditMode());
@@ -362,7 +361,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
-	 * Test dungeon template.
+	 * Test delete dungeon template.
 	 */
 	public void testDeleteTemplate() {
 		DungeonManager dungeonManager = new DungeonManager();
@@ -1033,6 +1032,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 			public void onSuccess(final Object sender, final Object data) {
 				assertTrue(true);
 			}
+
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 				assertTrue(false);

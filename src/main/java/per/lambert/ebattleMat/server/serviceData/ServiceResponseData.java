@@ -2,6 +2,7 @@ package per.lambert.ebattleMat.server.serviceData;
 
 /**
  * Response data for service request.
+ * 
  * @author LLambert
  *
  */
@@ -13,6 +14,7 @@ public class ServiceResponseData {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param error response error.
 	 */
 	protected ServiceResponseData(final int error) {
@@ -28,6 +30,7 @@ public class ServiceResponseData {
 
 	/**
 	 * Get error.
+	 * 
 	 * @return error
 	 */
 	public int getError() {
@@ -36,6 +39,7 @@ public class ServiceResponseData {
 
 	/**
 	 * Set error.
+	 * 
 	 * @param error to set
 	 */
 	public void setError(final int error) {
