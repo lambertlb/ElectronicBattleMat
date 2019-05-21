@@ -750,11 +750,12 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void drawFOW(final boolean isSet, final double size, final int column, final int row) {
 		int x = (int) columnToPixel(column);
 		int y = (int) rowToPixel(row);
+		double newSize = size + 1;
 		if (isSet) {
 			fowCanvas.getContext2d().setFillStyle(fogOfWarColor);
-			fowCanvas.getContext2d().fillRect(x, y, size, size);
+			fowCanvas.getContext2d().fillRect(x - 1, y - 1, newSize, newSize);
 		} else {
-			fowCanvas.getContext2d().clearRect(x, y, size, size);
+			fowCanvas.getContext2d().clearRect(x - 1, y - 1, newSize, newSize);
 		}
 	}
 
@@ -886,7 +887,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
 		computPogBorderWidth();
-		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + (int)pogBorderWidth, (int) rowToPixel(scalablePog.getPogRow() + (int)pogBorderWidth));
+		add(scalablePog, (int) columnToPixel(scalablePog.getPogColumn()) + (int) pogBorderWidth, (int) rowToPixel(scalablePog.getPogRow() + (int) pogBorderWidth));
 		scalablePog.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
 		scalablePog.getElement().getStyle().setBorderColor("grey");
 		return (scalablePog);
