@@ -54,6 +54,7 @@ ElectronicBattleMat.war in the tomcat webapp directory.
 | **Drag and Drop Touch** | Mit                | https://github.com/Bernardo-Castilho/dragdroptouch    |
 | **Gson**                | Apache License 2.0 | https://github.com/google/gson                        |
 | **Commons FileUpload**  | Apache License 2.0 | https://commons.apache.org/proper/commons-fileupload/ |
+| **Jetty**               | Apache License 2.0 | https://www.eclipse.org/jetty/                        |
 |                         |                    |                                                       |
 
 ### Included Dungeon
