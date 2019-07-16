@@ -257,7 +257,6 @@ public abstract class PogManager implements IPogManager {
 		monsterRaces.clear();
 		monsterTemplatePogs = JsonUtils.<PogList>safeEval((String) data);
 		rebuildMonsterCollections();
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
 	}
 
 	/**
@@ -269,6 +268,7 @@ public abstract class PogManager implements IPogManager {
 		for (PogData monsterTemplate : monsterTemplatePogs.getPogList()) {
 			addMonsterToCollections(monsterTemplate);
 		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MonsterPogsLoaded, null));
 	}
 
 	/**
