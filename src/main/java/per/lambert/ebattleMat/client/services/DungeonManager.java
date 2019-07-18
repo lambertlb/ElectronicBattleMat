@@ -456,6 +456,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		currentLevelIndex = 0;
 		selectedDungeon = null;
 		selectedSession = null;
+		fowToggle = false;
 		setSelectedPog(null);
 		setPogBeingDragged(null, false);
 	}

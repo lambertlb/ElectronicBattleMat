@@ -43,13 +43,21 @@ public final class ServerApp {
 	 */
 	public static void main(final String[] args) throws Exception {
 		buildWelcome();
+		File tempDir = new File("./ElectronicBattleMatTemp");
 		Server server = new Server(8088);
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/");
-		webAppContext.setWar("./ElectronicBattleMat.war");
+		if (!tempDir.exists()) {
+			webAppContext.setWar("./ElectronicBattleMat.war");
+			webAppContext.setTempDirectory(new File("./ElectronicBattleMatTemp"));
+		} else {
+			// use existing directory so war does not overwrite any dungeon changes we made.
+			webAppContext.setDescriptor("./ElectronicBattleMatTemp/webapp/WEB-INF/web.xml");
+			webAppContext.setResourceBase("./ElectronicBattleMatTemp/webapp");
+			webAppContext.setTempDirectory(new File("./ElectronicBattleMatTemp2"));
+		}
 		webAppContext.setParentLoaderPriority(true);
 		webAppContext.setServer(server);
-		webAppContext.setTempDirectory(new File("./ElectronicBattleMatTemp"));
 		webAppContext.setClassLoader(ClassLoader.getSystemClassLoader());
 		server.setHandler(webAppContext);
 		server.start();
