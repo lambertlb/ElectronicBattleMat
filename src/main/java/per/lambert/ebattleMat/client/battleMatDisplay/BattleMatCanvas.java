@@ -1120,7 +1120,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param event with data.
 	 */
 	protected void doDoubleTap(final DoubleTapEvent event) {
-		restoreOriginalView();
+//		restoreOriginalView();
 	}
 
 	/**

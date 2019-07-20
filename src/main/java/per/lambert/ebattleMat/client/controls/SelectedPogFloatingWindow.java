@@ -121,6 +121,8 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	 */
 	@Override
 	public void show() {
+		setPopupPosition(0, 0);
+		getElement().getStyle().setZIndex(Constants.DIALOG_Z - 1);
 		super.show();
 		selectedPog.pogSelected();
 	}
