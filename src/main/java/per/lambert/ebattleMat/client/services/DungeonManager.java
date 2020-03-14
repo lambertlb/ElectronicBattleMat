@@ -1155,7 +1155,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	/**
 	 * Add pog to dungeon resource area.
 	 * 
-	 * This is not support yet but might be used in the future for dungeon specific resources.
+	 * This is not supported yet but might be used in the future for dungeon specific resources.
 	 * 
 	 * @param pog to add
 	 */

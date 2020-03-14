@@ -29,7 +29,7 @@ import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
  */
 public interface IDungeonManager extends IPogManager {
 	/**
-	 * get last error that occured.
+	 * get last error that occurred.
 	 * 
 	 * @return last error
 	 */

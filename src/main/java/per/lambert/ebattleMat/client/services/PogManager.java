@@ -155,7 +155,7 @@ public abstract class PogManager implements IPogManager {
 	}
 
 	/**
-	 * Pog bein dragged.
+	 * Pog being dragged.
 	 */
 	private PogData pogBeingDragged;
 

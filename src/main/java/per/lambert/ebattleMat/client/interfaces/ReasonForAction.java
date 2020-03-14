@@ -70,7 +70,7 @@ public enum ReasonForAction {
 	 */
 	PogWasSelected,
 	/**
-	 * Toogle Fog of War has changed.
+	 * Toggle Fog of War has changed.
 	 */
 	ToggleFowSelected,
 	/**
