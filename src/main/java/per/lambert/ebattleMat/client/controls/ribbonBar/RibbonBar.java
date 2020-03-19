@@ -244,7 +244,7 @@ public class RibbonBar extends Composite {
 	}
 
 	/**
-	 * Create cpommon controls.
+	 * Create common controls.
 	 */
 	private void createCommonControls() {
 		ribbonGrid = new Grid();

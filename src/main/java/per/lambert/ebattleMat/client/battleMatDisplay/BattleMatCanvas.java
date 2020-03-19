@@ -799,7 +799,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
 		if (!isDM) {
 			if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow) || !pogBeingDragged.isThisAPlayer()) {
-				// players are only allowed to drag PLAYER pogsn onto visible cells.
+				// players are only allowed to drag PLAYER pogs onto visible cells.
 				removeHighlightGridSquare();
 				return;
 			}

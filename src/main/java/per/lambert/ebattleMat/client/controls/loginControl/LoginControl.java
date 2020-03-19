@@ -145,7 +145,7 @@ public class LoginControl extends PopupPanel {
 	}
 
 	/**
-	 * Pasword changed.
+	 * Password changed.
 	 * @param event data.
 	 */
 	@SuppressWarnings("VisibilityModifier")
