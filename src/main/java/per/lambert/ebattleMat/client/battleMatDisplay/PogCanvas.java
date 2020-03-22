@@ -352,6 +352,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
 		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
 		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+		imageLoaded = false;
 		if (pogData.getImageUrl() != "") {
 			setPogImageUrl(pogData.getImageUrl());
 		} else {
@@ -554,8 +555,8 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
 		if (showImage) {
 			backContext.drawImage(imageElement, 0, 0);
+			handleAllDrawing();
 		}
-		handleAllDrawing();
 	}
 
 	/**

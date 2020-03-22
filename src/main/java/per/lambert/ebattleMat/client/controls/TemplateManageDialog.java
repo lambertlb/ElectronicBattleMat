@@ -170,6 +170,10 @@ public class TemplateManageDialog extends OkCancelDialog {
 	private boolean templateSelected;
 
 	/**
+	 * Dialog for managing pog.
+	 */
+	private ManagePogDialog	managePogDialog;
+	/**
 	 * Constructor.
 	 * 
 	 * @param place Which pog templates to edit.
@@ -217,12 +221,17 @@ public class TemplateManageDialog extends OkCancelDialog {
 		createPlayerFlags();
 		createDMFlags();
 		createNotesDialog();
+		createManagePogDialog();
 		pogPanel = new FlowPanel();
 		centerGrid.setWidget(10, 0, pogPanel);
 		pogCanvas = new PogCanvas();
 		pogCanvas.setShowNormalSizeOnly(true);
 		pogCanvas.setForceBackgroundColor(true);
 		pogPanel.add(pogCanvas);
+	}
+
+	private void createManagePogDialog() {
+		managePogDialog = new ManagePogDialog();
 	}
 
 	/**
@@ -335,7 +344,7 @@ public class TemplateManageDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Create sevtion label.
+	 * Create section label.
 	 */
 	private void createSectionLabel() {
 		editSectionLabel = new Label("Edit Template");
@@ -470,8 +479,9 @@ public class TemplateManageDialog extends OkCancelDialog {
 		playerFlagsButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				playerFlagDialog.setBits(pogData.getPlayerFlags());
-				playerFlagDialog.show();
+//				playerFlagDialog.setBits(pogData.getPlayerFlags());
+//				playerFlagDialog.show();
+				managePogDialog.editPog(PogPlace.COMMON_RESOURCE, pogData);
 			}
 		});
 		playerFlagDialog.addOkClickHandler(new ClickHandler() {
