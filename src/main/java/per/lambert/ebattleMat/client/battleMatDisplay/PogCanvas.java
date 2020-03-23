@@ -96,6 +96,16 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Image of pog.
 	 */
 	private Image image = new Image();
+
+	/**
+	 * Expose image so other dialogs can hook into load event.
+	 * 
+	 * @return image
+	 */
+	public Image getImage() {
+		return (image);
+	}
+
 	/**
 	 * Image count. Used to avoid browser caching images during editing.
 	 */
@@ -347,7 +357,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private void setupWithPogData(final PogData pogData) {
 		this.pogData = pogData;
-		forceBackgroundColor =  ServiceManager.getDungeonManager().isEditMode();
+		forceBackgroundColor = ServiceManager.getDungeonManager().isEditMode();
 		String backgroundColor = getBackgroundColor(pogData);
 		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
 		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);

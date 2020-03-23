@@ -804,7 +804,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public boolean isValidNewMonsterName(final String monsterName) {
-		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 3;
+		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() >= 3;
 		return isValid;
 	}
 

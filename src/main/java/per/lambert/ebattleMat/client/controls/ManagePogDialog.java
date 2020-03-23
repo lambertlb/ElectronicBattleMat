@@ -15,25 +15,32 @@
  */
 package per.lambert.ebattleMat.client.controls;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 import per.lambert.ebattleMat.client.battleMatDisplay.PogCanvas;
-import per.lambert.ebattleMat.client.controls.loginControl.LoginPresenter;
 import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
+import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
@@ -151,15 +158,37 @@ public class ManagePogDialog extends OkCancelDialog {
 	 * Canvas for pog display.
 	 */
 	private PogCanvas pogCanvas;
+	/**
+	 * Disable call backs for controls.
+	 */
+	private boolean disableCallbacks;
+	/**
+	 * Is Template name valid.
+	 */
+	private boolean isValidTemplateName;
+	/**
+	 * Is Template picture valid.
+	 */
+	private boolean isValidTemplatePicture;
+	/**
+	 * Is race valid.
+	 */
+	private boolean isValidRace;
+	/**
+	 * Is class valid.
+	 */
+	private boolean isValidTemplateClass;
 
 	public ManagePogDialog() {
 		super("Manage Pog", false, false, 400, 400);
+		pogToManage = (PogData) JavaScriptObject.createObject().cast();
 		load();
 	}
 
 	private void load() {
 		createContent();
 		initialize();
+		initializeControls();
 		setupEventHandlers();
 	}
 
@@ -203,6 +232,7 @@ public class ManagePogDialog extends OkCancelDialog {
 		element = centerGrid.getCellFormatter().getElement(5, 0);
 		element.setAttribute("colspan", "3");
 	}
+
 	private void createTemplateName() {
 		templateNameLabel = new Label("Pog Name: ");
 		templateNameLabel.setStyleName("ribbonBarLabel");
@@ -211,6 +241,7 @@ public class ManagePogDialog extends OkCancelDialog {
 		templateName.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(0, 1, templateName);
 	}
+
 	/**
 	 * create template picture controls.
 	 */
@@ -226,6 +257,7 @@ public class ManagePogDialog extends OkCancelDialog {
 		element = centerGrid.getCellFormatter().getElement(1, 1);
 		element.setAttribute("colspan", "2");
 	}
+
 	/**
 	 * Create gender text.
 	 */
@@ -233,6 +265,9 @@ public class ManagePogDialog extends OkCancelDialog {
 		gender = new ListBox();
 		gender.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(2, 2, gender);
+		for (Gender pogGender : ServiceManager.getDungeonManager().getTemplateGenders()) {
+			gender.addItem(pogGender.getName(), pogGender.getName());
+		}
 	}
 
 	/**
@@ -252,6 +287,7 @@ public class ManagePogDialog extends OkCancelDialog {
 		race.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(2, 0, race);
 	}
+
 	private void createSizeControls() {
 		sizeLabel = new Label("Pog Size");
 		sizeLabel.setStyleName("ribbonBarLabel");
@@ -260,7 +296,11 @@ public class ManagePogDialog extends OkCancelDialog {
 		size.setStyleName("ribbonBarLabel");
 		size.setVisibleItemCount(1);
 		centerGrid.setWidget(3, 1, size);
+		for (String sizeName : ServiceManager.getDungeonManager().getPogSizes()) {
+			size.addItem(sizeName);
+		}
 	}
+
 	/**
 	 * Create controls for notes dialog.
 	 */
@@ -331,6 +371,107 @@ public class ManagePogDialog extends OkCancelDialog {
 	}
 
 	private void setupEventHandlers() {
+		pogCanvas.getImage().addLoadHandler(new LoadHandler() {
+			public void onLoad(final LoadEvent event) {
+				imageLoaded();
+			}
+		});
+
+		templateName.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				templateName.selectAll();
+			}
+		});
+		templateName.addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				validateForm();
+			}
+		});
+		templatePicture.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				templatePicture.selectAll();
+			}
+		});
+		templatePicture.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				showPog(validateUrl());
+			}
+		});
+		race.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				race.selectAll();
+			}
+		});
+		race.addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				validateForm();
+			}
+		});
+		templateClass.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				templateClass.selectAll();
+			}
+		});
+		templateClass.addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				validateForm();
+			}
+		});
+		playerFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				playerFlagDialog.setBits(pogToManage.getPlayerFlags());
+				playerFlagDialog.show();
+			}
+		});
+		playerFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogToManage.setPlayerFlagsNative(playerFlagDialog.getBits());
+			}
+		});
+		dmFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				dmFlagDialog.setBits(pogToManage.getDungeonMasterFlags());
+				dmFlagDialog.show();
+			}
+		});
+		dmFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogToManage.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
+			}
+		});
+		notesButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.show();
+			}
+		});
+		notesDialog.addSaveClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.hide();
+			}
+		});
+		notesDialog.addCancelClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.hide();
+			}
+		});
 	}
 
 	/**
@@ -345,23 +486,40 @@ public class ManagePogDialog extends OkCancelDialog {
 
 	/**
 	 * Edit this pog.
+	 * 
 	 * @param place place of pag
 	 * @param pogData data for pog
 	 */
-	public	void	editPog(final PogPlace place, final PogData pogData) {
+	public void editPog(final PogPlace place, final PogData pogData) {
 		this.place = place;
 		originalPlace = place;
-		pogToManage = pogData;
+		pogToManage = pogData.clone();
+		pogToManage.setUUID(pogData.getUUID());
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
-		handlePogCanvas(pogData);
+		setupDialogData(pogToManage);
 		show();
 	}
 
-	private void handlePogCanvas(final PogData pogData) {
+	private void setupDialogData(final PogData pogData) {
 		pogCanvas.showImage(false);
+		initializeControls();
+		disableCallbacks = true;
+		templateName.setText(pogData.getName());
+		templatePicture.setText(pogData.getImageUrl());
+		gender.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
+		race.setText(pogData.getRace());
+		templateClass.setText(pogData.getPogClass());
+		int pogSize = pogData.getSize() - 1;
+		if (pogSize < 0) {
+			pogSize = 0;
+		}
+		size.setSelectedIndex(pogSize);
 		pogCanvas.setPogData(pogData);
-		pogCanvas.showImage(true);
+		disableCallbacks = false;
+		showPog(validateUrl());
+		validateForm();
 	}
+
 	/**
 	 * Compute area pog can have.
 	 * 
@@ -376,11 +534,13 @@ public class ManagePogDialog extends OkCancelDialog {
 		}
 		return deltaTop - 10;
 	}
+
 	@Override
 	public final void onLoad() {
 		super.onLoad();
 		pogCanvas.setPogSizing(computePogSize(), 0.0, 1.0);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -414,6 +574,7 @@ public class ManagePogDialog extends OkCancelDialog {
 	protected void onDelete() {
 		hide();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -429,4 +590,112 @@ public class ManagePogDialog extends OkCancelDialog {
 	public int getMinHeight() {
 		return 400;
 	}
+
+	private void initializeControls() {
+		disableCallbacks = true;
+		templateName.setText("Enter Template Name");
+		templatePicture.setText("URL of Template Picture");
+		gender.setSelectedIndex(0);
+		race.setText("Enter Race");
+		templateClass.setText("Enter Class");
+		size.setSelectedIndex(0);
+		isValidTemplateName = false;
+		isValidTemplatePicture = false;
+		isValidRace = false;
+		isValidTemplateClass = false;
+		showPog(false);
+		enableControls();
+		disableCallbacks = false;
+	}
+
+	private void enableControls() {
+		enableWidget(templatePicture, isValidTemplateName);
+		enableWidget(gender, isValidTemplatePicture);
+		enableWidget(race, isValidTemplatePicture);
+		enableWidget(templateClass, isValidTemplatePicture);
+		enableWidget(size, isValidTemplatePicture);
+		enableWidget(playerFlagsButton, isValidTemplatePicture);
+		enableWidget(dmFlagsButton, isValidTemplatePicture);
+		enableWidget(notesButton, isValidTemplatePicture);
+		boolean everythingValid = isValidTemplateName && isValidTemplatePicture && isValidRace && isValidTemplateClass;
+		enableWidget(save, everythingValid);
+		enableWidget(delete, pogToManage.getUUID().length() > 0);
+
+	}
+
+	protected final void validateForm() {
+		if (disableCallbacks) {
+			return;
+		}
+		isValidTemplateName = validateTemplateName();
+		if (isValidTemplateName) {
+			isValidTemplateName = true;
+		}
+		validateUrl();
+		validateRace();
+		validateClass();
+		enableControls();
+	}
+
+	private void validateClass() {
+		String classString = templateClass.getValue();
+		isValidTemplateClass = !classString.startsWith("Enter") && classString.length() >= 3;
+		if (isValidTemplateClass) {
+			templateClass.removeStyleName("badLabel");
+		} else {
+			templateClass.addStyleName("badLabel");
+		}
+	}
+
+	private void validateRace() {
+		String raceString = race.getValue();
+		isValidRace = !raceString.startsWith("Enter") && raceString.length() >= 3;
+		if (isValidRace) {
+			race.removeStyleName("badLabel");
+		} else {
+			race.addStyleName("badLabel");
+		}
+	}
+
+	private boolean validateUrl() {
+		String filename = templatePicture.getValue();
+		int i = filename.lastIndexOf('.');
+		String fileExtension = i > 0 ? filename.substring(i + 1) : "";
+		boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
+		if (valid) {
+			templatePicture.removeStyleName("badLabel");
+		} else {
+			templatePicture.addStyleName("badLabel");
+		}
+		return valid;
+	}
+
+	/**
+	 * Show pog.
+	 * 
+	 * @param valid true if image if valid
+	 */
+	protected void showPog(final boolean valid) {
+		pogCanvas.setPogSizing(computePogSize(), 0.0, 1.0);
+		pogCanvas.showImage(valid);
+		if (valid) {
+			pogCanvas.setPogImageUrl(templatePicture.getValue());
+		}
+	}
+
+	private boolean validateTemplateName() {
+		boolean valid = ServiceManager.getDungeonManager().isValidNewMonsterName(templateName.getValue());
+		if (valid) {
+			templateName.removeStyleName("badLabel");
+		} else {
+			templateName.addStyleName("badLabel");
+		}
+		return valid;
+	}
+
+	private void imageLoaded() {
+		isValidTemplatePicture = validateUrl();
+		validateForm();
+	}
+
 }
