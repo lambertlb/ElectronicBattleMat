@@ -47,9 +47,23 @@ public class OkCancelDialog extends ResizableDialog {
 	 */
 	private Button ok;
 	/**
+	 * Get oK button.
+	 * @return OK button
+	 */
+	public Button getOk() {
+		return ok;
+	}
+	/**
 	 * Cancel button.
 	 */
 	private Button cancel;
+	/**
+	 * Get cancel button.
+	 * @return cancel button
+	 */
+	public Button getCancel() {
+		return cancel;
+	}
 	/**
 	 * Panel to hold center content.
 	 */
@@ -100,7 +114,7 @@ public class OkCancelDialog extends ResizableDialog {
 		setText(caption);
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z);
 		createContent(okVisible, cancelVisble);
-		ok.setVisible(okVisible);
+		getOk().setVisible(okVisible);
 		cancel.setVisible(cancelVisble);
 		dockLayoutPanel.setWidth("" + width + "px");
 		dockLayoutPanel.setHeight("" + height + "px");
@@ -119,14 +133,14 @@ public class OkCancelDialog extends ResizableDialog {
 		double southSize = (okVisible || cancelVisble) ? 30.0 : 0.0;
 		dockLayoutPanel.addSouth(southContent, southSize);
 		ok = new Button("Ok");
-		ok.addClickHandler(new ClickHandler() {
+		getOk().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(final ClickEvent event) {
 				onOkClick(event);
 			}
 		});
-		southContent.add(ok);
+		southContent.add(getOk());
 		cancel = new Button("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
 
@@ -187,7 +201,7 @@ public class OkCancelDialog extends ResizableDialog {
 	 * @param enable true to enable.
 	 */
 	public void enableOk(final boolean enable) {
-		enableWidget(ok, enable);
+		enableWidget(getOk(), enable);
 	}
 
 	/**
@@ -221,7 +235,7 @@ public class OkCancelDialog extends ResizableDialog {
 	 * @return top of ok button
 	 */
 	protected int getOkTop() {
-		return (ok.getAbsoluteTop());
+		return (getOk().getAbsoluteTop());
 	}
 
 	/**
@@ -230,7 +244,7 @@ public class OkCancelDialog extends ResizableDialog {
 	 * @return left of ok button
 	 */
 	protected int getOkLeft() {
-		return (ok.getAbsoluteLeft());
+		return (getOk().getAbsoluteLeft());
 	}
 
 	/**
@@ -239,7 +253,7 @@ public class OkCancelDialog extends ResizableDialog {
 	 * @param clickHandler to add
 	 */
 	public void addOkClickHandler(final ClickHandler clickHandler) {
-		ok.addClickHandler(clickHandler);
+		getOk().addClickHandler(clickHandler);
 	}
 
 	/**
@@ -249,5 +263,12 @@ public class OkCancelDialog extends ResizableDialog {
 	 */
 	public Widget getResizeWidget() {
 		return (dockLayoutPanel);
+	}
+	/**
+	 * Add button to dialog.
+	 * @param buttonToAdd button to add
+	 */
+	public void addButton(final Button buttonToAdd) {
+		southContent.add(buttonToAdd);
 	}
 }

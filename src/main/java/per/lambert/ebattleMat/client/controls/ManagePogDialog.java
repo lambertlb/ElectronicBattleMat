@@ -17,7 +17,6 @@ package per.lambert.ebattleMat.client.controls;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -25,11 +24,8 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -63,14 +59,6 @@ public class ManagePogDialog extends OkCancelDialog {
 	 */
 	private PogData pogToManage;
 	/**
-	 * Layout panel.
-	 */
-	private DockLayoutPanel dockLayoutPanel;
-	/**
-	 * Panel for buttons.
-	 */
-	private HorizontalPanel buttonPanel;
-	/**
 	 * Save changes button.
 	 */
 	private Button save;
@@ -82,10 +70,6 @@ public class ManagePogDialog extends OkCancelDialog {
 	 * Delete button.
 	 */
 	private Button delete;
-	/**
-	 * Panel to hold center content.
-	 */
-	private FlowPanel centerContent;
 	/**
 	 * grid for content.
 	 */
@@ -178,9 +162,17 @@ public class ManagePogDialog extends OkCancelDialog {
 	 * Is class valid.
 	 */
 	private boolean isValidTemplateClass;
+	/**
+	 * Where to Store Pog Drop down.
+	 */
+	private ListBox whereToStore;
+	/**
+	 * Where to store Pog Label.
+	 */
+	private Label whereToStoreLabel;
 
 	public ManagePogDialog() {
-		super("Manage Pog", false, false, 400, 400);
+		super("Manage Pog", true, true, 400, 400);
 		pogToManage = (PogData) JavaScriptObject.createObject().cast();
 		load();
 	}
@@ -194,23 +186,14 @@ public class ManagePogDialog extends OkCancelDialog {
 
 	private void createContent() {
 		createGrid();
-		dockLayoutPanel = new DockLayoutPanel(Unit.PX);
-		dockLayoutPanel.setStyleName("popupPanel");
-		dockLayoutPanel.setSize("100%", "100%");
 		addButtonSupport();
-		setWidget(dockLayoutPanel);
 	}
 
 	private void createGrid() {
-		centerContent = new FlowPanel();
-		centerContent.setHeight("100%");
-		centerContent.setWidth("100%");
-		centerGrid = new Grid();
-		centerGrid.setWidth("100%");
+		centerGrid = this.getCenterGrid();
 		centerGrid.resize(11, 3);
 		centerGrid.getColumnFormatter().setWidth(0, "20px");
 		centerGrid.getColumnFormatter().setWidth(1, "20px");
-		centerContent.add(centerGrid);
 		createTemplateName();
 		createTemplatePicture();
 		createRaceText();
@@ -220,8 +203,9 @@ public class ManagePogDialog extends OkCancelDialog {
 		createPlayerFlags();
 		createDMFlags();
 		createNotesDialog();
+		createPlaceToStore();
 		pogPanel = new FlowPanel();
-		centerGrid.setWidget(5, 0, pogPanel);
+		centerGrid.setWidget(6, 0, pogPanel);
 		pogCanvas = new PogCanvas();
 		pogCanvas.setShowNormalSizeOnly(true);
 		pogCanvas.setForceBackgroundColor(true);
@@ -229,8 +213,15 @@ public class ManagePogDialog extends OkCancelDialog {
 		pogPanel.add(pogCanvas);
 		Element element;
 		templatePictureLabel = new Label("Template Picture: ");
-		element = centerGrid.getCellFormatter().getElement(5, 0);
+		element = centerGrid.getCellFormatter().getElement(6, 0);
 		element.setAttribute("colspan", "3");
+	}
+
+	private void createPlaceToStore() {
+		whereToStoreLabel = new Label("Where to Store Pog");
+		centerGrid.setWidget(5, 0, whereToStoreLabel);
+		whereToStore = new ListBox();
+		centerGrid.setWidget(5, 1, whereToStore);
 	}
 
 	private void createTemplateName() {
@@ -311,6 +302,8 @@ public class ManagePogDialog extends OkCancelDialog {
 		notesDialog = new NotesFloatingWindow();
 		notesDialog.setModal(true);
 		notesDialog.getElement().getStyle().setZIndex(Constants.DIALOG_Z + 2);
+		notesDialog.center();
+		notesDialog.hide();
 	}
 
 	/**
@@ -321,6 +314,7 @@ public class ManagePogDialog extends OkCancelDialog {
 		dmFlagsButton.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(4, 1, dmFlagsButton);
 		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+		dmFlagDialog.getElement().getStyle().setZIndex(Constants.DIALOG_Z + 2);
 	}
 
 	/**
@@ -331,29 +325,28 @@ public class ManagePogDialog extends OkCancelDialog {
 		playerFlagsButton.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(4, 0, playerFlagsButton);
 		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
+		playerFlagDialog.getElement().getStyle().setZIndex(Constants.DIALOG_Z + 2);
 	}
 
 	/**
 	 * Add button support.
 	 */
 	private void addButtonSupport() {
-		buttonPanel = new HorizontalPanel();
-		save = new Button("Save");
+		save = this.getOk();
+		save.setText("Save");
 		save.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				onSave();
 			}
 		});
-		buttonPanel.add(save);
-		cancel = new Button("Cancel");
+		cancel = this.getCancel();
 		cancel.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				onCancel();
 			}
 		});
-		buttonPanel.add(cancel);
 		delete = new Button("Delete");
 		delete.addClickHandler(new ClickHandler() {
 			@Override
@@ -361,13 +354,10 @@ public class ManagePogDialog extends OkCancelDialog {
 				onDelete();
 			}
 		});
-		buttonPanel.add(delete);
+		this.addButton(delete);
 	}
 
 	private void initialize() {
-		dockLayoutPanel.clear();
-		dockLayoutPanel.addSouth(buttonPanel, 30);
-		dockLayoutPanel.add(centerContent);
 	}
 
 	private void setupEventHandlers() {
@@ -458,6 +448,7 @@ public class ManagePogDialog extends OkCancelDialog {
 			@Override
 			public void onClick(final ClickEvent event) {
 				notesDialog.show();
+				notesDialog.center();
 			}
 		});
 		notesDialog.addSaveClickHandler(new ClickHandler() {
@@ -504,20 +495,50 @@ public class ManagePogDialog extends OkCancelDialog {
 		pogCanvas.showImage(false);
 		initializeControls();
 		disableCallbacks = true;
-		templateName.setText(pogData.getName());
-		templatePicture.setText(pogData.getImageUrl());
+		if (pogData.getName() == "") {
+			templateName.setText("Enter Pog Name");
+		} else {
+			templateName.setText(pogData.getName());
+		}
+		if (pogData.getImageUrl() == "") {
+			templatePicture.setText("Url for picture");
+		} else {
+			templatePicture.setText(pogData.getImageUrl());
+		}
 		gender.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
-		race.setText(pogData.getRace());
-		templateClass.setText(pogData.getPogClass());
+		if (pogData.getRace() == "") {
+			race.setText("Enter Race");
+		} else {
+			race.setText(pogData.getRace());
+		}
+		if (pogData.getPogClass() == "") {
+			templateClass.setText("Enter Class");
+		} else {
+			templateClass.setText(pogData.getPogClass());
+		}
 		int pogSize = pogData.getSize() - 1;
 		if (pogSize < 0) {
 			pogSize = 0;
 		}
 		size.setSelectedIndex(pogSize);
 		pogCanvas.setPogData(pogData);
+		setupWhereToStore();
 		disableCallbacks = false;
 		showPog(validateUrl());
 		validateForm();
+	}
+
+	private void setupWhereToStore() {
+		boolean editingDungeon = ServiceManager.getDungeonManager().isEditMode();
+		whereToStore.clear();
+		whereToStore.addItem("Common Resource", "" + PogPlace.COMMON_RESOURCE);
+		whereToStore.addItem("Dungeon Resource", "" + PogPlace.DUNGEON_RESOURCE);
+		whereToStore.addItem("Dungeon Instance", "" + PogPlace.DUNGEON_INSTANCE);
+		if (!editingDungeon) {
+			whereToStore.addItem("Session Resource", "" + PogPlace.SESSION_RESOURCE);
+			whereToStore.addItem("Session Instance", "" + PogPlace.SESSION_INSTANCE);
+		}
+		whereToStore.setSelectedIndex(place.ordinal());
 	}
 
 	/**
@@ -547,10 +568,6 @@ public class ManagePogDialog extends OkCancelDialog {
 	@Override
 	protected void onWindowResized() {
 		super.onWindowResized();
-		int width = getDialogWidth();
-		int height = getDialogHeight();
-		dockLayoutPanel.setWidth("" + width + "px");
-		dockLayoutPanel.setHeight("" + height + "px");
 		pogCanvas.setPogSizing(computePogSize(), 0.0, 1.0);
 	}
 

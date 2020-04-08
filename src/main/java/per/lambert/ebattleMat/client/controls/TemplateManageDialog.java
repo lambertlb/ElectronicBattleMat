@@ -172,7 +172,8 @@ public class TemplateManageDialog extends OkCancelDialog {
 	/**
 	 * Dialog for managing pog.
 	 */
-	private ManagePogDialog	managePogDialog;
+	private ManagePogDialog managePogDialog;
+
 	/**
 	 * Constructor.
 	 * 
@@ -479,9 +480,9 @@ public class TemplateManageDialog extends OkCancelDialog {
 		playerFlagsButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-//				playerFlagDialog.setBits(pogData.getPlayerFlags());
-//				playerFlagDialog.show();
-				managePogDialog.editPog(PogPlace.COMMON_RESOURCE, pogData);
+				// playerFlagDialog.setBits(pogData.getPlayerFlags());
+				// playerFlagDialog.show();
+				managePogDialog.editPog(ServiceManager.getDungeonManager().computePlace(pogData), pogData);
 			}
 		});
 		playerFlagDialog.addOkClickHandler(new ClickHandler() {
@@ -636,8 +637,8 @@ public class TemplateManageDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Validate URL.
-	 * TODO move to dungeon manager
+	 * Validate URL. TODO move to dungeon manager
+	 * 
 	 * @return true if valid
 	 */
 	private boolean validateUrl() {
