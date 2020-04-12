@@ -17,6 +17,8 @@ package per.lambert.ebattleMat.client.controls;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -392,6 +394,12 @@ public class ManagePogDialog extends OkCancelDialog {
 				showPog(validateUrl());
 			}
 		});
+		size.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				onSizeChanged();
+			}
+		});
 		race.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -403,6 +411,12 @@ public class ManagePogDialog extends OkCancelDialog {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				validateForm();
+			}
+		});
+		gender.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				onGenderChanged();
 			}
 		});
 		templateClass.addClickHandler(new ClickHandler() {
@@ -461,6 +475,13 @@ public class ManagePogDialog extends OkCancelDialog {
 			@Override
 			public void onClick(final ClickEvent event) {
 				notesDialog.hide();
+			}
+		});
+		whereToStore.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(final ChangeEvent event) {
+				onPlaceChange(event);
 			}
 		});
 	}
@@ -575,7 +596,33 @@ public class ManagePogDialog extends OkCancelDialog {
 	 * Save pog data.
 	 */
 	protected void onSave() {
+		updatePogData();
+		if (place != originalPlace) {
+			pogToManage.setUUID(Constants.generateUUID());
+		}
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogToManage, place);
 		hide();
+	}
+
+	private void updatePogData() {
+		pogToManage.setName(templateName.getValue());
+		pogToManage.setImageUrl(templatePicture.getValue());
+		String raceString = race.getValue();
+		if (!raceString.startsWith("Enter")) {
+			pogToManage.setRace(raceString);
+		}
+		String classString = templateClass.getValue();
+		if (!classString.startsWith("Enter")) {
+			pogToManage.setPogClass(classString);
+		}
+	}
+	private void onGenderChanged() {
+		int index = gender.getSelectedIndex();
+		String genderName = Gender.valueOf(index).getName();
+		pogToManage.setGender(genderName);
+	}
+	private void onSizeChanged() {
+		pogToManage.setSize(size.getSelectedIndex() + 1);
 	}
 
 	/**
@@ -590,6 +637,14 @@ public class ManagePogDialog extends OkCancelDialog {
 	 */
 	protected void onDelete() {
 		hide();
+	}
+	/**
+	 * Place has changed.
+	 * @param event of change
+	 */
+	protected void onPlaceChange(final ChangeEvent event) {
+		String newPlaceString = whereToStore.getSelectedValue();
+		place = Enum.valueOf(PogPlace.class, newPlaceString);
 	}
 
 	/**
