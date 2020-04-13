@@ -681,6 +681,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 					}
 				}
 			}
+
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 			}
@@ -877,6 +878,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				public void onSuccess(final Object sender, final Object data) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				}
+
 				@Override
 				public void onError(final Object sender, final IErrorInformation error) {
 					lastError = error.getError();
@@ -1169,6 +1171,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param place to save
 	 */
 	private void addOrUpdatePogToServer(final PogData pog, final PogPlace place) {
+		updatePogToServer(pog, place, "ADDORUPDATEPOG");
+	}
+
+	private void updatePogToServer(final PogData pog, final PogPlace place, final String serviceName) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("dungeonUUID", selectedDungeon.getUUID());
 		if (selectedSession != null) {
@@ -1180,18 +1186,84 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		parameters.put("place", place.name());
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		String pogDataString = JsonUtils.stringify(pog);
-		dataRequester.requestData(pogDataString, "ADDORUPDATEPOG", parameters, new IUserCallback() {
+		dataRequester.requestData(pogDataString, serviceName, parameters, new IUserCallback() {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				if (editMode) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				}
 			}
+
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 			}
 		});
+	}
+
+	/**
+	 * Add or update Pog.
+	 * 
+	 * @param pog to add
+	 * @param place where to add
+	 */
+	@Override
+	public void deletePog(final PogData pog, final PogPlace place) {
+		if (place == PogPlace.COMMON_RESOURCE) {
+			deletePogFromCommonResource(pog);
+		} else if (place == PogPlace.SESSION_INSTANCE) {
+			deletePogFromSessionInstance(pog);
+		} else if (place == PogPlace.DUNGEON_INSTANCE) {
+			deletePogFromDungeonInstance(pog);
+		} else if (place == PogPlace.SESSION_RESOURCE) {
+			deletePogFromSessionResource(pog);
+		} else if (place == PogPlace.DUNGEON_RESOURCE) {
+			deletePogFromDungeonResource(pog);
+		} else if (place == PogPlace.INVALID) {
+			return;
+		}
+		deletePogFromServer(pog, place);
+		if (pog.isEqual(getSelectedPog())) {
+			setSelectedPogInternal(null);
+		}
+	}
+
+	private void deletePogFromSessionInstance(final PogData pog) {
+		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+		if (sessionLevel == null) {
+			return;
+		}
+		if (pog.isThisAMonster()) {
+			sessionLevel.getMonsters().deletePog(pog);
+		} else if (pog.isThisARoomObject()) {
+			sessionLevel.getRoomObjects().deletePog(pog);
+		} else if (pog.isThisAPlayer()) {
+			deletePogFromSessionResource(pog);
+		}
+	}
+
+	private void deletePogFromDungeonInstance(final PogData pog) {
+		DungeonLevel dungeonLevel = getCurrentDungeonLevelData();
+		if (pog.isThisAMonster()) {
+			dungeonLevel.getMonsters().deletePog(pog);
+		} else if (pog.isThisARoomObject()) {
+			dungeonLevel.getRoomObjects().deletePog(pog);
+		}
+	}
+
+	private void deletePogFromSessionResource(final PogData pog) {
+		if (pog.isThisAPlayer()) {
+			DungeonSessionData sessionData = getSelectedSession();
+			sessionData.getPlayers().deletePog(pog);
+		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
+	}
+
+	private void deletePogFromDungeonResource(final PogData pog) {
+	}
+
+	private void deletePogFromServer(final PogData pog, final PogPlace place) {
+		updatePogToServer(pog, place, "DELETPOG");
 	}
 
 	/**

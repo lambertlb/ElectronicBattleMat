@@ -49,9 +49,7 @@ import per.lambert.ebattleMat.server.serviceData.PogList;
 /**
  * Manager for dungeon information.
  * 
- * This is a static class that serves as a central handlers for all service requests.
- * It does a lock on the data so requests are serialized.
- * This means that if two people make changes to the same dungeon data then last one wins. This will also cache
+ * This is a static class that serves as a central handlers for all service requests. It does a lock on the data so requests are serialized. This means that if two people make changes to the same dungeon data then last one wins. This will also cache
  * session data to minimize the amount of data being accessed on disk.
  * 
  * @author LLambert
@@ -917,5 +915,85 @@ public final class DungeonsManager {
 	 * @param pogData pog data
 	 */
 	private static void addOrUpdatePogToDungeonResource(final PogData pogData) {
+	}
+
+	/**
+	 * Delete this Pog.
+	 * 
+	 * @param servlet servlet data
+	 * @param dungeonUUID UUID of dungeon
+	 * @param sessionUUID UUID of session
+	 * @param level level in dungeon
+	 * @param place place where to add
+	 * @param pogJsonData JSON data of Pog
+	 * @throws IOException thrown if error
+	 */
+	public static void deletePog(final HttpServlet servlet, final String dungeonUUID, final String sessionUUID, final int level, final PogPlace place, final String pogJsonData) throws IOException {
+		lock.lock();
+		try {
+			Gson gson = new Gson();
+			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
+			if (place == PogPlace.COMMON_RESOURCE) {
+				deletePogFromCommonResource(servlet, pogData);
+			} else if (place == PogPlace.DUNGEON_INSTANCE) {
+				deletePogFromDungeonInstance(servlet, pogData, dungeonUUID, level);
+			} else if (place == PogPlace.SESSION_RESOURCE) {
+				deletePogFromSessionResource(servlet, pogData, dungeonUUID, sessionUUID, level);
+			} else if (place == PogPlace.SESSION_INSTANCE) {
+				deletePogFromSessionInstance(servlet, pogData, dungeonUUID, sessionUUID, level);
+			} else if (place == PogPlace.DUNGEON_RESOURCE) {
+				deletePogfromDungeonResource(pogData);
+			}
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private static void deletePogFromCommonResource(final HttpServlet servlet, final PogData pogData) throws IOException {
+		if (pogData.isType(Constants.POG_TYPE_MONSTER)) {
+			deletePogFromCommonResource(servlet, pogData, Constants.MONSTER_FOLDER);
+		} else if (pogData.isType(Constants.POG_TYPE_ROOMOBJECT)) {
+			deletePogFromCommonResource(servlet, pogData, Constants.ROOM_OBJECT_FOLDER);
+		}
+	}
+
+	private static void deletePogFromCommonResource(final HttpServlet servlet, final PogData pogData, final String folder) throws IOException {
+		String resourcePath = Constants.SERVER_RESOURCE_LOCATION + folder + "pogs.json";
+		URL servletPath = servlet.getServletContext().getResource("/");
+		String filePath = servletPath.getPath() + resourcePath;
+		String fileData = readJsonFile(filePath);
+		Gson gson = new Gson();
+		PogList pogList = gson.fromJson(fileData, PogList.class);
+		pogList.delete(pogData);
+		String updatedData = gson.toJson(pogList);
+		saveJsonFile(updatedData, filePath);
+	}
+
+	private static void deletePogFromDungeonInstance(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final int level) throws IOException {
+		DungeonData dungeonData = getDungeonDataFromUUID(servlet, dungeonUUID);
+		DungeonLevel dungeonLevel = dungeonData.getDungeonLevels()[level];
+		if (pogData.isType(Constants.POG_TYPE_MONSTER)) {
+			dungeonLevel.getMonsters().delete(pogData);
+		} else if (pogData.isType(Constants.POG_TYPE_ROOMOBJECT)) {
+			dungeonLevel.getRoomObjects().delete(pogData);
+		}
+		Gson gson = new Gson();
+		String jsonData = gson.toJson(dungeonData);
+		saveDungeonData(servlet, jsonData, dungeonUUID);
+	}
+
+	private static void deletePogFromSessionResource(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final String sessionUUID, final int level) throws IOException {
+		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+		if (pogData.isType(Constants.POG_TYPE_PLAYER)) {
+			sessionInformation.delete(pogData, level);
+		}
+	}
+
+	private static void deletePogFromSessionInstance(final HttpServlet servlet, final PogData pogData, final String dungeonUUID, final String sessionUUID, final int level) throws IOException {
+		SessionInformation sessionInformation = getSessionInformation(servlet, dungeonUUID, sessionUUID);
+		sessionInformation.delete(pogData, level);
+	}
+
+	private static void deletePogfromDungeonResource(final PogData pogData) throws IOException {
 	}
 }

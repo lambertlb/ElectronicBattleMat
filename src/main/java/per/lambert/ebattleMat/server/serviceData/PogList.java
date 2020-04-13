@@ -100,4 +100,27 @@ public class PogList {
 		}
 		return (newList);
 	}
+
+	/**
+	 * Delete this pog from list.
+	 * 
+	 * @param pog to delete
+	 */
+	public void delete(final PogData pog) {
+		PogData[] newList = new PogData[pogList.length - 1];
+		boolean found = false;
+		int j = 0;
+		for (int i = 0; i < pogList.length; ++i) {
+			if (!pogList[i].equals(pog)) {
+				if (j < newList.length) {
+					newList[j++] = pog;
+				}
+			} else {
+				found = true;
+			}
+		}
+		if (found) {
+			pogList = newList;
+		}
+	}
 }

@@ -636,6 +636,7 @@ public class ManagePogDialog extends OkCancelDialog {
 	 * Delete pog.
 	 */
 	protected void onDelete() {
+		ServiceManager.getDungeonManager().deletePog(pogToManage, place);
 		hide();
 	}
 	/**

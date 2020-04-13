@@ -360,6 +360,12 @@ public interface IDungeonManager extends IPogManager {
 	void addOrUpdatePog(PogData pog, PogPlace place);
 
 	/**
+	 * Delete pog from proper place.
+	 * @param pog to delete
+	 * @param place to delete
+	 */
+	void deletePog(PogData pog, PogPlace place);
+	/**
 	 * Compute place pog should go.
 	 * 
 	 * @param pog to put

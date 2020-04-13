@@ -240,6 +240,7 @@ public class SessionInformation {
 
 	/**
 	 * Add or update pog.
+	 * 
 	 * @param pogData to add
 	 * @param currentLevel where to add
 	 */
@@ -255,6 +256,7 @@ public class SessionInformation {
 		sessionData.increamentVersion();
 		dirty = true;
 	}
+
 	/**
 	 * Save if dirty.
 	 */
@@ -280,6 +282,25 @@ public class SessionInformation {
 			return;
 		}
 		sessionLevel.updateFOW(fowData);
+		sessionData.increamentVersion();
+		dirty = true;
+	}
+
+	/**
+	 * Delete pog from session.
+	 * 
+	 * @param pogData to add
+	 * @param currentLevel where to add
+	 */
+	public void delete(final PogData pogData, final int currentLevel) {
+		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
+		if (pogData.isType(Constants.POG_TYPE_MONSTER)) {
+			sessionLevel.getMonsters().delete(pogData);
+		} else if (pogData.isType(Constants.POG_TYPE_ROOMOBJECT)) {
+			sessionLevel.getRoomObjects().delete(pogData);
+		} else if (pogData.isType(Constants.POG_TYPE_PLAYER)) {
+			sessionData.getPlayers().delete(pogData);
+		}
 		sessionData.increamentVersion();
 		dirty = true;
 	}

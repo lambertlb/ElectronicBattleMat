@@ -448,6 +448,23 @@ public abstract class PogManager implements IPogManager {
 		}
 		rebuildMonsterCollections();
 	}
+	/**
+	 * Delete pog from common resource area.
+	 * 
+	 * @param pog to add
+	 */
+	protected void deletePogFromCommonResource(final PogData pog) {
+		if (pog.isThisAMonster()) {
+			if (findMonsterPog(pog.getUUID()) == null) {
+				monsterTemplatePogs.deletePog(pog);
+			}
+			return;
+		}
+		if (findRoomObjectPog(pog.getUUID()) == null) {
+			roomObjectTemplatePogs.deletePog(pog);
+		}
+		rebuildMonsterCollections();
+	}
 
 	/**
 	 * Is this Pog a template.
