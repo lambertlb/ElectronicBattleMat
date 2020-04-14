@@ -113,7 +113,7 @@ public class PogList {
 		for (int i = 0; i < pogList.length; ++i) {
 			if (!pogList[i].equals(pog)) {
 				if (j < newList.length) {
-					newList[j++] = pog;
+					newList[j++] = pogList[i];
 				}
 			} else {
 				found = true;

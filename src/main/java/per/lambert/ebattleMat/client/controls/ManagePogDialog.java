@@ -478,7 +478,7 @@ public class ManagePogDialog extends OkCancelDialog {
 			}
 		});
 		whereToStore.addChangeHandler(new ChangeHandler() {
-			
+
 			@Override
 			public void onChange(final ChangeEvent event) {
 				onPlaceChange(event);
@@ -592,18 +592,6 @@ public class ManagePogDialog extends OkCancelDialog {
 		pogCanvas.setPogSizing(computePogSize(), 0.0, 1.0);
 	}
 
-	/**
-	 * Save pog data.
-	 */
-	protected void onSave() {
-		updatePogData();
-		if (place != originalPlace) {
-			pogToManage.setUUID(Constants.generateUUID());
-		}
-		ServiceManager.getDungeonManager().addOrUpdatePog(pogToManage, place);
-		hide();
-	}
-
 	private void updatePogData() {
 		pogToManage.setName(templateName.getValue());
 		pogToManage.setImageUrl(templatePicture.getValue());
@@ -616,13 +604,27 @@ public class ManagePogDialog extends OkCancelDialog {
 			pogToManage.setPogClass(classString);
 		}
 	}
+
 	private void onGenderChanged() {
 		int index = gender.getSelectedIndex();
 		String genderName = Gender.valueOf(index).getName();
 		pogToManage.setGender(genderName);
 	}
+
 	private void onSizeChanged() {
 		pogToManage.setSize(size.getSelectedIndex() + 1);
+	}
+
+	/**
+	 * Save pog data.
+	 */
+	protected void onSave() {
+		updatePogData();
+		if (place != originalPlace) {
+			pogToManage.setUUID(Constants.generateUUID());
+		}
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogToManage, place);
+		hide();
 	}
 
 	/**
@@ -639,8 +641,10 @@ public class ManagePogDialog extends OkCancelDialog {
 		ServiceManager.getDungeonManager().deletePog(pogToManage, place);
 		hide();
 	}
+
 	/**
 	 * Place has changed.
+	 * 
 	 * @param event of change
 	 */
 	protected void onPlaceChange(final ChangeEvent event) {

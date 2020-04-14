@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
 import per.lambert.ebattleMat.client.controls.FlagBitsDialog;
 import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
+import per.lambert.ebattleMat.client.controls.ManagePogDialog;
 import per.lambert.ebattleMat.client.controls.NotesFloatingWindow;
 import per.lambert.ebattleMat.client.controls.SelectedPogFloatingWindow;
 import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
@@ -135,11 +136,11 @@ public class RibbonBar extends Composite {
 	/**
 	 * Room objects manager button.
 	 */
-	private Button roomObjectsManageButton;
+	private Button pogEditor;
 	/**
 	 * Monster manage dialog.
 	 */
-	private TemplateManageDialog roomObjectsManage;
+	private ManagePogDialog pogEitorDialog;
 	/**
 	 * Button for player flags.
 	 */
@@ -294,16 +295,19 @@ public class RibbonBar extends Composite {
 		});
 		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER);
 
-		roomObjectsManageButton = new Button("Room Object Editor...");
-		roomObjectsManageButton.addStyleName("ribbonBarLabel");
-		roomObjectsManageButton.addClickHandler(new ClickHandler() {
+		pogEditor = new Button("Pog Editor...");
+		pogEditor.addStyleName("ribbonBarLabel");
+		pogEditor.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				roomObjectsManage.show();
+				PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+				if (selectedPog != null) {
+					pogEitorDialog.editPog(ServiceManager.getDungeonManager().computePlace(selectedPog), selectedPog);
+				}
 			}
 		});
-		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT);
+		pogEitorDialog = new ManagePogDialog();
 
 		playerFlagsButton = new Button("Player Controlled Properties...");
 		playerFlagsButton.setStyleName("ribbonBarLabel");
@@ -468,7 +472,7 @@ public class RibbonBar extends Composite {
 	private void setupForCommonDMControls() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
 		ribbonGrid.setWidget(1, 0, levelOptions);
-		ribbonGrid.setWidget(0, 1, roomObjectsManageButton);
+		ribbonGrid.setWidget(0, 1, pogEditor);
 		ribbonGrid.setWidget(1, 1, monsterManageButton);
 		ribbonGrid.setWidget(0, 2, playerFlagsButton);
 		ribbonGrid.setWidget(1, 2, dmFlagsButton);

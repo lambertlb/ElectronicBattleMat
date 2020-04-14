@@ -1190,7 +1190,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				if (editMode) {
-					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataSaved, null));
 				}
 			}
 
@@ -1224,7 +1224,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 		deletePogFromServer(pog, place);
 		if (pog.isEqual(getSelectedPog())) {
-			setSelectedPogInternal(null);
+			setSelectedPog(null);
 		}
 	}
 
