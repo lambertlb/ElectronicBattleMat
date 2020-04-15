@@ -207,7 +207,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return size of pog.
 	 */
 	public int getPogSize() {
-		return pogData.getSize();
+		return pogData != null ? pogData.getSize() : 50;
 	}
 
 	/**
@@ -216,7 +216,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param pogSize pog size.
 	 */
 	public void setPogSize(final int pogSize) {
-		pogData.setSize(pogSize);
+		if (pogData != null) {
+			pogData.setSize(pogSize);
+		}
 	}
 
 	/**
@@ -277,7 +279,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	public PogCanvas() {
 		initWidget(uiBinder.createAndBindUi(this));
-		pogData = (PogData) JavaScriptObject.createObject().cast();
+		pogData = null;
 		createContent();
 	}
 
@@ -363,12 +365,13 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
 		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
 		imageLoaded = false;
-		if (pogData.getImageUrl() != "") {
-			setPogImageUrl(pogData.getImageUrl());
-		} else {
-			showImage = false;
+		showImage = pogData != null;
+		if (pogData != null) {
+			if (pogData.getImageUrl() != "") {
+				setPogImageUrl(pogData.getImageUrl());
+			}
+			pogMainPanel.setTitle(pogData.getName());
 		}
-		pogMainPanel.setTitle(pogData.getName());
 	}
 
 	/**
@@ -379,6 +382,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private String getBackgroundColor(final PogData pogData) {
 		String color = "white";
+		if (pogData == null) {
+			return (color);
+		}
 		if (forceBackgroundColor) {
 			if (pogData.isFlagSet(DungeonMasterFlag.DARK_BACKGROUND)) {
 				color = "black";
@@ -466,8 +472,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param nameoFPog name of pog.
 	 */
 	public void setPogName(final String nameoFPog) {
-		pogData.setName(nameoFPog);
-		pogMainPanel.setTitle(pogData.getName());
+		if (pogData != null) {
+			pogData.setName(nameoFPog);
+			pogMainPanel.setTitle(pogData.getName());
+		}
 	}
 
 	/**
@@ -476,7 +484,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return pog name
 	 */
 	public String getPogName() {
-		return (pogData.getName());
+		return (pogData != null ? pogData.getName() : "");
 	}
 
 	/**
@@ -486,8 +494,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param row to use
 	 */
 	public void setPogPosition(final int column, final int row) {
-		pogData.setColumn(column);
-		pogData.setRow(row);
+		if (pogData != null) {
+			pogData.setColumn(column);
+			pogData.setRow(row);
+		}
 	}
 
 	/**
@@ -496,7 +506,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return column
 	 */
 	public int getPogColumn() {
-		return (pogData.getColumn());
+		return (pogData != null ? pogData.getColumn() : 0);
 	}
 
 	/**
@@ -505,7 +515,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return row
 	 */
 	public int getPogRow() {
-		return (pogData.getRow());
+		return (pogData != null ? pogData.getRow() : 0);
 	}
 
 	/**
@@ -514,7 +524,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param level in dungeon
 	 */
 	public void setPogDungeonLevel(final int level) {
-		pogData.setDungeonLevel(level);
+		if (pogData != null) {
+			pogData.setDungeonLevel(level);
+		}
 	}
 
 	/**
@@ -527,7 +539,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	public void setPogSizing(final double width, final double borderSize, final double zoomFactor) {
 		scaledWidth = width;
 		this.zoomFactor = zoomFactor;
-		if (!showNormalSizeOnly) {
+		if (!showNormalSizeOnly && pogData != null) {
 			scaledWidth *= pogData.getSize();
 		}
 		scaledWidth -= 2 * borderSize;
@@ -542,6 +554,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param pogImageUrl URL for image
 	 */
 	public void setPogImageUrl(final String pogImageUrl) {
+		if (pogData == null) {
+			return;
+		}
 		imageLoaded = false;
 		pogData.setImageUrl(pogImageUrl);
 		String imageUrl;
@@ -573,7 +588,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Handle all canvas drawing.
 	 */
 	public final void handleAllDrawing() {
-		if (!pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
+		if (pogData != null && !pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
 			context.setFillStyle("white");
 			context.fillRect(0, 0, parentWidth, parentHeight);
 		}
@@ -592,14 +607,14 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return true if is
 	 */
 	public boolean isInVisibleToPlayer() {
-		return (!showNormalSizeOnly && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)));
+		return (!showNormalSizeOnly && pogData != null && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)));
 	}
 
 	/**
 	 * Draw overlays on canvas over picture.
 	 */
 	private void drawOverlays() {
-		if (showNormalSizeOnly) {
+		if (showNormalSizeOnly || pogData == null) {
 			return;
 		}
 		if (pogData.isFlagSet(PlayerFlag.DEAD)) {
@@ -644,7 +659,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		if (ServiceManager.getDungeonManager().getFowToggle()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
 		} else {
-			ServiceManager.getDungeonManager().setSelectedPog(pogData);
+			if (pogData != null) {
+				ServiceManager.getDungeonManager().setSelectedPog(pogData);
+			}
 		}
 	}
 }

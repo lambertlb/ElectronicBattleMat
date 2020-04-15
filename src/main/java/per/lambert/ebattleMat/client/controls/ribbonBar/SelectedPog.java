@@ -127,11 +127,11 @@ public class SelectedPog extends Composite {
 	 */
 	public void pogSelected() {
 		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-		if (selectedPog == null || hostPanel == null) {
+		if (hostPanel == null) {
 			return;
 		}
 
-		scalablePog.showImage(true);
+		scalablePog.showImage(selectedPog != null);
 		scalablePog.setPogData(selectedPog, true);
 		reDraw();
 	}
