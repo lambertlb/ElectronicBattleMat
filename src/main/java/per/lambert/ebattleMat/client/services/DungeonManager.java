@@ -681,6 +681,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 					}
 				}
 			}
+
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 			}
@@ -877,6 +878,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				public void onSuccess(final Object sender, final Object data) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				}
+
 				@Override
 				public void onError(final Object sender, final IErrorInformation error) {
 					lastError = error.getError();
@@ -1187,6 +1189,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				}
 			}
+
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
@@ -1235,5 +1238,39 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return (getCommonRaces(pogType));
 		}
 		return (new String[0]);
+	}
+
+	/**
+	 * Set hide FOW.
+	 * 
+	 * @param hideFOW true if changing.
+	 */
+	@Override
+	public void setHideFOW(final boolean hideFOW) {
+		if (hideFOW) {
+			hideFOW();
+		} else {
+			showSavedFOW();
+		}
+		updateFogOfWar();
+	}
+
+	/**
+	 * Saved FOW.
+	 */
+	private boolean[][] savedFOW;
+
+	private void hideFOW() {
+		savedFOW = getCurrentSessionLevelData().getFOW();
+		boolean[][] fogOfWar = new boolean[getCurrentDungeonLevelData().getColumns()][getCurrentDungeonLevelData().getRows()];
+		getCurrentSessionLevelData().setFOW(fogOfWar);
+	}
+
+	private void showSavedFOW() {
+		if (savedFOW == null) {
+			return;
+		}
+		getCurrentSessionLevelData().setFOW(savedFOW);
+		savedFOW = null;
 	}
 }

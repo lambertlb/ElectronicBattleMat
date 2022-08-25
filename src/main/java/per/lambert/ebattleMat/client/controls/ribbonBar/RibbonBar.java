@@ -176,6 +176,10 @@ public class RibbonBar extends Composite {
 	 * Link to help.
 	 */
 	private Anchor helpLink;
+	/**
+	 * Hide FOW.
+	 */
+	private CheckBox hideFOW;
 
 	/**
 	 * Constructor.
@@ -241,6 +245,16 @@ public class RibbonBar extends Composite {
 			}
 		});
 		helpLink = new Anchor("Help", "/help.html", "_blank");
+		hideFOW = new CheckBox("Hide FOW");
+		hideFOW.addStyleName("ribbonBarLabel");
+		hideFOW.getElement().getStyle().setBackgroundColor("white");
+		hideFOW.setTitle("Hide Fog of War");
+		hideFOW.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				ServiceManager.getDungeonManager().setHideFOW(hideFOW.getValue());
+			}
+		});
 	}
 
 	/**
@@ -459,6 +473,7 @@ public class RibbonBar extends Composite {
 			ribbonGrid.setWidget(0, 6, characterSelect);
 			ribbonGrid.setWidget(1, 6, createCharacter);
 			ribbonGrid.setWidget(0, 7, helpLink);
+			ribbonGrid.setWidget(1, 7, hideFOW);
 		}
 	}
 

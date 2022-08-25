@@ -415,4 +415,11 @@ public interface IDungeonManager extends IPogManager {
 	 * @return directory for the current dungeon.
 	 */
 	String getDirectoryForCurrentDungeon();
+
+	/**
+	 * Set hide FOW.
+	 * 
+	 * @param hideFOW true if changing.
+	 */
+	void setHideFOW(boolean hideFOW);
 }
