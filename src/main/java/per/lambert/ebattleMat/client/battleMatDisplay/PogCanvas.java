@@ -325,17 +325,13 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		pogDrawPanel.addDomHandler(new MouseUpHandler() {
 			@Override
 			public void onMouseUp(final MouseUpEvent event) {
-				if (ServiceManager.getDungeonManager().getFowToggle()) {
-					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseUpEventBubble, event));
-				}
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseUpEventBubble, event));
 			}
 		}, MouseUpEvent.getType());
 		pogDrawPanel.addDomHandler(new MouseMoveHandler() {
 			@Override
 			public void onMouseMove(final MouseMoveEvent event) {
-				if (ServiceManager.getDungeonManager().getFowToggle()) {
-					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseMoveEventBubble, event));
-				}
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseMoveEventBubble, event));
 			}
 		}, MouseMoveEvent.getType());
 	}
@@ -630,7 +626,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	@Override
 	public void onMouseDown(final MouseDownEvent event) {
-		if (ServiceManager.getDungeonManager().getFowToggle()) {
+		if (ServiceManager.getDungeonManager().getFowToggle() || event.isShiftKeyDown()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
 		} else {
 			ServiceManager.getDungeonManager().setSelectedPog(pogData);

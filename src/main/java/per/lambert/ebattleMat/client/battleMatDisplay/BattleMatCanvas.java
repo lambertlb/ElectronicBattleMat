@@ -484,8 +484,13 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	public final void onMouseDown(final MouseDownEvent event) {
 		mouseDownXPos = event.getRelativeX(image.getElement());
 		mouseDownYPos = event.getRelativeY(image.getElement());
+		if (event.isShiftKeyDown()) {
+			toggleFOW = true;
+		} else {
+			toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
+		}
 		checkForFOWHandling(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
-		this.mouseDown = !toggleFOW;
+		this.mouseDown = true;
 	}
 
 	/**
@@ -495,7 +500,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param clientY Y Coordinate of operation.
 	 */
 	private void checkForFOWHandling(final int clientX, final int clientY) {
-		toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
 		computeSelectedColumnAndRow(clientX, clientY);
 		clearFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
 		if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
@@ -507,7 +511,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * {@inheritDoc}
 	 */
 	public final void onMouseMove(final MouseMoveEvent event) {
-		if (mouseDown) {
+		if (!mouseDown) {
+			return;
+		}
+		if (!toggleFOW) {
 			handleMouseMoveWhilePanning(event);
 		} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
 			handleFowMouseMove(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
@@ -1163,6 +1170,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	protected void doPanStart(final PanStartEvent event) {
 		mouseDownXPos = getRelativeX(event.getTouchInformation(), canvas.getElement());
 		mouseDownYPos = getRelativeY(event.getTouchInformation(), canvas.getElement());
+		toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
 		checkForFOWHandling(event.getTouchInformation().getClientX(), event.getTouchInformation().getClientY());
 		this.mouseDown = !toggleFOW;
 	}
