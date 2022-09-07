@@ -422,4 +422,12 @@ public interface IDungeonManager extends IPogManager {
 	 * @param hideFOW true if changing.
 	 */
 	void setHideFOW(boolean hideFOW);
+	
+	/**
+	 * Is this coordinate in FOW map.
+	 * @param column to check
+	 * @param row to check
+	 * @return true if is
+	 */
+	boolean isInFOWMap(int column, int row);
 }

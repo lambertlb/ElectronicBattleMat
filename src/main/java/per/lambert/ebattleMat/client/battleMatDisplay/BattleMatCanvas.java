@@ -42,6 +42,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -482,17 +483,26 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * {@inheritDoc}
 	 */
 	public final void onMouseDown(final MouseDownEvent event) {
-		mouseDownXPos = event.getRelativeX(image.getElement());
-		mouseDownYPos = event.getRelativeY(image.getElement());
-		if (event.isShiftKeyDown()) {
-			toggleFOW = true;
-		} else {
-			toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
+		if (DOM.getCaptureElement() == null) {
+			mouseDownXPos = event.getRelativeX(image.getElement());
+			mouseDownYPos = event.getRelativeY(image.getElement());
+			if (event.isShiftKeyDown()) {
+				toggleFOW = true;
+			} else {
+				toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
+			}
+			checkForFOWHandling(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+			DOM.setCapture(canvas.getElement());
+			this.mouseDown = true;
 		}
-		checkForFOWHandling(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
-		this.mouseDown = true;
 	}
 
+	public final boolean isSelectedVisible(final int clientX, final int clientY) {
+		if (clientX < 0 || clientY < 0) {
+			return (false);
+		}
+		return (ServiceManager.getDungeonManager().isInFOWMap(selectedColumn, selectedRow));
+	}
 	/**
 	 * Check if we need to handle fog of war.
 	 * 
@@ -501,6 +511,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void checkForFOWHandling(final int clientX, final int clientY) {
 		computeSelectedColumnAndRow(clientX, clientY);
+		if (!isSelectedVisible(clientX, clientY)) {
+			return;
+		}
 		clearFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
 		if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
 			handleProperFOWAtSelectedPosition();
@@ -529,7 +542,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void handleFowMouseMove(final int clientX, final int clientY) {
 		computeSelectedColumnAndRow(clientX, clientY);
-		handleProperFOWAtSelectedPosition();
+		if (isSelectedVisible(clientX, clientY)) {
+			handleProperFOWAtSelectedPosition();
+		}
 	}
 
 	/**
@@ -573,6 +588,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	public final void onMouseUp(final MouseUpEvent event) {
 		panOperationComplete();
+		DOM.releaseCapture(canvas.getElement());
 	}
 
 	/**

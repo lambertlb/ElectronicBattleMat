@@ -1273,4 +1273,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		getCurrentSessionLevelData().setFOW(savedFOW);
 		savedFOW = null;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isInFOWMap(final int column, final int row) {
+		return (column >= 0 && row >= 0 && column < getCurrentDungeonLevelData().getColumns() && row < getCurrentDungeonLevelData().getRows());
+	}
 }
