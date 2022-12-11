@@ -22,6 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
@@ -38,14 +39,19 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
@@ -229,6 +235,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * True to force a background color even if transparent is set.
 	 */
 	private boolean forceBackgroundColor = false;
+	/**
+	 * popup menu.
+	 */
+	private PopupPanel popup;
 
 	/**
 	 * get force background color.
@@ -276,10 +286,11 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * 
 	 * @param pogData data for pog
 	 */
-	public PogCanvas(final PogData pogData) {
+	public PogCanvas(final PogData pogData, final PopupPanel popup) {
 		initWidget(uiBinder.createAndBindUi(this));
 		createContent();
 		setupWithPogData(pogData);
+		this.popup = popup;
 	}
 
 	/**
@@ -343,7 +354,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private void setupWithPogData(final PogData pogData) {
 		this.pogData = pogData;
-		forceBackgroundColor =  ServiceManager.getDungeonManager().isEditMode();
+		forceBackgroundColor = ServiceManager.getDungeonManager().isEditMode();
 		String backgroundColor = getBackgroundColor(pogData);
 		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
 		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
@@ -630,6 +641,12 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
 		} else {
 			ServiceManager.getDungeonManager().setSelectedPog(pogData);
+			if (event.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
+				if (popup != null) {
+					popup.setPopupPosition(event.getClientX(), event.getClientY());
+					popup.show();
+				}
+			}
 		}
 	}
 }

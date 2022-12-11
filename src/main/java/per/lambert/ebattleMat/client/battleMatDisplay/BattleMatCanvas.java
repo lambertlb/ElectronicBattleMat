@@ -24,6 +24,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
@@ -42,10 +44,16 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
@@ -53,6 +61,7 @@ import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
@@ -239,6 +248,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Distance between fingers.
 	 */
 	private double distanceBetweenFingers;
+	/**
+	 * popup menu.
+	 */
+	private PopupPanel popup;
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -254,6 +267,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		intializeView();
 		showGrid = false;
 		touchHelper = new TouchHelper(canvas);
+		createContextMenu();
 		setupDragAndDrop();
 		setupEventHandling();
 	}
@@ -268,6 +282,45 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		super.add(fowCanvas, 0, 0);
 		super.add(hidePanel, -1, -1);
 		super.add(greyOutPanel, 100, 100);
+	}
+
+	private void createContextMenu() {
+		popup = new PopupPanel(true);
+		popup.getElement().getStyle().setZIndex(1000);
+		MenuBar menu = new MenuBar(true);
+		menu.getElement().getStyle().setZIndex(1000);
+		MenuBar fileMenu = new MenuBar(true);
+
+		fileMenu.addItem(createmenuItem("Dead Toggle", new Command() {
+			@Override
+			public void execute() {
+				if (ServiceManager.getDungeonManager().getSelectedPog().isFlagSet(PlayerFlag.DEAD)) {
+					ServiceManager.getDungeonManager().getSelectedPog().clearFlags(PlayerFlag.DEAD);
+				} else {
+					ServiceManager.getDungeonManager().getSelectedPog().setFlags(PlayerFlag.DEAD);
+				}
+				ServiceManager.getDungeonManager().addOrUpdatePog(ServiceManager.getDungeonManager().getSelectedPog());
+			}
+		}));
+		fileMenu.addItem(createmenuItem("Invisible Toggle", new Command() {
+			@Override
+			public void execute() {
+				if (ServiceManager.getDungeonManager().getSelectedPog().isFlagSet(PlayerFlag.INVISIBLE)) {
+					ServiceManager.getDungeonManager().getSelectedPog().clearFlags(PlayerFlag.INVISIBLE);
+				} else {
+					ServiceManager.getDungeonManager().getSelectedPog().setFlags(PlayerFlag.INVISIBLE);
+				}
+				ServiceManager.getDungeonManager().addOrUpdatePog(ServiceManager.getDungeonManager().getSelectedPog());
+			}
+		}));
+		menu.addItem(new MenuItem("Player FLags", fileMenu));
+		popup.add(menu);
+	}
+
+	private MenuItem createmenuItem(final String string, final Command command) {
+		MenuItem menuItem = new MenuItem(string, command);
+		menuItem.getElement().getStyle().setZIndex(1000);
+		return menuItem;
 	}
 
 	/**
@@ -335,6 +388,22 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			}
 		});
 		addTouchHandlerEvents();
+		RootLayoutPanel.get().addDomHandler(new ContextMenuHandler() {
+
+			@Override
+			public void onContextMenu(final ContextMenuEvent event) {
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		}, ContextMenuEvent.getType());
+		RootPanel.get().addDomHandler(new ContextMenuHandler() {
+
+			@Override
+			public void onContextMenu(final ContextMenuEvent event) {
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		}, ContextMenuEvent.getType());
 	}
 
 	/**
@@ -503,6 +572,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		return (ServiceManager.getDungeonManager().isInFOWMap(selectedColumn, selectedRow));
 	}
+
 	/**
 	 * Check if we need to handle fog of war.
 	 * 
@@ -921,7 +991,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @return pog canvas
 	 */
 	private PogCanvas addPogToCanvas(final PogData clonePog) {
-		PogCanvas scalablePog = new PogCanvas(clonePog);
+		PogCanvas scalablePog = new PogCanvas(clonePog, popup);
 		pogs.add(scalablePog);
 		scalablePog.getElement().getStyle().setZIndex(getPogZ(clonePog));
 		computPogBorderWidth();
@@ -1143,7 +1213,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param event with data.
 	 */
 	protected void doDoubleTap(final DoubleTapEvent event) {
-//		restoreOriginalView();
+		// restoreOriginalView();
 	}
 
 	/**
