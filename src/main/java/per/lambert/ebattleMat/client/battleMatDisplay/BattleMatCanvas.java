@@ -289,32 +289,77 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		popup.getElement().getStyle().setZIndex(1000);
 		MenuBar menu = new MenuBar(true);
 		menu.getElement().getStyle().setZIndex(1000);
-		MenuBar fileMenu = new MenuBar(true);
+		MenuBar playerMenu = new MenuBar(true);
 
-		fileMenu.addItem(createmenuItem("Dead Toggle", new Command() {
+		playerMenu.addItem(createmenuItem("Dead Toggle", new Command() {
 			@Override
 			public void execute() {
-				if (ServiceManager.getDungeonManager().getSelectedPog().isFlagSet(PlayerFlag.DEAD)) {
-					ServiceManager.getDungeonManager().getSelectedPog().clearFlags(PlayerFlag.DEAD);
-				} else {
-					ServiceManager.getDungeonManager().getSelectedPog().setFlags(PlayerFlag.DEAD);
-				}
-				ServiceManager.getDungeonManager().addOrUpdatePog(ServiceManager.getDungeonManager().getSelectedPog());
+				togglePlayerFlag(PlayerFlag.DEAD);
 			}
+
 		}));
-		fileMenu.addItem(createmenuItem("Invisible Toggle", new Command() {
+		playerMenu.addItem(createmenuItem("Invisible Toggle", new Command() {
 			@Override
 			public void execute() {
-				if (ServiceManager.getDungeonManager().getSelectedPog().isFlagSet(PlayerFlag.INVISIBLE)) {
-					ServiceManager.getDungeonManager().getSelectedPog().clearFlags(PlayerFlag.INVISIBLE);
-				} else {
-					ServiceManager.getDungeonManager().getSelectedPog().setFlags(PlayerFlag.INVISIBLE);
-				}
-				ServiceManager.getDungeonManager().addOrUpdatePog(ServiceManager.getDungeonManager().getSelectedPog());
+				togglePlayerFlag(PlayerFlag.INVISIBLE);
 			}
 		}));
-		menu.addItem(new MenuItem("Player FLags", fileMenu));
+		menu.addItem(new MenuItem("Player FLags", playerMenu));
+		MenuBar dmMenu = new MenuBar(true);
+
+		dmMenu.addItem(createmenuItem("Invisible Toggle", new Command() {
+			@Override
+			public void execute() {
+				toggleDMFlag(DungeonMasterFlag.INVISIBLE_FROM_PLAYER);
+			}
+		}));
+		dmMenu.addItem(createmenuItem("Transparent Toggle", new Command() {
+			@Override
+			public void execute() {
+				toggleDMFlag(DungeonMasterFlag.TRANSPARENT_BACKGROUND);
+			}
+		}));
+		dmMenu.addItem(createmenuItem("Shift Right Toggle", new Command() {
+			@Override
+			public void execute() {
+				toggleDMFlag(DungeonMasterFlag.SHIFT_RIGHT);
+			}
+		}));
+		dmMenu.addItem(createmenuItem("Shift Top Toggle", new Command() {
+			@Override
+			public void execute() {
+				toggleDMFlag(DungeonMasterFlag.SHIFT_TOP);
+			}
+		}));
+		dmMenu.addItem(createmenuItem("Dark Background Toggle", new Command() {
+			@Override
+			public void execute() {
+				toggleDMFlag(DungeonMasterFlag.DARK_BACKGROUND);
+			}
+		}));
+
+		menu.addItem(new MenuItem("DM FLags", dmMenu));
 		popup.add(menu);
+	}
+
+	private void togglePlayerFlag(final PlayerFlag flag) {
+		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
+		if (pog.isFlagSet(flag)) {
+			pog.clearFlags(flag);
+		} else {
+			pog.setFlags(flag);
+		}
+		ServiceManager.getDungeonManager().addOrUpdatePog(pog);
+	}
+
+	private void toggleDMFlag(final DungeonMasterFlag flag) {
+		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
+		if (pog.isFlagSet(flag)) {
+			pog.clearFlags(flag);
+		} else {
+			pog.setFlags(flag);
+		}
+		ServiceManager.getDungeonManager().addOrUpdatePog(pog);
 	}
 
 	private MenuItem createmenuItem(final String string, final Command command) {
