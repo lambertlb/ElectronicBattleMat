@@ -39,21 +39,15 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
-import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
@@ -287,6 +281,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Constructor.
 	 * 
 	 * @param pogData data for pog
+	 * @param popup menu to use
 	 */
 	public PogCanvas(final PogData pogData, final PopupPanel popup) {
 		initWidget(uiBinder.createAndBindUi(this));
