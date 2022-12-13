@@ -86,6 +86,11 @@ public class PogData {
 	private String dmNotes;
 
 	/**
+	 * Pog Number
+	 */
+	private int pogNumber;
+
+	/**
 	 * Constructor.
 	 */
 	public PogData() {
@@ -126,6 +131,7 @@ public class PogData {
 		pogClass = pogData.pogClass;
 		gender = pogData.gender;
 		pogSize = pogData.pogSize;
+		pogNumber = pogData.pogNumber;
 	}
 
 	/**

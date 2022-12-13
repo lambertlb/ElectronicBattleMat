@@ -517,4 +517,24 @@ public class PogData extends JavaScriptObject {
 		setNotes(withUpdates.getNotes());
 		setDmNotes(withUpdates.getDmNotes());
 	}
+	/**
+	 * Get pog number in grid squares.
+	 * 
+	 * @return pog size in grid squares.
+	 */
+	public final native int getPogNumber() /*-{
+		if (this.pogNumber === undefined) {
+			this.pogNumber = 0;
+		}
+		return (this.pogNumber);
+	}-*/;
+
+	/**
+	 * Set pog number in grid squares.
+	 * 
+	 * @param pogNumber pog number.
+	 */
+	public final native void setPogNumber(int pogNumber) /*-{
+		this.pogNumber = pogNumber;
+	}-*/;
 }

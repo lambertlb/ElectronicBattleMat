@@ -288,7 +288,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		popup = new PopupPanel(true);
 		popup.getElement().getStyle().setZIndex(1000);
 		MenuBar menu = new MenuBar(true);
-		menu.getElement().getStyle().setZIndex(1000);
 		MenuBar playerMenu = new MenuBar(true);
 		playerMenu.getElement().getStyle().setZIndex(1000);
 
@@ -307,7 +306,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		});
 		menu.addItem("Player FLags", playerMenu);
 		MenuBar dmMenu = new MenuBar(true);
-		dmMenu.getElement().getStyle().setZIndex(1000);
 
 		dmMenu.addItem("Invisible Toggle", new Command() {
 			@Override
@@ -339,9 +337,28 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				toggleDMFlag(DungeonMasterFlag.DARK_BACKGROUND);
 			}
 		});
-
 		menu.addItem("DM FLags", dmMenu);
+		MenuBar pogNumberMenu = new MenuBar(true);
+		for (int i = 0; i <= 10; ++i) {
+			createPogNumberMenuItem(pogNumberMenu, i);
+		}
+		menu.addItem("Pog Number", pogNumberMenu);
 		popup.add(menu);
+	}
+
+	private void createPogNumberMenuItem(final MenuBar pogNumberMenu, final int i) {
+		pogNumberMenu.addItem("" + i, new Command() {
+			@Override
+			public void execute() {
+				setPogNumber(i);
+			}
+		});
+	}
+
+	private void setPogNumber(final int pogNumber) {
+		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
+		pog.setPogNumber(pogNumber);
+		ServiceManager.getDungeonManager().addOrUpdatePog(pog);
 	}
 
 	private void togglePlayerFlag(final PlayerFlag flag) {

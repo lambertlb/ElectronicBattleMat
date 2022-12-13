@@ -622,7 +622,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	private void drawNumber() {
-		if (parentHeight < 30) {
+		if (parentHeight < 30 || pogData.getPogNumber() == 0) {
 			return;
 		}
 		int fontSize = getFontSize();
@@ -634,7 +634,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		context.setStrokeStyle(CssColor.make(0, 0, 0));
 		context.setFillStyle(CssColor.make(0, 0, 0));
 		setFont(fontSize);
-		context.fillText("3", 0, fontSize - (fontSize / 4));
+		context.fillText("" + pogData.getPogNumber(), 0, fontSize - (fontSize / 4));
 	}
 
 	private void setFont(final int fontSize) {
