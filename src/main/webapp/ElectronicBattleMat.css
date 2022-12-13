@@ -57,3 +57,14 @@ h1 {
 	border-style: solid;
 	border-width: 3px;
 }
+
+.gwt-MenuBarPopup {
+   margin: 0px 0px 0px 3px;
+   z-index: 12;
+}
+
+html > body .gwt-MenuBarPopup {
+   margin: 0px 0px 0px 3px;
+   z-index: 12;
+}
+

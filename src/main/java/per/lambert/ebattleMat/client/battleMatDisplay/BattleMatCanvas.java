@@ -290,55 +290,57 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		MenuBar menu = new MenuBar(true);
 		menu.getElement().getStyle().setZIndex(1000);
 		MenuBar playerMenu = new MenuBar(true);
+		playerMenu.getElement().getStyle().setZIndex(1000);
 
-		playerMenu.addItem(createmenuItem("Dead Toggle", new Command() {
+		playerMenu.addItem("Dead Toggle", new Command() {
 			@Override
 			public void execute() {
 				togglePlayerFlag(PlayerFlag.DEAD);
 			}
 
-		}));
-		playerMenu.addItem(createmenuItem("Invisible Toggle", new Command() {
+		});
+		playerMenu.addItem("Invisible Toggle", new Command() {
 			@Override
 			public void execute() {
 				togglePlayerFlag(PlayerFlag.INVISIBLE);
 			}
-		}));
-		menu.addItem(new MenuItem("Player FLags", playerMenu));
+		});
+		menu.addItem("Player FLags", playerMenu);
 		MenuBar dmMenu = new MenuBar(true);
+		dmMenu.getElement().getStyle().setZIndex(1000);
 
-		dmMenu.addItem(createmenuItem("Invisible Toggle", new Command() {
+		dmMenu.addItem("Invisible Toggle", new Command() {
 			@Override
 			public void execute() {
 				toggleDMFlag(DungeonMasterFlag.INVISIBLE_FROM_PLAYER);
 			}
-		}));
-		dmMenu.addItem(createmenuItem("Transparent Toggle", new Command() {
+		});
+		dmMenu.addItem("Transparent Toggle", new Command() {
 			@Override
 			public void execute() {
 				toggleDMFlag(DungeonMasterFlag.TRANSPARENT_BACKGROUND);
 			}
-		}));
-		dmMenu.addItem(createmenuItem("Shift Right Toggle", new Command() {
+		});
+		dmMenu.addItem("Shift Right Toggle", new Command() {
 			@Override
 			public void execute() {
 				toggleDMFlag(DungeonMasterFlag.SHIFT_RIGHT);
 			}
-		}));
-		dmMenu.addItem(createmenuItem("Shift Top Toggle", new Command() {
+		});
+		dmMenu.addItem("Shift Top Toggle", new Command() {
 			@Override
 			public void execute() {
 				toggleDMFlag(DungeonMasterFlag.SHIFT_TOP);
 			}
-		}));
-		dmMenu.addItem(createmenuItem("Dark Background Toggle", new Command() {
+		});
+		dmMenu.addItem("Dark Background Toggle", new Command() {
 			@Override
 			public void execute() {
 				toggleDMFlag(DungeonMasterFlag.DARK_BACKGROUND);
 			}
-		}));
+		});
 
-		menu.addItem(new MenuItem("DM FLags", dmMenu));
+		menu.addItem("DM FLags", dmMenu);
 		popup.add(menu);
 	}
 
@@ -360,12 +362,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			pog.setFlags(flag);
 		}
 		ServiceManager.getDungeonManager().addOrUpdatePog(pog);
-	}
-
-	private MenuItem createmenuItem(final String string, final Command command) {
-		MenuItem menuItem = new MenuItem(string, command);
-		menuItem.getElement().getStyle().setZIndex(1000);
-		return menuItem;
 	}
 
 	/**

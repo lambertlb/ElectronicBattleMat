@@ -598,6 +598,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		if (pogData.isFlagSet(PlayerFlag.DEAD)) {
 			addDeadOverlay();
 		}
+		drawNumber();
 	}
 
 	/**
@@ -617,6 +618,15 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		context.moveTo(scaledWidth, 0);
 		context.lineTo(0, scaledWidth);
 		context.stroke();
+	}
+
+	private void drawNumber() {
+		int fontSize = 10 + (int) (zoomFactor * 3);
+		context.setStrokeStyle(CssColor.make(0, 0, 0));
+		context.setFillStyle(CssColor.make(0, 0, 0));
+		context.setFont(fontSize + "pt Courier bold ");
+		context.fillText("1", 10, 10);
+		// context.strokeText("1",10,10);
 	}
 
 	/**
