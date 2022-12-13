@@ -18,6 +18,7 @@ package per.lambert.ebattleMat.client.battleMatDisplay;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.canvas.dom.client.TextMetrics;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -621,12 +622,44 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	private void drawNumber() {
-		int fontSize = 10 + (int) (zoomFactor * 3);
+		if (parentHeight < 30) {
+			return;
+		}
+		int fontSize = getFontSize();
+		double x = 0;
+		double y = fontSize;
+		context.setStrokeStyle(CssColor.make(255, 255, 255));
+		context.setFillStyle(CssColor.make(255, 255, 255));
+		context.fillRect(0, 0, fontSize, fontSize);
 		context.setStrokeStyle(CssColor.make(0, 0, 0));
 		context.setFillStyle(CssColor.make(0, 0, 0));
-		context.setFont(fontSize + "pt Courier bold ");
-		context.fillText("1", 10, 10);
-		// context.strokeText("1",10,10);
+		setFont(fontSize);
+		context.fillText("3", 0, fontSize - (fontSize / 4));
+	}
+
+	private void setFont(final int fontSize) {
+		if (fontSize == 48) {
+			context.setFont("bold 48px Courier New");
+		} else if (fontSize == 32) {
+			context.setFont("bold 32px Courier New");
+		} else if (fontSize == 16) {
+			context.setFont("bold 16px Courier New");
+		} else {
+			context.setFont("bold 10px Courier New");
+		}
+	}
+
+	private int getFontSize() {
+		if (parentHeight > 100) {
+			return (48);
+		}
+		if (parentHeight > 70) {
+			return (32);
+		}
+		if (parentHeight > 50) {
+			return (16);
+		}
+		return 10;
 	}
 
 	/**
