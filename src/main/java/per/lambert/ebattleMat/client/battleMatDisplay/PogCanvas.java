@@ -18,7 +18,6 @@ package per.lambert.ebattleMat.client.battleMatDisplay;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
-import com.google.gwt.canvas.dom.client.TextMetrics;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -636,8 +635,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			return;
 		}
 		int fontSize = getFontSize();
-		double x = 0;
-		double y = fontSize;
 		context.setStrokeStyle(CssColor.make(255, 255, 255));
 		context.setFillStyle(CssColor.make(255, 255, 255));
 		context.fillRect(0, 0, fontSize, fontSize);

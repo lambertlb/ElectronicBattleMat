@@ -86,7 +86,7 @@ public class PogData {
 	private String dmNotes;
 
 	/**
-	 * Pog Number
+	 * Pog Number.
 	 */
 	private int pogNumber;
 
