@@ -283,4 +283,22 @@ public class SessionInformation {
 		sessionData.increamentVersion();
 		dirty = true;
 	}
+
+	/**
+	 * Delete pog from session.
+	 * @param pogData pog
+	 * @param level level
+	 */
+	public void delete(final PogData pogData, final int level) {
+		DungeonSessionLevel sessionLevel = getSessionLevel(level);
+		if (pogData.isType(Constants.POG_TYPE_MONSTER)) {
+			sessionLevel.getMonsters().delete(pogData);
+		} else if (pogData.isType(Constants.POG_TYPE_ROOMOBJECT)) {
+			sessionLevel.getRoomObjects().delete(pogData);
+		} else if (pogData.isType(Constants.POG_TYPE_PLAYER)) {
+			sessionData.getPlayers().delete(pogData);
+		}
+		sessionData.increamentVersion();
+		dirty = true;
+	}
 }

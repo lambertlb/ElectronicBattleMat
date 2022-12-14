@@ -342,6 +342,18 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			createPogNumberMenuItem(pogNumberMenu, i);
 		}
 		menu.addItem("Pog Number", pogNumberMenu);
+
+		MenuBar utilityMenu = new MenuBar(true);
+		utilityMenu.getElement().getStyle().setZIndex(1000);
+
+		utilityMenu.addItem("Delete Selected Pog", new Command() {
+			@Override
+			public void execute() {
+				ServiceManager.getDungeonManager().deleteSelectedPog();
+			}
+
+		});
+		menu.addItem("Utilities", utilityMenu);
 		popup.add(menu);
 	}
 

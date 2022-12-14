@@ -1151,7 +1151,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			DungeonSessionData sessionData = getSelectedSession();
 			sessionData.getPlayers().addOrUpdate(pog);
 		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataChanged, null));
 	}
 
 	/**
@@ -1280,5 +1279,41 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	@Override
 	public boolean isInFOWMap(final int column, final int row) {
 		return (column >= 0 && row >= 0 && column < getCurrentDungeonLevelData().getColumns() && row < getCurrentDungeonLevelData().getRows());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deleteSelectedPog() {
+		if (!isDungeonMaster) {
+			return;
+		}
+		PogPlace place = computePlace(getSelectedPog());
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("dungeonUUID", selectedDungeon.getUUID());
+		if (selectedSession != null) {
+			parameters.put("sessionUUID", selectedSession.getSessionUUID());
+		} else {
+			parameters.put("sessionUUID", "");
+		}
+		parameters.put("currentLevel", "" + currentLevelIndex);
+		parameters.put("place", place.name());
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		String pogDataString = JsonUtils.stringify(getSelectedPog());
+		dataRequester.requestData(pogDataString, "DELETEPOG", parameters, new IUserCallback() {
+			@Override
+			public void onSuccess(final Object sender, final Object data) {
+				if (editMode) {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+				}
+				loadSelectedDungeon();
+			}
+
+			@Override
+			public void onError(final Object sender, final IErrorInformation error) {
+				lastError = error.getError();
+			}
+		});
 	}
 }

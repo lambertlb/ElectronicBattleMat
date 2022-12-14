@@ -430,4 +430,9 @@ public interface IDungeonManager extends IPogManager {
 	 * @return true if is
 	 */
 	boolean isInFOWMap(int column, int row);
+
+	/**
+	 * Delete selected pog.
+	 */
+	void deleteSelectedPog();
 }

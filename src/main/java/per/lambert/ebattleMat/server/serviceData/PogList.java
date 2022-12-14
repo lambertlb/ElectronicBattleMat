@@ -100,4 +100,38 @@ public class PogList {
 		}
 		return (newList);
 	}
+
+	/**
+	 * delete this pog.
+	 * 
+	 * @param pogData to delete
+	 */
+	public void delete(final PogData pogData) {
+		int index = find(pogData);
+		if (index != -1) {
+			PogData[] newList = new PogData[pogList.length - 1];
+			for (int i = 0, j = 0; i < pogList.length; ++i) {
+				if (i == index) {
+					continue;
+				}
+				newList[j++] = pogList[i];
+			}
+			pogList = newList;
+		}
+	}
+
+	/**
+	 * Find pog.
+	 * 
+	 * @param pogData to find
+	 * @return index of pog in arrary else -1.
+	 */
+	public int find(final PogData pogData) {
+		for (int i = 0; i < pogList.length; ++i) {
+			if (pogList[i].equals(pogData)) {
+				return (i);
+			}
+		}
+		return -1;
+	}
 }
