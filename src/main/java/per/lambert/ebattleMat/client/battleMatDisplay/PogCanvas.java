@@ -572,8 +572,18 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			context.fillRect(0, 0, parentWidth, parentHeight);
 		}
 		double opacity = 1.0;
-		if (isInVisibleToPlayer()) {
-			opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
+		if (!showNormalSizeOnly) {
+			if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+				if (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)) {
+					opacity = 0.5;
+				}
+			} else {
+				if (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)) {
+					opacity = 0;
+				} else if (pogData.isFlagSet(PlayerFlag.INVISIBLE)) {
+					opacity = 0.5;
+				}
+			}
 		}
 		pogDrawPanel.getElement().getStyle().setOpacity(opacity);
 		context.drawImage(backContext.getCanvas(), 0, 0);
@@ -586,7 +596,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return true if is
 	 */
 	public boolean isInVisibleToPlayer() {
-		return (!showNormalSizeOnly && (pogData.isFlagSet(PlayerFlag.INVISIBLE) || pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)));
+		return (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER));
 	}
 
 	/**

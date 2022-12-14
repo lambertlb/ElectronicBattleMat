@@ -1063,10 +1063,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (editMode) {
 			return (PogPlace.DUNGEON_INSTANCE);
 		}
-		if (isDungeonMaster) {
+//		if (isDungeonMaster) {
 			return (PogPlace.SESSION_INSTANCE);
-		}
-		return (PogPlace.INVALID);
+//		}
+//		return (PogPlace.INVALID);
 	}
 
 	/**

@@ -947,14 +947,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (pogBeingDragged == null) {
 			return;
 		}
-		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
-		if (!isDM) {
-			if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow) || !pogBeingDragged.isThisAPlayer()) {
-				// players are only allowed to drag PLAYER pogs onto visible cells.
-				removeHighlightGridSquare();
-				return;
-			}
-		}
+//		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
+//		if (!isDM) {
+//			if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow) || !pogBeingDragged.isThisAPlayer()) {
+//				// players are only allowed to drag PLAYER pogs onto visible cells.
+//				removeHighlightGridSquare();
+//				return;
+//			}
+//		}
 		if (dragColumn < 0 || dragRow < 0) { // no dragging off screen.
 			return;
 		}
