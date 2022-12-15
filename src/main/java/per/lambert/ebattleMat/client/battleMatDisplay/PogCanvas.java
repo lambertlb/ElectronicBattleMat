@@ -554,6 +554,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			return;
 		}
 		adjustCanvases();
+		if (parentHeight == 0 || parentWidth == 0) {
+			return;
+		}
 		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth, imageHeight);
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
 		if (showImage) {
