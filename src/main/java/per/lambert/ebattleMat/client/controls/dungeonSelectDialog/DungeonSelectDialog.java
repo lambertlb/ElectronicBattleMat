@@ -16,6 +16,7 @@
 package per.lambert.ebattleMat.client.controls.dungeonSelectDialog;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -382,7 +383,8 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		dungeonDropdownList.clear();
 		dungeonDropdownList.addItem("Select a Dungeon for Operations");
 		Map<String, String> dungeonNameToUUIDMap = dungeonSelectPresenter.getDungeonToUUIDMap();
-		for (Map.Entry<String, String> entry : dungeonNameToUUIDMap.entrySet()) {
+		TreeMap<String, String> sorted = new TreeMap<>(dungeonNameToUUIDMap);
+		for (Map.Entry<String, String> entry : sorted.entrySet()) {
 			dungeonDropdownList.addItem(entry.getKey(), entry.getValue());
 		}
 		dungeonDropdownList.setVisibleItemCount(1);
