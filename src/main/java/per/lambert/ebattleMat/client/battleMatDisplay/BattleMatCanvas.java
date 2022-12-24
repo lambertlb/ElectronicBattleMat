@@ -102,7 +102,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Maximum zoom factor.
 	 */
-	private static final double MAX_ZOOM = .5;
+	private static final double MAX_ZOOM = .2;
 	/**
 	 * Show grid.
 	 */
