@@ -47,6 +47,7 @@ public final class ServerApp {
 		Server server = new Server(8088);
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/");
+		webAppContext.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 		if (!tempDir.exists()) {
 			webAppContext.setWar("./ElectronicBattleMat.war");
 			webAppContext.setTempDirectory(new File("./ElectronicBattleMatTemp"));
