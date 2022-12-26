@@ -747,7 +747,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	public final void drawEverything() {
 		calculateDimensions();
-		backCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing, imageHeight + gridSpacing);
+		backCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing + 50, imageHeight + gridSpacing + 50);
 		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
 		backCanvas.getContext2d().drawImage(imageElement, 0, 0);
 		handleAllDrawing();
@@ -958,14 +958,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (pogBeingDragged == null) {
 			return;
 		}
-//		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
-//		if (!isDM) {
-//			if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow) || !pogBeingDragged.isThisAPlayer()) {
-//				// players are only allowed to drag PLAYER pogs onto visible cells.
-//				removeHighlightGridSquare();
-//				return;
-//			}
-//		}
+		// boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
+		// if (!isDM) {
+		// if (ServiceManager.getDungeonManager().isFowSet(dragColumn, dragRow) || !pogBeingDragged.isThisAPlayer()) {
+		// // players are only allowed to drag PLAYER pogs onto visible cells.
+		// removeHighlightGridSquare();
+		// return;
+		// }
+		// }
 		if (dragColumn < 0 || dragRow < 0) { // no dragging off screen.
 			return;
 		}
