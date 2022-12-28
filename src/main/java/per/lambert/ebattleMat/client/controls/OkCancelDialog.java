@@ -18,6 +18,7 @@ package per.lambert.ebattleMat.client.controls;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -178,7 +179,25 @@ public class OkCancelDialog extends ResizableDialog {
 	@Override
 	public void show() {
 		super.show();
+		adjustPosition();
 		initialize();
+	}
+
+	/**
+	 * Make sure dialog is still visible in case the browser was shrunk.
+	 */
+	private void adjustPosition() {
+		int height = Window.getClientHeight();
+		int width = Window.getClientWidth();
+		String sLeft = getElement().getStyle().getLeft();
+		String sTop = getElement().getStyle().getTop();
+		if (sLeft != "" && sTop != "") {
+			int top = Integer.parseInt(sTop.substring(0, sTop.length() - 2));
+			int left = Integer.parseInt(sLeft.substring(0, sLeft.length() - 2));
+			if (left > width || top > height) {
+				setPopupPosition(100, 100);
+			}	
+		}		
 	}
 
 	/**

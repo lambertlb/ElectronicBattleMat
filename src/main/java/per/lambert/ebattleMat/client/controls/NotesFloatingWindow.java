@@ -218,7 +218,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Must be run before reusing the view.
 	 */
 	private void initialize() {
-		setPopupPosition(0, 0);
+//		setPopupPosition(0, 0);
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z - 1);
 		tabPanel.clear();
 		tabPanel.add(scrollPanel, "Notes");
