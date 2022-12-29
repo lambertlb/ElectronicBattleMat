@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
@@ -251,6 +252,26 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * popup menu.
 	 */
 	private PopupPanel popup;
+	/**
+	 * are we selecting cells.
+	 */
+	private boolean doingSelection;
+	/**
+	 * Top of selection.
+	 */
+	private double selectionTop = -1;
+	/**
+	 * Left of selection.
+	 */
+	private double selectionLeft = -1;
+	/**
+	 * Height of selection.
+	 */
+	private double selectionHeight = -1;
+	/**
+	 * Width of selection.
+	 */
+	private double selectionWidth = -1;
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -624,15 +645,32 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (DOM.getCaptureElement() == null) {
 			mouseDownXPos = event.getRelativeX(image.getElement());
 			mouseDownYPos = event.getRelativeY(image.getElement());
-			if (event.isShiftKeyDown()) {
-				toggleFOW = true;
+			if (event.getNativeEvent().getCtrlKey()) {
+				handleSelectionStart(event);
 			} else {
-				toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
+				if (event.isShiftKeyDown()) {
+					toggleFOW = true;
+				} else {
+					toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
+				}
+				checkForFOWHandling(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 			}
-			checkForFOWHandling(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 			DOM.setCapture(canvas.getElement());
 			this.mouseDown = true;
 		}
+	}
+
+	/**
+	 * Handle start of selection.
+	 * 
+	 * @param event
+	 */
+	private void handleSelectionStart(final MouseDownEvent event) {
+		doingSelection = true;
+		selectionLeft = mouseDownXPos - getAbsoluteLeft();
+		selectionTop = mouseDownYPos - getAbsoluteTop();
+		selectionWidth = 0;
+		selectionHeight = 0;
 	}
 
 	public final boolean isSelectedVisible(final int clientX, final int clientY) {
@@ -666,11 +704,42 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (!mouseDown) {
 			return;
 		}
-		if (!toggleFOW) {
-			handleMouseMoveWhilePanning(event);
-		} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
-			handleFowMouseMove(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+		if (doingSelection) {
+			drawSelectionRectange(event);
+		} else {
+			if (!toggleFOW) {
+				handleMouseMoveWhilePanning(event);
+			} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
+				handleFowMouseMove(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+			}
 		}
+	}
+
+	/**
+	 * draw selection rectangle.
+	 * 
+	 * @param event
+	 */
+	private void drawSelectionRectange(final MouseMoveEvent event) {
+		eraseSelectionRectangle();
+		Context2d context = canvas.getContext2d();
+		selectionWidth = event.getRelativeX(image.getElement()) - getAbsoluteLeft() - selectionLeft;
+		selectionHeight = event.getRelativeY(image.getElement()) - getAbsoluteTop() - selectionTop;
+		context.beginPath();
+		context.setStrokeStyle("red");
+		context.rect(selectionLeft, selectionTop, selectionWidth, selectionHeight);
+		context.stroke();
+	}
+
+	/**
+	 * Clear selection rectangle.
+	 */
+	private void eraseSelectionRectangle() {
+		Context2d context = canvas.getContext2d();
+		context.beginPath();
+		context.clearRect(selectionLeft, selectionTop, selectionWidth, selectionHeight);
+		context.stroke();
+		drawEverything();
 	}
 
 	/**
@@ -726,8 +795,52 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * {@inheritDoc}
 	 */
 	public final void onMouseUp(final MouseUpEvent event) {
+		if (doingSelection) {
+			eraseSelectionRectangle();
+			if (ServiceManager.getDungeonManager().isDungeonMaster() && !ServiceManager.getDungeonManager().isEditMode()) {
+				closeSelection(event);
+			}
+			doingSelection = false;
+		}
 		panOperationComplete();
 		DOM.releaseCapture(canvas.getElement());
+	}
+
+	/**
+	 * mouse up so close selection.
+	 * 
+	 * @param event mouse position
+	 */
+	private void closeSelection(final MouseUpEvent event) {
+		int clientX = event.getNativeEvent().getClientX();
+		int clientY = event.getNativeEvent().getClientY();
+		selectionWidth = event.getRelativeX(image.getElement()) - getAbsoluteLeft() - selectionLeft;
+		selectionHeight = event.getRelativeY(image.getElement()) - getAbsoluteTop() - selectionTop;
+		int top = (int) selectionTop;
+		int left = (int) selectionLeft;
+		int bottom = (int) selectionHeight + top;
+		int right = (int) selectionWidth + left;
+		if (selectionWidth < 0) {
+			left = left - (int) selectionWidth;
+			right = -(int) selectionWidth + left;
+		}
+		if (selectionHeight < 0) {
+			top = top - (int) selectionHeight;
+			bottom = -(int) selectionHeight + top;
+		}
+		selectedColumn = ((int) (((left - offsetX - gridOffsetX)) / adjustedGridSize()));
+		selectedRow = ((int) (((top - offsetY - gridOffsetY)) / adjustedGridSize()));
+		clearFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
+		toggleFOW = true;
+		for (int x = left; x < right; x += (int) adjustedGridSize()) {
+			for (int y = top; y < bottom; y += (int) adjustedGridSize()) {
+				selectedColumn = ((int) (((x - offsetX - gridOffsetX)) / adjustedGridSize()));
+				selectedRow = ((int) (((y - offsetY - gridOffsetY)) / adjustedGridSize()));
+				if (isSelectedVisible(clientX, clientY)) {
+					handleProperFOWAtSelectedPosition();
+				}
+			}
+		}
 	}
 
 	/**
