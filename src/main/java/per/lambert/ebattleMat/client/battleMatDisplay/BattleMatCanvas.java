@@ -105,6 +105,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private static final double MAX_ZOOM = .2;
 	/**
+	 * Maximum Pog number.
+	 */
+	private static final int MAX_POGNUMBER = 20;
+	/**
 	 * Show grid.
 	 */
 	private boolean showGrid = false;
@@ -359,7 +363,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		});
 		menu.addItem("DM FLags", dmMenu);
 		MenuBar pogNumberMenu = new MenuBar(true);
-		for (int i = 0; i <= 10; ++i) {
+		for (int i = 0; i <= MAX_POGNUMBER; ++i) {
 			createPogNumberMenuItem(pogNumberMenu, i);
 		}
 		menu.addItem("Pog Number", pogNumberMenu);
