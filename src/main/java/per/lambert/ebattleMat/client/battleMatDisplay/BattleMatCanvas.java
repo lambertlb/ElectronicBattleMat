@@ -1109,6 +1109,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		updatePogData(existingPog);
 		ServiceManager.getDungeonManager().addOrUpdatePog(existingPog.getPogData());
+		ServiceManager.getDungeonManager().setSelectedPog(existingPog.getPogData());
 		return (existingPog);
 	}
 
