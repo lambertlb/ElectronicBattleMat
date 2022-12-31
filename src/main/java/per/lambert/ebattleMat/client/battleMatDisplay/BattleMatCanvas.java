@@ -671,6 +671,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void handleSelectionStart(final MouseDownEvent event) {
 		doingSelection = true;
+		computeSelectedColumnAndRow(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 		selectionLeft = mouseDownXPos - getAbsoluteLeft();
 		selectionTop = mouseDownYPos - getAbsoluteTop();
 		selectionWidth = 0;
@@ -816,31 +817,30 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param event mouse position
 	 */
 	private void closeSelection(final MouseUpEvent event) {
-		int clientX = event.getNativeEvent().getClientX();
-		int clientY = event.getNativeEvent().getClientY();
-		selectionWidth = event.getRelativeX(image.getElement()) - getAbsoluteLeft() - selectionLeft;
-		selectionHeight = event.getRelativeY(image.getElement()) - getAbsoluteTop() - selectionTop;
-		int top = (int) selectionTop;
-		int left = (int) selectionLeft;
-		int bottom = (int) selectionHeight + top;
-		int right = (int) selectionWidth + left;
-		if (selectionWidth < 0) {
-			left = left - (int) selectionWidth;
-			right = -(int) selectionWidth + left;
+		int startingColumn = selectedColumn;
+		int startingRow = selectedRow;
+		computeSelectedColumnAndRow(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+		int endingColumn = selectedColumn;
+		int endingRow = selectedRow;
+		int top = startingRow;
+		int left = startingColumn;
+		int bottom = endingRow;
+		int right = endingColumn;
+		if (endingRow < startingRow) {
+			top = endingRow;
+			bottom = startingRow;
 		}
-		if (selectionHeight < 0) {
-			top = top - (int) selectionHeight;
-			bottom = -(int) selectionHeight + top;
+		if (endingColumn < startingColumn) {
+			left = endingColumn;
+			right = startingColumn;
 		}
-		selectedColumn = ((int) (((left - offsetX - gridOffsetX)) / adjustedGridSize()));
-		selectedRow = ((int) (((top - offsetY - gridOffsetY)) / adjustedGridSize()));
-		clearFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
+		clearFOW = ServiceManager.getDungeonManager().isFowSet(left, top);
 		toggleFOW = true;
-		for (int x = left; x < right; x += (int) adjustedGridSize()) {
-			for (int y = top; y < bottom; y += (int) adjustedGridSize()) {
-				selectedColumn = ((int) (((x - offsetX - gridOffsetX)) / adjustedGridSize()));
-				selectedRow = ((int) (((y - offsetY - gridOffsetY)) / adjustedGridSize()));
-				if (isSelectedVisible(clientX, clientY)) {
+		for (int x = left; x <= right; x += 1) {
+			for (int y = top; y <= bottom; y += 1) {
+				selectedColumn = x;
+				selectedRow = y;
+				if (isSelectedVisible(x, y)) {
 					handleProperFOWAtSelectedPosition();
 				}
 			}
