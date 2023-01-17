@@ -1063,10 +1063,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (editMode) {
 			return (PogPlace.DUNGEON_INSTANCE);
 		}
-//		if (isDungeonMaster) {
-			return (PogPlace.SESSION_INSTANCE);
-//		}
-//		return (PogPlace.INVALID);
+		// if (isDungeonMaster) {
+		return (PogPlace.SESSION_INSTANCE);
+		// }
+		// return (PogPlace.INVALID);
 	}
 
 	/**
@@ -1304,10 +1304,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData(pogDataString, "DELETEPOG", parameters, new IUserCallback() {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
-				if (editMode) {
-					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
-				}
-				loadSelectedDungeon();
+				removeSelectedPog(getSelectedPog(), place);
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 			}
 
 			@Override
@@ -1315,5 +1313,26 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				lastError = error.getError();
 			}
 		});
+	}
+
+	private void removeSelectedPog(final PogData pog, final PogPlace place) {
+		if (place == PogPlace.SESSION_INSTANCE) {
+			DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
+			if (sessionLevel != null) {
+				if (pog.isThisAMonster()) {
+					sessionLevel.getMonsters().remove(pog);
+				} else if (pog.isThisARoomObject()) {
+					sessionLevel.getRoomObjects().remove(pog);
+				}
+			}
+		} else if (place == PogPlace.DUNGEON_INSTANCE) {
+			DungeonLevel dungeonLevel = getCurrentDungeonLevelData();
+			if (pog.isThisAMonster()) {
+				dungeonLevel.getMonsters().remove(pog);
+			} else if (pog.isThisARoomObject()) {
+				dungeonLevel.getRoomObjects().remove(pog);
+			}
+		}
+		setSelectedPog(null);
 	}
 }

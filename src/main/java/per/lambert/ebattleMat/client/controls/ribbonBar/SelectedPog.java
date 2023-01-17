@@ -128,6 +128,7 @@ public class SelectedPog extends Composite {
 	public void pogSelected() {
 		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (selectedPog == null || hostPanel == null) {
+			unselectedPogLook();
 			return;
 		}
 

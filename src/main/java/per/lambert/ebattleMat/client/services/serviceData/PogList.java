@@ -19,6 +19,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * List of pogs.
+ * 
  * @author LLambert
  *
  */
@@ -31,6 +32,7 @@ public class PogList extends JavaScriptObject {
 
 	/**
 	 * List of pogs.
+	 * 
 	 * @return list of pogs.
 	 */
 	public final native PogData[] getPogList() /*-{
@@ -42,6 +44,7 @@ public class PogList extends JavaScriptObject {
 
 	/**
 	 * Add or update pog.
+	 * 
 	 * @param pog to add
 	 */
 	public final void addOrUpdate(final PogData pog) {
@@ -54,8 +57,10 @@ public class PogList extends JavaScriptObject {
 		}
 		addPog(pog);
 	}
+
 	/**
 	 * Add pog to list.
+	 * 
 	 * @param pogToAdd pog to add
 	 */
 	public final native void addPog(PogData pogToAdd) /*-{
@@ -63,5 +68,27 @@ public class PogList extends JavaScriptObject {
 			this.pogList = [];
 		}
 		this.pogList.push(pogToAdd);
+	}-*/;
+
+	/**
+	 * remove pog.
+	 * 
+	 * @param pog to remove
+	 */
+	public final void remove(final PogData pog) {
+		PogData[] list = getPogList();
+		initList();
+		for (PogData pogInList : list) {
+			if (!pogInList.isEqual(pog)) {
+				addPog(pogInList);
+			}
+		}
+	}
+
+	/**
+	 * create new list.
+	 */
+	public final native void initList() /*-{
+		this.pogList = [];
 	}-*/;
 }

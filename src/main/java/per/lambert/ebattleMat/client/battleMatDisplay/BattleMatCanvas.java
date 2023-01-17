@@ -375,6 +375,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			@Override
 			public void execute() {
 				ServiceManager.getDungeonManager().deleteSelectedPog();
+				dungeonDataUpdated();
 			}
 
 		});
