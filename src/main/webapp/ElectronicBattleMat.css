@@ -59,12 +59,33 @@ h1 {
 }
 
 .gwt-MenuBarPopup {
-   margin: 0px 0px 0px 3px;
-   z-index: 12;
+	margin: 0px 0px 0px 3px;
+	z-index: 12;
 }
 
-html > body .gwt-MenuBarPopup {
-   margin: 0px 0px 0px 3px;
-   z-index: 12;
+html>body .gwt-MenuBarPopup {
+	margin: 0px 0px 0px 3px;
+	z-index: 12;
 }
 
+.spinnerarrowup {
+    content: "\2191";
+}
+
+/* .spinnerarrowup { */
+/* 	border: solid black; */
+/* 	border-width: 0 3px 3px 0; */
+/* 	display: inline-block; */
+/* 	padding: 3px; */
+/* 	transform: rotate(-135deg); */
+/* 	-webkit-transform: rotate(-135deg); */
+/* } */
+
+.spinnerarrowdown {
+	border: solid black;
+	border-width: 0 3px 3px 0;
+	display: inline-block;
+	padding: 3px;
+	transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+}

@@ -20,6 +20,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -78,6 +80,10 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Cancel button.
 	 */
 	private Button cancel;
+	/**
+	 * size of font.
+	 */
+	private NumberSpinner fontSize;
 	/**
 	 * Tab panel.
 	 */
@@ -160,6 +166,20 @@ public class NotesFloatingWindow extends OkCancelDialog {
 			}
 		});
 		buttonPanel.add(cancel);
+		fontSize = new NumberSpinner(14, 14, 20);
+		fontSize.setValue(14);
+		buttonPanel.add(fontSize);
+		editPanel.getElement().getStyle().setFontSize(fontSize.getValue(), Unit.PX);
+		dmEditPanel.getElement().getStyle().setFontSize(fontSize.getValue(), Unit.PX);
+		fontSize.addChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(final ValueChangeEvent<Integer> event) {
+				if (event.getValue() >= 14 && event.getValue() <= 20) {
+					editPanel.getElement().getStyle().setFontSize(fontSize.getValue(), Unit.PX);
+					dmEditPanel.getElement().getStyle().setFontSize(fontSize.getValue(), Unit.PX);
+				}
+			}
+		});
 	}
 
 	/**
@@ -218,7 +238,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Must be run before reusing the view.
 	 */
 	private void initialize() {
-//		setPopupPosition(0, 0);
+		// setPopupPosition(0, 0);
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z - 1);
 		tabPanel.clear();
 		tabPanel.add(scrollPanel, "Notes");
