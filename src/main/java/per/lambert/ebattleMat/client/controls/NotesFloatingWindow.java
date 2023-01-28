@@ -246,10 +246,12 @@ public class NotesFloatingWindow extends OkCancelDialog {
 			tabPanel.add(dmScrollPanel, "DM Notes");
 		}
 		dockLayoutPanel.clear();
-		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
-			dockLayoutPanel.addSouth(buttonPanel, 30);
-		}
+		dockLayoutPanel.addSouth(buttonPanel, 30);
 		dockLayoutPanel.add(tabPanel);
+		if (!ServiceManager.getDungeonManager().isDungeonMaster()) {
+			enableWidget(save, false);
+			enableWidget(cancel, false);
+		}
 	}
 
 	/**
