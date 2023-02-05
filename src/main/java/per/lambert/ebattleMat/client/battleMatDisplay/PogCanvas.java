@@ -315,6 +315,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 					event.preventDefault();
 					return;
 				}
+				if (!ServiceManager.getDungeonManager().isDungeonMaster() && !ServiceManager.getDungeonManager().isEditMode() && ServiceManager.getDungeonManager().isFowSet(pogData.getColumn(), pogData.getRow())) {
+					event.preventDefault();
+					return;
+				}
 				ServiceManager.getDungeonManager().setPogBeingDragged(pogData, fromRibbonBar);
 				event.getDataTransfer().setDragImage(canvas.getElement(), 0, 0);
 			}
@@ -690,6 +694,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		if (ServiceManager.getDungeonManager().getFowToggle() || event.isShiftKeyDown()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
 		} else {
+			if (!ServiceManager.getDungeonManager().isDungeonMaster() && !ServiceManager.getDungeonManager().isEditMode() && ServiceManager.getDungeonManager().isFowSet(pogData.getColumn(), pogData.getRow())) {
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
+				return;
+			}
 			ServiceManager.getDungeonManager().setSelectedPog(pogData);
 			if (event.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
 				if (popup != null) {
