@@ -25,11 +25,13 @@ import com.google.gwt.core.client.JsonUtils;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.Constants;
+import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IPogManager;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
@@ -463,5 +465,45 @@ public abstract class PogManager implements IPogManager {
 			return (roomObjectTemplateMap.containsKey(pogData.getUUID()));
 		}
 		return (false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updateNumberOfSelectedPog(final int newPogNumber) {
+		if (selectedPog != null) {
+			selectedPog.setPogNumber(newPogNumber);
+			ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void toggleFlagOfSelectedPog(final PlayerFlag flag) {
+		if (selectedPog != null) {
+			if (selectedPog.isFlagSet(flag)) {
+				selectedPog.clearFlags(flag);
+			} else {
+				selectedPog.setFlags(flag);
+			}
+			ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
+		}
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void toggleFlagOfSelectedPog(final DungeonMasterFlag flag) {
+		if (selectedPog != null) {
+			if (selectedPog.isFlagSet(flag)) {
+				selectedPog.clearFlags(flag);
+			} else {
+				selectedPog.setFlags(flag);
+			}
+			ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
+		}
 	}
 }

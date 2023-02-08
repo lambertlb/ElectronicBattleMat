@@ -156,4 +156,20 @@ public interface IPogManager {
 	 * @return true if template
 	 */
 	boolean isTemplate(PogData pogData);
+	/**
+	 * Update number of selected pog.
+	 * @param newPogNumber to update
+	 */
+	void	updateNumberOfSelectedPog(int newPogNumber);
+	/**
+	 * Toggle player Flag of selected pog.
+	 * @param flag to toggle
+	 */
+	void	toggleFlagOfSelectedPog(PlayerFlag flag);
+	/**
+	 * Toggle DM Flag of selected pog.
+	 * @param flag to toggle
+	 */
+	void	toggleFlagOfSelectedPog(DungeonMasterFlag flag);
+
 }

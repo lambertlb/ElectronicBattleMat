@@ -36,11 +36,11 @@ public class BattleMatLayout extends ResizeComposite {
 	/**
 	 * The LayoutPanel that is essentially this widget.
 	 */
-	private DockLayoutPanel holder;
+	private DockLayoutPanel dockPanel;
 	/**
 	 * panel for ribbon bar.
 	 */
-	private RibbonBarContainer topPanel;
+	private RibbonBarContainer ribbonBarPanel;
 	/**
 	 * Panel to hold battle mat canvas.
 	 */
@@ -59,7 +59,7 @@ public class BattleMatLayout extends ResizeComposite {
 	 */
 	public BattleMatLayout() {
 		createConent();
-		initWidget(holder);
+		initWidget(dockPanel);
 		// ensure this widget takes up as much space as possible
 		this.setSize("100%", "100%");
 	}
@@ -68,8 +68,8 @@ public class BattleMatLayout extends ResizeComposite {
 	 * create content of panel.
 	 */
 	private void createConent() {
-		holder = new DockLayoutPanel(Unit.PX);
-		topPanel = new RibbonBarContainer();
+		dockPanel = new DockLayoutPanel(Unit.PX);
+		ribbonBarPanel = new RibbonBarContainer();
 		battleMatCanvasPanel = new SimpleLayoutPanel();
 		mainPanel = new LayoutPanel();
 		mainPanel.setSize("100%", "100%");
@@ -78,12 +78,12 @@ public class BattleMatLayout extends ResizeComposite {
 		battleMatCanvasPanel.add(battleMatCanvas);
 		mainPanel.add(battleMatCanvasPanel);
 
-		holder.addNorth(topPanel, Constants.RIBBON_BAR_SIZE);
-		holder.add(mainPanel);
+		dockPanel.addNorth(ribbonBarPanel, Constants.RIBBON_BAR_SIZE);
+		dockPanel.add(mainPanel);
 
 		// MUST CALL THIS METHOD to set the constraints; if you don't not much
 		// will be displayed!
-		holder.forceLayout();
+		dockPanel.forceLayout();
 
 		Window.addResizeHandler(new ResizeHandler() {
 			public void onResize(final ResizeEvent event) {

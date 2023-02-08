@@ -209,7 +209,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private Image image = new Image();
 	/**
-	 * panel to managing the grey out area when pog is being dragged.
+	 * panel to managing the greyed out area when pog is being dragged.
 	 */
 	private LayoutPanel greyOutPanel;
 	/**
@@ -308,6 +308,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		super.add(greyOutPanel, 100, 100);
 	}
 
+	/**
+	 * Create pop up menu for when the DM right clicks on battle mat.
+	 */
 	private void createContextMenu() {
 		popup = new PopupPanel(true);
 		popup.getElement().getStyle().setZIndex(1000);
@@ -318,14 +321,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		playerMenu.addItem("Dead Toggle", new Command() {
 			@Override
 			public void execute() {
-				togglePlayerFlag(PlayerFlag.DEAD);
+				ServiceManager.getDungeonManager().toggleFlagOfSelectedPog(PlayerFlag.DEAD);
 			}
 
 		});
 		playerMenu.addItem("Invisible Toggle", new Command() {
 			@Override
 			public void execute() {
-				togglePlayerFlag(PlayerFlag.INVISIBLE);
+				ServiceManager.getDungeonManager().toggleFlagOfSelectedPog(PlayerFlag.INVISIBLE);
 			}
 		});
 		menu.addItem("Player FLags", playerMenu);
@@ -334,31 +337,31 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		dmMenu.addItem("Invisible Toggle", new Command() {
 			@Override
 			public void execute() {
-				toggleDMFlag(DungeonMasterFlag.INVISIBLE_FROM_PLAYER);
+				ServiceManager.getDungeonManager().toggleFlagOfSelectedPog(DungeonMasterFlag.INVISIBLE_FROM_PLAYER);
 			}
 		});
 		dmMenu.addItem("Transparent Toggle", new Command() {
 			@Override
 			public void execute() {
-				toggleDMFlag(DungeonMasterFlag.TRANSPARENT_BACKGROUND);
+				ServiceManager.getDungeonManager().toggleFlagOfSelectedPog(DungeonMasterFlag.TRANSPARENT_BACKGROUND);
 			}
 		});
 		dmMenu.addItem("Shift Right Toggle", new Command() {
 			@Override
 			public void execute() {
-				toggleDMFlag(DungeonMasterFlag.SHIFT_RIGHT);
+				ServiceManager.getDungeonManager().toggleFlagOfSelectedPog(DungeonMasterFlag.SHIFT_RIGHT);
 			}
 		});
 		dmMenu.addItem("Shift Top Toggle", new Command() {
 			@Override
 			public void execute() {
-				toggleDMFlag(DungeonMasterFlag.SHIFT_TOP);
+				ServiceManager.getDungeonManager().toggleFlagOfSelectedPog(DungeonMasterFlag.SHIFT_TOP);
 			}
 		});
 		dmMenu.addItem("Dark Background Toggle", new Command() {
 			@Override
 			public void execute() {
-				toggleDMFlag(DungeonMasterFlag.DARK_BACKGROUND);
+				ServiceManager.getDungeonManager().toggleFlagOfSelectedPog(DungeonMasterFlag.DARK_BACKGROUND);
 			}
 		});
 		menu.addItem("DM FLags", dmMenu);
@@ -383,39 +386,18 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		popup.add(menu);
 	}
 
+	/**
+	 * Add number to pog number menu.
+	 * @param pogNumberMenu to add to
+	 * @param i number to add
+	 */
 	private void createPogNumberMenuItem(final MenuBar pogNumberMenu, final int i) {
 		pogNumberMenu.addItem("" + i, new Command() {
 			@Override
 			public void execute() {
-				setPogNumber(i);
+				ServiceManager.getDungeonManager().updateNumberOfSelectedPog(i);
 			}
 		});
-	}
-
-	private void setPogNumber(final int pogNumber) {
-		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
-		pog.setPogNumber(pogNumber);
-		ServiceManager.getDungeonManager().addOrUpdatePog(pog);
-	}
-
-	private void togglePlayerFlag(final PlayerFlag flag) {
-		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
-		if (pog.isFlagSet(flag)) {
-			pog.clearFlags(flag);
-		} else {
-			pog.setFlags(flag);
-		}
-		ServiceManager.getDungeonManager().addOrUpdatePog(pog);
-	}
-
-	private void toggleDMFlag(final DungeonMasterFlag flag) {
-		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
-		if (pog.isFlagSet(flag)) {
-			pog.clearFlags(flag);
-		} else {
-			pog.setFlags(flag);
-		}
-		ServiceManager.getDungeonManager().addOrUpdatePog(pog);
 	}
 
 	/**
@@ -679,6 +661,12 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		selectionHeight = 0;
 	}
 
+	/**
+	 * Is this position visible to player.
+	 * @param clientX position
+	 * @param clientY position
+	 * @return true if in window and not covered by FOW
+	 */
 	public final boolean isSelectedVisible(final int clientX, final int clientY) {
 		if (clientX < 0 || clientY < 0) {
 			return (false);
@@ -715,7 +703,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		} else {
 			if (!toggleFOW) {
 				handleMouseMoveWhilePanning(event);
-			} else if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
+			} else if (ServiceManager.getDungeonManager().isDungeonMaster()) {
 				handleFowMouseMove(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
 			}
 		}
@@ -814,6 +802,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	/**
 	 * mouse up so close selection.
+	 * This means clearing or setting FOW on all cells within selection.
 	 * 
 	 * @param event mouse position
 	 */
@@ -904,7 +893,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Draw the grid line on main canvas. THis will be done based on scale and offset of the background image. This way the lines themselves do not get scaled and look weird.
+	 * Draw the grid line on main canvas. This will be done based on scale and offset of the background image. This way the lines themselves do not get scaled and look weird.
 	 */
 	private void drawGridLines() {
 		if (showGrid) {
@@ -1320,50 +1309,22 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void addPogs() {
 		getGridData();
-		addMonsterPogs();
-		addPlayerPogs();
-		addRoomPogs();
+		addPogListToCanvas(ServiceManager.getDungeonManager().getMonstersForCurrentLevel());
+		addPogListToCanvas(ServiceManager.getDungeonManager().getPlayersForCurrentSession());
+		addPogListToCanvas(ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel());
 		drawEverything();
 	}
 
 	/**
-	 * Add monster pogs.
+	 * Add list of pogs to canvas.
+	 * @param pogsToAdd list to add
 	 */
-	private void addMonsterPogs() {
-		PogData[] monsters = ServiceManager.getDungeonManager().getMonstersForCurrentLevel();
-		if (monsters == null) {
+	private void addPogListToCanvas(final PogData[] pogsToAdd) {
+		if (pogsToAdd == null) {
 			return;
 		}
-		for (PogData monster : monsters) {
+		for (PogData monster : pogsToAdd) {
 			addPogToCanvas(monster);
-		}
-	}
-
-	/**
-	 * add room object pogs.
-	 */
-	private void addRoomPogs() {
-		PogData[] roomObjects = ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel();
-		if (roomObjects == null) {
-			return;
-		}
-		for (PogData roomObject : roomObjects) {
-			addPogToCanvas(roomObject);
-		}
-	}
-
-	/**
-	 * Add players pogs.
-	 */
-	private void addPlayerPogs() {
-		PogData[] players = ServiceManager.getDungeonManager().getPlayersForCurrentSession();
-		if (players == null) {
-			return;
-		}
-		for (PogData player : players) {
-			if (player != null) {
-				addPogToCanvas(player);
-			}
 		}
 	}
 
