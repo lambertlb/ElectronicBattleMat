@@ -166,6 +166,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 			}
 		});
 		buttonPanel.add(cancel);
+		// add ability to adjust font size.
 		fontSize = new NumberSpinner(14, 14, 20);
 		fontSize.setValue(14);
 		buttonPanel.add(fontSize);
@@ -238,7 +239,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Must be run before reusing the view.
 	 */
 	private void initialize() {
-		// setPopupPosition(0, 0);
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z - 1);
 		tabPanel.clear();
 		tabPanel.add(scrollPanel, "Notes");

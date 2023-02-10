@@ -101,10 +101,9 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	 */
 	protected void pogSelected() {
 		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-		if (selectedPog == null) {
-			return;
+		if (selectedPog != null) {
+			setText(selectedPog.getName());
 		}
-		setText(selectedPog.getName());
 	}
 
 	/**
@@ -121,7 +120,6 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	 */
 	@Override
 	public void show() {
-//		setPopupPosition(0, 0);
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z - 1);
 		super.show();
 		selectedPog.pogSelected();

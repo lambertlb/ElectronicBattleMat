@@ -47,6 +47,22 @@ public final class Constants {
 	 */
 	public static final int DIALOG_Z = 12;
 	/**
+	 * Z order for popup menus.
+	 */
+	public static final int POPUPMENU_Z = 1000;
+	/**
+	 * Opacity for DM.
+	 */
+	public static final double FOW_OPACITY_FOR_DM = 0.2;
+	/**
+	 * Opacity for player.
+	 */
+	public static final double FOW_OPACITY_FOR_PLAYER = 1.0;
+	/**
+	 * Max pog number.
+	 */
+	public static final int MAX_POGNUMBER = 20;
+	/**
 	 * Location of dungeon data.
 	 */
 	public static final String DUNGEON_DATA_LOCATION = "dungeonData/";

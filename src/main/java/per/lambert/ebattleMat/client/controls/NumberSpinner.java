@@ -62,7 +62,7 @@ public class NumberSpinner extends Composite {
 			}
 		});
 		absolutePanel.add(upButton, 34, 0);
-		upButton.setText("\u2191");
+		upButton.setText("\u2191"); // unicode up arrow
 		upButton.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 
 		Button downButton = new Button();
@@ -76,7 +76,7 @@ public class NumberSpinner extends Composite {
 			}
 		});
 		absolutePanel.add(downButton, 55, 0);
-		downButton.setText("\u2193");
+		downButton.setText("\u2193"); // unicode down arrow
 		downButton.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 	}
 

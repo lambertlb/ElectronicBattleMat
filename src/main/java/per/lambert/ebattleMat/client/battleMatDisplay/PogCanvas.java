@@ -43,10 +43,10 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import per.lambert.ebattleMat.client.controls.PogPopupMenu;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
@@ -232,11 +232,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private boolean forceBackgroundColor = false;
 	/**
-	 * popup menu.
-	 */
-	private PopupPanel popup;
-
-	/**
 	 * get force background color.
 	 * 
 	 * @return true if force background color.
@@ -254,6 +249,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		this.forceBackgroundColor = forceBackgroundColor;
 	}
 
+	/**
+	 * popup menu.
+	 */
+	private PogPopupMenu popup;
 	/**
 	 * Main panel.
 	 */
@@ -283,7 +282,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param pogData data for pog
 	 * @param popup menu to use
 	 */
-	public PogCanvas(final PogData pogData, final PopupPanel popup) {
+	public PogCanvas(final PogData pogData, final PogPopupMenu popup) {
 		initWidget(uiBinder.createAndBindUi(this));
 		createContent();
 		setupWithPogData(pogData);
@@ -312,11 +311,11 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			@Override
 			public void onDragStart(final DragStartEvent event) {
 				if (ServiceManager.getDungeonManager().getFowToggle()) {
-					event.preventDefault();
+					event.preventDefault(); // ignore this if doing FOW toggling.
 					return;
 				}
 				if (!ServiceManager.getDungeonManager().isDungeonMaster() && !ServiceManager.getDungeonManager().isEditMode() && ServiceManager.getDungeonManager().isFowSet(pogData.getColumn(), pogData.getRow())) {
-					event.preventDefault();
+					event.preventDefault(); // ignore this if not DM and cell is covered by FOW.
 					return;
 				}
 				ServiceManager.getDungeonManager().setPogBeingDragged(pogData, fromRibbonBar);
@@ -334,6 +333,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 				setImage();
 			}
 		});
+		// bubble up some mouse events.
 		pogDrawPanel.addDomHandler(new MouseUpHandler() {
 			@Override
 			public void onMouseUp(final MouseUpEvent event) {
@@ -581,13 +581,13 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		if (!showNormalSizeOnly) {
 			if (ServiceManager.getDungeonManager().isDungeonMaster()) {
 				if (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)) {
-					opacity = 0.5;
+					opacity = 0.5; // DM can see transparent view
 				}
 			} else {
 				if (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)) {
-					opacity = 0;
+					opacity = 0; // player sees nothing
 				} else if (pogData.isFlagSet(PlayerFlag.INVISIBLE)) {
-					opacity = 0.5;
+					opacity = 0.5; // player see transparent view
 				}
 			}
 		}
@@ -637,7 +637,11 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		context.stroke();
 	}
 
+	/**
+	 * Draw pog number if not 0.
+	 */
 	private void drawNumber() {
+		// don't draw if scaled too small.
 		if (parentHeight < 30 || pogData.getPogNumber() == 0) {
 			return;
 		}
@@ -651,6 +655,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		context.fillText("" + pogData.getPogNumber(), 0, fontSize - (fontSize / 4));
 	}
 
+	/**
+	 * Instead of transforming text we will use different zone sizes during zoom.
+	 * @param fontSize to scale to.
+	 */
 	private void setFont(final int fontSize) {
 		if (fontSize == 48) {
 			context.setFont("bold 48px Courier New");
@@ -663,6 +671,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		}
 	}
 
+	/**
+	 * Get font size based on height of image.
+	 * @return size of font to use.
+	 */
 	private int getFontSize() {
 		if (parentHeight > 100) {
 			return (48);
@@ -702,6 +714,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 			if (event.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
 				if (popup != null) {
 					popup.setPopupPosition(event.getClientX(), event.getClientY());
+					popup.setPogData(pogData);
 					popup.show();
 				}
 			}
