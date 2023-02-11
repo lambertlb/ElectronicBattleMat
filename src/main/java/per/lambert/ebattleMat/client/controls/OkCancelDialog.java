@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 import per.lambert.ebattleMat.client.interfaces.Constants;
 
 /**
- * Base dialog for dialogs needing OK and cancel buttons.
+ * Base dialog for dialogs needing OK and cancel buttons. It will contain a grid in the center where user can add content.
  * 
  * @author LLambert
  *
@@ -81,10 +81,10 @@ public class OkCancelDialog extends ResizableDialog {
 	 * 
 	 * @param caption for dialog
 	 * @param okVisible true if OK button is visible.
-	 * @param cancelVisble true if Cancel button is visible
+	 * @param cancelVisible true if Cancel button is visible
 	 */
-	public OkCancelDialog(final String caption, final boolean okVisible, final boolean cancelVisble) {
-		this(caption, okVisible, cancelVisble, 400, 350);
+	public OkCancelDialog(final String caption, final boolean okVisible, final boolean cancelVisible) {
+		this(caption, okVisible, cancelVisible, 400, 350);
 	}
 
 	/**
@@ -92,17 +92,17 @@ public class OkCancelDialog extends ResizableDialog {
 	 * 
 	 * @param caption for dialog
 	 * @param okVisible true if OK button is visible.
-	 * @param cancelVisble true if Cancel button is visible
+	 * @param cancelVisible true if Cancel button is visible
 	 * @param height of dialog
 	 * @param width of dialog
 	 */
-	public OkCancelDialog(final String caption, final boolean okVisible, final boolean cancelVisble, final int height, final int width) {
+	public OkCancelDialog(final String caption, final boolean okVisible, final boolean cancelVisible, final int height, final int width) {
 		super();
 		setText(caption);
 		getElement().getStyle().setZIndex(Constants.DIALOG_Z);
-		createContent(okVisible, cancelVisble);
+		createContent(okVisible, cancelVisible);
 		ok.setVisible(okVisible);
-		cancel.setVisible(cancelVisble);
+		cancel.setVisible(cancelVisible);
 		dockLayoutPanel.setWidth("" + width + "px");
 		dockLayoutPanel.setHeight("" + height + "px");
 	}
@@ -111,13 +111,13 @@ public class OkCancelDialog extends ResizableDialog {
 	 * Create content.
 	 * 
 	 * @param okVisible true if OK button is visible.
-	 * @param cancelVisble true if Cancel button is visible
+	 * @param cancelVisible true if Cancel button is visible
 	 */
-	private void createContent(final boolean okVisible, final boolean cancelVisble) {
+	private void createContent(final boolean okVisible, final boolean cancelVisible) {
 		dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 		dockLayoutPanel.setStyleName("popupPanel");
 		southContent = new HorizontalPanel();
-		double southSize = (okVisible || cancelVisble) ? 30.0 : 0.0;
+		double southSize = (okVisible || cancelVisible) ? 30.0 : 0.0;
 		dockLayoutPanel.addSouth(southContent, southSize);
 		ok = new Button("Ok");
 		ok.addClickHandler(new ClickHandler() {
@@ -196,8 +196,8 @@ public class OkCancelDialog extends ResizableDialog {
 			int left = Integer.parseInt(sLeft.substring(0, sLeft.length() - 2));
 			if (left > width || top > height) {
 				setPopupPosition(100, 100);
-			}	
-		}		
+			}
+		}
 	}
 
 	/**

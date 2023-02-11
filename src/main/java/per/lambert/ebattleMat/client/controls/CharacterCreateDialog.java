@@ -157,9 +157,7 @@ public class CharacterCreateDialog extends OkCancelDialog {
 		pogData = ServiceManager.getDungeonManager().createPlayer();
 		pogCanvas.setPogData(pogData);
 		characterName.setValue("Enter Character Name");
-		characterName.removeStyleName("badLabel");
 		characterPicture.setValue("URL of character Picture");
-		characterPicture.removeStyleName("badLabel");
 		validateForm();
 	}
 

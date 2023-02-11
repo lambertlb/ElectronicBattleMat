@@ -25,8 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Control to handle uploading files.
- * Reusable control for uploading files to server.
+ * Control to handle uploading files. Reusable control for uploading files to server.
  * 
  * @author LLambert
  *

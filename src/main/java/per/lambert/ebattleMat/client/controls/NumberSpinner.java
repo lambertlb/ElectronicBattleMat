@@ -39,9 +39,23 @@ public class NumberSpinner extends Composite {
 		this(1, 0, 1000);
 	}
 
+	/**
+	 * Create a number spinner with value clamps.
+	 * @param defaultValue to start
+	 * @param min value
+	 * @param max value
+	 */
 	public NumberSpinner(final int defaultValue, final int min, final int max) {
 		maxNumber = max;
 		minNumber = min;
+		createContent(defaultValue);
+	}
+
+	/**
+	 * Create content for spinner.
+	 * @param defaultValue to start
+	 */
+	private void createContent(final int defaultValue) {
 		AbsolutePanel absolutePanel = new AbsolutePanel();
 		initWidget(absolutePanel);
 		absolutePanel.setSize("110px", "30px");
@@ -51,6 +65,14 @@ public class NumberSpinner extends Composite {
 		integerBox.setSize("30px", "20px");
 		integerBox.setValue(defaultValue);
 
+		createUpDownButtons(absolutePanel);
+	}
+
+	/**
+	 * reat up and down buttons for adjusting value.
+	 * @param absolutePanel where to add buttons
+	 */
+	private void createUpDownButtons(final AbsolutePanel absolutePanel) {
 		Button upButton = new Button();
 		upButton.addClickHandler(new ClickHandler() {
 			public void onClick(final ClickEvent event) {

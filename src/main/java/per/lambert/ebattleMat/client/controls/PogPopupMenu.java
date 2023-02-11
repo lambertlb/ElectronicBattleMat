@@ -14,6 +14,12 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
+/**
+ * This suports popup menu for pog options.
+ * 
+ * @author llambert
+ *
+ */
 public class PogPopupMenu extends PopupPanel {
 	/**
 	 * data for pog.
@@ -208,12 +214,12 @@ public class PogPopupMenu extends PopupPanel {
 	}
 
 	/**
-	 * adjust menu item depending is set or not.
+	 * adjust menu item depending is set or not. Since menu items do not support check marks we will use bold to show it as being set.
 	 * 
 	 * @param item to change
 	 * @param isSet true if set
 	 */
-	private void adjustMenuItem(final MenuItem item, final boolean isSet) {
+	private void showIfItemIsSet(final MenuItem item, final boolean isSet) {
 		if (isSet) {
 			item.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 		} else {
@@ -225,18 +231,18 @@ public class PogPopupMenu extends PopupPanel {
 	 * Setup player toggles.
 	 */
 	private void setupPlayerToggles() {
-		adjustMenuItem(deadToggle, pog.isFlagSet(PlayerFlag.DEAD));
-		adjustMenuItem(pogInvisibleToggle, pog.isFlagSet(PlayerFlag.INVISIBLE));
+		showIfItemIsSet(deadToggle, pog.isFlagSet(PlayerFlag.DEAD));
+		showIfItemIsSet(pogInvisibleToggle, pog.isFlagSet(PlayerFlag.INVISIBLE));
 	}
 
 	/**
 	 * Setup DM toggles.
 	 */
 	private void setupDMToggles() {
-		adjustMenuItem(pogInvisibleFromPlayerToggle, pog.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER));
-		adjustMenuItem(transparentToggle, pog.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND));
-		adjustMenuItem(shiftRightToggle, pog.isFlagSet(DungeonMasterFlag.SHIFT_RIGHT));
-		adjustMenuItem(shiftTopToggle, pog.isFlagSet(DungeonMasterFlag.SHIFT_TOP));
-		adjustMenuItem(darkBackgroundToggle, pog.isFlagSet(DungeonMasterFlag.DARK_BACKGROUND));
+		showIfItemIsSet(pogInvisibleFromPlayerToggle, pog.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER));
+		showIfItemIsSet(transparentToggle, pog.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND));
+		showIfItemIsSet(shiftRightToggle, pog.isFlagSet(DungeonMasterFlag.SHIFT_RIGHT));
+		showIfItemIsSet(shiftTopToggle, pog.isFlagSet(DungeonMasterFlag.SHIFT_TOP));
+		showIfItemIsSet(darkBackgroundToggle, pog.isFlagSet(DungeonMasterFlag.DARK_BACKGROUND));
 	}
 }

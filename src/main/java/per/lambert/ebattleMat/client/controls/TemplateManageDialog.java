@@ -235,6 +235,24 @@ public class TemplateManageDialog extends OkCancelDialog {
 		notesDialog = new NotesFloatingWindow();
 		notesDialog.setModal(true);
 		notesDialog.getElement().getStyle().setZIndex(Constants.DIALOG_Z + 1);
+		notesButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.show();
+			}
+		});
+		notesDialog.addSaveClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.hide();
+			}
+		});
+		notesDialog.addCancelClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesDialog.hide();
+			}
+		});
 	}
 
 	/**
@@ -245,6 +263,19 @@ public class TemplateManageDialog extends OkCancelDialog {
 		dmFlagsButton.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(9, 1, dmFlagsButton);
 		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+		dmFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				dmFlagDialog.setBits(pogData.getDungeonMasterFlags());
+				dmFlagDialog.show();
+			}
+		});
+		dmFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
+			}
+		});
 	}
 
 	/**
@@ -255,6 +286,19 @@ public class TemplateManageDialog extends OkCancelDialog {
 		playerFlagsButton.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(9, 0, playerFlagsButton);
 		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
+		playerFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				playerFlagDialog.setBits(pogData.getPlayerFlags());
+				playerFlagDialog.show();
+			}
+		});
+		playerFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogData.setPlayerFlagsNative(playerFlagDialog.getBits());
+			}
+		});
 	}
 
 	/**
@@ -264,6 +308,13 @@ public class TemplateManageDialog extends OkCancelDialog {
 		startNewTemplate = new Button("Create New Template");
 		startNewTemplate.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(8, 2, startNewTemplate);
+		startNewTemplate.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				setForNewPog();
+				filteredTemplateList.setSelectedIndex(0);
+			}
+		});
 	}
 
 	/**
@@ -295,6 +346,12 @@ public class TemplateManageDialog extends OkCancelDialog {
 		templateClass = new TextBox();
 		templateClass.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(7, 1, templateClass);
+		templateClass.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				templateClass.selectAll();
+			}
+		});
 	}
 
 	/**
@@ -304,6 +361,12 @@ public class TemplateManageDialog extends OkCancelDialog {
 		race = new TextBox();
 		race.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(7, 0, race);
+		race.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				race.selectAll();
+			}
+		});
 	}
 
 	/**
@@ -320,6 +383,18 @@ public class TemplateManageDialog extends OkCancelDialog {
 		centerGrid.setWidget(6, 1, templatePicture);
 		element = centerGrid.getCellFormatter().getElement(6, 1);
 		element.setAttribute("colspan", "2");
+		templatePicture.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				templatePicture.selectAll();
+			}
+		});
+		templatePicture.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				validateForm();
+			}
+		});
 	}
 
 	/**
@@ -332,6 +407,18 @@ public class TemplateManageDialog extends OkCancelDialog {
 		templateName = new TextBox();
 		templateName.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(5, 1, templateName);
+		templateName.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				templateName.selectAll();
+			}
+		});
+		templateName.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				validateForm();
+			}
+		});
 	}
 
 	/**
@@ -354,6 +441,12 @@ public class TemplateManageDialog extends OkCancelDialog {
 		filteredTemplateList.setStyleName("ribbonBarLabel");
 		filteredTemplateList.setVisibleItemCount(1);
 		centerGrid.setWidget(3, 0, filteredTemplateList);
+		filteredTemplateList.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				templateSelected();
+			}
+		});
 	}
 
 	/**
@@ -363,6 +456,12 @@ public class TemplateManageDialog extends OkCancelDialog {
 		applyFilters = new Button("Apply filters");
 		applyFilters.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(2, 0, applyFilters);
+		applyFilters.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				applyFilters();
+			}
+		});
 	}
 
 	/**
@@ -410,107 +509,6 @@ public class TemplateManageDialog extends OkCancelDialog {
 	 * Setup event handlers.
 	 */
 	private void setupEventHandlers() {
-		applyFilters.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				applyFilters();
-			}
-		});
-		filteredTemplateList.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(final ChangeEvent event) {
-				templateSelected();
-			}
-		});
-		templateName.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				templateName.selectAll();
-			}
-		});
-		templateName.addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				validateForm();
-			}
-		});
-		templatePicture.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				templatePicture.selectAll();
-			}
-		});
-		templatePicture.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				validateForm();
-			}
-		});
-		race.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				race.selectAll();
-			}
-		});
-		templateClass.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				templateClass.selectAll();
-			}
-		});
-		startNewTemplate.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				setForNewPog();
-				filteredTemplateList.setSelectedIndex(0);
-			}
-		});
-		playerFlagsButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				playerFlagDialog.setBits(pogData.getPlayerFlags());
-				playerFlagDialog.show();
-			}
-		});
-		playerFlagDialog.addOkClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				pogData.setPlayerFlagsNative(playerFlagDialog.getBits());
-			}
-		});
-		dmFlagsButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				dmFlagDialog.setBits(pogData.getDungeonMasterFlags());
-				dmFlagDialog.show();
-			}
-		});
-		dmFlagDialog.addOkClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
-			}
-		});
-		notesButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				notesDialog.show();
-			}
-		});
-		notesDialog.addSaveClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				notesDialog.hide();
-			}
-		});
-		notesDialog.addCancelClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				notesDialog.hide();
-			}
-		});
 	}
 
 	/**
@@ -626,8 +624,8 @@ public class TemplateManageDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Validate URL.
-	 * TODO move to dungeon manager
+	 * Validate URL. TODO move to dungeon manager
+	 * 
 	 * @return true if valid
 	 */
 	private boolean validateUrl() {

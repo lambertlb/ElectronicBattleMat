@@ -404,7 +404,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 			String levelString = getCorrectLevelString();
 			pictureName = "level" + levelString + "." + fileExtension;
 			String filePath = baseURL + "/" + pictureName;
-			uploadFile(filePath);
+			uploadFile(filePath); // defer accepting changes till picture is completely uploaded. Happens in completion handler
 		} else {
 			acceptChangesToDungeonLevel();
 		}
