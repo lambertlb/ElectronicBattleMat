@@ -16,20 +16,22 @@
 package per.lambert.ebattleMat.client.interfaces;
 
 /**
- * @author LLambert
- * Use this interface to implement a callback from any asynchronous operation
+ * @author LLambert Use this interface to implement a callback from any asynchronous operation
  */
 public interface IUserCallback {
 	/**
 	 * Called if error occurred.
+	 * 
 	 * @param sender The original caller
 	 * @param error Information about the error
 	 */
-	void	onError(Object sender, IErrorInformation error);
+	void onError(Object sender, IErrorInformation error);
+
 	/**
 	 * Called when request succeeds.
+	 * 
 	 * @param sender The original caller
 	 * @param data Data returned from execution
 	 */
-	void	onSuccess(Object sender, Object data);
+	void onSuccess(Object sender, Object data);
 }

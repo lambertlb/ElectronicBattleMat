@@ -338,7 +338,7 @@ public class DungeonSelectPresenter {
 	/**
 	 * Select this session.
 	 * 
-	 * @param sessionName sessin name to select.
+	 * @param sessionName session name to select.
 	 * @param sessionUUID UUID of session to select.
 	 */
 	public void selectSessionName(final String sessionName, final String sessionUUID) {
@@ -441,5 +441,4 @@ public class DungeonSelectPresenter {
 	 */
 	public void close() {
 	}
-
 }

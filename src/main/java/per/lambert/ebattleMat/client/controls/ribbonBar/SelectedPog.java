@@ -74,7 +74,7 @@ public class SelectedPog extends Composite {
 	 * Canvas for showing pog.
 	 */
 	private PogCanvas scalablePog = new PogCanvas();
-	
+
 	/**
 	 * widget to use for resizing.
 	 */

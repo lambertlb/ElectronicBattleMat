@@ -17,6 +17,7 @@ package per.lambert.ebattleMat.client.interfaces;
 
 /**
  * Enumeration of reasons for events.
+ * 
  * @author LLambert
  *
  */

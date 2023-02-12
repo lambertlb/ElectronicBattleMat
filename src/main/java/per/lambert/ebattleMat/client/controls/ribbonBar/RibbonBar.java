@@ -267,78 +267,62 @@ public class RibbonBar extends Composite {
 		ribbonGrid.setCellSpacing(0);
 		ribbonGrid.addStyleName("ribbonBarLabel");
 		selectedPog = new SelectedPog(panel);
-		levelSelect = new ListBox();
-		levelSelect.setVisibleItemCount(1);
-		levelSelect.addStyleName("ribbonBarLabel");
-		levelSelect.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(final ChangeEvent event) {
-				ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
-			}
-		});
-		characterSelect = new ListBox();
-		characterSelect.setVisibleItemCount(1);
-		characterSelect.addStyleName("ribbonBarLabel");
-		characterSelect.addChangeHandler(new ChangeHandler() {
+		createLevelSelection();
+		createCharacterSelection();
+		createNewCharacter();
+		createMonsterEditor();
+		createRoomEditor();
+		createPlayerFlagsEditor();
+		createDMFlagsEditor();
+		createShowPogsDialog();
+		createShowPogNotesDialog();
+		pogSelection();
+	}
 
-			@Override
-			public void onChange(final ChangeEvent event) {
-				characterWasSelected();
-			}
-		});
-		createCharacter = new Button("Create Character");
-		createCharacter.addStyleName("ribbonBarLabel");
-		createCharacter.addClickHandler(new ClickHandler() {
+	/**
+	 * create show pog notes controls.
+	 */
+	private void createShowPogNotesDialog() {
+		showPogNotes = new CheckBox("Show Pog Notes");
+		showPogNotes.setStyleName("ribbonBarLabel");
+		showPogNotes.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				characterCreate.show();
+				if (showPogNotes.getValue()) {
+					pogNotes.show();
+				} else {
+					pogNotes.hide();
+				}
 			}
 		});
-		characterCreate = new CharacterCreateDialog();
+		pogNotes = new NotesFloatingWindow();
+	}
 
-		monsterManageButton = new Button("Monster Editor...");
-		monsterManageButton.addStyleName("ribbonBarLabel");
-		monsterManageButton.addClickHandler(new ClickHandler() {
+	/**
+	 * Create show selected pog controls.
+	 */
+	private void createShowPogsDialog() {
+		showSelectedPog = new CheckBox("Show Selected Pog");
+		showSelectedPog.setStyleName("ribbonBarLabel");
+		showSelectedPog.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				monsterManage.show();
+				if (showSelectedPog.getValue()) {
+					pogWindow.show();
+				} else {
+					pogWindow.hide();
+				}
 			}
 		});
-		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER);
+		pogWindow = new SelectedPogFloatingWindow();
+	}
 
-		roomObjectsManageButton = new Button("Room Object Editor...");
-		roomObjectsManageButton.addStyleName("ribbonBarLabel");
-		roomObjectsManageButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				roomObjectsManage.show();
-			}
-		});
-		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT);
-
-		playerFlagsButton = new Button("Player Controlled Properties...");
-		playerFlagsButton.setStyleName("ribbonBarLabel");
-		playerFlagsButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				playerFlagDialog.setBits(ServiceManager.getDungeonManager().getSelectedPog().getPlayerFlags());
-				playerFlagDialog.show();
-			}
-		});
-
-		playerFlagDialog = new FlagBitsDialog("Player Controlled Properties", PlayerFlag.getValues());
-		playerFlagDialog.addOkClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-				selectedPog.setPlayerFlagsNative(playerFlagDialog.getBits());
-				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
-			}
-		});
-
+	/**
+	 * Create edit dm flags controls.
+	 */
+	private void createDMFlagsEditor() {
 		dmFlagsButton = new Button("DM Controlled Properties..");
 		dmFlagsButton.setStyleName("ribbonBarLabel");
 		dmFlagsButton.addClickHandler(new ClickHandler() {
@@ -358,37 +342,110 @@ public class RibbonBar extends Composite {
 				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 			}
 		});
-		
-		showSelectedPog = new CheckBox("Show Selected Pog");
-		showSelectedPog.setStyleName("ribbonBarLabel");
-		showSelectedPog.addClickHandler(new ClickHandler() {
+	}
+
+	/**
+	 * Create edit player flags controls.
+	 */
+	private void createPlayerFlagsEditor() {
+		playerFlagsButton = new Button("Player Controlled Properties...");
+		playerFlagsButton.setStyleName("ribbonBarLabel");
+		playerFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				playerFlagDialog.setBits(ServiceManager.getDungeonManager().getSelectedPog().getPlayerFlags());
+				playerFlagDialog.show();
+			}
+		});
+
+		playerFlagDialog = new FlagBitsDialog("Player Controlled Properties", PlayerFlag.getValues());
+		playerFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+				selectedPog.setPlayerFlagsNative(playerFlagDialog.getBits());
+				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
+			}
+		});
+	}
+
+	/**
+	 * create room editor controls.
+	 */
+	private void createRoomEditor() {
+		roomObjectsManageButton = new Button("Room Object Editor...");
+		roomObjectsManageButton.addStyleName("ribbonBarLabel");
+		roomObjectsManageButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				if (showSelectedPog.getValue()) {
-					pogWindow.show();
-				} else {
-					pogWindow.hide();
-				}
+				roomObjectsManage.show();
 			}
 		});
-		pogWindow = new SelectedPogFloatingWindow();
+		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT);
+	}
 
-		showPogNotes = new CheckBox("Show Pog Notes");
-		showPogNotes.setStyleName("ribbonBarLabel");
-		showPogNotes.addClickHandler(new ClickHandler() {
+	/**
+	 * Create monster editor controls.
+	 */
+	private void createMonsterEditor() {
+		monsterManageButton = new Button("Monster Editor...");
+		monsterManageButton.addStyleName("ribbonBarLabel");
+		monsterManageButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				if (showPogNotes.getValue()) {
-					pogNotes.show();
-				} else {
-					pogNotes.hide();
-				}
+				monsterManage.show();
 			}
 		});
-		pogNotes = new NotesFloatingWindow();
-		pogSelection();
+		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER);
+	}
+
+	/**
+	 * Create new character controls.
+	 */
+	private void createNewCharacter() {
+		createCharacter = new Button("Create Character");
+		createCharacter.addStyleName("ribbonBarLabel");
+		createCharacter.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				characterCreate.show();
+			}
+		});
+		characterCreate = new CharacterCreateDialog();
+	}
+
+	/**
+	 * create character selection controls.
+	 */
+	private void createCharacterSelection() {
+		characterSelect = new ListBox();
+		characterSelect.setVisibleItemCount(1);
+		characterSelect.addStyleName("ribbonBarLabel");
+		characterSelect.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(final ChangeEvent event) {
+				characterWasSelected();
+			}
+		});
+	}
+
+	/**
+	 * Create level selection controls.
+	 */
+	private void createLevelSelection() {
+		levelSelect = new ListBox();
+		levelSelect.setVisibleItemCount(1);
+		levelSelect.addStyleName("ribbonBarLabel");
+		levelSelect.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				ServiceManager.getDungeonManager().setCurrentLevel(levelSelect.getSelectedIndex());
+			}
+		});
 	}
 
 	/**

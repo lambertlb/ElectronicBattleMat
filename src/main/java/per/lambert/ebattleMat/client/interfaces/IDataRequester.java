@@ -19,12 +19,14 @@ import java.util.Map;
 
 /**
  * interface for handling a web request.
+ * 
  * @author LLambert
  *
  */
 public interface IDataRequester {
 	/**
 	 * handle web request.
+	 * 
 	 * @param requestData request data
 	 * @param requestType request type
 	 * @param parameters for request

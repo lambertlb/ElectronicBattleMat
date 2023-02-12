@@ -91,8 +91,8 @@ public final class DungeonMasterFlag extends FlagBit {
 			nameMap = new LinkedHashMap<String, FlagBit>();
 			valueMap = new LinkedHashMap<Integer, FlagBit>();
 		}
-		nameMap.put(flagName, (FlagBit)this);
-		valueMap.put(getValue(), (FlagBit)this);
+		nameMap.put(flagName, (FlagBit) this);
+		valueMap.put(getValue(), (FlagBit) this);
 	}
 
 	/**

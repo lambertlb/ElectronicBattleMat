@@ -60,6 +60,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Edit the selected dungeon based on selected UUID.
+	 * 
 	 * @param selectedDungeonUUID UUID of dungeon to edit.
 	 */
 	void editSelectedDungeonUUID(String selectedDungeonUUID);
@@ -340,6 +341,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Find character pog in dungeon.
+	 * 
 	 * @param uuid of character
 	 * @return pog data if found
 	 */
@@ -347,6 +349,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * is this valid monster name.
+	 * 
 	 * @param monsterName to check
 	 * @return true if valid
 	 */
@@ -354,6 +357,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Add or update pog to proper place.
+	 * 
 	 * @param pog to add
 	 * @param place to add
 	 */
@@ -376,6 +380,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Get list of filtered pogs.
+	 * 
 	 * @param place place where pog reside.
 	 * @param pogType pog type
 	 * @param raceFilter race filter
@@ -387,6 +392,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Selected this pog.
+	 * 
 	 * @param place where pog resides.
 	 * @param pogType type of pog.
 	 * @param templateUUID uuid of pog
@@ -395,6 +401,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Get list of classes.
+	 * 
 	 * @param place where pogs reside
 	 * @param pogType type of pog
 	 * @return list of classes
@@ -403,6 +410,7 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Get list of races.
+	 * 
 	 * @param place where pogs reside
 	 * @param pogType type of pog
 	 * @return list of races
@@ -422,9 +430,10 @@ public interface IDungeonManager extends IPogManager {
 	 * @param hideFOW true if changing.
 	 */
 	void setHideFOW(boolean hideFOW);
-	
+
 	/**
 	 * Is this coordinate in FOW map.
+	 * 
 	 * @param column to check
 	 * @param row to check
 	 * @return true if is

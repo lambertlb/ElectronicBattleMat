@@ -112,6 +112,7 @@ public class LoginPresenter {
 
 	/**
 	 * get is enabled.
+	 * 
 	 * @return is enabled
 	 */
 	public boolean getIsEnabled() {
@@ -120,6 +121,7 @@ public class LoginPresenter {
 
 	/**
 	 * Set is enabled.
+	 * 
 	 * @param isEnabled if set
 	 */
 	public void setIsEnabled(final boolean isEnabled) {
@@ -128,6 +130,7 @@ public class LoginPresenter {
 
 	/**
 	 * Set view.
+	 * 
 	 * @param view to set
 	 */
 	public void setView(final LoginControl view) {
@@ -160,6 +163,7 @@ public class LoginPresenter {
 
 	/**
 	 * Login complete.
+	 * 
 	 * @param message to display on view
 	 */
 	void loginComplete(final String message) {

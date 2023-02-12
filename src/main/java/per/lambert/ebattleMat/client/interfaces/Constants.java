@@ -53,7 +53,7 @@ public final class Constants {
 	/**
 	 * Opacity for DM.
 	 */
-	public static final double FOW_OPACITY_FOR_DM = 0.2;
+	public static final double FOW_OPACITY_FOR_DM = 0.4;
 	/**
 	 * Opacity for player.
 	 */

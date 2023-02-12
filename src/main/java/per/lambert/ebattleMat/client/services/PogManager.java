@@ -59,7 +59,6 @@ public abstract class PogManager implements IPogManager {
 	 * List of monster pogs.
 	 */
 	private PogList monsterTemplatePogs;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -67,7 +66,6 @@ public abstract class PogManager implements IPogManager {
 	public PogData[] getMonsterTemplatePogs() {
 		return monsterTemplatePogs.getPogList();
 	}
-
 	/**
 	 * Map of room object pogs.
 	 */
@@ -84,7 +82,6 @@ public abstract class PogManager implements IPogManager {
 	 * List of room objects.
 	 */
 	private PogList roomObjectTemplatePogs;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,12 +89,10 @@ public abstract class PogManager implements IPogManager {
 	public PogData[] getRoomObjectTemplatePogs() {
 		return roomObjectTemplatePogs.getPogList();
 	}
-
 	/**
 	 * Currently selected Pog.
 	 */
 	private PogData selectedPog;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -105,7 +100,6 @@ public abstract class PogManager implements IPogManager {
 	public PogData getSelectedPog() {
 		return selectedPog;
 	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -123,7 +117,6 @@ public abstract class PogManager implements IPogManager {
 	protected void setSelectedPogInternal(final PogData selectedPog) {
 		this.selectedPog = selectedPog;
 	}
-
 	/**
 	 * Set selected pog.
 	 * 
@@ -354,7 +347,7 @@ public abstract class PogManager implements IPogManager {
 	@Override
 	public ArrayList<PogData> getFilteredCommonTemplates(final String pogType, final String raceFilter, final String classFilter, final String genderFilter) {
 		PogList pogsToSearch = pogType.equals(Constants.POG_TYPE_MONSTER) ? monsterTemplatePogs : roomObjectTemplatePogs;
-		return (getFilteredMonsters(pogsToSearch, raceFilter, classFilter, genderFilter));
+		return (getFilteredPogs(pogsToSearch, raceFilter, classFilter, genderFilter));
 	}
 
 	/**
@@ -366,8 +359,8 @@ public abstract class PogManager implements IPogManager {
 	 * @param genderFilter gender filter
 	 * @return pog that match
 	 */
-	private ArrayList<PogData> getFilteredMonsters(final PogList pogsToSearch, final String raceFilter, final String classFilter, final String genderFilter) {
-		ArrayList<PogData> filteredMonsters = new ArrayList<PogData>();
+	private ArrayList<PogData> getFilteredPogs(final PogList pogsToSearch, final String raceFilter, final String classFilter, final String genderFilter) {
+		ArrayList<PogData> filteredPogs = new ArrayList<PogData>();
 		for (PogData pog : pogsToSearch.getPogList()) {
 			if (raceFilter != null && !raceFilter.isEmpty()) {
 				if (!pog.getRace().equalsIgnoreCase(raceFilter)) {
@@ -384,9 +377,9 @@ public abstract class PogManager implements IPogManager {
 					continue;
 				}
 			}
-			filteredMonsters.add(pog);
+			filteredPogs.add(pog);
 		}
-		return (filteredMonsters);
+		return (filteredPogs);
 	}
 
 	/**
@@ -492,6 +485,7 @@ public abstract class PogManager implements IPogManager {
 			ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 		}
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
