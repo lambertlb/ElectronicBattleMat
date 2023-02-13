@@ -49,8 +49,11 @@ import per.lambert.ebattleMat.server.serviceData.PogList;
 /**
  * Manager for dungeon information.
  * 
- * This is a static class that serves as a central handlers for all service requests. It does a lock on the data so requests are serialized. This means that if two people make changes to the same dungeon data then last one wins. This will also cache
- * session data to minimize the amount of data being accessed on disk.
+ * This is a static class that serves as a central handlers for all service requests.
+ * 
+ * It does a lock on the data so requests are serialized.
+ * This means that if two people make changes to the same dungeon data then last one wins.
+ * This will also cache session data to minimize the amount of data being accessed on disk.
  * 
  * @author LLambert
  *

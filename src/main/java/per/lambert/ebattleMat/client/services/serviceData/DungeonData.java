@@ -20,6 +20,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * Java script class to manage Dungeon data from server.
  * 
+ * This need to match per.lambert.ebattleMat.server.serviceData.DungeonData
+ * 
  * @author LLambert
  *
  */

@@ -20,6 +20,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * Client side session data.
  * 
+ * This needs to match per.lambert.ebattleMat.server.serviceData.DungeonSessionData
+ * 
  * @author LLambert
  *
  */

@@ -18,6 +18,8 @@ package per.lambert.ebattleMat.client.services.serviceData;
 /**
  * Client side definition for a dungeon level.
  * 
+ * THis needs to match per.lambert.ebattleMat.server.serviceData.DungeonLevel
+ * 
  * @author LLambert
  *
  */

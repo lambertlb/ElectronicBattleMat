@@ -1063,10 +1063,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (editMode) {
 			return (PogPlace.DUNGEON_INSTANCE);
 		}
-		// if (isDungeonMaster) {
 		return (PogPlace.SESSION_INSTANCE);
-		// }
-		// return (PogPlace.INVALID);
 	}
 
 	/**
@@ -1304,7 +1301,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		dataRequester.requestData(pogDataString, "DELETEPOG", parameters, new IUserCallback() {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
-				removeSelectedPog(getSelectedPog(), place);
+				removeThisPog(getSelectedPog(), place);
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 			}
 
@@ -1315,7 +1312,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		});
 	}
 
-	private void removeSelectedPog(final PogData pog, final PogPlace place) {
+	/**
+	 * remove this pog.
+	 * @param pog tp remove
+	 * @param place where to remove it from
+	 */
+	private void removeThisPog(final PogData pog, final PogPlace place) {
 		if (place == PogPlace.SESSION_INSTANCE) {
 			DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 			if (sessionLevel != null) {

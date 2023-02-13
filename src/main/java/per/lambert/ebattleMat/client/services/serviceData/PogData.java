@@ -27,6 +27,8 @@ import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
  * 
  * This contains all data pertaining to a pog regardless of type.
  * 
+ * This needs to match per.lambert.ebattleMat.server.serviceData.PogData
+ * 
  * @author LLambert
  *
  */

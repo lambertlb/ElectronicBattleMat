@@ -19,6 +19,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * client side session level.
+ * 
+ * This needs to match per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel
  * @author LLambert
  *
  */

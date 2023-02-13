@@ -181,8 +181,7 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public PogData createPlayer() {
-		PogData pogData = createTemplatePog(Constants.POG_TYPE_PLAYER);
-		return (pogData);
+		return (createTemplatePog(Constants.POG_TYPE_PLAYER));
 	}
 
 	/**
