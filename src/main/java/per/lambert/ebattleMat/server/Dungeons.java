@@ -32,6 +32,7 @@ import per.lambert.ebattleMat.server.handlers.DeleteDungeonHandler;
 import per.lambert.ebattleMat.server.handlers.DeletePogHandler;
 import per.lambert.ebattleMat.server.handlers.DeleteSessionHandler;
 import per.lambert.ebattleMat.server.handlers.DungeonListHandler;
+import per.lambert.ebattleMat.server.handlers.FileLister;
 import per.lambert.ebattleMat.server.handlers.FileUploadHandler;
 import per.lambert.ebattleMat.server.handlers.LoadJsonDataHandler;
 import per.lambert.ebattleMat.server.handlers.LoadSessionHandler;
@@ -72,6 +73,7 @@ public class Dungeons extends HttpServlet {
 		webServices.put("FILEUPLOAD", new FileUploadHandler());
 		webServices.put("ADDORUPDATEPOG", new AddOrUpdatePogHandler());
 		webServices.put("DELETEPOG", new DeletePogHandler());
+		webServices.put("FILELISTER", new FileLister());
 	}
 
 	/**

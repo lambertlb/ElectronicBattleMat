@@ -36,6 +36,7 @@ import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
+import per.lambert.ebattleMat.client.services.serviceData.FileList;
 import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.LoginResponseData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -1336,5 +1337,28 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			}
 		}
 		setSelectedPog(null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void getFileList(final String path, final IUserCallback callback) {
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("folder", path);
+		dataRequester.requestData("", "FILELISTER", parameters, new IUserCallback() {
+			@Override
+			public void onSuccess(final Object sender, final Object data) {
+				FileList files = JsonUtils.<FileList>safeEval((String) data);
+				callback.onSuccess(path, files);
+			}
+
+			@Override
+			public void onError(final Object sender, final IErrorInformation error) {
+				lastError = error.getError();
+				callback.onError(path, error);
+			}
+		});
 	}
 }

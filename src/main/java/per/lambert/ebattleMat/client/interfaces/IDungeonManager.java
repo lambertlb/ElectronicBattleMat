@@ -444,4 +444,12 @@ public interface IDungeonManager extends IPogManager {
 	 * Delete selected pog.
 	 */
 	void deleteSelectedPog();
+
+	/**
+	 * Get list of files in path.
+	 * 
+	 * @param path
+	 * @param callback
+	 */
+	void getFileList(String path, IUserCallback callback);
 }
