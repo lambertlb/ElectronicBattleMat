@@ -983,7 +983,23 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	public void downloadDungeonFile(final String fileName) {
 		String url = getUrlToDungeonData() + fileName;
 		makeSureLoaderExists();
-		downloadFile(fileName, url);
+		downloadFileFromServer(fileName, url);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void downloadFile(final String url, final String fileName) {
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		String resourceUrl;
+		if (url.endsWith("/")) {
+			resourceUrl = dataRequester.getWebPath() + url + fileName;			
+		} else {
+			resourceUrl = dataRequester.getWebPath() + url + "/" + fileName;
+		}
+		makeSureLoaderExists();
+		downloadFileFromServer(fileName, resourceUrl);
 	}
 
 	/**
@@ -1004,7 +1020,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param fileName to download
 	 * @param urlData URL to resource
 	 */
-	public native void downloadFile(String fileName, String urlData) /*-{
+	public native void downloadFileFromServer(String fileName, String urlData) /*-{
 		var aLink = document.getElementById('downloader');
 		aLink.download = fileName;
 		aLink.href = encodeURI(urlData);

@@ -294,6 +294,13 @@ public interface IDungeonManager extends IPogManager {
 	 * @param fileName to download.
 	 */
 	void downloadDungeonFile(String fileName);
+	/**
+	 * Download this file.
+	 * 
+	 * @param url to file
+	 * @param fileName to download.
+	 */
+	void downloadFile(String url, String fileName);
 
 	/**
 	 * get URL to dungeon data.

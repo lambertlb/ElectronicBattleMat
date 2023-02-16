@@ -88,7 +88,7 @@ public class FileLister implements IWebRequestHandler {
 	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
 		URL servletPath = servlet.getServletContext().getResource("/");
 		String folderPath = servletPath.getPath() + request.getParameter("folder");
-		FileListResponse response = new FileListResponse(folderPath);
+		FileListResponse response = new FileListResponse(request.getParameter("folder"));
 		response.setFilenames(getFilenamesInPath(folderPath));
 		Gson gson = new Gson();
 		String responseDataString = gson.toJson(response);
