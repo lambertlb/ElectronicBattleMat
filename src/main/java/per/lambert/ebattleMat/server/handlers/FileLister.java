@@ -2,13 +2,13 @@ package per.lambert.ebattleMat.server.handlers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.server.IWebRequestHandler;
 
 /**
@@ -86,7 +85,6 @@ public class FileLister implements IWebRequestHandler {
 	 */
 	@Override
 	public void handleRequest(final HttpServletRequest request, final HttpServletResponse resp, final HttpServlet servlet, final String jsonData) throws ServletException, IOException {
-		URL servletPath = servlet.getServletContext().getResource("/");
 		String folderPath = request.getSession().getServletContext().getRealPath(request.getParameter("folder"));
 		FileListResponse response = new FileListResponse(request.getParameter("folder"));
 		response.setFilenames(getFilenamesInPath(folderPath));

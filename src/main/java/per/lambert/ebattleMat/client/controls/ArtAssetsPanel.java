@@ -1,6 +1,11 @@
 package per.lambert.ebattleMat.client.controls;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -9,13 +14,19 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.Constants;
+import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
@@ -54,7 +65,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	/**
 	 * Up load widget.
 	 */
-	private FileUpload fileUpload;
+	private FileUpload fileUpload = new FileUpload();
 	/**
 	 * Tree of files.
 	 */
@@ -106,14 +117,6 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	}
 
 	private void createContent() {
-		uploadAsset.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				upLoadAsset();
-			}
-		});
-		buttonBar.add(uploadAsset);
 		downloadAssetsButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -133,7 +136,8 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		deleteAssetsButton.setEnabled(false);
 		buttonBar.add(deleteAssetsButton);
 
-		formPanel.setWidget(fileUpload);
+		buttonBar.add(uploadAsset);
+		setupForFileUpload();
 		buttonBar.add(formPanel);
 		addNorth(buttonBar, 30);
 		fileTree.clear();
@@ -144,6 +148,40 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		fileTree.addItem(monsterAssets);
 		fileTree.addItem(roomAssets);
 		add(fileTree);
+	}
+
+	private void setupForFileUpload() {
+		VerticalPanel panel = new VerticalPanel();
+		formPanel.setWidget(panel);
+		fileUpload.setName("uploadElement");
+		panel.add(fileUpload);
+		fileUpload.setVisible(false);
+		uploadAsset.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(final ClickEvent event) {
+				fileUpload.click();
+			}
+		});
+		formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
+			public void onSubmit(final SubmitEvent event) {
+				if (fileUpload.getFilename().length() == 0) {
+					event.cancel();
+				}
+			}
+		});
+		formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+			public void onSubmitComplete(final SubmitCompleteEvent event) {
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
+			}
+		});
+		fileUpload.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(final ChangeEvent event) {
+				uploadFile();
+			}
+		});
 	}
 
 	/**
@@ -160,7 +198,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 			public void onError(final Object sender, final IErrorInformation error) {
 			}
 		});
-		ServiceManager.getDungeonManager().getFileList("/" + Constants.DUNGEON_DATA_LOCATION +  Constants.DUNGEON_MONSTER_LOCATION, new IUserCallback() {
+		ServiceManager.getDungeonManager().getFileList("/" + Constants.DUNGEON_DATA_LOCATION + Constants.DUNGEON_MONSTER_LOCATION, new IUserCallback() {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				buildTreeOfAssets((FileList) data);
@@ -239,11 +277,53 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	}
 
 	/**
+	 * Up load file.
+	 * 
+	 */
+	private void uploadFile() {
+		String serverPath = getUrlToFIleOnserver();
+		if (serverPath == null) {
+			return;
+		}
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("filePath", serverPath);
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		String url = dataRequester.buildUrl("FILEUPLOAD", parameters);
+		formPanel.setAction(url);
+		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
+		formPanel.setMethod(FormPanel.METHOD_POST);
+		formPanel.submit();
+	}
+
+	private String getUrlToFIleOnserver() {
+		TreeItem selected = fileTree.getSelectedItem();
+		if (selected == null) {
+			return (null);
+		}
+		if (!((String) selected.getUserObject()).contains("/")) {
+			selected = selected.getParentItem();
+		}
+		String filename = fileUpload.getFilename();
+		if (filename == null || filename.isEmpty()) {
+			return (null);
+		}
+		int i = filename.lastIndexOf("/");
+		if (i == -1) {
+			i = filename.lastIndexOf("\\");
+		}
+		if (i != -1 && (i + 1) < filename.length()) {
+			filename = filename.substring(i + 1);
+		}
+		String url = (String) selected.getUserObject() + "/" + filename;
+		return (url);
+	}
+
+	/**
 	 * down load a file.
 	 */
 	private void downloadAsset() {
-		String filename = (String)fileTree.getSelectedItem().getUserObject();
-		String folder = (String)fileTree.getSelectedItem().getParentItem().getUserObject();
+		String filename = (String) fileTree.getSelectedItem().getUserObject();
+		String folder = (String) fileTree.getSelectedItem().getParentItem().getUserObject();
 		ServiceManager.getDungeonManager().downloadFile(folder, filename);
 	}
 
