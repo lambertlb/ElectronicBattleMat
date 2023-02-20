@@ -1000,4 +1000,21 @@ public final class DungeonsManager {
 	// No support for this yet but might be added in the future.
 	private static void deletePogInDungeonResource(final PogData pogData) {
 	}
+	/**
+	 * Delete this file.
+	 * 
+	 * @param request request
+	 * @param filePath to delete
+	 * @throws IOException thrown if error
+	 */
+	public static void deleteFile(final HttpServletRequest request, final String filePath) throws IOException {
+		lock.lock();
+		try {
+			String path = request.getSession().getServletContext().getRealPath(filePath);
+			File file = new File(path);
+			file.delete();
+		} finally {
+			lock.unlock();
+		}
+	}
 }

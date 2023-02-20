@@ -991,6 +991,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public void downloadFile(final String url, final String fileName) {
+		String resourceUrl = buildURL(url, fileName);
+		makeSureLoaderExists();
+		downloadFileFromServer(fileName, resourceUrl);
+	}
+
+	private String buildURL(final String url, final String fileName) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		String resourceUrl;
 		if (url.endsWith("/")) {
@@ -998,8 +1004,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		} else {
 			resourceUrl = dataRequester.getWebPath() + url + "/" + fileName;
 		}
-		makeSureLoaderExists();
-		downloadFileFromServer(fileName, resourceUrl);
+		return resourceUrl;
 	}
 
 	/**
@@ -1374,6 +1379,29 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			public void onError(final Object sender, final IErrorInformation error) {
 				lastError = error.getError();
 				callback.onError(path, error);
+			}
+		});
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deleteFile(final String url, final IUserCallback callback) {
+		IDataRequester dataRequester = ServiceManager.getDataRequester();
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("path", url);
+		dataRequester.requestData("", "DELETEFILE", parameters, new IUserCallback() {
+			@Override
+			public void onSuccess(final Object sender, final Object data) {
+				callback.onSuccess(url, null);
+			}
+
+			@Override
+			public void onError(final Object sender, final IErrorInformation error) {
+				lastError = error.getError();
+				callback.onError(url, error);
 			}
 		});
 	}

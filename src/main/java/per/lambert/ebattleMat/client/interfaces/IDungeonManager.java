@@ -459,4 +459,11 @@ public interface IDungeonManager extends IPogManager {
 	 * @param callback
 	 */
 	void getFileList(String path, IUserCallback callback);
+	/**
+	 * Delete this file.
+	 * 
+	 * @param url to file
+	 * @param callback when complete
+	 */
+	void deleteFile(String url, IUserCallback callback);
 }

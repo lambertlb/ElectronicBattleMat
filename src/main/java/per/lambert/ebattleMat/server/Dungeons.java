@@ -29,6 +29,7 @@ import per.lambert.ebattleMat.server.handlers.AddOrUpdatePogHandler;
 import per.lambert.ebattleMat.server.handlers.CreateNewDungeonHandler;
 import per.lambert.ebattleMat.server.handlers.CreateNewSessionHandler;
 import per.lambert.ebattleMat.server.handlers.DeleteDungeonHandler;
+import per.lambert.ebattleMat.server.handlers.DeleteFile;
 import per.lambert.ebattleMat.server.handlers.DeletePogHandler;
 import per.lambert.ebattleMat.server.handlers.DeleteSessionHandler;
 import per.lambert.ebattleMat.server.handlers.DungeonListHandler;
@@ -74,6 +75,7 @@ public class Dungeons extends HttpServlet {
 		webServices.put("ADDORUPDATEPOG", new AddOrUpdatePogHandler());
 		webServices.put("DELETEPOG", new DeletePogHandler());
 		webServices.put("FILELISTER", new FileLister());
+		webServices.put("DELETEFILE", new DeleteFile());
 	}
 
 	/**

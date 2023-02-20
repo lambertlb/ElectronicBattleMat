@@ -17,8 +17,6 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -136,6 +134,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		deleteAssetsButton.setEnabled(false);
 		buttonBar.add(deleteAssetsButton);
 
+		uploadAsset.setEnabled(false);
 		buttonBar.add(uploadAsset);
 		setupForFileUpload();
 		buttonBar.add(formPanel);
@@ -155,12 +154,16 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		formPanel.setWidget(panel);
 		fileUpload.setName("uploadElement");
 		panel.add(fileUpload);
-		fileUpload.setVisible(false);
+		fileUpload.setEnabled(false);
+//		fileUpload.setVisible(false);
 		uploadAsset.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				fileUpload.click();
+				uploadFile();
+				uploadAsset.setEnabled(false);
+				fileUpload.setEnabled(false);
+//				fileUpload.click();
 			}
 		});
 		formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
@@ -179,7 +182,9 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 
 			@Override
 			public void onChange(final ChangeEvent event) {
-				uploadFile();
+				if (fileTree.getSelectedItem() != null) {
+					uploadAsset.setEnabled(true);
+				}
 			}
 		});
 	}
@@ -188,6 +193,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	 * Load in files.
 	 */
 	private void loadFiles() {
+		disableButtons();
 		ServiceManager.getDungeonManager().getFileList(ServiceManager.getDungeonManager().getDirectoryForCurrentDungeon(), new IUserCallback() {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
@@ -250,30 +256,29 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	 * @param selectedItem selected item
 	 */
 	private void handleItemSelected(final TreeItem selectedItem) {
+		disableButtons();
 		String data = (String) selectedItem.getUserObject();
 		if (data == null) {
-			deleteAssetsButton.setEnabled(false);
-			downloadAssetsButton.setEnabled(false);
 			return;
 		}
 		if (data.startsWith("/")) {
-			deleteAssetsButton.setEnabled(false);
-			downloadAssetsButton.setEnabled(false);
+			fileUpload.setEnabled(true);
 			return;
 		}
 		if (data.endsWith(".json")) {
-			deleteAssetsButton.setEnabled(false);
 			downloadAssetsButton.setEnabled(true);
+			fileUpload.setEnabled(true);
 			return;
 		}
 		deleteAssetsButton.setEnabled(true);
 		downloadAssetsButton.setEnabled(true);
+		fileUpload.setEnabled(true);
 	}
 
-	/**
-	 * Up load a file.
-	 */
-	private void upLoadAsset() {
+	private void disableButtons() {
+		deleteAssetsButton.setEnabled(false);
+		downloadAssetsButton.setEnabled(false);
+		fileUpload.setEnabled(false);
 	}
 
 	/**
@@ -281,7 +286,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	 * 
 	 */
 	private void uploadFile() {
-		String serverPath = getUrlToFIleOnserver();
+		String serverPath = getUrlToFileOnserver();
 		if (serverPath == null) {
 			return;
 		}
@@ -295,7 +300,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		formPanel.submit();
 	}
 
-	private String getUrlToFIleOnserver() {
+	private String getUrlToFileOnserver() {
 		TreeItem selected = fileTree.getSelectedItem();
 		if (selected == null) {
 			return (null);
@@ -331,5 +336,16 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	 * down load a file.
 	 */
 	private void deletAsset() {
+		String url = getUrlToFileOnserver();
+		ServiceManager.getDungeonManager().deleteFile(url, new IUserCallback() {
+			@Override
+			public void onError(final Object sender, final IErrorInformation error) {
+			}
+
+			@Override
+			public void onSuccess(final Object sender, final Object data) {
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
+			}			
+		});
 	}
 }
