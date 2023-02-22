@@ -315,6 +315,29 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
+	 * Current;y selected Asset URL.
+	 */
+	private String assetURL;
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setAssetURL(final String assetURL) {
+		this.assetURL = assetURL;
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getAssetURL() {
+		return assetURL;
+	}
+
+	/**
 	 * construct a dungeon manager.
 	 */
 	public DungeonManager() {
@@ -1000,7 +1023,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		String resourceUrl;
 		if (url.endsWith("/")) {
-			resourceUrl = dataRequester.getWebPath() + url + fileName;			
+			resourceUrl = dataRequester.getWebPath() + url + fileName;
 		} else {
 			resourceUrl = dataRequester.getWebPath() + url + "/" + fileName;
 		}
@@ -1336,6 +1359,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 
 	/**
 	 * remove this pog.
+	 * 
 	 * @param pog tp remove
 	 * @param place where to remove it from
 	 */

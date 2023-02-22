@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -17,6 +18,8 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -39,7 +42,6 @@ import per.lambert.ebattleMat.client.services.serviceData.FileList;
  *
  */
 public class ArtAssetsPanel extends DockLayoutPanel {
-
 	/**
 	 * button bar at top.
 	 */
@@ -80,6 +82,10 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	 * Room asset tree.
 	 */
 	private TreeItem roomAssets = new TreeItem();
+	/**
+	 * Label for url.
+	 */
+	private Label urlLabel = new Label();
 
 	/**
 	 * Constructor.
@@ -138,7 +144,11 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		buttonBar.add(uploadAsset);
 		setupForFileUpload();
 		buttonBar.add(formPanel);
-		addNorth(buttonBar, 30);
+		DockLayoutPanel northPanel = new DockLayoutPanel(Unit.PX);
+		northPanel.setSize("100%", "100%");
+		northPanel.addNorth(buttonBar, 30);
+		northPanel.add(urlLabel);
+		addNorth(northPanel, 60);
 		fileTree.clear();
 		dungeonAssets.setText("Dungeon Assets");
 		monsterAssets.setText("Global Monster Assets");
@@ -146,7 +156,18 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		fileTree.addItem(dungeonAssets);
 		fileTree.addItem(monsterAssets);
 		fileTree.addItem(roomAssets);
-		add(fileTree);
+		ScrollPanel scrollPanel = new ScrollPanel();
+		scrollPanel.add(fileTree);
+		add(scrollPanel);
+		setStyles();
+	}
+
+	private void setStyles() {
+		urlLabel.setStyleName("ribbonBarLabel");
+		uploadAsset.setStyleName("ribbonBarLabel");
+		downloadAssetsButton.setStyleName("ribbonBarLabel");
+		deleteAssetsButton.setStyleName("ribbonBarLabel");
+		fileUpload.setStyleName("ribbonBarLabel");
 	}
 
 	private void setupForFileUpload() {
@@ -155,7 +176,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		fileUpload.setName("uploadElement");
 		panel.add(fileUpload);
 		fileUpload.setEnabled(false);
-//		fileUpload.setVisible(false);
+		// fileUpload.setVisible(false);
 		uploadAsset.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -163,7 +184,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 				uploadFile();
 				uploadAsset.setEnabled(false);
 				fileUpload.setEnabled(false);
-//				fileUpload.click();
+				// fileUpload.click();
 			}
 		});
 		formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
@@ -273,6 +294,9 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		deleteAssetsButton.setEnabled(true);
 		downloadAssetsButton.setEnabled(true);
 		fileUpload.setEnabled(true);
+		String txt = buildUrlToFilename(data);
+		urlLabel.setText(txt);
+		ServiceManager.getDungeonManager().setAssetURL(txt);
 	}
 
 	private void disableButtons() {
@@ -301,6 +325,14 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	}
 
 	private String getUrlToFileOnserver() {
+		String filename = fileUpload.getFilename();
+		if (filename == null || filename.isEmpty()) {
+			return (null);
+		}
+		return buildUrlToFilename(filename);
+	}
+
+	private String buildUrlToFilename(final String filename) {
 		TreeItem selected = fileTree.getSelectedItem();
 		if (selected == null) {
 			return (null);
@@ -308,18 +340,15 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		if (!((String) selected.getUserObject()).contains("/")) {
 			selected = selected.getParentItem();
 		}
-		String filename = fileUpload.getFilename();
-		if (filename == null || filename.isEmpty()) {
-			return (null);
-		}
 		int i = filename.lastIndexOf("/");
 		if (i == -1) {
 			i = filename.lastIndexOf("\\");
 		}
+		String rtnName = filename;
 		if (i != -1 && (i + 1) < filename.length()) {
-			filename = filename.substring(i + 1);
+			rtnName = filename.substring(i + 1);
 		}
-		String url = (String) selected.getUserObject() + "/" + filename;
+		String url = (String) selected.getUserObject() + "/" + rtnName;
 		return (url);
 	}
 
@@ -345,7 +374,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
-			}			
+			}
 		});
 	}
 }

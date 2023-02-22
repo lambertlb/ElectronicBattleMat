@@ -63,7 +63,11 @@ public class AssetManagementPanel extends DockLayoutPanel {
 				editPog();
 			}
 		});
-		icons.add(new Button("btn3"));
+		setStyles();
+	}
+	private void setStyles() {
+		artAssetsButton.setStyleName("ribbonBarLabel");
+		pogEditorButton.setStyleName("ribbonBarLabel");
 	}
 	/**
 	 * Show Art assets.

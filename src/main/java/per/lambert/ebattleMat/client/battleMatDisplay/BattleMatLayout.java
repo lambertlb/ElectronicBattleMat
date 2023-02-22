@@ -25,7 +25,10 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.Constants;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.services.ServiceManager;
 
 /**
  * Layout for battle mat.
@@ -54,6 +57,22 @@ public class BattleMatLayout extends ResizeComposite {
 	 * main panel.
 	 */
 	private LayoutPanel mainPanel;
+	/**
+	 * East side of panel.
+	 */
+	private LayoutPanel east = new LayoutPanel();
+	/**
+	 * Asset management panel.
+	 */
+	private AssetManagementPanel assetManagementPanel = new AssetManagementPanel();
+	/**
+	 * Splitter panel.
+	 */
+	private SplitLayoutPanel splitPanel;
+	/**
+	 * Have panels been setup.
+	 */
+	private boolean panelsSetup; 
 
 	/**
 	 * Sets up the widget. We create the GUI, set up event handling, and call initWidget on the holder panel.
@@ -77,23 +96,19 @@ public class BattleMatLayout extends ResizeComposite {
 		battleMatCanvas = new BattleMatCanvas();
 		battleMatCanvasPanel.clear();
 		battleMatCanvasPanel.add(battleMatCanvas);
-		SplitLayoutPanel splitPanel = new SplitLayoutPanel() {
+		east.setSize("100%", "100%");
+		east.add(assetManagementPanel);
+		splitPanel = new SplitLayoutPanel() {
 			@Override
 			public void onResize() {
 				super.onResize();
 				battleMatCanvas.dungeonDataChanged();
 			};
 		};
-		LayoutPanel east = new LayoutPanel();
-		east.setSize("100%", "100%");
-		east.add(new AssetManagementPanel());
-		splitPanel.addEast(east, Window.getClientWidth() / 5);
-		splitPanel.add(battleMatCanvasPanel);
 		mainPanel.add(splitPanel);
-
+		dockPanel.clear();
 		dockPanel.addNorth(ribbonBarPanel, Constants.RIBBON_BAR_SIZE);
 		dockPanel.add(mainPanel);
-
 		// MUST CALL THIS METHOD to set the constraints; if you don't not much
 		// will be displayed!
 		dockPanel.forceLayout();
@@ -109,9 +124,22 @@ public class BattleMatLayout extends ResizeComposite {
 	 * delegate dungeon data changed.
 	 */
 	public void dungeonDataChanged() {
+		if (!panelsSetup) {
+			setupPanels();
+		}
 		battleMatCanvas.dungeonDataChanged();
 	}
 
+	/**
+	 * Setup panels for proper mode.
+	 */
+	private void setupPanels() {
+		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+			splitPanel.addEast(east, Window.getClientWidth() / 5);
+		}
+		splitPanel.add(battleMatCanvasPanel);
+		panelsSetup = true;
+	}
 	/**
 	 * delegate dungeon data updated.
 	 */

@@ -294,6 +294,7 @@ public interface IDungeonManager extends IPogManager {
 	 * @param fileName to download.
 	 */
 	void downloadDungeonFile(String fileName);
+
 	/**
 	 * Download this file.
 	 * 
@@ -459,6 +460,7 @@ public interface IDungeonManager extends IPogManager {
 	 * @param callback
 	 */
 	void getFileList(String path, IUserCallback callback);
+
 	/**
 	 * Delete this file.
 	 * 
@@ -466,4 +468,18 @@ public interface IDungeonManager extends IPogManager {
 	 * @param callback when complete
 	 */
 	void deleteFile(String url, IUserCallback callback);
+
+	/**
+	 * Set asset URL.
+	 * 
+	 * @param assetURL to set
+	 */
+	void setAssetURL(String assetURL);
+
+	/**
+	 * Get asset URL.
+	 * 
+	 * @return asset URL
+	 */
+	String getAssetURL();
 }
