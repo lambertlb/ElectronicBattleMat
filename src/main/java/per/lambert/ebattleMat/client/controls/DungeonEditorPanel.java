@@ -1,0 +1,470 @@
+package per.lambert.ebattleMat.client.controls;
+
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.VerticalAlign;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.TextBox;
+
+import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
+import per.lambert.ebattleMat.client.controls.labeledTextBox.LabeledTextBox;
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.services.ServiceManager;
+import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
+
+public class DungeonEditorPanel extends DockLayoutPanel {
+	/**
+	 * button bar at top.
+	 */
+	private HorizontalPanel buttonBar = new HorizontalPanel();
+	/**
+	 * Dungeon selection dialog button.
+	 */
+	private Button manageDungeonsButton;
+	/**
+	 * Manage dungeon dialog.
+	 */
+	private DungeonSelectDialog manageDungeons;
+	/**
+	 * Dungeon selection dialog button.
+	 */
+	private Button createLevelButton;
+	/**
+	 * Panel to hold center content.
+	 */
+	private LayoutPanel centerContent;
+	/**
+	 * Grid for sub-classes to use for content.
+	 */
+	private Grid centerGrid;
+	/**
+	 * Show grid on dungeon levels.
+	 */
+	private CheckBox showGrid;
+	/**
+	 * grid size in pixels.
+	 */
+	private LabeledTextBox gridSize;
+	/**
+	 * X Offset of grid from top Left.
+	 */
+	private LabeledTextBox gridOffsetX;
+	/**
+	 * Y Offset of grid from top Left.
+	 */
+	private LabeledTextBox gridOffsetY;
+	/**
+	 * Label for new level.
+	 */
+	private Label levelNameLabel;
+	/**
+	 * Name of new level.
+	 */
+	private TextBox levelName;
+	/**
+	 * Use to copy currently selected picture URL.
+	 */
+	private Button copyResourceURL;
+	/**
+	 * URL of level picture.
+	 */
+	private TextBox pictureURL;
+	/**
+	 * Save level information.
+	 */
+	private Button save;
+	/**
+	 * cancel Edits.
+	 */
+	private Button cancel;
+	/**
+	 * Current level we are working on.
+	 */
+	private DungeonLevel currentLevel;
+	/**
+	 * Form has changed.
+	 */
+	private boolean isDirty;
+
+	public DungeonEditorPanel() {
+		super(Unit.PX);
+		createContent();
+		setupEventHandling();
+	}
+
+	private void createContent() {
+		manageDungeonsButton = new Button("Manage Dungeons");
+		manageDungeonsButton.addStyleName("ribbonBarLabel");
+		manageDungeonsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				if (manageDungeons == null) {
+					manageDungeons = new DungeonSelectDialog();
+				}
+				manageDungeons.enableCancel(true);
+				manageDungeons.show();
+			}
+		});
+		buttonBar.add(manageDungeonsButton);
+
+		createLevelButton = new Button("New Level");
+		createLevelButton.addStyleName("ribbonBarLabel");
+		createLevelButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				createNewLevel();
+			}
+		});
+		buttonBar.add(createLevelButton);
+		addNorth(buttonBar, 30);
+		createLevelEditor();
+		add(centerContent);
+		this.forceLayout();
+	}
+
+	/**
+	 * Create level editor.
+	 */
+	private void createLevelEditor() {
+		centerContent = new LayoutPanel();
+		centerContent.setHeight("100%");
+		centerContent.setWidth("100%");
+		centerGrid = new Grid();
+		centerGrid.setWidth("100%");
+		centerGrid.resize(20, 2);
+		centerGrid.getColumnFormatter().setWidth(0, "100px");
+		centerContent.add(centerGrid);
+		createShowGrid();
+		createGridSizeEntry();
+		createGridOffsetX();
+		createGridOffsetY();
+		createLevelName();
+		createLevelPictureURL();
+		createSaveAndCancelButtons();
+	}
+
+	/**
+	 * Create show grid content.
+	 */
+	private void createShowGrid() {
+		showGrid = new CheckBox("Show Grid ");
+		showGrid.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		showGrid.setStyleName("ribbonBarLabel");
+		showGrid.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+		centerGrid.setWidget(1, 0, showGrid);
+	}
+
+	/**
+	 * Create grid size content.
+	 */
+	private void createGridSizeEntry() {
+		gridSize = new LabeledTextBox("Grid Size ", 0.0);
+		gridSize.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		gridSize.addKeyUpHandler(new KeyUpHandler() {			
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		gridSize.setStyleName("ribbonBarLabel");
+		gridSize.setEntryWidth("30px");
+		centerGrid.setWidget(1, 1, gridSize);
+	}
+
+	/**
+	 * Create X grid offset content.
+	 */
+	private void createGridOffsetX() {
+		gridOffsetX = new LabeledTextBox("Offset X", 0.0);
+		gridOffsetX.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		gridOffsetX.addKeyUpHandler(new KeyUpHandler() {			
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		gridOffsetX.setStyleName("ribbonBarLabel");
+		gridOffsetX.setEntryWidth("30px");
+		centerGrid.setWidget(2, 0, gridOffsetX);
+	}
+
+	/**
+	 * Create Y grid offset content.
+	 */
+	private void createGridOffsetY() {
+		gridOffsetY = new LabeledTextBox("Offset Y", 0.0);
+		gridOffsetY.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		gridOffsetY.addKeyUpHandler(new KeyUpHandler() {			
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		gridOffsetY.setStyleName("ribbonBarLabel");
+		gridOffsetY.setEntryWidth("30px");
+		centerGrid.setWidget(2, 1, gridOffsetY);
+	}
+
+	/**
+	 * Create level name content.
+	 */
+	private void createLevelName() {
+		levelNameLabel = new Label("Level Name");
+		levelNameLabel.setStyleName("ribbonBarLabel");
+		levelName = new TextBox();
+		levelName.setWidth("100%");
+		levelName.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(final ValueChangeEvent<String> event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		levelName.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+
+		levelName.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(0, 0, levelNameLabel);
+		centerGrid.setWidget(0, 1, levelName);
+	}
+	private void createLevelPictureURL() {
+		copyResourceURL = new Button("Use Select picture resource");
+		copyResourceURL.setStyleName("ribbonBarLabel");
+		copyResourceURL.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				copyResourceURL();
+				isDirty = true;
+				validateContent();
+			}
+		});
+		pictureURL = new TextBox();
+		pictureURL.addChangeHandler(new ChangeHandler() {		
+			@Override
+			public void onChange(final ChangeEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		pictureURL.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				isDirty = true;
+				validateContent();
+			}
+		});
+		pictureURL.setWidth("100%");
+		centerGrid.setWidget(3, 0, copyResourceURL);
+		centerGrid.setWidget(3, 1, pictureURL);
+	}
+	/**
+	 * Create save and cancel buttons.
+	 */
+	private void createSaveAndCancelButtons() {
+		save = new Button("Save");
+		save.setStyleName("ribbonBarLabel");
+		save.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				saveFormData();
+			}
+		});
+		cancel = new Button("Cancel");
+		cancel.setStyleName("ribbonBarLabel");
+		cancel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				cancelFormData();
+			}
+		});
+		centerGrid.setWidget(5, 0, save);
+		centerGrid.setWidget(5, 1, cancel);
+	}
+
+	private void saveFormData() {
+		DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
+		if (levelData == null) {
+			return;
+		}
+		ServiceManager.getDungeonManager().getSelectedDungeon().setShowGrid(showGrid.getValue());
+		currentLevel.setGridSize(gridSize.getDoubleValue());
+		currentLevel.setGridOffsetX(gridOffsetX.getDoubleValue());
+		currentLevel.setGridOffsetY(gridOffsetY.getDoubleValue());
+		currentLevel.setLevelName(levelName.getValue());
+		currentLevel.setLevelDrawing(pictureURL.getText());
+//		if (newLevel) {
+//			ServiceManager.getDungeonManager().addNewLevel(currentLevel);
+//		}
+		ServiceManager.getDungeonManager().saveDungeonData();
+	}
+	private void cancelFormData() {
+		gatherData();
+	}
+
+	/**
+	 * copy selected picture url.
+	 */
+	private void copyResourceURL() {
+		String url = ServiceManager.getDungeonManager().getAssetURL();
+		if (isValidPictureURL(url)) {
+			pictureURL.setText(url);
+		}
+	}
+
+	private boolean isValidPictureURL(final String url) {
+		int i = url.lastIndexOf('.');
+		String fileExtension = i > 0 ? url.substring(i + 1) : "";
+		return fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
+	}
+
+	/**
+	 * setup event handling.
+	 */
+	private void setupEventHandling() {
+		IEventManager eventManager = ServiceManager.getEventManager();
+		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+			public void onReasonForAction(final ReasonForActionEvent event) {
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataLoaded) {
+					gatherData();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonSelectedLevelChanged) {
+					gatherData();
+					return;
+				}
+			}
+		});
+	}
+
+	/**
+	 * Gather data.
+	 */
+	private void gatherData() {
+		currentLevel = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
+		if (currentLevel == null) {
+			return;
+		}
+		addLevelDataToForm();
+		validateContent();
+		ResizableDialog.enableWidget(save, false);
+		ResizableDialog.enableWidget(cancel, false);
+		isDirty = false;
+	}
+
+	/**
+	 * Add level to form.
+	 */
+	private void addLevelDataToForm() {
+		showGrid.setValue(ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid());
+		gridSize.setValue(currentLevel.getGridSize());
+		gridOffsetX.setValue(currentLevel.getGridOffsetX());
+		gridOffsetY.setValue(currentLevel.getGridOffsetY());
+		levelName.setValue(currentLevel.getLevelName());
+		pictureURL.setText(currentLevel.getLevelDrawing());
+	}
+
+	/**
+	 * Validate content.
+	 */
+	private void validateContent() {
+		boolean isOK = true;
+		double numberCheck = 0;
+		if (!ServiceManager.getDungeonManager().isLegalDungeonName(levelName.getValue())) {
+			isOK = false;
+			levelNameLabel.addStyleName("badLabel");
+		} else {
+			levelNameLabel.removeStyleName("badLabel");
+		}
+		if (!isValidPictureURL(pictureURL.getText())) {
+			isOK = false;
+			pictureURL.addStyleName("badLabel");
+		} else {
+			pictureURL.removeStyleName("badLabel");
+		}
+		try {
+			numberCheck = gridSize.getDoubleValue();
+			gridSize.removeStyleName("badLabel");
+		} catch (Exception ex) {
+			isOK = false;
+			gridSize.addStyleName("badLabel");
+		}
+		try {
+			numberCheck = gridOffsetX.getDoubleValue();
+			gridOffsetX.removeStyleName("badLabel");
+		} catch (Exception ex) {
+			isOK = false;
+			gridOffsetX.addStyleName("badLabel");
+		}
+		try {
+			numberCheck = gridOffsetY.getDoubleValue();
+			gridOffsetY.removeStyleName("badLabel");
+		} catch (Exception ex) {
+			isOK = false;
+			gridOffsetY.addStyleName("badLabel");
+		}
+		removeWarning(numberCheck);
+		ResizableDialog.enableWidget(save, isOK && isDirty);
+		ResizableDialog.enableWidget(cancel, isDirty);
+	}
+
+	/**
+	 * Dummy method to get rid of unused warning.
+	 * @param numberCheck to rid of warning
+	 */
+	private void removeWarning(final double numberCheck) {
+	}
+
+	/**
+	 * create a new level in this dungeon.
+	 */
+	private void createNewLevel() {
+	}
+}

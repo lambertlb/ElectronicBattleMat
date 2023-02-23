@@ -113,6 +113,7 @@ public class LabeledTextBox extends Composite {
 
 	/**
 	 * Set label text.
+	 * 
 	 * @param labelText to set
 	 */
 	public final void setLabelText(final String labelText) {
@@ -121,6 +122,7 @@ public class LabeledTextBox extends Composite {
 
 	/**
 	 * Set text box value.
+	 * 
 	 * @param value to set
 	 */
 	public final void setValue(final String value) {
@@ -129,6 +131,7 @@ public class LabeledTextBox extends Composite {
 
 	/**
 	 * Set double box value.
+	 * 
 	 * @param value to set
 	 */
 	public final void setValue(final Double value) {
@@ -137,6 +140,7 @@ public class LabeledTextBox extends Composite {
 
 	/**
 	 * Get text box value.
+	 * 
 	 * @return value
 	 */
 	public final String getTextValue() {
@@ -145,6 +149,7 @@ public class LabeledTextBox extends Composite {
 
 	/**
 	 * Get double box value.
+	 * 
 	 * @return value
 	 */
 	public final Double getDoubleValue() {
@@ -153,6 +158,7 @@ public class LabeledTextBox extends Composite {
 
 	/**
 	 * Add value changed handler.
+	 * 
 	 * @param changeHandler to add
 	 */
 	public final void addChangeHandler(final ChangeHandler changeHandler) {
@@ -165,6 +171,7 @@ public class LabeledTextBox extends Composite {
 
 	/**
 	 * Add key up handler.
+	 * 
 	 * @param keyUpHandler to add.
 	 */
 	public final void addKeyUpHandler(final KeyUpHandler keyUpHandler) {
@@ -172,6 +179,14 @@ public class LabeledTextBox extends Composite {
 			doubleBox.addKeyUpHandler(keyUpHandler);
 		} else {
 			textBox.addKeyUpHandler(keyUpHandler);
+		}
+	}
+
+	public final void setEntryWidth(final String width) {
+		if (asDouble) {
+			doubleBox.setWidth(width);
+		} else {
+			textBox.setWidth(width);
 		}
 	}
 }
