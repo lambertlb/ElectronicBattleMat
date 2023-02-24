@@ -9,6 +9,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -16,9 +18,11 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.controls.labeledTextBox.LabeledTextBox;
@@ -110,6 +114,30 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 * New level needs to be created.
 	 */
 	private boolean newLevel;
+	/**
+	 * Image of level.
+	 */
+	private Image image = new Image();
+	/**
+	 * parent panel width.
+	 */
+	private int parentWidth;
+	/**
+	 * parent panel height.
+	 */
+	private int parentHeight;
+	/**
+	 * Image width.
+	 */
+	private int imageWidth;
+	/**
+	 * image height.
+	 */
+	private int imageHeight;
+	/**
+	 * Image loaded.
+	 */
+	private boolean imageLoaded;
 
 	public DungeonEditorPanel() {
 		super(Unit.PX);
@@ -167,9 +195,12 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		centerContent.setWidth("100%");
 		centerGrid = new Grid();
 		centerGrid.setWidth("100%");
-		centerGrid.resize(20, 2);
+		centerGrid.resize(6, 2);
 		centerGrid.getColumnFormatter().setWidth(0, "100px");
-		centerContent.add(centerGrid);
+		VerticalPanel vpanel = new VerticalPanel();
+		vpanel.add(centerGrid);
+		vpanel.add(image);
+		centerContent.add(vpanel);
 		createShowGrid();
 		createGridSizeEntry();
 		createGridOffsetX();
@@ -421,6 +452,11 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 				}
 			}
 		});
+		image.addLoadHandler(new LoadHandler() {
+			public void onLoad(final LoadEvent event) {
+				imageLoaded();
+			}
+		});
 	}
 
 	/**
@@ -467,6 +503,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			pictureURL.addStyleName("badLabel");
 		} else {
 			pictureURL.removeStyleName("badLabel");
+			drawPicture();
 		}
 		try {
 			numberCheck = gridSize.getDoubleValue();
@@ -494,6 +531,11 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		ResizableDialog.enableWidget(cancel, isDirty);
 	}
 
+	private void drawPicture() {
+		imageLoaded = false;
+		image.setUrl(pictureURL.getText());
+	}
+
 	/**
 	 * Dummy method to get rid of unused warning.
 	 * @param numberCheck to rid of warning
@@ -519,5 +561,42 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		ServiceManager.getDungeonManager().removeCurrentLevel();
 		ServiceManager.getDungeonManager().saveDungeonData();
 		ServiceManager.getDungeonManager().setCurrentLevel(0);
+	}
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onResize() {
+		super.onResize();
+		if (imageLoaded) {
+			imageLoaded();
+		}
+	}
+	private void imageLoaded() {
+		imageLoaded = true;
+		parentWidth = getOffsetWidth();
+		parentHeight = getOffsetHeight();
+		imageWidth = image.getWidth();
+		imageHeight = image.getHeight();
+		double totalZoom;
+		if (isScaleByWidth()) {
+			totalZoom = (double) parentWidth / (double) imageWidth;
+		} else {
+			totalZoom = (double) parentHeight / (double) imageHeight;
+		}
+		if (!Double.isNaN(totalZoom) && totalZoom != 0.0) {
+			image.setPixelSize((int)(imageWidth * totalZoom), (int)(imageHeight * totalZoom));
+		}
+	}
+	/**
+	 * Should we scale by width.
+	 * 
+	 * @return true if we should scale by width
+	 */
+	private boolean isScaleByWidth() {
+		double scaleWidth = (double) parentWidth / (double) imageWidth;
+		double scaleHeight = (double) parentHeight / (double) imageHeight;
+		return scaleWidth < scaleHeight;
 	}
 }
