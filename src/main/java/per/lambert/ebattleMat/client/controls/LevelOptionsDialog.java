@@ -417,7 +417,7 @@ public class LevelOptionsDialog extends OkCancelDialog {
 	 */
 	private String getCorrectLevelString() {
 		if (newLevel) {
-			return ("" + (ServiceManager.getDungeonManager().getNextAvailableLevelNumber()));
+			return ("" + (ServiceManager.getDungeonManager().getNextAvailableLevelNumber() + 1));
 		} else {
 			return ("" + (ServiceManager.getDungeonManager().getCurrentLevelIndex() + 1));
 		}

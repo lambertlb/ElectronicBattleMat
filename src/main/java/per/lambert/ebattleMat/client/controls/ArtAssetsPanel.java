@@ -3,6 +3,8 @@ package per.lambert.ebattleMat.client.controls;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -196,6 +198,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 			public void onSubmitComplete(final SubmitCompleteEvent event) {
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
+				setInputValue("");
 			}
 		});
 		fileUpload.addChangeHandler(new ChangeHandler() {
@@ -353,6 +356,16 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		}
 		String url = base + rtnName;
 		return (url);
+	}
+	/**
+	 * Set value of input control.
+	 * 
+	 * @param value to set
+	 */
+	public void setInputValue(final String value) {
+		Element ele = fileUpload.getElement();
+		InputElement inp = InputElement.as(ele);
+		inp.setValue(value);
 	}
 
 	/**

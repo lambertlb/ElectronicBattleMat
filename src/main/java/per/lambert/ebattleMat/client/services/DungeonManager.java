@@ -148,7 +148,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public int getNextAvailableLevelNumber() {
-		return (selectedDungeon.getDungeonlevels().length + 1);
+		return (selectedDungeon.getDungeonlevels().length);
 	}
 
 	/**

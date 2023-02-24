@@ -1,5 +1,6 @@
 package per.lambert.ebattleMat.client.controls;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -42,9 +43,9 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 */
 	private DungeonSelectDialog manageDungeons;
 	/**
-	 * Dungeon selection dialog button.
+	 * Create new level button.
 	 */
-	private Button createLevelButton;
+	private Button createNewLevelButton;
 	/**
 	 * Panel to hold center content.
 	 */
@@ -101,6 +102,10 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 * Form has changed.
 	 */
 	private boolean isDirty;
+	/**
+	 * New level needs to be created.
+	 */
+	private boolean newLevel;
 
 	public DungeonEditorPanel() {
 		super(Unit.PX);
@@ -123,15 +128,15 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		});
 		buttonBar.add(manageDungeonsButton);
 
-		createLevelButton = new Button("New Level");
-		createLevelButton.addStyleName("ribbonBarLabel");
-		createLevelButton.addClickHandler(new ClickHandler() {
+		createNewLevelButton = new Button("New Level");
+		createNewLevelButton.addStyleName("ribbonBarLabel");
+		createNewLevelButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				createNewLevel();
+				handleCreateNewLevel();
 			}
 		});
-		buttonBar.add(createLevelButton);
+		buttonBar.add(createNewLevelButton);
 		addNorth(buttonBar, 30);
 		createLevelEditor();
 		add(centerContent);
@@ -328,22 +333,41 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		centerGrid.setWidget(5, 0, save);
 		centerGrid.setWidget(5, 1, cancel);
 	}
+	/**
+	 * Initialize view.
+	 * 
+	 * Must be run before reusing the view.
+	 */
+	private void initialize() {
+		newLevel = false;
+		gridSize.setValue(30.0);
+		gridOffsetX.setValue(0.0);
+		gridOffsetY.setValue(0.0);
+		levelName.setValue("New Level");
+		pictureURL.setValue("");
+		validateContent();
+	}
 
 	private void saveFormData() {
 		DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
 		if (levelData == null) {
 			return;
 		}
+		int nextAvailableLevelIndex = ServiceManager.getDungeonManager().getNextAvailableLevelNumber();
 		ServiceManager.getDungeonManager().getSelectedDungeon().setShowGrid(showGrid.getValue());
 		currentLevel.setGridSize(gridSize.getDoubleValue());
 		currentLevel.setGridOffsetX(gridOffsetX.getDoubleValue());
 		currentLevel.setGridOffsetY(gridOffsetY.getDoubleValue());
 		currentLevel.setLevelName(levelName.getValue());
 		currentLevel.setLevelDrawing(pictureURL.getText());
-//		if (newLevel) {
-//			ServiceManager.getDungeonManager().addNewLevel(currentLevel);
-//		}
+		if (newLevel) {
+			ServiceManager.getDungeonManager().addNewLevel(currentLevel);
+		}
 		ServiceManager.getDungeonManager().saveDungeonData();
+		if (newLevel) {
+			ServiceManager.getDungeonManager().setCurrentLevel(nextAvailableLevelIndex);
+		}
+		newLevel = false;
 	}
 	private void cancelFormData() {
 		gatherData();
@@ -465,6 +489,11 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	/**
 	 * create a new level in this dungeon.
 	 */
-	private void createNewLevel() {
+	private void handleCreateNewLevel() {
+		initialize();
+		currentLevel = (DungeonLevel) JavaScriptObject.createObject().cast();
+		addLevelDataToForm();
+		newLevel = true;
+		validateContent();
 	}
 }
