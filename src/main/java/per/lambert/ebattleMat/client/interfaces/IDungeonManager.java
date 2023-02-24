@@ -340,6 +340,10 @@ public interface IDungeonManager extends IPogManager {
 	void addNewLevel(DungeonLevel newLevelToAdd);
 
 	/**
+	 * remove current level from duingeon.
+	 */
+	void removeCurrentLevel();
+	/**
 	 * Is this a valid character name.
 	 * 
 	 * @param characterName to check

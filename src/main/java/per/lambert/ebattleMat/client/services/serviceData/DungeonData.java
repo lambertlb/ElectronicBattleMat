@@ -119,5 +119,30 @@ public class DungeonData extends JavaScriptObject {
 		}
 		return (this.showGrid);
 	}-*/;
+	/**
+	 * remove dungeon level.
+	 * 
+	 * @param levelIndex to remove
+	 */
+	public final void remove(final int levelIndex) {
+		DungeonLevel[] list = getDungeonlevels();
+		if (list == null || levelIndex < 0 || levelIndex >= list.length || list.length == 1) {
+			return;
+		}
+		initList();
+		int index = 0;
+		for (DungeonLevel dungeonLevel : list) {
+			if (levelIndex != index) {
+				addDungeonlevel(dungeonLevel);
+			}
+			++index;
+		}
+	}
 
+	/**
+	 * create new list.
+	 */
+	public final native void initList() /*-{
+		this.dungeonLevels = [];
+	}-*/;
 }

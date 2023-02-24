@@ -47,6 +47,10 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 */
 	private Button createNewLevelButton;
 	/**
+	 * Create remove level button.
+	 */
+	private Button removeLevelButton;
+	/**
 	 * Panel to hold center content.
 	 */
 	private LayoutPanel centerContent;
@@ -137,6 +141,17 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			}
 		});
 		buttonBar.add(createNewLevelButton);
+		
+		removeLevelButton = new Button("DELETE Level");
+		removeLevelButton.addStyleName("ribbonBarLabel");
+		removeLevelButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				handleRemoveLevel();
+			}
+		});
+		buttonBar.add(removeLevelButton);
+		
 		addNorth(buttonBar, 30);
 		createLevelEditor();
 		add(centerContent);
@@ -495,5 +510,14 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		addLevelDataToForm();
 		newLevel = true;
 		validateContent();
+	}
+	
+	/**
+	 * handle removing current level.
+	 */
+	private void handleRemoveLevel() {
+		ServiceManager.getDungeonManager().removeCurrentLevel();
+		ServiceManager.getDungeonManager().saveDungeonData();
+		ServiceManager.getDungeonManager().setCurrentLevel(0);
 	}
 }

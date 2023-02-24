@@ -1082,6 +1082,14 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void removeCurrentLevel() {
+		selectedDungeon.remove(currentLevelIndex);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public PogData findCharacterPog(final String uuid) {
 		if (selectedSession == null) {
 			return null;
