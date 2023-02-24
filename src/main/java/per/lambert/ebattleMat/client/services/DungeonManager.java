@@ -793,8 +793,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public String getUrlToDungeonResource(final String resourceItem) {
-		if (resourceItem.startsWith("http")) {
-			return resourceItem;
+		if (resourceItem.contains("/") || resourceItem.contains("\\")) {
+			if (resourceItem.startsWith("http")) {
+				return resourceItem;
+			}
+			return (ServiceManager.getDataRequester().getWebPath() + resourceItem);
 		}
 		Date now = new Date(); // append date to make sure not to get cached item. Needed for development where stuff changes a lot.
 		String resourceUrl = getUrlToDungeonData() + resourceItem + "?" + now.getTime();

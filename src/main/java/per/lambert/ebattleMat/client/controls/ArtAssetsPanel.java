@@ -347,7 +347,11 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		if (i != -1 && (i + 1) < filename.length()) {
 			rtnName = filename.substring(i + 1);
 		}
-		String url = (String) selected.getUserObject() + "/" + rtnName;
+		String base = (String) selected.getUserObject();
+		if (!base.endsWith("/") && !base.endsWith("\\")) {
+			base = base + "/";
+		}
+		String url = base + rtnName;
 		return (url);
 	}
 
@@ -364,7 +368,8 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	 * down load a file.
 	 */
 	private void deletAsset() {
-		String url = getUrlToFileOnserver();
+		TreeItem selected = fileTree.getSelectedItem();
+		String url = buildUrlToFilename((String)selected.getUserObject());
 		ServiceManager.getDungeonManager().deleteFile(url, new IUserCallback() {
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
