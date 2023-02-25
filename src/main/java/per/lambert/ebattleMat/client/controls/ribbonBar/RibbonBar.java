@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
 import per.lambert.ebattleMat.client.controls.FlagBitsDialog;
-import per.lambert.ebattleMat.client.controls.LevelOptionsDialog;
 import per.lambert.ebattleMat.client.controls.NotesFloatingWindow;
 import per.lambert.ebattleMat.client.controls.SelectedPogFloatingWindow;
 import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
@@ -96,22 +95,6 @@ public class RibbonBar extends Composite {
 	 * List of levels to select.
 	 */
 	private ListBox levelSelect;
-	/**
-	 * Show option for level.
-	 */
-	private Button levelOptions;
-	/**
-	 * Dungeon selection dialog button.
-	 */
-	private Button manageDungeonsButton;
-	/**
-	 * Dialog for level options.
-	 */
-	private LevelOptionsDialog levelOptionsDialog;
-	/**
-	 * Manage dungeon dialog.
-	 */
-	private DungeonSelectDialog manageDungeons;
 	/**
 	 * List of character to select.
 	 */
@@ -219,29 +202,6 @@ public class RibbonBar extends Composite {
 			@Override
 			public void onClick(final ClickEvent event) {
 				ServiceManager.getDungeonManager().setFowToggle(fowToggle.getValue());
-			}
-		});
-		levelOptions = new Button("Level Options");
-		levelOptions.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				if (levelOptionsDialog == null) {
-					levelOptionsDialog = new LevelOptionsDialog();
-				}
-				levelOptionsDialog.show();
-			}
-		});
-		levelOptions.addStyleName("ribbonBarLabel");
-		manageDungeonsButton = new Button("Manage Dungeons");
-		manageDungeonsButton.addStyleName("ribbonBarLabel");
-		manageDungeonsButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				if (manageDungeons == null) {
-					manageDungeons = new DungeonSelectDialog();
-				}
-				manageDungeons.enableCancel(true);
-				manageDungeons.show();
 			}
 		});
 		helpLink = new Anchor("Help", "/help.html", "_blank");
@@ -539,14 +499,12 @@ public class RibbonBar extends Composite {
 	 */
 	private void setupForCommonDMControls() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(1, 0, levelOptions);
 		ribbonGrid.setWidget(0, 1, roomObjectsManageButton);
 		ribbonGrid.setWidget(1, 1, monsterManageButton);
 		ribbonGrid.setWidget(0, 2, playerFlagsButton);
 		ribbonGrid.setWidget(1, 2, dmFlagsButton);
 		ribbonGrid.setWidget(0, 3, showSelectedPog);
 		ribbonGrid.setWidget(1, 3, showPogNotes);
-		ribbonGrid.setWidget(0, 4, manageDungeonsButton);
 	}
 
 	/**

@@ -125,6 +125,10 @@ public class BattleMatLayout extends ResizeComposite {
 		if (!panelsSetup) {
 			setupPanels();
 		}
+		boolean isDM = ServiceManager.getDungeonManager().isDungeonMaster();
+		// hide the splitter
+		east.setVisible(isDM);
+		splitPanel.setWidgetSize(east, isDM ? Window.getClientWidth() / 5.0 : 0.0);
 		battleMatCanvas.dungeonDataChanged();
 	}
 
