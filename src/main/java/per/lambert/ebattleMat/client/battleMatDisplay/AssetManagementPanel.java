@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 
 import per.lambert.ebattleMat.client.controls.ArtAssetsPanel;
 import per.lambert.ebattleMat.client.controls.DungeonEditorPanel;
+import per.lambert.ebattleMat.client.controls.PogEditor;
 
 /**
  * Panel used for managing assets in battle map.
@@ -27,6 +28,10 @@ public class AssetManagementPanel extends DockLayoutPanel {
 	 */
 	private DungeonEditorPanel dungeonPanel = new DungeonEditorPanel();
 	/**
+	 * Panel for editing pogs.
+	 */
+	private PogEditor pogEditor = new PogEditor();
+	/**
 	 * Constructor.
 	 */
 	public AssetManagementPanel() {
@@ -36,6 +41,7 @@ public class AssetManagementPanel extends DockLayoutPanel {
 		tabPanel.setHeight("100%");
 		tabPanel.add(artAssetsPanel, "Art Assets");
 		tabPanel.add(dungeonPanel, "Dungeon Editor");
+		tabPanel.add(pogEditor, "Pog Editor");
 		add(tabPanel);
 		this.forceLayout();
 	}

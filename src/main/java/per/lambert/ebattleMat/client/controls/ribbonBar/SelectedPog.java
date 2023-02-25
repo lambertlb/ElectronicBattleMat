@@ -141,9 +141,14 @@ public class SelectedPog extends Composite {
 	 * Redraw pog.
 	 */
 	public void reDraw() {
-		int height = resizeWidget.getOffsetHeight();
-		if (height < 20) {
-			height = 20;
+		int height;
+		if (resizeWidget == null) {
+			height = 50;
+		} else {
+			height = resizeWidget.getOffsetHeight();
+			if (height < 20) {
+				height = 20;
+			}
 		}
 		scalablePog.setPogSizing(height, 0.0, 1.0);
 	}
