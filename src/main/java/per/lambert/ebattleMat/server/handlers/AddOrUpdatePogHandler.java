@@ -42,7 +42,7 @@ public class AddOrUpdatePogHandler implements IWebRequestHandler {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		String sessionUUID = request.getParameter("sessionUUID");
 		int currentLevel = Integer.parseInt(request.getParameter("currentLevel"));
-		PogPlace place = PogPlace.valueOf(request.getParameter("place"));
+		PogPlace place = (PogPlace)PogPlace.valueOf(request.getParameter("place"));
 		DungeonsManager.savePog(servlet, dungeonUUID, sessionUUID, currentLevel, place, jsonData);
 		PrintWriter out = resp.getWriter();
 		out.print("");

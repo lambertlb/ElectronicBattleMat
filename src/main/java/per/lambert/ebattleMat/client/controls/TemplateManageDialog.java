@@ -624,15 +624,12 @@ public class TemplateManageDialog extends OkCancelDialog {
 	}
 
 	/**
-	 * Validate URL. TODO move to dungeon manager
+	 * Validate URL.
 	 * 
 	 * @return true if valid
 	 */
 	private boolean validateUrl() {
-		String filename = templatePicture.getValue();
-		int i = filename.lastIndexOf('.');
-		String fileExtension = i > 0 ? filename.substring(i + 1) : "";
-		boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
+		boolean valid = ServiceManager.getDungeonManager().isValidPictureURL(templatePicture.getValue());
 		if (valid) {
 			templatePicture.removeStyleName("badLabel");
 		} else {

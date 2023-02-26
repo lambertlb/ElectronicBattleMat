@@ -42,7 +42,7 @@ public class DeletePogHandler implements IWebRequestHandler {
 		String dungeonUUID = request.getParameter("dungeonUUID");
 		String sessionUUID = request.getParameter("sessionUUID");
 		int currentLevel = Integer.parseInt(request.getParameter("currentLevel"));
-		PogPlace place = PogPlace.valueOf(request.getParameter("place"));
+		PogPlace place = (PogPlace)PogPlace.valueOf(request.getParameter("place"));
 		DungeonsManager.deletePog(servlet, dungeonUUID, sessionUUID, currentLevel, place, jsonData);
 		PrintWriter out = resp.getWriter();
 		out.print("");

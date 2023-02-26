@@ -158,7 +158,6 @@ public final class DungeonsManager {
 	 * There might be sessions that are over so no reason to hold onto data.
 	 */
 	private static void checkIfNeedToPurgeCachedData() {
-		// TODO purge out stale data.
 	}
 
 	/**

@@ -424,15 +424,9 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 */
 	private void copyResourceURL() {
 		String url = ServiceManager.getDungeonManager().getAssetURL();
-		if (isValidPictureURL(url)) {
+		if (ServiceManager.getDungeonManager().isValidPictureURL(url)) {
 			pictureURL.setText(url);
 		}
-	}
-
-	private boolean isValidPictureURL(final String url) {
-		int i = url.lastIndexOf('.');
-		String fileExtension = i > 0 ? url.substring(i + 1) : "";
-		return fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
 	}
 
 	/**
@@ -498,7 +492,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		} else {
 			levelNameLabel.removeStyleName("badLabel");
 		}
-		if (!isValidPictureURL(pictureURL.getText())) {
+		if (!ServiceManager.getDungeonManager().isValidPictureURL(pictureURL.getText())) {
 			isOK = false;
 			pictureURL.addStyleName("badLabel");
 		} else {

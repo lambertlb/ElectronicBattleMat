@@ -1231,7 +1231,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			parameters.put("sessionUUID", "");
 		}
 		parameters.put("currentLevel", "" + currentLevelIndex);
-		parameters.put("place", place.name());
+		parameters.put("place", place.getName());
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		String pogDataString = JsonUtils.stringify(pog);
 		dataRequester.requestData(pogDataString, "ADDORUPDATEPOG", parameters, new IUserCallback() {
@@ -1351,7 +1351,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			parameters.put("sessionUUID", "");
 		}
 		parameters.put("currentLevel", "" + currentLevelIndex);
-		parameters.put("place", place.name());
+		parameters.put("place", place.getName());
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		String pogDataString = JsonUtils.stringify(getSelectedPog());
 		dataRequester.requestData(pogDataString, "DELETEPOG", parameters, new IUserCallback() {
@@ -1439,5 +1439,17 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				callback.onError(url, error);
 			}
 		});
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isValidPictureURL(final String url) {
+		int i = url.lastIndexOf('.');
+		String fileExtension = i > 0 ? url.substring(i + 1) : "";
+		boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
+		return (valid);
 	}
 }

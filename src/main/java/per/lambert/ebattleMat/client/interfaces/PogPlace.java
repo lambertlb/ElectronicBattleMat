@@ -15,35 +15,113 @@
  */
 package per.lambert.ebattleMat.client.interfaces;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Enumeration of where Pogs can reside on server.
  * 
  * @author LLambert
  *
  */
-public enum PogPlace {
+public final class PogPlace extends FlagBit {
+	/**
+	 * Next available value.
+	 */
+	private static int nextValue = 0;
 	/**
 	 * Resides in Common resource area available to all dungeons.
 	 */
-	COMMON_RESOURCE,
+	public static final PogPlace COMMON_RESOURCE = new PogPlace("Common Resource");
 	/**
 	 * Resides in dungeon specific resource area.
 	 */
-	DUNGEON_RESOURCE,
+	public static final PogPlace DUNGEON_RESOURCE = new PogPlace("Dungeon Resource");
 	/**
 	 * Resides in dungeon instance area.
 	 */
-	DUNGEON_INSTANCE,
+	public static final PogPlace DUNGEON_INSTANCE = new PogPlace("Dungeon Instance");
 	/**
 	 * Resides in Session common resource area.
 	 */
-	SESSION_RESOURCE,
+	public static final PogPlace SESSION_RESOURCE = new PogPlace("Session Resource");
 	/**
 	 * Resides in Session level instance area.
 	 */
-	SESSION_INSTANCE,
+	public static final PogPlace SESSION_INSTANCE = new PogPlace("Session Instance");
 	/**
 	 * Invalid place.
 	 */
-	INVALID
+	public static final PogPlace INVALID = new PogPlace("Invalid Place");
+	
+
+	/**
+	 * Map of names vs flag bit.
+	 */
+	private static Map<String, FlagBit> nameMap;
+
+	/**
+	 * expose to sub-classes.
+	 * 
+	 * @return map of names
+	 */
+	protected static Map<String, FlagBit> getNameMap() {
+		return nameMap;
+	}
+
+	/**
+	 * Value vs flag bit.
+	 */
+	private static Map<Integer, FlagBit> valueMap;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param flagName flag name
+	 */
+	private PogPlace(final String flagName) {
+		super(flagName, nextValue);
+		++nextValue;
+		if (nameMap == null) {
+			nameMap = new LinkedHashMap<String, FlagBit>();
+			valueMap = new LinkedHashMap<Integer, FlagBit>();
+		}
+		nameMap.put(flagName, (FlagBit) this);
+		valueMap.put(getValue(), (FlagBit) this);
+	}
+
+	/**
+	 * Get value for this name.
+	 * 
+	 * @param name to get
+	 * @return flag bit
+	 */
+	public static FlagBit valueOf(final String name) {
+		return (nameMap.get(name));
+	}
+
+	/**
+	 * Get flag bit for this ordinal.
+	 * 
+	 * @param ordinal to get
+	 * @return flag bit
+	 */
+	public static FlagBit valueOf(final int ordinal) {
+		return (valueMap.get(ordinal));
+	}
+
+	/**
+	 * Get collection of flags.
+	 * 
+	 * @return collection of flags.
+	 */
+	public static Collection<FlagBit> getValues() {
+		ArrayList<FlagBit> list = new ArrayList<FlagBit>();
+		for (FlagBit flagBit : getNameMap().values()) {
+			list.add(flagBit);
+		}
+		return (list);
+	}
 }

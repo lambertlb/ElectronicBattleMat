@@ -127,7 +127,6 @@ public class Dungeons extends HttpServlet {
 	/**
 	 * Validate user token.
 	 * 
-	 * TODO finish validation
 	 * @param request with token
 	 * @throws ServletException if error
 	 */

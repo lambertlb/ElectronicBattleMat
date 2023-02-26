@@ -198,14 +198,10 @@ public class CharacterCreateDialog extends OkCancelDialog {
 	/**
 	 * Validate Url of picture. This makes sure it is a picture type we support
 	 * 
-	 * TODO move to Dungeon Manager.
 	 * @return true if ok.
 	 */
 	private boolean validateUrl() {
-		String filename = characterPicture.getValue();
-		int i = filename.lastIndexOf('.');
-		String fileExtension = i > 0 ? filename.substring(i + 1) : "";
-		boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
+		boolean valid = ServiceManager.getDungeonManager().isValidPictureURL(characterPicture.getValue());
 		if (valid) {
 			characterPicture.removeStyleName("badLabel");
 		} else {

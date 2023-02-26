@@ -342,6 +342,7 @@ public interface IDungeonManager extends IPogManager {
 	 * remove current level from duingeon.
 	 */
 	void removeCurrentLevel();
+
 	/**
 	 * Is this a valid character name.
 	 * 
@@ -485,4 +486,12 @@ public interface IDungeonManager extends IPogManager {
 	 * @return asset URL
 	 */
 	String getAssetURL();
+
+	/**
+	 * Is this valid url for picture.
+	 * 
+	 * @param url
+	 * @return true if valid
+	 */
+	boolean isValidPictureURL(String url);
 }
