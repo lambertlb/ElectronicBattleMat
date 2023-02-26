@@ -521,9 +521,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createNewDungeon(final String dungeonUUID, final String newDungeonName) {
+	public void createNewDungeon(final String newDungeonName) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("dungeonUUID", dungeonUUID);
+		parameters.put("dungeonUUID", getUuidOfMasterTemplate());
 		parameters.put("newDungeonName", newDungeonName);
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		dataRequester.requestData("", "CREATENEWDUNGEON", parameters, new IUserCallback() {

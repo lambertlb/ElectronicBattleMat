@@ -393,7 +393,8 @@ public class DungeonSelectPresenter {
 	 * Create a new dungeon.
 	 */
 	public void createDungeon() {
-		ServiceManager.getDungeonManager().createNewDungeon(selectedDungeonUUID, newDungeonName);
+		ServiceManager.getDungeonManager().createNewDungeon(newDungeonName);
+		view.resetNewDungeonName();
 	}
 
 	/**

@@ -160,10 +160,9 @@ public interface IDungeonManager extends IPogManager {
 	/**
 	 * Create a new dungeon based on template dungeon.
 	 * 
-	 * @param dungeonUUID UUID of template dungeon
 	 * @param newDungeonName new dungeon name
 	 */
-	void createNewDungeon(String dungeonUUID, String newDungeonName);
+	void createNewDungeon(String newDungeonName);
 
 	/**
 	 * Get URL to this dungeon specific resource item.

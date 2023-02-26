@@ -149,6 +149,7 @@ public class DungeonSelectDialog extends OkCancelDialog {
 	 * This is needed because the dialog can be reused many times.
 	 */
 	private void initialize() {
+		resetNewDungeonName();
 		setToDungeonMasterState();
 		center();
 	}
@@ -369,13 +370,19 @@ public class DungeonSelectDialog extends OkCancelDialog {
 		enableWidget(createDungeonButton, dungeonSelectPresenter.isOkToCreateDungeon());
 		enableWidget(editDungeonButton, dungeonSelectPresenter.isTemplateSelected());
 		enableWidget(deleteDungeonButton, dungeonSelectPresenter.isOkToDelete());
-		enableWidget(newDungeonName, dungeonSelectPresenter.isTemplateSelected());
-		if (!dungeonSelectPresenter.isTemplateSelected()) {
-			newDungeonName.setText("Enter Dungeon Name");
-		}
+		enableWidget(newDungeonName, true);
+//		if (!dungeonSelectPresenter.isTemplateSelected()) {
+//			newDungeonName.setText("Enter Dungeon Name");
+//		}
 		setupSessionDisplayForDungeonMaster();
 	}
 
+	/**
+	 * reset new dungeon name.
+	 */
+	public void resetNewDungeonName() {
+		newDungeonName.setText("Enter Dungeon Name");
+	}
 	/**
 	 * load in list of dungeons.
 	 */

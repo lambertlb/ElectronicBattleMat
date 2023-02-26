@@ -361,7 +361,7 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 				callback.onSuccess(null, null);
 			}
 		});
-		dungeonManager.createNewDungeon("dungeon1-template", "New Dungeon");
+		dungeonManager.createNewDungeon("New Dungeon");
 		hadEvent(ReasonForAction.DungeonDataCreated);
 	}
 
