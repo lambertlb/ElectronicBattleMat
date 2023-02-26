@@ -136,9 +136,10 @@ public class BattleMatLayout extends ResizeComposite {
 	 * Setup panels for proper mode.
 	 */
 	private void setupPanels() {
-		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
-			splitPanel.addEast(east, Window.getClientWidth() / 5);
-		}
+//		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+//			splitPanel.addEast(east, Window.getClientWidth() / 5);
+//		}
+		splitPanel.addEast(east, Window.getClientWidth() / 5);
 		splitPanel.add(battleMatCanvasPanel);
 		panelsSetup = true;
 	}
