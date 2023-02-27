@@ -16,6 +16,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -69,7 +70,11 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	/**
 	 * grid size in pixels.
 	 */
-	private LabeledTextBox gridSize;
+	private DoubleBox gridSize;
+	/**
+	 * Button to copy grid size.
+	 */
+	private Button gridSizeCopy;
 	/**
 	 * X Offset of grid from top Left.
 	 */
@@ -195,7 +200,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		centerContent.setWidth("100%");
 		centerGrid = new Grid();
 		centerGrid.setWidth("100%");
-		centerGrid.resize(6, 2);
+		centerGrid.resize(8, 2);
 		centerGrid.getColumnFormatter().setWidth(0, "100px");
 		VerticalPanel vpanel = new VerticalPanel();
 		vpanel.add(centerGrid);
@@ -231,7 +236,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 * Create grid size content.
 	 */
 	private void createGridSizeEntry() {
-		gridSize = new LabeledTextBox("Grid Size ", 0.0);
+		gridSize = new DoubleBox();
 		gridSize.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(final ChangeEvent event) {
@@ -247,8 +252,24 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			}
 		});
 		gridSize.setStyleName("ribbonBarLabel");
-		gridSize.setEntryWidth("30px");
-		centerGrid.setWidget(1, 1, gridSize);
+
+		gridSizeCopy = new Button("Grid Size");
+		gridSizeCopy.setTitle("Use CTL click on map to draw rectange. A size will be computed. Click Button to copy to grid size");
+		gridSizeCopy.setStyleName("ribbonBarLabel");
+		gridSizeCopy.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				copyGridSize();
+			}
+		});
+		centerGrid.setWidget(2, 0, gridSizeCopy);
+		centerGrid.setWidget(2, 1, gridSize);
+	}
+
+	private void copyGridSize() {
+		gridSize.setValue(ServiceManager.getDungeonManager().getComputedGridWidth());
+		isDirty = true;
+		validateContent();
 	}
 
 	/**
@@ -272,7 +293,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		});
 		gridOffsetX.setStyleName("ribbonBarLabel");
 		gridOffsetX.setEntryWidth("30px");
-		centerGrid.setWidget(2, 0, gridOffsetX);
+		centerGrid.setWidget(3, 0, gridOffsetX);
 	}
 
 	/**
@@ -296,7 +317,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		});
 		gridOffsetY.setStyleName("ribbonBarLabel");
 		gridOffsetY.setEntryWidth("30px");
-		centerGrid.setWidget(2, 1, gridOffsetY);
+		centerGrid.setWidget(3, 1, gridOffsetY);
 	}
 
 	/**
@@ -353,8 +374,8 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			}
 		});
 		pictureURL.setWidth("100%");
-		centerGrid.setWidget(3, 0, copyResourceURL);
-		centerGrid.setWidget(3, 1, pictureURL);
+		centerGrid.setWidget(4, 0, copyResourceURL);
+		centerGrid.setWidget(4, 1, pictureURL);
 	}
 	/**
 	 * Create save and cancel buttons.
@@ -376,8 +397,8 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 				cancelFormData();
 			}
 		});
-		centerGrid.setWidget(5, 0, save);
-		centerGrid.setWidget(5, 1, cancel);
+		centerGrid.setWidget(6, 0, save);
+		centerGrid.setWidget(6, 1, cancel);
 	}
 	/**
 	 * Initialize view.
@@ -401,7 +422,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		}
 		int nextAvailableLevelIndex = ServiceManager.getDungeonManager().getNextAvailableLevelNumber();
 		ServiceManager.getDungeonManager().getSelectedDungeon().setShowGrid(showGrid.getValue());
-		currentLevel.setGridSize(gridSize.getDoubleValue());
+		currentLevel.setGridSize(gridSize.getValue());
 		currentLevel.setGridOffsetX(gridOffsetX.getDoubleValue());
 		currentLevel.setGridOffsetY(gridOffsetY.getDoubleValue());
 		currentLevel.setLevelName(levelName.getValue());
@@ -414,6 +435,8 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			ServiceManager.getDungeonManager().setCurrentLevel(nextAvailableLevelIndex);
 		}
 		newLevel = false;
+		isDirty = false;
+		validateContent();
 	}
 	private void cancelFormData() {
 		gatherData();
@@ -500,7 +523,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			drawPicture();
 		}
 		try {
-			numberCheck = gridSize.getDoubleValue();
+			numberCheck = gridSize.getValue();
 			gridSize.removeStyleName("badLabel");
 		} catch (Exception ex) {
 			isOK = false;

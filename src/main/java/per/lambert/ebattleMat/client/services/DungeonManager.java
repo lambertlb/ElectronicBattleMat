@@ -338,6 +338,27 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
+	 * Computed grid width.
+	 */
+	private double computedGridWidth;
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getComputedGridWidth() {
+		return computedGridWidth;
+	}
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setComputedGridWidth(final double gridWidth) {
+		computedGridWidth = gridWidth;
+	}
+
+	/**
 	 * construct a dungeon manager.
 	 */
 	public DungeonManager() {

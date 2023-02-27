@@ -90,6 +90,124 @@ import per.lambert.ebattleMat.client.touchHelper.ZoomStartHandler;
 public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
 
 	/**
+	 * Manage coordinates for selection rectangle.
+	 * 
+	 * @author LLambert
+	 *
+	 */
+	public class Rectangle {
+		/**
+		 * Top of rectangle.
+		 */
+		private int top;
+
+		/**
+		 * Get top of rectangle.
+		 * 
+		 * @return top of rectangle
+		 */
+		public int getTop() {
+			return top;
+		}
+
+		/**
+		 * Set top of rectangle.
+		 * 
+		 * @param top
+		 */
+		public void setTop(final int top) {
+			this.top = top;
+		}
+
+		/**
+		 * Left of rectangle.
+		 */
+		private int left;
+
+		/**
+		 * Get left of rectangle.
+		 * 
+		 * @return left of rectangle
+		 */
+		public int getLeft() {
+			return left;
+		}
+
+		/**
+		 * Set left of rectangle.
+		 * 
+		 * @param left
+		 */
+		public void setLeft(final int left) {
+			this.left = left;
+		}
+
+		/**
+		 * Bottom of rectangle.
+		 */
+		private int bottom;
+
+		/**
+		 * Get bottom of rectangle.
+		 * 
+		 * @return bottom of rectangle
+		 */
+		public int getBottom() {
+			return bottom;
+		}
+
+		/**
+		 * Set bottom of rectangle.
+		 * 
+		 * @param bottom
+		 */
+		public void setBottom(final int bottom) {
+			this.bottom = bottom;
+		}
+
+		/**
+		 * Right of rectangle.
+		 */
+		private int right;
+
+		/**
+		 * Get right of rectangle.
+		 * 
+		 * @return right of rectangle
+		 */
+		public int getRight() {
+			return right;
+		}
+
+		/**
+		 * Set right of rectangle.
+		 * 
+		 * @param right
+		 */
+		public void setRight(final int right) {
+			this.right = right;
+		}
+
+		/**
+		 * Width of square.
+		 * 
+		 * @return width
+		 */
+		public int getWidth() {
+			return (right - left);
+		}
+
+		/**
+		 * get height of square.
+		 * 
+		 * @return height
+		 */
+		public int getHeight() {
+			return (bottom - top);
+		}
+	}
+
+	/**
 	 * Offset for clearing rectangle.
 	 */
 	private static final int CLEAR_OFFEST = -10;
@@ -254,21 +372,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private boolean doingSelection;
 	/**
-	 * Top of selection.
+	 * Selection coordinates.
 	 */
-	private double selectionTop = -1;
-	/**
-	 * Left of selection.
-	 */
-	private double selectionLeft = -1;
-	/**
-	 * Height of selection.
-	 */
-	private double selectionHeight = -1;
-	/**
-	 * Width of selection.
-	 */
-	private double selectionWidth = -1;
+	private Rectangle selectionCoodinates = new Rectangle();
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -589,10 +695,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void handleSelectionStart(final MouseDownEvent event) {
 		doingSelection = true;
 		computeSelectedColumnAndRow(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
-		selectionLeft = mouseDownXPos - getAbsoluteLeft();
-		selectionTop = mouseDownYPos - getAbsoluteTop();
-		selectionWidth = 0;
-		selectionHeight = 0;
+		selectionCoodinates.setLeft((int) mouseDownXPos - getAbsoluteLeft());
+		selectionCoodinates.setTop((int) mouseDownYPos - getAbsoluteTop());
+		selectionCoodinates.setRight((int) mouseDownXPos - getAbsoluteLeft());
+		selectionCoodinates.setBottom((int) mouseDownYPos - getAbsoluteTop());
 	}
 
 	/**
@@ -654,11 +760,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void drawSelectionRectange(final MouseMoveEvent event) {
 		eraseSelectionRectangle();
 		Context2d context = canvas.getContext2d();
-		selectionWidth = event.getRelativeX(image.getElement()) - getAbsoluteLeft() - selectionLeft;
-		selectionHeight = event.getRelativeY(image.getElement()) - getAbsoluteTop() - selectionTop;
+		selectionCoodinates.setRight((int) (event.getRelativeX(image.getElement()) - getAbsoluteLeft()));
+		selectionCoodinates.setBottom((int) (event.getRelativeY(image.getElement()) - getAbsoluteTop()));
 		context.beginPath();
 		context.setStrokeStyle("red");
-		context.rect(selectionLeft, selectionTop, selectionWidth, selectionHeight);
+		context.rect(selectionCoodinates.getLeft(), selectionCoodinates.getTop(), selectionCoodinates.getWidth(), selectionCoodinates.getHeight());
 		context.stroke();
 	}
 
@@ -668,7 +774,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void eraseSelectionRectangle() {
 		Context2d context = canvas.getContext2d();
 		context.beginPath();
-		context.clearRect(selectionLeft, selectionTop, selectionWidth, selectionHeight);
+		context.clearRect(selectionCoodinates.getLeft(), selectionCoodinates.getTop(), selectionCoodinates.getWidth(), selectionCoodinates.getHeight());
 		context.stroke();
 		drawEverything();
 	}
@@ -731,8 +837,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	public final void onMouseUp(final MouseUpEvent event) {
 		if (doingSelection) {
 			eraseSelectionRectangle();
-			if (ServiceManager.getDungeonManager().isDungeonMaster() && !ServiceManager.getDungeonManager().isEditMode()) {
-				closeSelection(event);
+			selectionCoodinates.setRight((int) (event.getRelativeX(image.getElement()) - getAbsoluteLeft()));
+			selectionCoodinates.setBottom((int) (event.getRelativeY(image.getElement()) - getAbsoluteTop()));
+			if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+				if (!ServiceManager.getDungeonManager().isEditMode()) {
+					handleFOWSelection(event);
+				} else {
+					handleGridSizeComputation(event);
+				}
 			}
 			doingSelection = false;
 		}
@@ -745,10 +857,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event mouse position
 	 */
-	private void closeSelection(final MouseUpEvent event) {
+	private void handleFOWSelection(final MouseUpEvent event) {
+		computeColumnAndRow(selectionCoodinates.getLeft(), selectionCoodinates.getTop());
 		int startingColumn = selectedColumn;
 		int startingRow = selectedRow;
-		computeSelectedColumnAndRow(event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+		computeColumnAndRow(selectionCoodinates.getRight(), selectionCoodinates.getBottom());
 		int endingColumn = selectedColumn;
 		int endingRow = selectedRow;
 		int top = startingRow;
@@ -776,6 +889,16 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				}
 			}
 		}
+	}
+
+	/**
+	 * compute size of grid.
+	 * 
+	 * @param event mouse position
+	 */
+	private void handleGridSizeComputation(final MouseUpEvent event) {
+		double gridWidth = Math.abs(selectionCoodinates.getRight() - selectionCoodinates.getLeft()) / totalZoom;
+		ServiceManager.getDungeonManager().setComputedGridWidth(gridWidth);
 	}
 
 	/**
@@ -1170,6 +1293,17 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		double yCoord = clientY - getAbsoluteTop();
 		selectedColumn = ((int) (((xCoord - offsetX - gridOffsetX)) / adjustedGridSize()));
 		selectedRow = ((int) (((yCoord - offsetY - gridOffsetY)) / adjustedGridSize()));
+	}
+
+	/**
+	 * Compute Column and row from the X and Y positions.
+	 * 
+	 * @param clientX X position
+	 * @param clientY Y position
+	 */
+	private void computeColumnAndRow(final int clientX, final int clientY) {
+		selectedColumn = ((int) (((clientX - offsetX - gridOffsetX)) / adjustedGridSize()));
+		selectedRow = ((int) (((clientY - offsetY - gridOffsetY)) / adjustedGridSize()));
 	}
 
 	/**

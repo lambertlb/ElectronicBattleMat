@@ -494,4 +494,16 @@ public interface IDungeonManager extends IPogManager {
 	 * @return true if valid
 	 */
 	boolean isValidPictureURL(String url);
+
+	/**
+	 * Get computed Grid width.
+	 * @return grid width
+	 */
+	double getComputedGridWidth();
+	/**
+	 * Set computed grid witdh.
+	 * 
+	 * @param gridWidth grid width
+	 */
+	void setComputedGridWidth(double gridWidth);
 }
