@@ -25,6 +25,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.FlagBit;
+import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
@@ -100,6 +101,30 @@ public class PogEditor extends DockLayoutPanel {
 	 * Form has changed.
 	 */
 	private boolean isDirty;
+	/**
+	 * Race of template.
+	 */
+	private TextBox race;
+	/**
+	 * Label for race;.
+	 */
+	private Label raceLabel;
+	/**
+	 * Class of template.
+	 */
+	private TextBox pogClass;
+	/**
+	 * Label for class;.
+	 */
+	private Label pogClassLabel;
+	/**
+	 * List of genders.
+	 */
+	private ListBox genderList;
+	/**
+	 * Label for race;.
+	 */
+	private Label genderLabel;
 
 	public PogEditor() {
 		super(Unit.PX);
@@ -141,7 +166,7 @@ public class PogEditor extends DockLayoutPanel {
 		centerContent.setWidth("100%");
 		centerGrid = new Grid();
 		centerGrid.setWidth("100%");
-		centerGrid.resize(6, 2);
+		centerGrid.resize(10, 2);
 		centerGrid.getColumnFormatter().setWidth(0, "100px");
 		selectedPog = new SelectedPog(null);
 		VerticalPanel vpanel = new VerticalPanel();
@@ -157,6 +182,9 @@ public class PogEditor extends DockLayoutPanel {
 		createPogType();
 		createPogLocation();
 		createPictureUrl();
+		createRace();
+		createClass();
+		createGender();
 	}
 
 	/**
@@ -247,6 +275,89 @@ public class PogEditor extends DockLayoutPanel {
 		centerGrid.setWidget(3, 0, copyResourceURL);
 		centerGrid.setWidget(3, 1, pictureURL);
 	}
+
+	/**
+	 * Create race text.
+	 */
+	private void createRace() {
+		raceLabel = new Label("Race");
+		raceLabel.setStyleName("ribbonBarLabel");
+		race = new TextBox();
+		race.setStyleName("ribbonBarLabel");
+		race.addChangeHandler(new ChangeHandler() {		
+			@Override
+			public void onChange(final ChangeEvent event) {
+				raceChanged();
+			}
+		});
+		race.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				raceChanged();
+			}
+		});
+		pictureURL.setWidth("100%");
+		centerGrid.setWidget(4, 0, raceLabel);
+		centerGrid.setWidget(4, 1, race);
+	}
+	private void createClass() {
+		pogClassLabel = new Label("Class");
+		pogClassLabel.setStyleName("ribbonBarLabel");
+		pogClass = new TextBox();
+		pogClass.setStyleName("ribbonBarLabel");
+		pogClass.addChangeHandler(new ChangeHandler() {		
+			@Override
+			public void onChange(final ChangeEvent event) {
+				classChanged();
+			}
+		});
+		pogClass.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				classChanged();
+			}
+		});
+		pictureURL.setWidth("100%");
+		centerGrid.setWidget(5, 0, pogClassLabel);
+		centerGrid.setWidget(5, 1, pogClass);
+	}
+
+	private void createGender() {
+		genderList = new ListBox();
+		genderList.setStyleName("ribbonBarLabel");
+		genderList.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				genderChanged();
+			}
+		});
+		for (Gender pogGender : ServiceManager.getDungeonManager().getTemplateGenders()) {
+			genderList.addItem(pogGender.getName(), pogGender.getName());
+		}
+		genderLabel = new Label("Gender");
+		genderLabel.setStyleName("ribbonBarLabel");
+		centerGrid.setWidget(6, 0, genderLabel);
+		centerGrid.setWidget(6, 1, genderList);
+	}
+
+	private void genderChanged() {
+		isDirty = true;
+		validateForm();
+	}
+
+	private void classChanged() {
+		isDirty = true;
+		validateForm();
+	}
+
+	private void raceChanged() {
+		isDirty = true;
+		validateForm();
+	}
+
+	/**
+	 * Url has changed.
+	 */
 	private void urlChanged() {
 		isDirty = true;
 		validateForm();
@@ -293,6 +404,9 @@ public class PogEditor extends DockLayoutPanel {
 		setPogType();
 		setPogLocation();
 		setPictureData();
+		setRaceData();
+		setClassData();
+		setGenderData();
 		// for ()
 
 		// templatePicture.setValue(pogData.getImageUrl());
@@ -333,6 +447,19 @@ public class PogEditor extends DockLayoutPanel {
 	private void setPictureData() {
 		pictureURL.setText(pogData.getImageUrl());
 		pictureURL.setTitle(pictureURL.getText());
+	}
+	private void setRaceData() {
+		race.setText(pogData.getRace());
+	}
+	/**
+	 * Set pog class data.
+	 */
+	private void setClassData() {
+		pogClass.setText(pogData.getPogClass());
+	}
+
+	private void setGenderData() {
+		genderList.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
 	}
 
 	private void dungeonDataLoaded() {
