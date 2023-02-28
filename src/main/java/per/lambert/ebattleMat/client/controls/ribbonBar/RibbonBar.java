@@ -257,6 +257,19 @@ public class RibbonBar extends Composite {
 			}
 		});
 		pogNotes = new NotesFloatingWindow();
+		pogNotes.addSaveClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogNotesSaved();
+			}
+		});
+	}
+
+	private void pogNotesSaved() {
+		PogData pogData = ServiceManager.getDungeonManager().getSelectedPog();
+		pogData.setNotes(pogNotes.getNotesText());
+		pogData.setDmNotes(pogNotes.getDMNotesText());
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogData);
 	}
 
 	/**
@@ -451,6 +464,10 @@ public class RibbonBar extends Composite {
 		boolean enabled = selectedPog != null ? !ServiceManager.getDungeonManager().isTemplate(selectedPog) : false;
 		DungeonSelectDialog.enableWidget(playerFlagsButton, enabled);
 		DungeonSelectDialog.enableWidget(dmFlagsButton, enabled);
+		if (selectedPog != null) {
+			pogNotes.setNotesText(selectedPog.getNotes());
+			pogNotes.setDMNotesText(selectedPog.getDmNotes());
+		}
 	}
 
 	/**

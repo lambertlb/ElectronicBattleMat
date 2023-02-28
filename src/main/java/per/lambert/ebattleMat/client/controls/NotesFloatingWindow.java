@@ -29,13 +29,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 
-import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
-import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.Constants;
-import per.lambert.ebattleMat.client.interfaces.IEventManager;
-import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
-import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
  * Floating window display notes on a pog.
@@ -44,10 +39,6 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
  *
  */
 public class NotesFloatingWindow extends OkCancelDialog {
-	/**
-	 * Canvas for pog display.
-	 */
-	private PogData selectedPog;
 	/**
 	 * Panel to capture key events.
 	 */
@@ -88,7 +79,14 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Tab panel.
 	 */
 	private TabLayoutPanel tabPanel;
-
+	/**
+	 * Notes from host.
+	 */
+	private String notes;
+	/**
+	 * DM notes from host.
+	 */
+	private String dmNotes;
 	/**
 	 * Constructor.
 	 */
@@ -159,7 +157,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 		});
 		buttonPanel.add(save);
 		cancel = new Button("Cancel");
-		save.addClickHandler(new ClickHandler() {
+		cancel.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				onCancel();
@@ -187,7 +185,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * cancel pressed.
 	 */
 	protected void onCancel() {
-		getTextFromSelectedPog();
+		setupDisplayWithData();
 	}
 
 	/**
@@ -212,9 +210,8 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Save changed notes.
 	 */
 	protected void saveNotes() {
-		selectedPog.setNotes(editPanel.getElement().getInnerText());
-		selectedPog.setDmNotes(dmEditPanel.getElement().getInnerText());
-		ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
+		notes = editPanel.getElement().getInnerText();
+		dmNotes = dmEditPanel.getElement().getInnerText();
 		enableWidget(save, false);
 	}
 
@@ -222,15 +219,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * Setup event handlers.
 	 */
 	private void setupEventHandlers() {
-		IEventManager eventManager = ServiceManager.getEventManager();
-		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
-			public void onReasonForAction(final ReasonForActionEvent event) {
-				if (event.getReasonForAction() == ReasonForAction.PogWasSelected) {
-					getTextFromSelectedPog();
-					return;
-				}
-			}
-		});
 	}
 
 	/**
@@ -250,7 +238,6 @@ public class NotesFloatingWindow extends OkCancelDialog {
 		dockLayoutPanel.add(tabPanel);
 		if (!ServiceManager.getDungeonManager().isDungeonMaster()) {
 			enableWidget(save, false);
-			enableWidget(cancel, false);
 		}
 	}
 
@@ -265,22 +252,60 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	/**
 	 * Get the text from the selected pog.
 	 */
-	private void getTextFromSelectedPog() {
+	private void setupDisplayWithData() {
 		String textToSet = "";
 		String dmTextToSet = "";
 		scrollPanel.scrollToTop();
 		scrollPanel.scrollToLeft();
 		dmScrollPanel.scrollToTop();
 		dmScrollPanel.scrollToLeft();
-		selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-		if (selectedPog != null) {
-			textToSet = selectedPog.getNotes();
-			dmTextToSet = selectedPog.getDmNotes();
+		if (notes != null) {
+			textToSet = notes;
+		}
+		if (dmNotes != null) {
+			dmTextToSet = dmNotes;
 		}
 		editPanel.getElement().setInnerText(textToSet);
 		dmEditPanel.getElement().setInnerText(dmTextToSet);
 		makeContentEditable(ServiceManager.getDungeonManager().isDungeonMaster());
 		enableWidget(save, false);
+	}
+	/**
+	 * get Notes text.
+	 * 
+	 * @return notes text
+	 */
+	public String getNotesText() {
+		return (notes);
+	}
+
+	/**
+	 * Set text for notes.
+	 * 
+	 * @param notesText
+	 */
+	public void setNotesText(final String notesText) {
+		notes = notesText;
+		setupDisplayWithData();
+	}
+
+	/**
+	 * get Notes text.
+	 * 
+	 * @return notes text
+	 */
+	public String getDMNotesText() {
+		return (dmNotes);
+	}
+
+	/**
+	 * Set text for notes.
+	 * 
+	 * @param notesText
+	 */
+	public void setDMNotesText(final String notesText) {
+		dmNotes = notesText;
+		setupDisplayWithData();
 	}
 
 	/**
@@ -316,7 +341,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	public void show() {
 		initialize();
 		super.show();
-		getTextFromSelectedPog();
+		setupDisplayWithData();
 	}
 
 	/**

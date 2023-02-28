@@ -105,6 +105,7 @@ public class OkCancelDialog extends ResizableDialog {
 		cancel.setVisible(cancelVisible);
 		dockLayoutPanel.setWidth("" + width + "px");
 		dockLayoutPanel.setHeight("" + height + "px");
+		this.setPopupPosition(100, 100);
 	}
 
 	/**

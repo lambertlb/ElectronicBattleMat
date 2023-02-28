@@ -125,6 +125,22 @@ public class PogEditor extends DockLayoutPanel {
 	 * Label for race;.
 	 */
 	private Label genderLabel;
+	/**
+	 * Window for handling notes.
+	 */
+	private NotesFloatingWindow notesWindow;
+	/**
+	 * Show notes window.
+	 */
+	private Button showNotesWindow;
+	/**
+	 * Notes from host.
+	 */
+	private String notes;
+	/**
+	 * DM notes from host.
+	 */
+	private String dmNotes;
 
 	public PogEditor() {
 		super(Unit.PX);
@@ -185,6 +201,7 @@ public class PogEditor extends DockLayoutPanel {
 		createRace();
 		createClass();
 		createGender();
+		createNotesWindow();
 	}
 
 	/**
@@ -339,6 +356,31 @@ public class PogEditor extends DockLayoutPanel {
 		centerGrid.setWidget(6, 0, genderLabel);
 		centerGrid.setWidget(6, 1, genderList);
 	}
+	private void createNotesWindow() {
+		showNotesWindow = new Button("Edit Notes");
+		showNotesWindow.setStyleName("ribbonBarLabel");
+		showNotesWindow.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				editNotes();
+			}
+		});
+		notesWindow = new NotesFloatingWindow();
+		notesWindow.setModal(true);
+		notesWindow.addSaveClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				pogNotesSaved();
+			}
+		});
+		notesWindow.addCancelClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				notesWindow.hide();
+			}
+		});
+		centerGrid.setWidget(7, 0, showNotesWindow);
+	}
 
 	private void genderChanged() {
 		isDirty = true;
@@ -362,6 +404,16 @@ public class PogEditor extends DockLayoutPanel {
 		isDirty = true;
 		validateForm();
 		pictureURL.setTitle(pictureURL.getText());
+	}
+
+	private void editNotes() {
+		notesWindow.show();
+	}
+
+	private void pogNotesSaved() {
+		notes = notesWindow.getNotesText();
+		dmNotes = notesWindow.getDMNotesText();
+		notesWindow.hide();
 	}
 
 	/**
@@ -407,6 +459,7 @@ public class PogEditor extends DockLayoutPanel {
 		setRaceData();
 		setClassData();
 		setGenderData();
+		setNotesData();
 		// for ()
 
 		// templatePicture.setValue(pogData.getImageUrl());
@@ -460,6 +513,12 @@ public class PogEditor extends DockLayoutPanel {
 
 	private void setGenderData() {
 		genderList.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
+	}
+	private void setNotesData() {
+		notes = pogData.getNotes();
+		dmNotes = pogData.getDmNotes();
+		notesWindow.setNotesText(notes);
+		notesWindow.setDMNotesText(dmNotes);
 	}
 
 	private void dungeonDataLoaded() {
