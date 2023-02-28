@@ -160,4 +160,20 @@ public class SelectedPog extends Composite {
 		}
 		scalablePog.setPogSizing(height, 0.0, 1.0);
 	}
+	/**
+	 * are we preventing dragging.
+	 * 
+	 * @return true if preventing
+	 */
+	public boolean isPreventDrag() {
+		return scalablePog.isPreventDrag();
+	}
+	/**
+	 * Set prevent dragging.
+	 * 
+	 * @param preventDrag
+	 */
+	public void setPreventDrag(final boolean preventDrag) {
+		scalablePog.setPreventDrag(preventDrag);
+	}
 }

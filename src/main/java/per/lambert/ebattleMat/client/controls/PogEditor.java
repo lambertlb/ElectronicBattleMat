@@ -226,29 +226,31 @@ public class PogEditor extends DockLayoutPanel {
 			@Override
 			public void onClick(final ClickEvent event) {
 				copyResourceURL();
-				isDirty = true;
-				validateForm();
+				urlChanged();
 			}
 		});
 		pictureURL = new TextBox();
 		pictureURL.addChangeHandler(new ChangeHandler() {		
 			@Override
 			public void onChange(final ChangeEvent event) {
-				isDirty = true;
-				validateForm();
+				urlChanged();
 			}
 		});
 		pictureURL.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				isDirty = true;
-				validateForm();
+				urlChanged();
 			}
 		});
 		pictureURL.setWidth("100%");
 		pictureURL.setStyleName("ribbonBarLabel");
 		centerGrid.setWidget(3, 0, copyResourceURL);
 		centerGrid.setWidget(3, 1, pictureURL);
+	}
+	private void urlChanged() {
+		isDirty = true;
+		validateForm();
+		pictureURL.setTitle(pictureURL.getText());
 	}
 
 	/**
@@ -330,6 +332,7 @@ public class PogEditor extends DockLayoutPanel {
 
 	private void setPictureData() {
 		pictureURL.setText(pogData.getImageUrl());
+		pictureURL.setTitle(pictureURL.getText());
 	}
 
 	private void dungeonDataLoaded() {
@@ -342,8 +345,23 @@ public class PogEditor extends DockLayoutPanel {
 	}
 
 	private void validateForm() {
+		boolean isOK = true;
+		if (!ServiceManager.getDungeonManager().isValidNewMonsterName(pogName.getValue())) {
+			isOK = false;
+			pogNameLabel.addStyleName("badLabel");
+		} else {
+			pogNameLabel.removeStyleName("badLabel");
+		}
 		pogData.setImageUrl(pictureURL.getText());
 		selectedPog.setPogData(pogData);
+		if (!ServiceManager.getDungeonManager().isValidPictureURL(pictureURL.getText())) {
+			isOK = false;
+			pictureURL.addStyleName("badLabel");
+		} else {
+			pictureURL.removeStyleName("badLabel");
+		}
+
+		selectedPog.setPreventDrag(!isOK);
 	}
 	/**
 	 * 

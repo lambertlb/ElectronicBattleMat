@@ -354,28 +354,30 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			@Override
 			public void onClick(final ClickEvent event) {
 				copyResourceURL();
-				isDirty = true;
-				validateContent();
+				urlChanged();
 			}
 		});
 		pictureURL = new TextBox();
 		pictureURL.addChangeHandler(new ChangeHandler() {		
 			@Override
 			public void onChange(final ChangeEvent event) {
-				isDirty = true;
-				validateContent();
+				urlChanged();
 			}
 		});
 		pictureURL.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				isDirty = true;
-				validateContent();
+				urlChanged();
 			}
 		});
 		pictureURL.setWidth("100%");
 		centerGrid.setWidget(4, 0, copyResourceURL);
 		centerGrid.setWidget(4, 1, pictureURL);
+	}
+	private void urlChanged() {
+		isDirty = true;
+		validateContent();
+		pictureURL.setTitle(pictureURL.getText());
 	}
 	/**
 	 * Create save and cancel buttons.
@@ -501,6 +503,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		gridOffsetY.setValue(currentLevel.getGridOffsetY());
 		levelName.setValue(currentLevel.getLevelName());
 		pictureURL.setText(currentLevel.getLevelDrawing());
+		pictureURL.setTitle(pictureURL.getText());
 	}
 
 	/**

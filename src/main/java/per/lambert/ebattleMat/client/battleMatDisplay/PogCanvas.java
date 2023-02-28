@@ -27,6 +27,8 @@ import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.HasDragStartHandlers;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
@@ -231,6 +233,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * True to force a background color even if transparent is set.
 	 */
 	private boolean forceBackgroundColor = false;
+
 	/**
 	 * get force background color.
 	 * 
@@ -247,6 +250,33 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	public void setForceBackgroundColor(final boolean forceBackgroundColor) {
 		this.forceBackgroundColor = forceBackgroundColor;
+	}
+
+	/**
+	 * Was URL bad.
+	 */
+	private boolean badURL;
+	/**
+	 * Prevent dragging.
+	 */
+	private boolean preventDrag;
+
+	/**
+	 * are we preventing dragging.
+	 * 
+	 * @return true if preventing
+	 */
+	public boolean isPreventDrag() {
+		return preventDrag;
+	}
+
+	/**
+	 * Set prevent dragging.
+	 * 
+	 * @param preventDrag
+	 */
+	public void setPreventDrag(final boolean preventDrag) {
+		this.preventDrag = preventDrag;
 	}
 
 	/**
@@ -310,7 +340,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		addDragStartHandler(new DragStartHandler() {
 			@Override
 			public void onDragStart(final DragStartEvent event) {
-				if (ServiceManager.getDungeonManager().getFowToggle()) {
+				if (preventDrag || badURL || ServiceManager.getDungeonManager().getFowToggle()) {
 					event.preventDefault(); // ignore this if doing FOW toggling.
 					return;
 				}
@@ -331,6 +361,12 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(final LoadEvent event) {
 				setImage();
+			}
+		});
+		image.addErrorHandler(new ErrorHandler() {
+			@Override
+			public void onError(final ErrorEvent event) {
+				badImage();
 			}
 		});
 		// bubble up some mouse events.
@@ -355,11 +391,9 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private void setupWithPogData(final PogData pogData) {
 		this.pogData = pogData;
+		badURL = true;
 		forceBackgroundColor = ServiceManager.getDungeonManager().isEditMode();
-		String backgroundColor = getBackgroundColor(pogData);
-		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
-		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
-		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+		setBackgroundColor();
 		if (pogData.getImageUrl() != "") {
 			setPogImageUrl(pogData.getImageUrl());
 		} else {
@@ -375,15 +409,19 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @return color
 	 */
 	private String getBackgroundColor(final PogData pogData) {
-		String color = "white";
+		if (badURL) {
+			return ("red");
+		}
 		if (forceBackgroundColor) {
 			if (pogData.isFlagSet(DungeonMasterFlag.DARK_BACKGROUND)) {
-				color = "black";
+				return ("black");
 			}
-		} else if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
-			color = "transparent";
+			return ("white");
 		}
-		return color;
+		if (pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
+			return ("transparent");
+		}
+		return ("white");
 	}
 
 	/**
@@ -406,6 +444,26 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	public final void setImage() {
 		this.imageElement = (ImageElement) image.getElement().cast();
 		imageLoaded = true;
+		badURL = false;
+		setBackgroundColor();
+		drawEverything();
+	}
+
+	private void setBackgroundColor() {
+		String backgroundColor = getBackgroundColor(pogData);
+		pogDrawPanel.getElement().getStyle().setBackgroundColor(backgroundColor);
+		backCanvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+		canvas.getElement().getStyle().setBackgroundColor(backgroundColor);
+	}
+
+	/**
+	 * Bad image url.
+	 */
+	protected void badImage() {
+		imageElement = null;
+		badURL = true;
+		imageLoaded = true;
+		setBackgroundColor();
 		drawEverything();
 	}
 
@@ -563,7 +621,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		}
 		backContext.clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth, imageHeight);
 		backContext.setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
-		if (showImage) {
+		if (showImage && imageElement != null) {
 			backContext.drawImage(imageElement, 0, 0);
 		}
 		handleAllDrawing();
@@ -573,7 +631,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Handle all canvas drawing.
 	 */
 	public final void handleAllDrawing() {
-		if (!pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
+		if (!badURL && !pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
 			context.setFillStyle("white");
 			context.fillRect(0, 0, parentWidth, parentHeight);
 		}
@@ -657,6 +715,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Instead of transforming text we will use different zone sizes during zoom.
+	 * 
 	 * @param fontSize to scale to.
 	 */
 	private void setFont(final int fontSize) {
@@ -673,6 +732,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Get font size based on height of image.
+	 * 
 	 * @return size of font to use.
 	 */
 	private int getFontSize() {
@@ -705,11 +765,13 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	public void onMouseDown(final MouseDownEvent event) {
 		if (ServiceManager.getDungeonManager().getFowToggle() || event.isShiftKeyDown()) {
 			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
-		} else {
-			if (!ServiceManager.getDungeonManager().isDungeonMaster() && !ServiceManager.getDungeonManager().isEditMode() && ServiceManager.getDungeonManager().isFowSet(pogData.getColumn(), pogData.getRow())) {
-				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
-				return;
-			}
+			return;
+		}
+		if (!ServiceManager.getDungeonManager().isDungeonMaster() && !ServiceManager.getDungeonManager().isEditMode() && ServiceManager.getDungeonManager().isFowSet(pogData.getColumn(), pogData.getRow())) {
+			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.MouseDownEventBubble, event));
+			return;
+		}
+		if (!fromRibbonBar) {
 			ServiceManager.getDungeonManager().setSelectedPog(pogData);
 			if (event.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
 				if (popup != null) {
