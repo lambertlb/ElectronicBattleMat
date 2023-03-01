@@ -27,13 +27,12 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 import per.lambert.ebattleMat.client.controls.ribbonBar.SelectedPog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
@@ -106,10 +105,6 @@ public class PogEditor extends DockLayoutPanel {
 	 */
 	private TextBox pictureURL;
 	/**
-	 * Scroll panel.
-	 */
-	private ScrollPanel scrollPanel = new ScrollPanel();
-	/**
 	 * Pog data.
 	 */
 	private PogData pogData;
@@ -161,7 +156,14 @@ public class PogEditor extends DockLayoutPanel {
 	 * cancel Edits.
 	 */
 	private Button cancel;
+	/**
+	 * Control for pog selection.
+	 */
+	private PogSelection pogSelection = new PogSelection();
 
+	/**
+	 * Constructor.
+	 */
 	public PogEditor() {
 		super(Unit.PX);
 		setSize("100%", "100%");
@@ -169,6 +171,9 @@ public class PogEditor extends DockLayoutPanel {
 		setupEventHandling();
 	}
 
+	/**
+	 * Create form content.
+	 */
 	private void createContent() {
 		createNewPogButton = new Button("Create Pog");
 		createNewPogButton.addStyleName("ribbonBarLabel");
@@ -197,6 +202,9 @@ public class PogEditor extends DockLayoutPanel {
 		forceLayout();
 	}
 
+	/**
+	 * Create content for pog editor.
+	 */
 	private void createPogEditor() {
 		centerContent = new LayoutPanel();
 		centerContent.setHeight("100%");
@@ -206,14 +214,20 @@ public class PogEditor extends DockLayoutPanel {
 		centerGrid.resize(8, 2);
 		centerGrid.getColumnFormatter().setWidth(0, "100px");
 		selectedPog = new SelectedPog(null);
-		VerticalPanel vpanel = new VerticalPanel();
-		vpanel.add(centerGrid);
-		vpanel.add(selectedPog);
-		vpanel.add(scrollPanel);
+		HeaderPanel vpanel = new HeaderPanel();
+		vpanel.setHeaderWidget(centerGrid);
+		vpanel.setContentWidget(pogSelection);
+		LayoutPanel lp = new LayoutPanel();
+		lp.setHeight("70px");
+		lp.add(selectedPog);
+		vpanel.setFooterWidget(lp);
 		centerContent.add(vpanel);
 		createGridContent();
 	}
 
+	/**
+	 * Create content for center grid.
+	 */
 	private void createGridContent() {
 		createPogName();
 		createPogType();
@@ -298,6 +312,7 @@ public class PogEditor extends DockLayoutPanel {
 		centerGrid.setWidget(2, 0, pogLocationLabel);
 		centerGrid.setWidget(2, 1, pogLocationList);
 	}
+
 	/**
 	 * Content for handling picture url.
 	 */
@@ -312,7 +327,7 @@ public class PogEditor extends DockLayoutPanel {
 			}
 		});
 		pictureURL = new TextBox();
-		pictureURL.addChangeHandler(new ChangeHandler() {		
+		pictureURL.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(final ChangeEvent event) {
 				urlChanged();
@@ -330,6 +345,9 @@ public class PogEditor extends DockLayoutPanel {
 		centerGrid.setWidget(3, 1, pictureURL);
 	}
 
+	/**
+	 * Content for pog notes.
+	 */
 	private void createNotesWindow() {
 		showNotesWindow = new Button("Edit Notes");
 		showNotesWindow.setStyleName("ribbonBarLabel");
@@ -448,6 +466,9 @@ public class PogEditor extends DockLayoutPanel {
 		centerGrid.setWidget(6, 1, cancel);
 	}
 
+	/**
+	 * Save data from form.
+	 */
 	private void saveFormData() {
 		isDirty = false;
 		validateForm();
@@ -456,6 +477,9 @@ public class PogEditor extends DockLayoutPanel {
 		ServiceManager.getDungeonManager().setSelectedPog(pogData);
 	}
 
+	/**
+	 * Cancel changes.
+	 */
 	private void cancelFormData() {
 		selectPog();
 	}
@@ -469,10 +493,16 @@ public class PogEditor extends DockLayoutPanel {
 		pictureURL.setTitle(pictureURL.getText());
 	}
 
+	/**
+	 * Edit pog notes.
+	 */
 	private void editNotes() {
 		notesWindow.show();
 	}
 
+	/**
+	 * Noe was save from note editor.
+	 */
 	private void pogNotesSaved() {
 		notes = notesWindow.getNotesText();
 		dmNotes = notesWindow.getDMNotesText();
@@ -490,6 +520,10 @@ public class PogEditor extends DockLayoutPanel {
 			pictureURL.setText(url);
 		}
 	}
+
+	/**
+	 * Setup event handling.
+	 */
 	private void setupEventHandling() {
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
@@ -510,6 +544,11 @@ public class PogEditor extends DockLayoutPanel {
 		});
 	}
 
+	/**
+	 * Setup with selected pog.
+	 * 
+	 * If no selected pog then treat as creating new pog.
+	 */
 	private void selectPog() {
 		isDirty = false;
 		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
@@ -559,10 +598,17 @@ public class PogEditor extends DockLayoutPanel {
 		pogLocationList.setSelectedIndex(place.getValue());
 	}
 
+	/**
+	 * Set picture url.
+	 */
 	private void setPictureData() {
 		pictureURL.setText(pogData.getImageUrl());
 		pictureURL.setTitle(pictureURL.getText());
 	}
+
+	/**
+	 * Set notes data.
+	 */
 	private void setNotesData() {
 		notes = pogData.getNotes();
 		dmNotes = pogData.getDmNotes();
@@ -570,6 +616,9 @@ public class PogEditor extends DockLayoutPanel {
 		notesWindow.setDMNotesText(dmNotes);
 	}
 
+	/**
+	 * Set pog size data.
+	 */
 	private void setSizeData() {
 		int pogSize = pogData.getSize() - 1;
 		if (pogSize < 0) {
@@ -578,18 +627,33 @@ public class PogEditor extends DockLayoutPanel {
 		size.setSelectedIndex(pogSize);
 	}
 
+	/**
+	 * New dungeon loaded.
+	 */
 	private void dungeonDataLoaded() {
+		selectPog();
 	}
 
+	/**
+	 * Create a new pog.
+	 */
 	private void createPog() {
 		pogData = ServiceManager.getDungeonManager().createTemplatePog(Constants.POG_TYPE_MONSTER);
 		setupPogData();
 	}
 
+	/**
+	 * Delete the selected pog.
+	 */
 	private void deletePog() {
 		ServiceManager.getDungeonManager().deleteSelectedPog();
 	}
 
+	/**
+	 * Validate form data.
+	 * 
+	 * This will also enable and disable appropriate buttons.
+	 */
 	private void validateForm() {
 		boolean isOK = true;
 		if (!ServiceManager.getDungeonManager().isValidNewMonsterName(pogName.getValue())) {
@@ -612,6 +676,7 @@ public class PogEditor extends DockLayoutPanel {
 		ResizableDialog.enableWidget(removePogButton, isOK);
 		ResizableDialog.enableWidget(createNewPogButton, !isDirty);
 	}
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -621,7 +686,9 @@ public class PogEditor extends DockLayoutPanel {
 		super.onResize();
 		int width = getOffsetWidth() - 120;
 		centerGrid.getColumnFormatter().setWidth(1, width + "px");
+		pogSelection.onResize();
 	}
+
 	/**
 	 * Get data from dialog.
 	 */

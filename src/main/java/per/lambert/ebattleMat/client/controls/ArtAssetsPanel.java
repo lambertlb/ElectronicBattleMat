@@ -409,4 +409,12 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 			}
 		});
 	}
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onResize() {
+		super.onResize();
+	}
 }
