@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2023 Leon Lambert.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package per.lambert.ebattleMat.client.controls;
 
 import java.util.Collection;
@@ -24,9 +39,10 @@ import per.lambert.ebattleMat.client.controls.ribbonBar.SelectedPog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.Constants;
+import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.FlagBit;
-import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
@@ -102,30 +118,6 @@ public class PogEditor extends DockLayoutPanel {
 	 */
 	private boolean isDirty;
 	/**
-	 * Race of template.
-	 */
-	private TextBox race;
-	/**
-	 * Label for race;.
-	 */
-	private Label raceLabel;
-	/**
-	 * Class of template.
-	 */
-	private TextBox pogClass;
-	/**
-	 * Label for class;.
-	 */
-	private Label pogClassLabel;
-	/**
-	 * List of genders.
-	 */
-	private ListBox genderList;
-	/**
-	 * Label for race;.
-	 */
-	private Label genderLabel;
-	/**
 	 * Window for handling notes.
 	 */
 	private NotesFloatingWindow notesWindow;
@@ -141,6 +133,34 @@ public class PogEditor extends DockLayoutPanel {
 	 * DM notes from host.
 	 */
 	private String dmNotes;
+	/**
+	 * Button for player flags.
+	 */
+	private Button playerFlagsButton;
+	/**
+	 * Dialog for player flags.
+	 */
+	private FlagBitsDialog playerFlagDialog;
+	/**
+	 * Button for DM flags.
+	 */
+	private Button dmFlagsButton;
+	/**
+	 * Dialog for DM flags.
+	 */
+	private FlagBitsDialog dmFlagDialog;
+	/**
+	 * List of pog sizes.
+	 */
+	private ListBox size;
+	/**
+	 * Save level information.
+	 */
+	private Button save;
+	/**
+	 * cancel Edits.
+	 */
+	private Button cancel;
 
 	public PogEditor() {
 		super(Unit.PX);
@@ -169,6 +189,7 @@ public class PogEditor extends DockLayoutPanel {
 			}
 		});
 		buttonBar.add(removePogButton);
+		ResizableDialog.enableWidget(removePogButton, false);
 
 		addNorth(buttonBar, 30);
 		createPogEditor();
@@ -182,7 +203,7 @@ public class PogEditor extends DockLayoutPanel {
 		centerContent.setWidth("100%");
 		centerGrid = new Grid();
 		centerGrid.setWidth("100%");
-		centerGrid.resize(10, 2);
+		centerGrid.resize(8, 2);
 		centerGrid.getColumnFormatter().setWidth(0, "100px");
 		selectedPog = new SelectedPog(null);
 		VerticalPanel vpanel = new VerticalPanel();
@@ -198,10 +219,11 @@ public class PogEditor extends DockLayoutPanel {
 		createPogType();
 		createPogLocation();
 		createPictureUrl();
-		createRace();
-		createClass();
-		createGender();
 		createNotesWindow();
+		createSizeControls();
+		createPlayerFlags();
+		createDMFlags();
+		createSaveAndCancelButtons();
 	}
 
 	/**
@@ -210,11 +232,9 @@ public class PogEditor extends DockLayoutPanel {
 	private void createPogName() {
 		pogNameLabel = new Label("Pog Name: ");
 		pogNameLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(0, 0, pogNameLabel);
 		pogName = new TextBox();
 		pogName.setWidth("100%");
 		pogName.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(0, 1, pogName);
 		pogName.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -224,9 +244,12 @@ public class PogEditor extends DockLayoutPanel {
 		pogName.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
+				isDirty = true;
 				validateForm();
 			}
 		});
+		centerGrid.setWidget(0, 0, pogNameLabel);
+		centerGrid.setWidget(0, 1, pogName);
 	}
 
 	/**
@@ -235,14 +258,21 @@ public class PogEditor extends DockLayoutPanel {
 	private void createPogType() {
 		pogTypeLabel = new Label("Pog type");
 		pogTypeLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(1, 0, pogTypeLabel);
 		pogTypeList = new ListBox();
+		pogTypeList.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				isDirty = true;
+				validateForm();
+			}
+		});
 		pogTypeList.setStyleName("ribbonBarLabel");
 		pogTypeList.setVisibleItemCount(1);
-		centerGrid.setWidget(1, 1, pogTypeList);
 		pogTypeList.addItem(Constants.POG_TYPE_MONSTER);
 		pogTypeList.addItem(Constants.POG_TYPE_ROOMOBJECT);
 		pogTypeList.addItem(Constants.POG_TYPE_PLAYER);
+		centerGrid.setWidget(1, 0, pogTypeLabel);
+		centerGrid.setWidget(1, 1, pogTypeList);
 	}
 
 	/**
@@ -251,15 +281,22 @@ public class PogEditor extends DockLayoutPanel {
 	private void createPogLocation() {
 		pogLocationLabel = new Label("Pog Location");
 		pogLocationLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(2, 0, pogLocationLabel);
 		pogLocationList = new ListBox();
+		pogLocationList.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				isDirty = true;
+				validateForm();
+			}
+		});
 		pogLocationList.setStyleName("ribbonBarLabel");
 		pogLocationList.setVisibleItemCount(1);
-		centerGrid.setWidget(2, 1, pogLocationList);
 		Collection<FlagBit> places = PogPlace.getValues();
 		for (FlagBit flag : places) {
 			pogLocationList.addItem(flag.getName());
 		}
+		centerGrid.setWidget(2, 0, pogLocationLabel);
+		centerGrid.setWidget(2, 1, pogLocationList);
 	}
 	/**
 	 * Content for handling picture url.
@@ -293,69 +330,6 @@ public class PogEditor extends DockLayoutPanel {
 		centerGrid.setWidget(3, 1, pictureURL);
 	}
 
-	/**
-	 * Create race text.
-	 */
-	private void createRace() {
-		raceLabel = new Label("Race");
-		raceLabel.setStyleName("ribbonBarLabel");
-		race = new TextBox();
-		race.setStyleName("ribbonBarLabel");
-		race.addChangeHandler(new ChangeHandler() {		
-			@Override
-			public void onChange(final ChangeEvent event) {
-				raceChanged();
-			}
-		});
-		race.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				raceChanged();
-			}
-		});
-		pictureURL.setWidth("100%");
-		centerGrid.setWidget(4, 0, raceLabel);
-		centerGrid.setWidget(4, 1, race);
-	}
-	private void createClass() {
-		pogClassLabel = new Label("Class");
-		pogClassLabel.setStyleName("ribbonBarLabel");
-		pogClass = new TextBox();
-		pogClass.setStyleName("ribbonBarLabel");
-		pogClass.addChangeHandler(new ChangeHandler() {		
-			@Override
-			public void onChange(final ChangeEvent event) {
-				classChanged();
-			}
-		});
-		pogClass.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				classChanged();
-			}
-		});
-		pictureURL.setWidth("100%");
-		centerGrid.setWidget(5, 0, pogClassLabel);
-		centerGrid.setWidget(5, 1, pogClass);
-	}
-
-	private void createGender() {
-		genderList = new ListBox();
-		genderList.setStyleName("ribbonBarLabel");
-		genderList.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(final ChangeEvent event) {
-				genderChanged();
-			}
-		});
-		for (Gender pogGender : ServiceManager.getDungeonManager().getTemplateGenders()) {
-			genderList.addItem(pogGender.getName(), pogGender.getName());
-		}
-		genderLabel = new Label("Gender");
-		genderLabel.setStyleName("ribbonBarLabel");
-		centerGrid.setWidget(6, 0, genderLabel);
-		centerGrid.setWidget(6, 1, genderList);
-	}
 	private void createNotesWindow() {
 		showNotesWindow = new Button("Edit Notes");
 		showNotesWindow.setStyleName("ribbonBarLabel");
@@ -379,22 +353,111 @@ public class PogEditor extends DockLayoutPanel {
 				notesWindow.hide();
 			}
 		});
-		centerGrid.setWidget(7, 0, showNotesWindow);
+		centerGrid.setWidget(4, 0, showNotesWindow);
 	}
 
-	private void genderChanged() {
-		isDirty = true;
-		validateForm();
+	/**
+	 * Create pog size controls.
+	 */
+	private void createSizeControls() {
+		size = new ListBox();
+		size.setStyleName("ribbonBarLabel");
+		size.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(final ChangeEvent event) {
+				isDirty = true;
+				validateForm();
+			}
+		});
+		size.setVisibleItemCount(1);
+		for (String sizeName : ServiceManager.getDungeonManager().getPogSizes()) {
+			size.addItem(sizeName);
+		}
+		centerGrid.setWidget(4, 1, size);
 	}
 
-	private void classChanged() {
-		isDirty = true;
-		validateForm();
+	/**
+	 * Create controls for player flags.
+	 */
+	private void createPlayerFlags() {
+		playerFlagsButton = new Button("Player flags");
+		playerFlagsButton.setStyleName("ribbonBarLabel");
+		playerFlagDialog = new FlagBitsDialog("Player Flags", PlayerFlag.getValues());
+		playerFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				playerFlagDialog.show();
+			}
+		});
+		playerFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				isDirty = true;
+				playerFlagDialog.hide();
+				validateForm();
+			}
+		});
+		centerGrid.setWidget(5, 0, playerFlagsButton);
 	}
 
-	private void raceChanged() {
-		isDirty = true;
+	/**
+	 * create controls for DM flags.
+	 */
+	private void createDMFlags() {
+		dmFlagsButton = new Button("DM flags");
+		dmFlagsButton.setStyleName("ribbonBarLabel");
+		dmFlagDialog = new FlagBitsDialog("Dungeon Master Flags", DungeonMasterFlag.getValues());
+		dmFlagsButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				dmFlagDialog.show();
+			}
+		});
+		dmFlagDialog.addOkClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				isDirty = true;
+				dmFlagDialog.hide();
+				validateForm();
+			}
+		});
+		centerGrid.setWidget(5, 1, dmFlagsButton);
+	}
+
+	/**
+	 * Create save and cancel buttons.
+	 */
+	private void createSaveAndCancelButtons() {
+		save = new Button("Save");
+		save.setStyleName("ribbonBarLabel");
+		save.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				saveFormData();
+			}
+		});
+		cancel = new Button("Cancel");
+		cancel.setStyleName("ribbonBarLabel");
+		cancel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				cancelFormData();
+			}
+		});
+		centerGrid.setWidget(6, 0, save);
+		centerGrid.setWidget(6, 1, cancel);
+	}
+
+	private void saveFormData() {
+		isDirty = false;
 		validateForm();
+		getDialogData();
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogData, PogPlace.valueOf(pogLocationList.getSelectedItemText()));
+		ServiceManager.getDungeonManager().setSelectedPog(pogData);
+	}
+
+	private void cancelFormData() {
+		selectPog();
 	}
 
 	/**
@@ -414,6 +477,8 @@ public class PogEditor extends DockLayoutPanel {
 		notes = notesWindow.getNotesText();
 		dmNotes = notesWindow.getDMNotesText();
 		notesWindow.hide();
+		isDirty = true;
+		validateForm();
 	}
 
 	/**
@@ -446,32 +511,29 @@ public class PogEditor extends DockLayoutPanel {
 	}
 
 	private void selectPog() {
+		isDirty = false;
 		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (pog == null) {
+			createPog();
 			return;
 		}
 		pogData = pog.clone();
 		pogData.setUUID(pog.getUUID());
+		setupPogData();
+	}
+
+	/**
+	 * Set pog data into form.
+	 */
+	private void setupPogData() {
 		pogName.setValue(pogData.getName());
 		setPogType();
 		setPogLocation();
 		setPictureData();
-		setRaceData();
-		setClassData();
-		setGenderData();
 		setNotesData();
-		// for ()
-
-		// templatePicture.setValue(pogData.getImageUrl());
-		// race.setValue(pogData.getRace());
-		// templateClass.setValue(pogData.getPogClass());
-		// gender.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
-		// int pogSize = pogData.getSize() - 1;
-		// if (pogSize < 0) {
-		// pogSize = 0;
-		// }
-		// size.setSelectedIndex(pogSize);
-		// setFlagsDialogData();
+		setSizeData();
+		playerFlagDialog.setBits(pogData.getPlayerFlags());
+		dmFlagDialog.setBits(pogData.getDungeonMasterFlags());
 		validateForm();
 	}
 
@@ -501,19 +563,6 @@ public class PogEditor extends DockLayoutPanel {
 		pictureURL.setText(pogData.getImageUrl());
 		pictureURL.setTitle(pictureURL.getText());
 	}
-	private void setRaceData() {
-		race.setText(pogData.getRace());
-	}
-	/**
-	 * Set pog class data.
-	 */
-	private void setClassData() {
-		pogClass.setText(pogData.getPogClass());
-	}
-
-	private void setGenderData() {
-		genderList.setSelectedIndex(Gender.valueOf(pogData.getGender()).getValue());
-	}
 	private void setNotesData() {
 		notes = pogData.getNotes();
 		dmNotes = pogData.getDmNotes();
@@ -521,13 +570,24 @@ public class PogEditor extends DockLayoutPanel {
 		notesWindow.setDMNotesText(dmNotes);
 	}
 
+	private void setSizeData() {
+		int pogSize = pogData.getSize() - 1;
+		if (pogSize < 0) {
+			pogSize = 0;
+		}
+		size.setSelectedIndex(pogSize);
+	}
+
 	private void dungeonDataLoaded() {
 	}
 
 	private void createPog() {
+		pogData = ServiceManager.getDungeonManager().createTemplatePog(Constants.POG_TYPE_MONSTER);
+		setupPogData();
 	}
 
 	private void deletePog() {
+		ServiceManager.getDungeonManager().deleteSelectedPog();
 	}
 
 	private void validateForm() {
@@ -546,8 +606,11 @@ public class PogEditor extends DockLayoutPanel {
 		} else {
 			pictureURL.removeStyleName("badLabel");
 		}
-
 		selectedPog.setPreventDrag(!isOK);
+		ResizableDialog.enableWidget(save, isOK && isDirty);
+		ResizableDialog.enableWidget(cancel, isDirty);
+		ResizableDialog.enableWidget(removePogButton, isOK);
+		ResizableDialog.enableWidget(createNewPogButton, !isDirty);
 	}
 	/**
 	 * 
@@ -558,5 +621,17 @@ public class PogEditor extends DockLayoutPanel {
 		super.onResize();
 		int width = getOffsetWidth() - 120;
 		centerGrid.getColumnFormatter().setWidth(1, width + "px");
+	}
+	/**
+	 * Get data from dialog.
+	 */
+	private void getDialogData() {
+		pogData.setName(pogName.getValue());
+		pogData.setImageUrl(pictureURL.getValue());
+		pogData.setSize(size.getSelectedIndex() + 1);
+		pogData.setPlayerFlagsNative(playerFlagDialog.getBits());
+		pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
+		pogData.setNotes(notes);
+		pogData.setDmNotes(dmNotes);
 	}
 }

@@ -98,8 +98,8 @@ public final class PogPlace extends FlagBit {
 	 * @param name to get
 	 * @return flag bit
 	 */
-	public static FlagBit valueOf(final String name) {
-		return (nameMap.get(name));
+	public static PogPlace valueOf(final String name) {
+		return ((PogPlace)nameMap.get(name));
 	}
 
 	/**
@@ -108,8 +108,8 @@ public final class PogPlace extends FlagBit {
 	 * @param ordinal to get
 	 * @return flag bit
 	 */
-	public static FlagBit valueOf(final int ordinal) {
-		return (valueMap.get(ordinal));
+	public static PogPlace valueOf(final int ordinal) {
+		return ((PogPlace)valueMap.get(ordinal));
 	}
 
 	/**
