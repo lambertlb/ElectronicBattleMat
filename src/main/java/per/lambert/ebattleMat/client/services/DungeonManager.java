@@ -341,6 +341,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * Computed grid width.
 	 */
 	private double computedGridWidth;
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -349,6 +350,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	public double getComputedGridWidth() {
 		return computedGridWidth;
 	}
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -1472,6 +1474,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public boolean isValidPictureURL(final String url) {
+		if (url == null) {
+			return (false);
+		}
 		int i = url.lastIndexOf('.');
 		String fileExtension = i > 0 ? url.substring(i + 1) : "";
 		boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");

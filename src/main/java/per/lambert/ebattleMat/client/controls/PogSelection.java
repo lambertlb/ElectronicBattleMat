@@ -195,7 +195,7 @@ public class PogSelection extends DockLayoutPanel {
 	 */
 	private void fillCommonResourceTrees() {
 		fillTree(commonMonsterTree, ServiceManager.getDungeonManager().getSortedCommonTemplates(Constants.POG_TYPE_MONSTER));
-//		fillTree(commonObjectsTree, ServiceManager.getDungeonManager().getSortedCommonTemplates(Constants.POG_TYPE_ROOMOBJECT));
+		fillTree(commonObjectsTree, ServiceManager.getDungeonManager().getSortedCommonTemplates(Constants.POG_TYPE_ROOMOBJECT));
 	}
 
 	/**

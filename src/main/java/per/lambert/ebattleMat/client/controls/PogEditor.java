@@ -694,6 +694,7 @@ public class PogEditor extends DockLayoutPanel {
 	 */
 	private void getDialogData() {
 		pogData.setName(pogName.getValue());
+		pogData.setType(pogTypeList.getSelectedItemText());
 		pogData.setImageUrl(pictureURL.getValue());
 		pogData.setSize(size.getSelectedIndex() + 1);
 		pogData.setPlayerFlagsNative(playerFlagDialog.getBits());
