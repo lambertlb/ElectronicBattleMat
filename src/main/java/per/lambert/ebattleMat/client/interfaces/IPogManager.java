@@ -177,5 +177,11 @@ public interface IPogManager {
 	 * @param flag to toggle
 	 */
 	void toggleFlagOfSelectedPog(DungeonMasterFlag flag);
-
+	
+	/**
+	 * get array of sorted pogs.
+	 * @param pogType type of pog
+	 * @return sorted array
+	 */
+	ArrayList<PogData> getSortedCommonTemplates(String pogType);
 }

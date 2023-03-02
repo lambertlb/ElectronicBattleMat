@@ -15,7 +15,11 @@
  */
 package per.lambert.ebattleMat.client.controls;
 
+import java.util.ArrayList;
+
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Tree;
@@ -23,9 +27,11 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
+import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
  * Control for handling pog selection.
@@ -56,29 +62,29 @@ public class PogSelection extends DockLayoutPanel {
 	 */
 	private TreeItem commonObjectsTree = new TreeItem();
 	/**
-	 * Dungeon Instance Pogs.
+	 * Dungeon Level Pogs.
 	 */
-	private TreeItem dungeonInstanceTree = new TreeItem();
+	private TreeItem dungeonLevelTree = new TreeItem();
 	/**
-	 * Dungeon Instance Monsters.
+	 * Dungeon Level Monsters.
 	 */
-	private TreeItem dungeonInstanceMonsterTree = new TreeItem();
+	private TreeItem dungeonLevelMonsterTree = new TreeItem();
 	/**
-	 * Dungeon Instance Room Objects.
+	 * Dungeon Level Room Objects.
 	 */
-	private TreeItem dungeonInstanceObjectsTree = new TreeItem();
+	private TreeItem dungeonLevelObjectsTree = new TreeItem();
 	/**
-	 * Session Instance Pogs.
+	 * Session Level Pogs.
 	 */
-	private TreeItem sessionInstanceTree = new TreeItem();
+	private TreeItem sessionLevelTree = new TreeItem();
 	/**
-	 * Session Instance Monsters.
+	 * Session Level Monsters.
 	 */
-	private TreeItem sessionInstanceMonsterTree = new TreeItem();
+	private TreeItem sessionLevelMonsterTree = new TreeItem();
 	/**
-	 * Session Instance Room Objects.
+	 * Session Level Room Objects.
 	 */
-	private TreeItem sessionInstanceObjectsTree = new TreeItem();
+	private TreeItem sessionLevelObjectsTree = new TreeItem();
 
 	/**
 	 * Constructor.
@@ -109,6 +115,16 @@ public class PogSelection extends DockLayoutPanel {
 					selectPog();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonSelectedLevelChanged) {
+					newLevelSelected();
+					return;
+				}
+			}
+		});
+		pogTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+			@Override
+			public void onSelection(final SelectionEvent<TreeItem> event) {
+				selectionChanged(event.getSelectedItem());
 			}
 		});
 	}
@@ -138,18 +154,18 @@ public class PogSelection extends DockLayoutPanel {
 		commonPogTree.addItem(commonMonsterTree);
 		commonObjectsTree.setText("Room Objects");
 		commonPogTree.addItem(commonObjectsTree);
-		dungeonInstanceTree.setText("Dungeon Instance Pogs");
-		pogTree.addItem(dungeonInstanceTree);
-		dungeonInstanceMonsterTree.setText("Monsters");
-		dungeonInstanceTree.addItem(dungeonInstanceMonsterTree);
-		dungeonInstanceObjectsTree.setText("Room Objects");
-		dungeonInstanceTree.addItem(dungeonInstanceObjectsTree);
-		sessionInstanceTree.setText("Session Instance Pogs");
-		pogTree.addItem(sessionInstanceTree);
-		sessionInstanceMonsterTree.setText("Monsters");
-		sessionInstanceTree.addItem(sessionInstanceMonsterTree);
-		sessionInstanceObjectsTree.setText("Room Objects");
-		sessionInstanceTree.addItem(sessionInstanceObjectsTree);
+		dungeonLevelTree.setText("Dungeon Level Pogs");
+		pogTree.addItem(dungeonLevelTree);
+		dungeonLevelMonsterTree.setText("Monsters");
+		dungeonLevelTree.addItem(dungeonLevelMonsterTree);
+		dungeonLevelObjectsTree.setText("Room Objects");
+		dungeonLevelTree.addItem(dungeonLevelObjectsTree);
+		sessionLevelTree.setText("Session Level Pogs");
+		pogTree.addItem(sessionLevelTree);
+		sessionLevelMonsterTree.setText("Monsters");
+		sessionLevelTree.addItem(sessionLevelMonsterTree);
+		sessionLevelObjectsTree.setText("Room Objects");
+		sessionLevelTree.addItem(sessionLevelObjectsTree);
 		setStyles();
 	}
 
@@ -159,20 +175,73 @@ public class PogSelection extends DockLayoutPanel {
 	private void setStyles() {
 		playerTree.getElement().setClassName("my-TreeItem");                
 		commonPogTree.getElement().setClassName("my-TreeItem");                
-		dungeonInstanceTree.getElement().setClassName("my-TreeItem");                
-		sessionInstanceTree.getElement().setClassName("my-TreeItem");                
+		dungeonLevelTree.getElement().setClassName("my-TreeItem");                
+		sessionLevelTree.getElement().setClassName("my-TreeItem");                
 	}
 
 	/**
 	 * Dungeon data just loaded.
 	 */
 	private void dungeonDataLoaded() {
+		boolean inEditMode = ServiceManager.getDungeonManager().isEditMode();
+		playerTree.setVisible(!inEditMode);
+		sessionLevelTree.setVisible(!inEditMode);
+		fillCommonResourceTrees();
+		fillLevelTrees();
+	}
+
+	/**
+	 * Fill trees for common resources.
+	 */
+	private void fillCommonResourceTrees() {
+		fillTree(commonMonsterTree, ServiceManager.getDungeonManager().getSortedCommonTemplates(Constants.POG_TYPE_MONSTER));
+//		fillTree(commonObjectsTree, ServiceManager.getDungeonManager().getSortedCommonTemplates(Constants.POG_TYPE_ROOMOBJECT));
+	}
+
+	/**
+	 * Fill This tree.
+	 * @param treeItem to fill
+	 * @param dataArray to fill with
+	 */
+	private void fillTree(final TreeItem treeItem, final ArrayList<PogData> dataArray) {
+		treeItem.removeItems();
+		for (PogData pog : dataArray) {
+			TreeItem newItem = new TreeItem();
+			newItem.getElement().setClassName("my-TreeItem");                
+			newItem.setText(pog.getName());
+			newItem.setUserObject(pog);
+			treeItem.addItem(newItem);
+		}
+	}
+
+	/**
+	 * Fill trees with level based pogs.
+	 */
+	private void fillLevelTrees() {
+	}
+
+	/**
+	 * new level of dungeon selected.
+	 */
+	private void newLevelSelected() {
+		fillLevelTrees();
 	}
 
 	/**
 	 * Pog was selected.
 	 */
 	private void selectPog() {
+	}
+	
+	/**
+	 * handle tree item selected.
+	 * @param selectedItem
+	 */
+	private void selectionChanged(final TreeItem selectedItem) {
+		PogData data = (PogData)selectedItem.getUserObject();
+		if (data != null) {
+			ServiceManager.getDungeonManager().setSelectedPog(data);
+		}
 	}
 	/**
 	 * 

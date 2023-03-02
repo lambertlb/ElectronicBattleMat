@@ -36,13 +36,9 @@ public final class PogPlace extends FlagBit {
 	 */
 	public static final PogPlace COMMON_RESOURCE = new PogPlace("Common Resource");
 	/**
-	 * Resides in dungeon specific resource area.
-	 */
-	public static final PogPlace DUNGEON_RESOURCE = new PogPlace("Dungeon Resource");
-	/**
 	 * Resides in dungeon instance area.
 	 */
-	public static final PogPlace DUNGEON_INSTANCE = new PogPlace("Dungeon Instance");
+	public static final PogPlace DUNGEON_LEVEL = new PogPlace("Dungeon Level");
 	/**
 	 * Resides in Session common resource area.
 	 */
@@ -50,7 +46,7 @@ public final class PogPlace extends FlagBit {
 	/**
 	 * Resides in Session level instance area.
 	 */
-	public static final PogPlace SESSION_INSTANCE = new PogPlace("Session Instance");
+	public static final PogPlace SESSION_LEVEL = new PogPlace("Session Level");
 	/**
 	 * Invalid place.
 	 */

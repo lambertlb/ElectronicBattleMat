@@ -224,6 +224,17 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public ArrayList<PogData> getSortedCommonTemplates(final String pogType) {
+		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
+			return (monsterCollection.getSortedPogs());
+		}
+		return (roomCollection.getSortedPogs());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String[] getCommonClasses(final String pogType) {
 		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
 			return (monsterCollection.getClassses());
@@ -328,5 +339,21 @@ public abstract class PogManager implements IPogManager {
 			}
 			ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 		}
+	}
+	
+	/**
+	 * remove this pog.
+	 * @param pog
+	 */
+	protected void removeMonster(final PogData pog) {
+		monsterCollection.remove(pog);
+	}
+
+	/**
+	 * remove this pog.
+	 * @param pog
+	 */
+	protected void removeRoomObject(final PogData pog) {
+		roomCollection.remove(pog);
 	}
 }

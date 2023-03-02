@@ -760,9 +760,9 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		PogData levelMonster = dungeonManager.getMonstersForCurrentLevel()[0];
 		dungeonManager.setEditModeForUnitTest(true);
 		dungeonManager.setDungeonMasterForUnitTest(true);
-		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.DUNGEON_INSTANCE);
+		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.DUNGEON_LEVEL);
 		dungeonManager.setEditModeForUnitTest(false);
-		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.SESSION_INSTANCE);
+		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.SESSION_LEVEL);
 		dungeonManager.setDungeonMasterForUnitTest(false);
 		assertTrue(dungeonManager.computePlace(levelMonster) == PogPlace.INVALID);
 	}

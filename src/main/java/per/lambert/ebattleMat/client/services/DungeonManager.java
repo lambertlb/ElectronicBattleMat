@@ -1138,9 +1138,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return (PogPlace.SESSION_RESOURCE);
 		}
 		if (editMode) {
-			return (PogPlace.DUNGEON_INSTANCE);
+			return (PogPlace.DUNGEON_LEVEL);
 		}
-		return (PogPlace.SESSION_INSTANCE);
+		return (PogPlace.SESSION_LEVEL);
 	}
 
 	/**
@@ -1163,14 +1163,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	public void addOrUpdatePog(final PogData pog, final PogPlace place) {
 		if (place == PogPlace.COMMON_RESOURCE) {
 			addOrUpdatePogToCommonResource(pog);
-		} else if (place == PogPlace.SESSION_INSTANCE) {
+		} else if (place == PogPlace.SESSION_LEVEL) {
 			addOrUpdatePogToSessionInstance(pog);
-		} else if (place == PogPlace.DUNGEON_INSTANCE) {
+		} else if (place == PogPlace.DUNGEON_LEVEL) {
 			addOrUpdatePogToDungeonInstance(pog);
 		} else if (place == PogPlace.SESSION_RESOURCE) {
 			addOrUpdatePogToSessionResource(pog);
-		} else if (place == PogPlace.DUNGEON_RESOURCE) {
-			addOrUpdatePogToDungeonResource(pog);
 		} else if (place == PogPlace.INVALID) {
 			return;
 		}
@@ -1396,7 +1394,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param place where to remove it from
 	 */
 	private void removeThisPog(final PogData pog, final PogPlace place) {
-		if (place == PogPlace.SESSION_INSTANCE) {
+		if (place == PogPlace.SESSION_LEVEL) {
 			DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
 			if (sessionLevel != null) {
 				if (pog.isThisAMonster()) {
@@ -1405,12 +1403,18 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 					sessionLevel.getRoomObjects().remove(pog);
 				}
 			}
-		} else if (place == PogPlace.DUNGEON_INSTANCE) {
+		} else if (place == PogPlace.DUNGEON_LEVEL) {
 			DungeonLevel dungeonLevel = getCurrentDungeonLevelData();
 			if (pog.isThisAMonster()) {
 				dungeonLevel.getMonsters().remove(pog);
 			} else if (pog.isThisARoomObject()) {
 				dungeonLevel.getRoomObjects().remove(pog);
+			}
+		} else if (place == PogPlace.COMMON_RESOURCE) {
+			if (pog.isThisAMonster()) {
+				removeMonster(pog);
+			} else if (pog.isThisARoomObject()) {
+				removeRoomObject(pog);
 			}
 		}
 		setSelectedPog(null);

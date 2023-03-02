@@ -51,9 +51,7 @@ import per.lambert.ebattleMat.server.serviceData.PogList;
  * 
  * This is a static class that serves as a central handlers for all service requests.
  * 
- * It does a lock on the data so requests are serialized.
- * This means that if two people make changes to the same dungeon data then last one wins.
- * This will also cache session data to minimize the amount of data being accessed on disk.
+ * It does a lock on the data so requests are serialized. This means that if two people make changes to the same dungeon data then last one wins. This will also cache session data to minimize the amount of data being accessed on disk.
  * 
  * @author LLambert
  *
@@ -804,14 +802,12 @@ public final class DungeonsManager {
 			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
 			if (place == PogPlace.COMMON_RESOURCE) {
 				addOrUpdatePogToCommonResource(servlet, pogData);
-			} else if (place == PogPlace.DUNGEON_INSTANCE) {
+			} else if (place == PogPlace.DUNGEON_LEVEL) {
 				addOrUpdatePogToDungeonInstance(servlet, pogData, dungeonUUID, level);
 			} else if (place == PogPlace.SESSION_RESOURCE) {
 				addOrUpdatePogToSessionResource(servlet, pogData, dungeonUUID, sessionUUID, level);
-			} else if (place == PogPlace.SESSION_INSTANCE) {
+			} else if (place == PogPlace.SESSION_LEVEL) {
 				addOrUpdatePogToSessionInstance(servlet, pogData, dungeonUUID, sessionUUID, level);
-			} else if (place == PogPlace.DUNGEON_RESOURCE) {
-				addOrUpdatePogToDungeonResource(pogData);
 			}
 		} finally {
 			lock.unlock();
@@ -910,16 +906,6 @@ public final class DungeonsManager {
 	}
 
 	/**
-	 * This is for pogs templates specific to a particular dungeon.
-	 * 
-	 * No support for this yet but might be added in the future.
-	 * 
-	 * @param pogData pog data
-	 */
-	private static void addOrUpdatePogToDungeonResource(final PogData pogData) {
-	}
-
-	/**
 	 * Save Pog data.
 	 * 
 	 * @param servlet servlet data
@@ -937,14 +923,12 @@ public final class DungeonsManager {
 			PogData pogData = gson.fromJson(pogJsonData, PogData.class);
 			if (place == PogPlace.COMMON_RESOURCE) {
 				deletePogInCommonResource(servlet, pogData);
-			} else if (place == PogPlace.DUNGEON_INSTANCE) {
+			} else if (place == PogPlace.DUNGEON_LEVEL) {
 				deletePogInDungeonInstance(servlet, pogData, dungeonUUID, level);
 			} else if (place == PogPlace.SESSION_RESOURCE) {
 				deletePogInSessionResource(servlet, pogData, dungeonUUID, sessionUUID, level);
-			} else if (place == PogPlace.SESSION_INSTANCE) {
+			} else if (place == PogPlace.SESSION_LEVEL) {
 				deletePogInSessionInstance(servlet, pogData, dungeonUUID, sessionUUID, level);
-			} else if (place == PogPlace.DUNGEON_RESOURCE) {
-				deletePogInDungeonResource(pogData);
 			}
 		} finally {
 			lock.unlock();
@@ -996,9 +980,6 @@ public final class DungeonsManager {
 		sessionInformation.delete(pogData, level);
 	}
 
-	// No support for this yet but might be added in the future.
-	private static void deletePogInDungeonResource(final PogData pogData) {
-	}
 	/**
 	 * Delete this file.
 	 * 

@@ -18,6 +18,7 @@ package per.lambert.ebattleMat.client.services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.gwt.core.client.JsonUtils;
 
@@ -46,6 +47,10 @@ public class PogCollection {
 	 * Map of pog data vs name.
 	 */
 	private Map<String, PogData> pogTemplateMap = new HashMap<String, PogData>();
+	/**
+	 * Map of pog data vs name.
+	 */
+	private Map<String, PogData> pogSortedMap = new TreeMap<String, PogData>();
 	/**
 	 * Map of pog races.
 	 */
@@ -92,6 +97,7 @@ public class PogCollection {
 	 */
 	public void clear() {
 		pogTemplateMap.clear();
+		pogSortedMap.clear();
 		pogRaces.clear();
 		pogClasses.clear();
 	}
@@ -157,6 +163,7 @@ public class PogCollection {
 			}
 		}
 		pogTemplateMap.put(pogToAdd.getUUID(), pogToAdd);
+		pogSortedMap.put(pogToAdd.getName(), pogToAdd);
 	}
 
 	/**
@@ -171,6 +178,18 @@ public class PogCollection {
 		rebuildCollections();
 	}
 
+	/**
+	 * Remove this pog.
+	 * @param pog
+	 */
+	public void remove(final PogData pog) {
+		if (findPog(pog.getUUID()) == null) {
+			return;
+		}
+		pogTemplates.remove(pog);
+		rebuildCollections();
+	}
+	
 	/**
 	 * Filter a pog list.
 	 * 
@@ -200,6 +219,19 @@ public class PogCollection {
 			filteredPogs.add(pog);
 		}
 		return (filteredPogs);
+	}
+
+	/**
+	 * Get array of sorted pogs.
+	 * 
+	 * @return sorted array
+	 */
+	public ArrayList<PogData> getSortedPogs() {
+		ArrayList<PogData> sortedPogs = new ArrayList<PogData>();
+		for (PogData entry : pogSortedMap.values()) {
+			sortedPogs.add(entry);
+		}
+		return (sortedPogs);
 	}
 
 	/**
