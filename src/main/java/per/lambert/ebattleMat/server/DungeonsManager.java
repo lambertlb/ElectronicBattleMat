@@ -22,7 +22,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -189,8 +188,7 @@ public final class DungeonsManager {
 	 */
 	public static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, final String dungeonUUID) throws IOException {
 		String filePath = uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
-		URL servletPath = servlet.getServletContext().getResource("/");
-		saveJsonFile(dataToWrite, servletPath.getPath() + filePath);
+		saveJsonFile(dataToWrite, servlet.getServletContext().getRealPath(filePath));
 	}
 
 	/**
@@ -216,8 +214,7 @@ public final class DungeonsManager {
 			return;
 		}
 		try {
-			URL servletPath = servlet.getServletContext().getResource("/");
-			String directoryPath = servletPath.getPath() + Constants.SERVER_DUNGEONS_LOCATION;
+			String directoryPath = servlet.getServletContext().getRealPath(Constants.SERVER_DUNGEONS_LOCATION);
 			File directory = new File(directoryPath);
 			for (File possibleDungeon : directory.listFiles()) {
 				if (possibleDungeon.isDirectory()) {
@@ -298,8 +295,7 @@ public final class DungeonsManager {
 	 * @throws IOException thrown if error
 	 */
 	private static DungeonData getDungeonDataFromPath(final HttpServlet servlet, final String directoryPath) throws IOException {
-		URL servletPath = servlet.getServletContext().getResource("/");
-		String filePath = servletPath.getPath() + directoryPath + "/dungeonData.json";
+		String filePath = servlet.getServletContext().getRealPath(directoryPath + "/dungeonData.json");
 		String jsonData = readJsonFile(filePath);
 		Gson gson = new Gson();
 		DungeonData dungeonData = gson.fromJson(jsonData, DungeonData.class);
@@ -317,10 +313,9 @@ public final class DungeonsManager {
 	public static void copyDungeon(final HttpServlet servlet, final String templateDungeonUUID, final String newDungeonName) throws IOException {
 		lock.lock();
 		try {
-			URL servletPath = servlet.getServletContext().getResource("/");
 			String dstDirectory = newDungeonName.replaceAll("[^a-zA-Z0-9]", "_"); // get rid of garbage characters in name
-			File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(templateDungeonUUID));
-			File destDir = new File(servletPath.getPath() + Constants.SERVER_DUNGEONS_LOCATION + dstDirectory);
+			File srcDir = new File(servlet.getServletContext().getRealPath(uuidTemplatePathMap.get(templateDungeonUUID)));
+			File destDir = new File(servlet.getServletContext().getRealPath(Constants.SERVER_DUNGEONS_LOCATION + dstDirectory));
 			FileUtils.copyDirectory(srcDir, destDir);
 			deleteAnyOldSessions(destDir);
 			DungeonData dungeonData = getDungeonData(servlet, dstDirectory);
@@ -347,8 +342,7 @@ public final class DungeonsManager {
 	public static void deleteDungeon(final HttpServlet servlet, final String dungeonUUID) throws IOException {
 		lock.lock();
 		try {
-			URL servletPath = servlet.getServletContext().getResource("/");
-			File srcDir = new File(servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID));
+			File srcDir = new File(servlet.getServletContext().getRealPath(uuidTemplatePathMap.get(dungeonUUID)));
 			FileUtils.deleteDirectory(srcDir);
 			rebuildDungeonList(servlet);
 		} finally {
@@ -370,8 +364,7 @@ public final class DungeonsManager {
 			if (!uuidTemplatePathMap.containsKey(dungeonUUID)) {
 				return (null);
 			}
-			URL servletPath = servlet.getServletContext().getResource("/");
-			String filePath = servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
+			String filePath = servlet.getServletContext().getRealPath(uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json");
 			return (readJsonFile(filePath));
 		} finally {
 			lock.unlock();
@@ -389,9 +382,8 @@ public final class DungeonsManager {
 		Map<String, String> sessionListData = new HashMap<String, String>();
 		lock.lock();
 		try {
-			URL servletPath = servlet.getServletContext().getResource("/");
 			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + Constants.SESSIONS_FOLDER;
-			String directoryPath = servletPath.getPath() + sessionsPath;
+			String directoryPath = servlet.getServletContext().getRealPath(sessionsPath);
 			makeSureDirectoryExists(directoryPath);
 			File directory = new File(directoryPath);
 			for (File possibleSession : directory.listFiles()) {
@@ -433,8 +425,7 @@ public final class DungeonsManager {
 	public static void createSession(final HttpServlet servlet, final String dungeonUUID, final String newSessionName) throws IOException {
 		lock.lock();
 		try {
-			URL servletPath = servlet.getServletContext().getResource("/");
-			String templateDirectory = servletPath.getPath() + uuidTemplatePathMap.get(dungeonUUID);
+			String templateDirectory = servlet.getServletContext().getRealPath(uuidTemplatePathMap.get(dungeonUUID));
 			String sessionDirectory = templateDirectory + Constants.SESSIONS_FOLDER + newSessionName.replaceAll("[^a-zA-Z0-9]", "_");
 			makeSureDirectoryExists(sessionDirectory);
 			DungeonData dungeonData = getDungeonDataFromUUID(servlet, dungeonUUID);
@@ -521,9 +512,8 @@ public final class DungeonsManager {
 			if (sessionInformation != null) {
 				return (sessionInformation);
 			}
-			URL servletPath = servlet.getServletContext().getResource("/");
 			String sessionsPath = uuidTemplatePathMap.get(dungeonUUID) + Constants.SESSIONS_FOLDER;
-			String directoryPath = servletPath.getPath() + sessionsPath;
+			String directoryPath = servlet.getServletContext().getRealPath(sessionsPath);
 			File sessionsDirectory = new File(directoryPath);
 			for (File possibleSession : sessionsDirectory.listFiles()) {
 				if (possibleSession.isDirectory()) {
@@ -688,8 +678,7 @@ public final class DungeonsManager {
 	public static String getFileAsString(final HttpServlet servlet, final String fileName) throws IOException {
 		lock.lock();
 		try {
-			URL servletPath = servlet.getServletContext().getResource("/");
-			String filePath = servletPath.getPath() + Constants.SERVER_DUNGEON_DATA_LOCATION + fileName;
+			String filePath = servlet.getServletContext().getRealPath(Constants.SERVER_DUNGEON_DATA_LOCATION + fileName);
 			return (readJsonFile(filePath));
 		} finally {
 			lock.unlock();
@@ -839,8 +828,7 @@ public final class DungeonsManager {
 	 */
 	private static void addOrUpdatePogToCommonResource(final HttpServlet servlet, final PogData pogData, final String folder) throws IOException {
 		String resourcePath = Constants.SERVER_RESOURCE_LOCATION + folder + "pogs.json";
-		URL servletPath = servlet.getServletContext().getResource("/");
-		String filePath = servletPath.getPath() + resourcePath;
+		String filePath = servlet.getServletContext().getRealPath(resourcePath);
 		String fileData = readJsonFile(filePath);
 		Gson gson = new Gson();
 		PogList pogList = gson.fromJson(fileData, PogList.class);
@@ -945,8 +933,7 @@ public final class DungeonsManager {
 
 	private static void deletePogInCommonResource(final HttpServlet servlet, final PogData pogData, final String folder) throws IOException {
 		String resourcePath = Constants.SERVER_RESOURCE_LOCATION + folder + "pogs.json";
-		URL servletPath = servlet.getServletContext().getResource("/");
-		String filePath = servletPath.getPath() + resourcePath;
+		String filePath = servlet.getServletContext().getRealPath(resourcePath);
 		String fileData = readJsonFile(filePath);
 		Gson gson = new Gson();
 		PogList pogList = gson.fromJson(fileData, PogList.class);
