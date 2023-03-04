@@ -16,6 +16,11 @@
 package per.lambert.ebattleMat.client.controls;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -32,6 +37,7 @@ import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
+import per.lambert.ebattleMat.client.services.serviceData.PogList;
 
 /**
  * Control for handling pog selection.
@@ -40,6 +46,13 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
  *
  */
 public class PogSelection extends DockLayoutPanel {
+	class PogComparator implements Comparator<PogData> {
+		@Override
+	    public int compare(final PogData a, final PogData b) {
+	    	int cp = a.getName().compareToIgnoreCase(b.getName());
+	        return cp == 0 ? 1 : cp;
+	    }
+	}
 
 	/**
 	 * Tree of pogs.
@@ -173,10 +186,10 @@ public class PogSelection extends DockLayoutPanel {
 	 * Set styles.
 	 */
 	private void setStyles() {
-		playerTree.getElement().setClassName("my-TreeItem");                
-		commonPogTree.getElement().setClassName("my-TreeItem");                
-		dungeonLevelTree.getElement().setClassName("my-TreeItem");                
-		sessionLevelTree.getElement().setClassName("my-TreeItem");                
+		playerTree.getElement().setClassName("my-TreeItem");
+		commonPogTree.getElement().setClassName("my-TreeItem");
+		dungeonLevelTree.getElement().setClassName("my-TreeItem");
+		sessionLevelTree.getElement().setClassName("my-TreeItem");
 	}
 
 	/**
@@ -200,24 +213,54 @@ public class PogSelection extends DockLayoutPanel {
 
 	/**
 	 * Fill This tree.
+	 * 
 	 * @param treeItem to fill
 	 * @param dataArray to fill with
 	 */
 	private void fillTree(final TreeItem treeItem, final ArrayList<PogData> dataArray) {
 		treeItem.removeItems();
 		for (PogData pog : dataArray) {
-			TreeItem newItem = new TreeItem();
-			newItem.getElement().setClassName("my-TreeItem");                
-			newItem.setText(pog.getName());
-			newItem.setUserObject(pog);
-			treeItem.addItem(newItem);
+			addTreeItem(treeItem, pog);
 		}
+	}
+
+	/**
+	 * Add new tree item.
+	 * 
+	 * @param treeItem
+	 * @param pog
+	 */
+	private void addTreeItem(final TreeItem treeItem, final PogData pog) {
+		TreeItem newItem = new TreeItem();
+		newItem.getElement().setClassName("my-TreeItem");
+		newItem.setText(pog.getName());
+		newItem.setUserObject(pog);
+		treeItem.addItem(newItem);
 	}
 
 	/**
 	 * Fill trees with level based pogs.
 	 */
 	private void fillLevelTrees() {
+		buildSortedTree(dungeonLevelMonsterTree, ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getMonsters());
+		buildSortedTree(dungeonLevelObjectsTree, ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getRoomObjects());
+	}
+
+	/**
+	 * sort and add these to tree.
+	 * 
+	 * @param treeItem
+	 * @param pogs
+	 */
+	private void buildSortedTree(final TreeItem treeItem, final PogList pogs) {
+		List<PogData> keys = new ArrayList<>();
+		for (PogData pog : pogs.getPogList()) {
+			keys.add(pog);
+		}
+		Collections.sort(keys, new PogComparator());
+		for (PogData key : keys) {
+			addTreeItem(treeItem, key);
+		}
 	}
 
 	/**
@@ -232,17 +275,19 @@ public class PogSelection extends DockLayoutPanel {
 	 */
 	private void selectPog() {
 	}
-	
+
 	/**
 	 * handle tree item selected.
+	 * 
 	 * @param selectedItem
 	 */
 	private void selectionChanged(final TreeItem selectedItem) {
-		PogData data = (PogData)selectedItem.getUserObject();
+		PogData data = (PogData) selectedItem.getUserObject();
 		if (data != null) {
 			ServiceManager.getDungeonManager().setSelectedPog(data);
 		}
 	}
+
 	/**
 	 * 
 	 * {@inheritDoc}
