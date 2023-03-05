@@ -1260,6 +1260,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			public void onSuccess(final Object sender, final Object data) {
 				if (editMode) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+				} else {
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, null));
 				}
 			}
 

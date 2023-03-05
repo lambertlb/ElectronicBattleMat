@@ -391,7 +391,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 */
 	private void setupWithPogData(final PogData pogData) {
 		this.pogData = pogData;
-		badURL = true;
+		badURL = false;
 		forceBackgroundColor = ServiceManager.getDungeonManager().isEditMode();
 		setBackgroundColor();
 		if (pogData.getImageUrl() != "") {

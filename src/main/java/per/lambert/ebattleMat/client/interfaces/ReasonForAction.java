@@ -103,6 +103,10 @@ public enum ReasonForAction {
 	 */
 	DMStateChange,
 	/**
+	 * Pog data changed.
+	 */
+	PogDataChanged,
+	/**
 	 * Last reason used for array sizing.
 	 */
 	LastReason
