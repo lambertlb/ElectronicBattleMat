@@ -1126,6 +1126,22 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
+	 * Find Pog in list.
+	 * 
+	 * @param pogToFind to find
+	 * @param pogs to search
+	 * @return pog if found or null
+	 */
+	private PogData findPog(final PogData pogToFind, final PogData[] pogs) {
+		for (PogData pog : pogs) {
+			if (pog.getUUID() == pogToFind.getUUID()) {
+				return (pog);
+			}
+		}
+		return (null);
+	}
+
+	/**
 	 * Compute place pog should go.
 	 * 
 	 * @param pog to put
@@ -1133,14 +1149,23 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public PogPlace computePlace(final PogData pog) {
+		if (getCurrentDungeonLevelData() == null) {
+			return (PogPlace.COMMON_RESOURCE);
+		}
 		if (isTemplate(pog)) {
 			return (PogPlace.COMMON_RESOURCE);
 		}
 		if (pog.isThisAPlayer()) {
 			return (PogPlace.SESSION_RESOURCE);
 		}
-		if (editMode) {
-			return (PogPlace.DUNGEON_LEVEL);
+		if (pog.isThisAMonster()) {
+			if (findPog(pog, getCurrentDungeonLevelData().getMonsters().getPogList()) != null) {
+				return (PogPlace.DUNGEON_LEVEL);
+			}
+		} else {
+			if (findPog(pog, getCurrentDungeonLevelData().getRoomObjects().getPogList()) != null) {
+				return (PogPlace.DUNGEON_LEVEL);
+			}
 		}
 		return (PogPlace.SESSION_LEVEL);
 	}
@@ -1382,6 +1407,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			public void onSuccess(final Object sender, final Object data) {
 				removeThisPog(getSelectedPog(), place);
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
+				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, null));
 			}
 
 			@Override
@@ -1481,7 +1507,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 		int i = url.lastIndexOf('.');
 		String fileExtension = i > 0 ? url.substring(i + 1) : "";
-		boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png");
+		// boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png")  || fileExtension.equals("png";
+		boolean valid = true;
 		return (valid);
 	}
 }
