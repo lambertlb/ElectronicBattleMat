@@ -23,7 +23,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
@@ -31,19 +30,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import per.lambert.ebattleMat.client.controls.CharacterCreateDialog;
-import per.lambert.ebattleMat.client.controls.FlagBitsDialog;
 import per.lambert.ebattleMat.client.controls.NotesFloatingWindow;
 import per.lambert.ebattleMat.client.controls.SelectedPogFloatingWindow;
-import per.lambert.ebattleMat.client.controls.TemplateManageDialog;
-import per.lambert.ebattleMat.client.controls.dungeonSelectDialog.DungeonSelectDialog;
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
-import per.lambert.ebattleMat.client.interfaces.Constants;
-import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
-import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
-import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
@@ -100,46 +91,6 @@ public class RibbonBar extends Composite {
 	 */
 	private ListBox characterSelect;
 	/**
-	 * Create character button.
-	 */
-	private Button createCharacter;
-	/**
-	 * character create dialog.
-	 */
-	private CharacterCreateDialog characterCreate;
-	/**
-	 * Monster manager button.
-	 */
-	private Button monsterManageButton;
-	/**
-	 * Monster manage dialog.
-	 */
-	private TemplateManageDialog monsterManage;
-	/**
-	 * Room objects manager button.
-	 */
-	private Button roomObjectsManageButton;
-	/**
-	 * Monster manage dialog.
-	 */
-	private TemplateManageDialog roomObjectsManage;
-	/**
-	 * Button for player flags.
-	 */
-	private Button playerFlagsButton;
-	/**
-	 * Dialog for player flags.
-	 */
-	private FlagBitsDialog playerFlagDialog;
-	/**
-	 * Button for DM flags.
-	 */
-	private Button dmFlagsButton;
-	/**
-	 * Dialog for DM flags.
-	 */
-	private FlagBitsDialog dmFlagDialog;
-	/**
 	 * show selected pog.
 	 */
 	private CheckBox showSelectedPog;
@@ -191,6 +142,23 @@ public class RibbonBar extends Composite {
 	}
 
 	/**
+	 * Create common controls.
+	 */
+	private void createCommonControls() {
+		ribbonGrid = new Grid();
+		ribbonGrid.resize(2, 10);
+		ribbonGrid.setCellPadding(0);
+		ribbonGrid.setCellSpacing(0);
+		ribbonGrid.addStyleName("ribbonBarLabel");
+		selectedPog = new SelectedPog(panel);
+		createLevelSelection();
+		createCharacterSelection();
+		createShowPogsDialog();
+		createShowPogNotesDialog();
+		pogSelection();
+	}
+
+	/**
 	 * Create DM controls.
 	 */
 	private void createDMControls() {
@@ -215,28 +183,6 @@ public class RibbonBar extends Composite {
 				ServiceManager.getDungeonManager().setHideFOW(hideFOW.getValue());
 			}
 		});
-	}
-
-	/**
-	 * Create common controls.
-	 */
-	private void createCommonControls() {
-		ribbonGrid = new Grid();
-		ribbonGrid.resize(2, 10);
-		ribbonGrid.setCellPadding(0);
-		ribbonGrid.setCellSpacing(0);
-		ribbonGrid.addStyleName("ribbonBarLabel");
-		selectedPog = new SelectedPog(panel);
-		createLevelSelection();
-		createCharacterSelection();
-		createNewCharacter();
-		createMonsterEditor();
-		createRoomEditor();
-		createPlayerFlagsEditor();
-		createDMFlagsEditor();
-		createShowPogsDialog();
-		createShowPogNotesDialog();
-		pogSelection();
 	}
 
 	/**
@@ -290,104 +236,6 @@ public class RibbonBar extends Composite {
 			}
 		});
 		pogWindow = new SelectedPogFloatingWindow();
-	}
-
-	/**
-	 * Create edit dm flags controls.
-	 */
-	private void createDMFlagsEditor() {
-		dmFlagsButton = new Button("DM Controlled Properties..");
-		dmFlagsButton.setStyleName("ribbonBarLabel");
-		dmFlagsButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				dmFlagDialog.setBits(ServiceManager.getDungeonManager().getSelectedPog().getDungeonMasterFlags());
-				dmFlagDialog.show();
-			}
-		});
-
-		dmFlagDialog = new FlagBitsDialog("Dungeon Master Controlled Properties", DungeonMasterFlag.getValues());
-		dmFlagDialog.addOkClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-				selectedPog.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
-				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
-			}
-		});
-	}
-
-	/**
-	 * Create edit player flags controls.
-	 */
-	private void createPlayerFlagsEditor() {
-		playerFlagsButton = new Button("Player Controlled Properties...");
-		playerFlagsButton.setStyleName("ribbonBarLabel");
-		playerFlagsButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				playerFlagDialog.setBits(ServiceManager.getDungeonManager().getSelectedPog().getPlayerFlags());
-				playerFlagDialog.show();
-			}
-		});
-
-		playerFlagDialog = new FlagBitsDialog("Player Controlled Properties", PlayerFlag.getValues());
-		playerFlagDialog.addOkClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-				selectedPog.setPlayerFlagsNative(playerFlagDialog.getBits());
-				ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
-			}
-		});
-	}
-
-	/**
-	 * create room editor controls.
-	 */
-	private void createRoomEditor() {
-		roomObjectsManageButton = new Button("Room Object Editor...");
-		roomObjectsManageButton.addStyleName("ribbonBarLabel");
-		roomObjectsManageButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				roomObjectsManage.show();
-			}
-		});
-		roomObjectsManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT);
-	}
-
-	/**
-	 * Create monster editor controls.
-	 */
-	private void createMonsterEditor() {
-		monsterManageButton = new Button("Monster Editor...");
-		monsterManageButton.addStyleName("ribbonBarLabel");
-		monsterManageButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				monsterManage.show();
-			}
-		});
-		monsterManage = new TemplateManageDialog(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER);
-	}
-
-	/**
-	 * Create new character controls.
-	 */
-	private void createNewCharacter() {
-		createCharacter = new Button("Create Character");
-		createCharacter.addStyleName("ribbonBarLabel");
-		createCharacter.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				characterCreate.show();
-			}
-		});
-		characterCreate = new CharacterCreateDialog();
 	}
 
 	/**
@@ -461,9 +309,6 @@ public class RibbonBar extends Composite {
 	 */
 	protected void pogSelection() {
 		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
-		boolean enabled = selectedPog != null ? !ServiceManager.getDungeonManager().isTemplate(selectedPog) : false;
-		DungeonSelectDialog.enableWidget(playerFlagsButton, enabled);
-		DungeonSelectDialog.enableWidget(dmFlagsButton, enabled);
 		if (selectedPog != null) {
 			pogNotes.setNotesText(selectedPog.getNotes());
 			pogNotes.setDMNotesText(selectedPog.getDmNotes());
@@ -496,6 +341,16 @@ public class RibbonBar extends Composite {
 	}
 
 	/**
+	 * Setup for player.
+	 */
+	private void setupForPlayer() {
+		ribbonGrid.setWidget(0, 0, levelSelect);
+		ribbonGrid.setWidget(1, 0, characterSelect);
+		ribbonGrid.setWidget(0, 2, showSelectedPog);
+		ribbonGrid.setWidget(1, 2, showPogNotes);
+	}
+
+	/**
 	 * Setup for dungeon master.
 	 */
 	private void setupForDungeonMaster() {
@@ -503,11 +358,10 @@ public class RibbonBar extends Composite {
 		if (ServiceManager.getDungeonManager().isEditMode()) {
 			ribbonGrid.setWidget(0, 5, helpLink);
 		} else {
+			ribbonGrid.setWidget(1, 0, characterSelect);
 			ribbonGrid.setWidget(1, 4, fowToggle);
-			ribbonGrid.setWidget(0, 6, characterSelect);
-			ribbonGrid.setWidget(1, 6, createCharacter);
 			ribbonGrid.setWidget(0, 7, helpLink);
-			ribbonGrid.setWidget(1, 7, hideFOW);
+			ribbonGrid.setWidget(0, 4, hideFOW);
 		}
 	}
 
@@ -516,24 +370,8 @@ public class RibbonBar extends Composite {
 	 */
 	private void setupForCommonDMControls() {
 		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(0, 1, roomObjectsManageButton);
-		ribbonGrid.setWidget(1, 1, monsterManageButton);
-		ribbonGrid.setWidget(0, 2, playerFlagsButton);
-		ribbonGrid.setWidget(1, 2, dmFlagsButton);
 		ribbonGrid.setWidget(0, 3, showSelectedPog);
 		ribbonGrid.setWidget(1, 3, showPogNotes);
-	}
-
-	/**
-	 * Setup for player.
-	 */
-	private void setupForPlayer() {
-		ribbonGrid.setWidget(0, 0, levelSelect);
-		ribbonGrid.setWidget(1, 0, playerFlagsButton);
-		ribbonGrid.setWidget(0, 1, characterSelect);
-		ribbonGrid.setWidget(1, 1, createCharacter);
-		ribbonGrid.setWidget(0, 2, showSelectedPog);
-		ribbonGrid.setWidget(1, 2, showPogNotes);
 	}
 
 	/**

@@ -1152,9 +1152,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (getCurrentDungeonLevelData() == null) {
 			return (PogPlace.COMMON_RESOURCE);
 		}
-		if (isTemplate(pog)) {
-			return (PogPlace.COMMON_RESOURCE);
-		}
 		if (pog.isThisAPlayer()) {
 			return (PogPlace.SESSION_RESOURCE);
 		}
@@ -1295,49 +1292,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				lastError = error.getError();
 			}
 		});
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ArrayList<PogData> getFilteredTemplates(final PogPlace place, final String pogType, final String raceFilter, final String classFilter, final String genderFilter) {
-		if (place != PogPlace.COMMON_RESOURCE) {
-			return (new ArrayList<PogData>()); // for now only have templates in common area.
-		}
-		return (getFilteredCommonTemplates(pogType, raceFilter, classFilter, genderFilter));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSelectedTemplate(final PogPlace place, final String pogType, final String templateUUID) {
-		if (place == PogPlace.COMMON_RESOURCE) {
-			setCommonTemplate(pogType, templateUUID);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String[] getTemplateClasses(final PogPlace place, final String pogType) {
-		if (place == PogPlace.COMMON_RESOURCE) {
-			return (getCommonClasses(pogType));
-		}
-		return (new String[0]);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String[] getTemplateRaces(final PogPlace place, final String pogType) {
-		if (place == PogPlace.COMMON_RESOURCE) {
-			return (getCommonRaces(pogType));
-		}
-		return (new String[0]);
 	}
 
 	/**
@@ -1507,8 +1461,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 		int i = url.lastIndexOf('.');
 		String fileExtension = i > 0 ? url.substring(i + 1) : "";
-		// boolean valid = fileExtension.equals("jpeg") || fileExtension.equals("jpg") || fileExtension.equals("png")  || fileExtension.equals("png";
-		boolean valid = true;
+		boolean valid = fileExtension.startsWith("jpeg") || fileExtension.startsWith("jpg") || fileExtension.startsWith("png") || fileExtension.startsWith("webp");
 		return (valid);
 	}
 }

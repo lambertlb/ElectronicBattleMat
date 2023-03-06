@@ -15,9 +15,6 @@
  */
 package per.lambert.ebattleMat.client.interfaces;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
@@ -78,13 +75,6 @@ public interface IPogManager {
 	boolean isFromRibbonBar();
 
 	/**
-	 * Create player pog.
-	 * 
-	 * @return player pog
-	 */
-	PogData createPlayer();
-
-	/**
 	 * Find monster pog with this UUID.
 	 * 
 	 * @param pogUUID to find
@@ -101,13 +91,6 @@ public interface IPogManager {
 	PogData findRoomObjectPog(String pogUUID);
 
 	/**
-	 * Get list of monster genders.
-	 * 
-	 * @return list of monster genders.
-	 */
-	Collection<Gender> getTemplateGenders();
-
-	/**
 	 * Get pog sizes.
 	 * 
 	 * @return pog sizes.
@@ -121,41 +104,6 @@ public interface IPogManager {
 	 * @return Pog of type
 	 */
 	PogData createTemplatePog(String type);
-
-	/**
-	 * Get a list of filtered common resources.
-	 * 
-	 * @param pogType type of resource
-	 * @param raceFilter race filter
-	 * @param classFilter class filter
-	 * @param genderFilter gender filter
-	 * @return list of filtered pogs
-	 */
-	ArrayList<PogData> getFilteredCommonTemplates(String pogType, String raceFilter, String classFilter, String genderFilter);
-
-	/**
-	 * get common template classes.
-	 * 
-	 * @param pogType to get
-	 * @return list of classes
-	 */
-	String[] getCommonClasses(String pogType);
-
-	/**
-	 * get common template races.
-	 * 
-	 * @param pogType to get
-	 * @return list of races
-	 */
-	String[] getCommonRaces(String pogType);
-
-	/**
-	 * Is this Pog a template.
-	 * 
-	 * @param pogData pog to check
-	 * @return true if template
-	 */
-	boolean isTemplate(PogData pogData);
 
 	/**
 	 * Update number of selected pog.
@@ -177,11 +125,4 @@ public interface IPogManager {
 	 * @param flag to toggle
 	 */
 	void toggleFlagOfSelectedPog(DungeonMasterFlag flag);
-	
-	/**
-	 * get array of sorted pogs.
-	 * @param pogType type of pog
-	 * @return sorted array
-	 */
-	ArrayList<PogData> getSortedCommonTemplates(String pogType);
 }

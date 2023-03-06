@@ -65,18 +65,6 @@ public class PogData {
 	 */
 	private int playerFlags;
 	/**
-	 * Class of pog.
-	 */
-	private String pogClass;
-	/**
-	 * Race of pog.
-	 */
-	private String race;
-	/**
-	 * Gender of pog.
-	 */
-	private String gender;
-	/**
 	 * Pog notes.
 	 */
 	private String notes;
@@ -127,9 +115,6 @@ public class PogData {
 		pogName = pogData.pogName;
 		pogImageUrl = pogData.pogImageUrl;
 		pogType = pogData.pogType;
-		race = pogData.race;
-		pogClass = pogData.pogClass;
-		gender = pogData.gender;
 		pogSize = pogData.pogSize;
 		pogNumber = pogData.pogNumber;
 	}

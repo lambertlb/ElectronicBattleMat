@@ -517,7 +517,8 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		gridOffsetX.setValue(currentLevel.getGridOffsetX());
 		gridOffsetY.setValue(currentLevel.getGridOffsetY());
 		levelName.setValue(currentLevel.getLevelName());
-		pictureURL.setText(currentLevel.getLevelDrawing());
+		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(currentLevel.getLevelDrawing());
+		pictureURL.setText(imageUrl);
 		pictureURL.setTitle(pictureURL.getText());
 	}
 
@@ -568,7 +569,8 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 
 	private void drawPicture() {
 		imageLoaded = false;
-		image.setUrl(pictureURL.getText());
+		String url = pictureURL.getText();
+		image.setUrl(url);
 	}
 
 	/**

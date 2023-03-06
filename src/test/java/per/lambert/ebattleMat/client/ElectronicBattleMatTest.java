@@ -15,7 +15,6 @@
  */
 package per.lambert.ebattleMat.client;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import com.google.gwt.core.client.JsonUtils;
@@ -23,7 +22,6 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.junit.client.GWTTestCase;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
-import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
@@ -190,10 +188,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		hadEvent(ReasonForAction.MonsterPogsLoaded);
 		PogData pogData = dungeonManager.findMonsterPog("Male-Kobold");
 		assertTrue(pogData != null);
-		String[] races = dungeonManager.getCommonRaces(Constants.POG_TYPE_MONSTER);
-		assertTrue(races != null && races.length == 2);
-		String[] classes = dungeonManager.getCommonClasses(Constants.POG_TYPE_MONSTER);
-		assertTrue(classes != null && classes.length == 2);
 		PogData[] monsterPogs = dungeonManager.getMonsterTemplatePogs();
 		assertTrue(monsterPogs != null && monsterPogs.length == 4);
 	}
@@ -222,10 +216,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		hadEvent(ReasonForAction.RoomObjectPogsLoaded);
 		PogData pogData = dungeonManager.findRoomObjectPog("Secret_Door_Top");
 		assertTrue(pogData != null);
-		String[] classes = dungeonManager.getCommonClasses(Constants.POG_TYPE_ROOMOBJECT);
-		assertTrue(classes != null && classes.length == 3);
-		PogData[] roomObjectPogs = dungeonManager.getRoomObjectTemplatePogs();
-		assertTrue(roomObjectPogs != null && roomObjectPogs.length == 4);
 	}
 
 	/**
@@ -863,99 +853,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		dungeonManager.setEditModeForUnitTest(false);
 		dungeonManager.setDungeonMasterForUnitTest(false);
 		dungeonManager.addOrUpdatePog(monsterTemplate);
-	}
-
-	/**
-	 * test get Filtered Templates.
-	 */
-	public void testGetFilteredTemplates() {
-		DungeonManager dungeonManager = new DungeonManager();
-		populateSession(dungeonManager);
-		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, "Kobold", null, null);
-		assertTrue(templates.size() == 2);
-		assertTrue(templates.get(0).getName() == "Male Kobold");
-		assertTrue(templates.get(1).getName() == "Female Kobold");
-	}
-
-	/**
-	 * test get Filtered Templates.
-	 */
-	public void testGetFilteredTemplates2() {
-		DungeonManager dungeonManager = new DungeonManager();
-		populateSession(dungeonManager);
-		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, null, null, "Female");
-		assertTrue(templates.size() == 1);
-		assertTrue(templates.get(0).getName() == "Female Kobold");
-	}
-
-	/**
-	 * test get Filtered Templates.
-	 */
-	public void testGetFilteredTemplates3() {
-		DungeonManager dungeonManager = new DungeonManager();
-		populateSession(dungeonManager);
-		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, null, "Fighter", null);
-		assertTrue(templates.size() == 3);
-		assertTrue(templates.get(0).getName() == "Male Kobold");
-		assertTrue(templates.get(1).getName() == "Female Kobold");
-		assertTrue(templates.get(2).getName() == "Orc Fighter");
-	}
-
-	/**
-	 * test get Filtered Templates.
-	 */
-	public void testGetFilteredTemplates4() {
-		DungeonManager dungeonManager = new DungeonManager();
-		populateSession(dungeonManager);
-		ArrayList<PogData> templates = dungeonManager.getFilteredTemplates(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, null, null, null);
-		assertTrue(templates.size() == 4);
-		assertTrue(templates.get(0).getName() == "Male Kobold");
-		assertTrue(templates.get(1).getName() == "Female Kobold");
-		assertTrue(templates.get(2).getName() == "Orc Fighter");
-		assertTrue(templates.get(3).getName() == "Orc Shaman");
-	}
-
-	/**
-	 * test set Selected Template.
-	 */
-	public void testSetSelectedTemplate() {
-		DungeonManager dungeonManager = new DungeonManager();
-		populateSession(dungeonManager);
-		eventManagerForTest.setEventManagerTestCallback(new EventManagerTestCallback() {
-			@Override
-			public void onEvent(final GwtEvent<?> event) {
-				setEventResults(event);
-			}
-		});
-		assertTrue(dungeonManager.getSelectedPog() == null);
-		dungeonManager.setSelectedTemplate(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER, "Male-Kobold");
-		hadEvent(ReasonForAction.PogWasSelected);
-		assertTrue(dungeonManager.getSelectedPog() != null);
-		assertTrue(dungeonManager.getSelectedPog().getName() == "Male Kobold");
-	}
-
-	/**
-	 * test get Template Classes.
-	 */
-	public void testGetTemplateClasses() {
-		DungeonManager dungeonManager = new DungeonManager();
-		populateSession(dungeonManager);
-		String[] templates = dungeonManager.getTemplateClasses(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER);
-		assertTrue(templates.length == 2);
-		assertTrue(templates[0] == "Fighter");
-		assertTrue(templates[1] == "Shaman");
-	}
-
-	/**
-	 * test get Template Races.
-	 */
-	public void testGetTemplateRaces() {
-		DungeonManager dungeonManager = new DungeonManager();
-		populateSession(dungeonManager);
-		String[] templates = dungeonManager.getTemplateRaces(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER);
-		assertTrue(templates.length == 2);
-		assertTrue(templates[0] == "Kobold");
-		assertTrue(templates[1] == "Orc");
 	}
 
 	/**

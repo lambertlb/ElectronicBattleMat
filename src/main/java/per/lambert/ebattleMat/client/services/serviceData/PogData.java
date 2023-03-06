@@ -361,68 +361,6 @@ public class PogData extends JavaScriptObject {
 		setDungeonMasterFlagsNative(flags);
 	}
 
-	/**
-	 * Get pog class.
-	 * 
-	 * @return pog class.
-	 */
-	public final native String getPogClass() /*-{
-		if (this.pogClass === undefined) {
-			this.pogClass = "";
-		}
-		return (this.pogClass);
-	}-*/;
-
-	/**
-	 * set pog class.
-	 * 
-	 * @param pogClass to set
-	 */
-	public final native void setPogClass(String pogClass) /*-{
-		this.pogClass = pogClass;
-	}-*/;
-
-	/**
-	 * get pog race.
-	 * 
-	 * @return pog race.
-	 */
-	public final native String getRace() /*-{
-		if (this.race === undefined) {
-			this.race = "";
-		}
-		return (this.race);
-	}-*/;
-
-	/**
-	 * Set pog race.
-	 * 
-	 * @param race pog race.
-	 */
-	public final native void setRace(String race) /*-{
-		this.race = race;
-	}-*/;
-
-	/**
-	 * Set pog gender.
-	 * 
-	 * @param gender pog gender.
-	 */
-	public final native void setGender(String gender) /*-{
-		this.gender = gender;
-	}-*/;
-
-	/**
-	 * get pog gender.
-	 * 
-	 * @return pog gender.
-	 */
-	public final native String getGender() /*-{
-		if (this.gender === undefined) {
-			this.gender = "Male";
-		}
-		return (this.gender);
-	}-*/;
 
 	/**
 	 * get pog notes.
@@ -501,10 +439,7 @@ public class PogData extends JavaScriptObject {
 		setName(pogData.getName());
 		setImageUrl(pogData.getImageUrl());
 		setType(pogData.getType());
-		setRace(pogData.getRace());
-		setPogClass(pogData.getPogClass());
 		setSize(pogData.getSize());
-		setGender(pogData.getGender());
 	}
 
 	/**

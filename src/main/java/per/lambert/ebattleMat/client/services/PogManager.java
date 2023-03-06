@@ -15,15 +15,11 @@
  */
 package per.lambert.ebattleMat.client.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.google.gwt.core.client.JavaScriptObject;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
-import per.lambert.ebattleMat.client.interfaces.Gender;
 import per.lambert.ebattleMat.client.interfaces.IPogManager;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
@@ -94,38 +90,6 @@ public abstract class PogManager implements IPogManager {
 	}
 
 	/**
-	 * Set selected pog.
-	 * 
-	 * @param pogType type of pog
-	 * @param templateUUID uuid of pog
-	 */
-	protected void setCommonTemplate(final String pogType, final String templateUUID) {
-		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
-			setSelectedMonster(templateUUID);
-		} else {
-			setSelectedRoomObject(templateUUID);
-		}
-	}
-
-	/**
-	 * Lookup monster with this UUID and set as selected pog.
-	 * 
-	 * @param monsterUUID to look up
-	 */
-	private void setSelectedMonster(final String monsterUUID) {
-		setSelectedPog(findMonsterPog(monsterUUID));
-	}
-
-	/**
-	 * Lookup room object with this UUID and set as selected pog.
-	 * 
-	 * @param roomObjectUUID to look up
-	 */
-	private void setSelectedRoomObject(final String roomObjectUUID) {
-		setSelectedPog(findRoomObjectPog(roomObjectUUID));
-	}
-
-	/**
 	 * Pog being dragged.
 	 */
 	private PogData pogBeingDragged;
@@ -180,14 +144,6 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PogData createPlayer() {
-		return (createTemplatePog(Constants.POG_TYPE_PLAYER));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public PogData createTemplatePog(final String type) {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
 		pogData.setUUID(Constants.generateUUID());
@@ -207,58 +163,6 @@ public abstract class PogManager implements IPogManager {
 	 */
 	public void loadRoomObjectPogs() {
 		roomCollection.loadFromServer(Constants.DUNGEON_ROOMOBJECT_LOCATION);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ArrayList<PogData> getFilteredCommonTemplates(final String pogType, final String raceFilter, final String classFilter, final String genderFilter) {
-		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
-			return (monsterCollection.getFilteredPogs(raceFilter, classFilter, genderFilter));
-		}
-		return (roomCollection.getFilteredPogs(raceFilter, classFilter, genderFilter));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ArrayList<PogData> getSortedCommonTemplates(final String pogType) {
-		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
-			return (monsterCollection.getSortedPogs());
-		}
-		return (roomCollection.getSortedPogs());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String[] getCommonClasses(final String pogType) {
-		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
-			return (monsterCollection.getClassses());
-		}
-		return (roomCollection.getClassses());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String[] getCommonRaces(final String pogType) {
-		if (pogType.equals(Constants.POG_TYPE_MONSTER)) {
-			return (monsterCollection.getRaces());
-		}
-		return (roomCollection.getClassses());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Collection<Gender> getTemplateGenders() {
-		return (Gender.getValues());
 	}
 
 	/**
@@ -282,22 +186,6 @@ public abstract class PogManager implements IPogManager {
 		} else {
 			roomCollection.addOrUpdatePogToCommonResource(pog);
 		}
-	}
-
-	/**
-	 * Is this Pog a template.
-	 * 
-	 * @param pogData pog to check
-	 * @return true if template
-	 */
-	@Override
-	public boolean isTemplate(final PogData pogData) {
-		if (pogData.isThisAMonster()) {
-			return (monsterCollection.isTemplate(pogData));
-		} else if (pogData.isThisARoomObject()) {
-			return (roomCollection.isTemplate(pogData));
-		}
-		return (false);
 	}
 
 	/**

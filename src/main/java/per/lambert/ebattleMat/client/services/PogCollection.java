@@ -15,10 +15,8 @@
  */
 package per.lambert.ebattleMat.client.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.google.gwt.core.client.JsonUtils;
 
@@ -47,18 +45,6 @@ public class PogCollection {
 	 * Map of pog data vs name.
 	 */
 	private Map<String, PogData> pogTemplateMap = new HashMap<String, PogData>();
-	/**
-	 * Map of pog data vs name.
-	 */
-	private Map<String, PogData> pogSortedMap = new TreeMap<String, PogData>();
-	/**
-	 * Map of pog races.
-	 */
-	private Map<String, String> pogRaces = new HashMap<String, String>();
-	/**
-	 * Map of pog classes.
-	 */
-	private Map<String, String> pogClasses = new HashMap<String, String>();
 	/**
 	 * List of pog templates.
 	 */
@@ -97,9 +83,6 @@ public class PogCollection {
 	 */
 	public void clear() {
 		pogTemplateMap.clear();
-		pogSortedMap.clear();
-		pogRaces.clear();
-		pogClasses.clear();
 	}
 
 	/**
@@ -152,18 +135,7 @@ public class PogCollection {
 	 * @param pogToAdd with data to add
 	 */
 	private void addToCollections(final PogData pogToAdd) {
-		if (!pogToAdd.getPogClass().isEmpty()) {
-			if (!pogClasses.containsKey(pogToAdd.getPogClass())) {
-				pogClasses.put(pogToAdd.getPogClass(), pogToAdd.getPogClass());
-			}
-		}
-		if (!pogToAdd.getRace().isEmpty()) {
-			if (!pogRaces.containsKey(pogToAdd.getRace())) {
-				pogRaces.put(pogToAdd.getRace(), pogToAdd.getRace());
-			}
-		}
 		pogTemplateMap.put(pogToAdd.getUUID(), pogToAdd);
-		pogSortedMap.put(pogToAdd.getName(), pogToAdd);
 	}
 
 	/**
@@ -180,6 +152,7 @@ public class PogCollection {
 
 	/**
 	 * Remove this pog.
+	 * 
 	 * @param pog
 	 */
 	public void remove(final PogData pog) {
@@ -188,70 +161,6 @@ public class PogCollection {
 		}
 		pogTemplates.remove(pog);
 		rebuildCollections();
-	}
-	
-	/**
-	 * Filter a pog list.
-	 * 
-	 * @param raceFilter race filter
-	 * @param classFilter class filter
-	 * @param genderFilter gender filter
-	 * @return pog that match
-	 */
-	public ArrayList<PogData> getFilteredPogs(final String raceFilter, final String classFilter, final String genderFilter) {
-		ArrayList<PogData> filteredPogs = new ArrayList<PogData>();
-		for (PogData pog : pogTemplates.getPogList()) {
-			if (raceFilter != null && !raceFilter.isEmpty()) {
-				if (!pog.getRace().equalsIgnoreCase(raceFilter)) {
-					continue;
-				}
-			}
-			if (classFilter != null && !classFilter.isEmpty()) {
-				if (!pog.getPogClass().equalsIgnoreCase(classFilter)) {
-					continue;
-				}
-			}
-			if (genderFilter != null && !genderFilter.isEmpty()) {
-				if (!pog.getGender().equalsIgnoreCase(genderFilter)) {
-					continue;
-				}
-			}
-			filteredPogs.add(pog);
-		}
-		return (filteredPogs);
-	}
-
-	/**
-	 * Get array of sorted pogs.
-	 * 
-	 * @return sorted array
-	 */
-	public ArrayList<PogData> getSortedPogs() {
-		ArrayList<PogData> sortedPogs = new ArrayList<PogData>();
-		for (PogData entry : pogSortedMap.values()) {
-			sortedPogs.add(entry);
-		}
-		return (sortedPogs);
-	}
-
-	/**
-	 * get Array of classes.
-	 * 
-	 * @return array of classes.
-	 */
-	public String[] getClassses() {
-		String[] rtn = new String[0];
-		return (pogClasses.values().toArray(rtn));
-	}
-
-	/**
-	 * get Array of races.
-	 * 
-	 * @return array of races.
-	 */
-	public String[] getRaces() {
-		String[] rtn = new String[0];
-		return (pogRaces.values().toArray(rtn));
 	}
 
 	/**
