@@ -18,12 +18,14 @@ package per.lambert.ebattleMat.client.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonServerError;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
@@ -109,11 +111,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		return (selectedDungeon != null);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public DungeonData getSelectedDungeon() {
+	private DungeonData getSelectedDungeon() {
 		return selectedDungeon;
 	}
 
@@ -123,10 +121,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	private DungeonSessionData selectedSession;
 
 	/**
-	 * {@inheritDoc}
+	 * Get selected session.
+	 * 
+	 * @return selected session
 	 */
-	@Override
-	public DungeonSessionData getSelectedSession() {
+	private DungeonSessionData getSelectedSession() {
 		return selectedSession;
 	}
 
@@ -157,6 +156,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	@Override
 	public void setCurrentLevel(final int currentLevel) {
 		this.currentLevelIndex = currentLevel;
+		loadDungeonData();
+		loadSessionData();
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelectedLevelChanged, null));
 	}
 
@@ -361,6 +362,27 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
+	 * Collection of dungeon level monster templates.
+	 */
+	private PogCollection dungeonLevelMonsters = new PogCollection(ReasonForAction.LastReason, PogPlace.DUNGEON_LEVEL);
+	/**
+	 * Collection of dungeon level monster templates.
+	 */
+	private PogCollection dungeonLevelRoomObjects = new PogCollection(ReasonForAction.LastReason, PogPlace.DUNGEON_LEVEL);
+	/**
+	 * Collection of session level monster templates.
+	 */
+	private PogCollection sessionLevelMonsters = new PogCollection(ReasonForAction.LastReason, PogPlace.SESSION_LEVEL);
+	/**
+	 * Collection of session level monster templates.
+	 */
+	private PogCollection sessionLevelRoomObjects = new PogCollection(ReasonForAction.LastReason, PogPlace.SESSION_LEVEL);
+	/**
+	 * Collection of session level monster templates.
+	 */
+	private PogCollection sessionLevelPlayers = new PogCollection(ReasonForAction.LastReason, PogPlace.SESSION_RESOURCE);
+
+	/**
 	 * construct a dungeon manager.
 	 */
 	public DungeonManager() {
@@ -481,6 +503,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			@Override
 			public void onSuccess(final Object sender, final Object data) {
 				selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
+				loadDungeonData();
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
 				if (editMode) {
@@ -494,6 +517,17 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			public void onError(final Object sender, final IErrorInformation error) {
 			}
 		});
+	}
+
+	/**
+	 * Load in data for dungeon.
+	 */
+	private void loadDungeonData() {
+		DungeonLevel dungeonLevel = getCurrentDungeonLevelData();
+		if (dungeonLevel != null) {
+			dungeonLevelMonsters.setPogList(dungeonLevel.getMonsters());
+			dungeonLevelRoomObjects.setPogList(dungeonLevel.getRoomObjects());
+		}
 	}
 
 	/**
@@ -721,6 +755,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				String jsonData = (String) data;
 				if (!jsonData.isEmpty()) {
 					selectedSession = JsonUtils.<DungeonSessionData>safeEval(jsonData);
+					loadSessionData();
 					if (versionToTest == -1) { // is this first load?
 						ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToJoin, null));
 					} else {
@@ -733,6 +768,17 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			public void onError(final Object sender, final IErrorInformation error) {
 			}
 		});
+	}
+
+	/**
+	 * Load in session data.
+	 */
+	private void loadSessionData() {
+		if (getCurrentSessionLevelData() != null) {
+			sessionLevelMonsters.setPogList(getCurrentSessionLevelData().getMonsters());
+			sessionLevelRoomObjects.setPogList(getCurrentSessionLevelData().getRoomObjects());
+			sessionLevelPlayers.setPogList(selectedSession.getPlayers());
+		}
 	}
 
 	/**
@@ -946,17 +992,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return null;
 		}
 		if (editMode) {
-			DungeonLevel currentLevel = getCurrentDungeonLevelData();
-			if (currentLevel == null) {
-				return null;
-			}
-			return (currentLevel.getMonsters().getPogList());
+			return (dungeonLevelMonsters.getPogList());
 		}
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (sessionLevel == null) {
-			return null;
-		}
-		return sessionLevel.getMonsters().getPogList();
+		return sessionLevelMonsters.getPogList();
 	}
 
 	/**
@@ -968,17 +1006,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return null;
 		}
 		if (editMode) {
-			DungeonLevel currentLevel = getCurrentDungeonLevelData();
-			if (currentLevel == null) {
-				return null;
-			}
-			return (currentLevel.getRoomObjects().getPogList());
+			return (dungeonLevelRoomObjects.getPogList());
 		}
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (sessionLevel == null) {
-			return null;
-		}
-		return sessionLevel.getRoomObjects().getPogList();
+		return sessionLevelRoomObjects.getPogList();
 	}
 
 	/**
@@ -991,7 +1021,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 		int currentLevel = getCurrentLevelIndex();
 		ArrayList<PogData> playersOnLevel = new ArrayList<PogData>();
-		for (PogData player : selectedSession.getPlayers().getPogList()) {
+		for (PogData player : sessionLevelPlayers.getPogList()) {
 			if (player.getDungeonLevel() == currentLevel) {
 				playersOnLevel.add(player);
 			}
@@ -1117,28 +1147,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (selectedSession == null) {
 			return null;
 		}
-		for (PogData pog : selectedSession.getPlayers().getPogList()) {
-			if (pog.getUUID().equals(uuid)) {
-				return (pog);
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Find Pog in list.
-	 * 
-	 * @param pogToFind to find
-	 * @param pogs to search
-	 * @return pog if found or null
-	 */
-	private PogData findPog(final PogData pogToFind, final PogData[] pogs) {
-		for (PogData pog : pogs) {
-			if (pog.getUUID() == pogToFind.getUUID()) {
-				return (pog);
-			}
-		}
-		return (null);
+		return (sessionLevelPlayers.findPog(uuid));
 	}
 
 	/**
@@ -1149,22 +1158,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public PogPlace computePlace(final PogData pog) {
-		if (getCurrentDungeonLevelData() == null) {
-			return (PogPlace.COMMON_RESOURCE);
-		}
-		if (pog.isThisAPlayer()) {
-			return (PogPlace.SESSION_RESOURCE);
-		}
-		if (pog.isThisAMonster()) {
-			if (findPog(pog, getCurrentDungeonLevelData().getMonsters().getPogList()) != null) {
-				return (PogPlace.DUNGEON_LEVEL);
-			}
-		} else {
-			if (findPog(pog, getCurrentDungeonLevelData().getRoomObjects().getPogList()) != null) {
-				return (PogPlace.DUNGEON_LEVEL);
-			}
-		}
-		return (PogPlace.SESSION_LEVEL);
+		return (pog.getPogPlace());
 	}
 
 	/**
@@ -1185,78 +1179,15 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	@Override
 	public void addOrUpdatePog(final PogData pog, final PogPlace place) {
-		if (place == PogPlace.COMMON_RESOURCE) {
-			addOrUpdatePogToCommonResource(pog);
-		} else if (place == PogPlace.SESSION_LEVEL) {
-			addOrUpdatePogToSessionInstance(pog);
-		} else if (place == PogPlace.DUNGEON_LEVEL) {
-			addOrUpdatePogToDungeonInstance(pog);
-		} else if (place == PogPlace.SESSION_RESOURCE) {
-			addOrUpdatePogToSessionResource(pog);
-		} else if (place == PogPlace.INVALID) {
+		PogCollection collection = getProperCollection(place, pog.getType());
+		if (collection == null) {
 			return;
 		}
+		collection.addOrUpdatePogCollection(pog);
 		addOrUpdatePogToServer(pog, place);
 		if (pog.isEqual(getSelectedPog())) {
 			setSelectedPogInternal(pog);
 		}
-	}
-
-	/**
-	 * Add pog to dungeon instance area.
-	 * 
-	 * @param pog to add
-	 */
-	private void addOrUpdatePogToDungeonInstance(final PogData pog) {
-		DungeonLevel dungeonLevel = getCurrentDungeonLevelData();
-		if (pog.isThisAMonster()) {
-			dungeonLevel.getMonsters().addOrUpdate(pog);
-		} else if (pog.isThisARoomObject()) {
-			dungeonLevel.getRoomObjects().addOrUpdate(pog);
-		}
-	}
-
-	/**
-	 * Add pog to session instance area.
-	 * 
-	 * @param pog to add
-	 */
-	private void addOrUpdatePogToSessionInstance(final PogData pog) {
-		DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-		if (sessionLevel == null) {
-			return;
-		}
-		if (pog.isThisAMonster()) {
-			sessionLevel.getMonsters().addOrUpdate(pog);
-		} else if (pog.isThisARoomObject()) {
-			sessionLevel.getRoomObjects().addOrUpdate(pog);
-		} else if (pog.isThisAPlayer()) {
-			addOrUpdatePogToSessionResource(pog);
-		}
-	}
-
-	/**
-	 * Add pog to session resource area.
-	 * 
-	 * This should only be player data.
-	 * 
-	 * @param pog to add
-	 */
-	private void addOrUpdatePogToSessionResource(final PogData pog) {
-		if (pog.isThisAPlayer()) {
-			DungeonSessionData sessionData = getSelectedSession();
-			sessionData.getPlayers().addOrUpdate(pog);
-		}
-	}
-
-	/**
-	 * Add pog to dungeon resource area.
-	 * 
-	 * This is not supported yet but might be used in the future for dungeon specific resources.
-	 * 
-	 * @param pog to add
-	 */
-	private void addOrUpdatePogToDungeonResource(final PogData pog) {
 	}
 
 	/**
@@ -1378,29 +1309,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param place where to remove it from
 	 */
 	private void removeThisPog(final PogData pog, final PogPlace place) {
-		if (place == PogPlace.SESSION_LEVEL) {
-			DungeonSessionLevel sessionLevel = getCurrentSessionLevelData();
-			if (sessionLevel != null) {
-				if (pog.isThisAMonster()) {
-					sessionLevel.getMonsters().remove(pog);
-				} else if (pog.isThisARoomObject()) {
-					sessionLevel.getRoomObjects().remove(pog);
-				}
-			}
-		} else if (place == PogPlace.DUNGEON_LEVEL) {
-			DungeonLevel dungeonLevel = getCurrentDungeonLevelData();
-			if (pog.isThisAMonster()) {
-				dungeonLevel.getMonsters().remove(pog);
-			} else if (pog.isThisARoomObject()) {
-				dungeonLevel.getRoomObjects().remove(pog);
-			}
-		} else if (place == PogPlace.COMMON_RESOURCE) {
-			if (pog.isThisAMonster()) {
-				removeMonster(pog);
-			} else if (pog.isThisARoomObject()) {
-				removeRoomObject(pog);
-			}
+		PogCollection collection = getProperCollection(place, pog.getType());
+		if (collection == null) {
+			return;
 		}
+		collection.remove(pog);
 		setSelectedPog(null);
 	}
 
@@ -1463,5 +1376,62 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		String fileExtension = i > 0 ? url.substring(i + 1) : "";
 		boolean valid = fileExtension.startsWith("jpeg") || fileExtension.startsWith("jpg") || fileExtension.startsWith("png") || fileExtension.startsWith("webp");
 		return (valid);
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isDungeonGridVisible() {
+		return (getSelectedDungeon().getShowGrid());
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setIsDungeonGridVisible(final boolean isVisible) {
+		getSelectedDungeon().setShowGrid(isVisible);
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<PogData> getSortedList(final PogPlace fromWhere, final String typeOfPogs) {
+		PogCollection collection = getProperCollection(fromWhere, typeOfPogs);
+		if (collection != null) {
+			return (collection.getSortedListOfPogs());
+		}
+		return (null);
+	}
+
+	private PogCollection getProperCollection(final PogPlace fromWhere, final String typeOfPogs) {
+		PogCollection collection = null;
+		if (fromWhere == PogPlace.COMMON_RESOURCE) {
+			if (typeOfPogs == Constants.POG_TYPE_MONSTER) {
+				collection = getMonsterCollection();
+			} else {
+				collection = getRoomCollection();
+			}
+		} else if (fromWhere == PogPlace.SESSION_LEVEL) {
+			if (typeOfPogs == Constants.POG_TYPE_MONSTER) {
+				collection = sessionLevelMonsters;
+			} else {
+				collection = sessionLevelRoomObjects;
+			}
+		} else if (fromWhere == PogPlace.DUNGEON_LEVEL) {
+			if (typeOfPogs == Constants.POG_TYPE_MONSTER) {
+				collection = dungeonLevelMonsters;
+			} else {
+				collection = dungeonLevelRoomObjects;
+			}
+		} else if (fromWhere == PogPlace.SESSION_RESOURCE) {
+			collection = sessionLevelPlayers;
+		}
+		return (collection);
 	}
 }

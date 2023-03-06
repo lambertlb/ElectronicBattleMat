@@ -354,7 +354,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Width of pog border.
 	 */
-	private double pogBorderWidth = 3;
+	private double pogBorderWidth = 100;
 	/**
 	 * Helper for mobile touches.
 	 */
@@ -941,7 +941,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		gridOffsetX = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridOffsetX() * totalZoom;
 		gridOffsetY = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridOffsetY() * totalZoom;
 		gridSpacing = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridSize();
-		showGrid = ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid();
+		showGrid = ServiceManager.getDungeonManager().isDungeonGridVisible();
 	}
 
 	/**
@@ -1060,8 +1060,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private void computPogBorderWidth() {
 		pogBorderWidth = totalZoom * getStartingBorderWidth();
-		if (pogBorderWidth < 1.0) {
-			pogBorderWidth = 1.0;
+		if (pogBorderWidth < 5.0) {
+			pogBorderWidth = 5.0;
 		}
 	}
 
@@ -1071,7 +1071,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @return starting border width
 	 */
 	private double getStartingBorderWidth() {
-		return (gridSpacing / 15);
+		return (gridSpacing / 10);
 	}
 
 	/**

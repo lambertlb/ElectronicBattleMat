@@ -21,6 +21,7 @@ import com.google.gwt.core.client.JsonUtils;
 import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 
 /**
  * pog data.
@@ -361,7 +362,6 @@ public class PogData extends JavaScriptObject {
 		setDungeonMasterFlagsNative(flags);
 	}
 
-
 	/**
 	 * get pog notes.
 	 * 
@@ -453,7 +453,10 @@ public class PogData extends JavaScriptObject {
 		setDungeonLevel(withUpdates.getDungeonLevel());
 		setNotes(withUpdates.getNotes());
 		setDmNotes(withUpdates.getDmNotes());
+		setPogNumber(withUpdates.getPogNumber());
+		setPlace(withUpdates.getPlace());
 	}
+
 	/**
 	 * Get pog number in grid squares.
 	 * 
@@ -474,4 +477,43 @@ public class PogData extends JavaScriptObject {
 	public final native void setPogNumber(int pogNumber) /*-{
 		this.pogNumber = pogNumber;
 	}-*/;
+
+	/**
+	 * Get pog place.
+	 * 
+	 * @return pog size in grid squares.
+	 */
+	private native int getPlace() /*-{
+		if (this.pogPlace === undefined) {
+			this.pogPlace = 0;
+		}
+		return (this.pogPlace);
+	}-*/;
+
+	/**
+	 * Set pog place.
+	 * 
+	 * @param pogPlace pog place.
+	 */
+	private native void setPlace(int pogPlace) /*-{
+		this.pogPlace = pogPlace;
+	}-*/;
+
+	/**
+	 * Get place for pog.
+	 * 
+	 * @return place for pog
+	 */
+	public final PogPlace getPogPlace() {
+		return (PogPlace.valueOf(getPlace()));
+	}
+
+	/**
+	 * Set pog place.
+	 * 
+	 * @param pogPlace to set
+	 */
+	public final void setPogPlace(final PogPlace pogPlace) {
+		setPlace(pogPlace.getValue());
+	}
 }

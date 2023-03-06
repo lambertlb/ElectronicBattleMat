@@ -15,7 +15,11 @@
  */
 package per.lambert.ebattleMat.client.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.JsonUtils;
@@ -24,6 +28,7 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.PogList;
@@ -38,17 +43,33 @@ import per.lambert.ebattleMat.client.services.serviceData.PogList;
  */
 public class PogCollection {
 	/**
+	 * Compare allowing duplicates.
+	 * @author LLambert
+	 *
+	 */
+	class PogComparator implements Comparator<PogData> {
+		@Override
+		public int compare(final PogData a, final PogData b) {
+			int cp = a.getName().compareToIgnoreCase(b.getName());
+			return cp == 0 ? 1 : cp;
+		}
+	}
+	/**
 	 * load event.
 	 */
 	private ReasonForAction loadEvent;
 	/**
+	 * Place where pog resides.
+	 */
+	private PogPlace pogPlace;
+	/**
 	 * Map of pog data vs name.
 	 */
-	private Map<String, PogData> pogTemplateMap = new HashMap<String, PogData>();
+	private Map<String, PogData> pogMap = new HashMap<String, PogData>();
 	/**
 	 * List of pog templates.
 	 */
-	private PogList pogTemplates;
+	private PogList pogList;
 
 	/**
 	 * get array of pog templates.
@@ -56,16 +77,18 @@ public class PogCollection {
 	 * @return array of pog templates
 	 */
 	public PogData[] getPogList() {
-		return pogTemplates.getPogList();
+		return pogList.getPogList();
 	}
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param eventToFireWhenLoaded event to fire when loaded
+	 * @param pogPlace place where pog resides.
 	 */
-	public PogCollection(final ReasonForAction eventToFireWhenLoaded) {
+	public PogCollection(final ReasonForAction eventToFireWhenLoaded, final PogPlace pogPlace) {
 		loadEvent = eventToFireWhenLoaded;
+		this.pogPlace = pogPlace;
 	}
 
 	/**
@@ -75,14 +98,14 @@ public class PogCollection {
 	 * @return pog data if found
 	 */
 	public PogData findPog(final String pogUUID) {
-		return (pogTemplateMap.get(pogUUID));
+		return (pogMap.get(pogUUID));
 	}
 
 	/**
 	 * Clear out collections.
 	 */
 	public void clear() {
-		pogTemplateMap.clear();
+		pogMap.clear();
 	}
 
 	/**
@@ -109,13 +132,20 @@ public class PogCollection {
 	}
 
 	/**
+	 * Set pog list.
+	 * @param pogList to use
+	 */
+	public void	setPogList(final PogList pogList) {
+		this.pogList = pogList;
+		rebuildCollections();
+	}
+	/**
 	 * Got data from server fill in collections.
 	 * 
 	 * @param data received
 	 */
 	private void loadPogTemplates(final Object data) {
-		pogTemplates = JsonUtils.<PogList>safeEval((String) data);
-		rebuildCollections();
+		setPogList(JsonUtils.<PogList>safeEval((String) data));
 	}
 
 	/**
@@ -123,10 +153,13 @@ public class PogCollection {
 	 */
 	private void rebuildCollections() {
 		clear();
-		for (PogData pogTemplate : pogTemplates.getPogList()) {
+		for (PogData pogTemplate : pogList.getPogList()) {
+			pogTemplate.setPogPlace(pogPlace);
 			addToCollections(pogTemplate);
 		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(loadEvent, null));
+		if (loadEvent != ReasonForAction.LastReason) {
+			ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(loadEvent, null));
+		}
 	}
 
 	/**
@@ -135,7 +168,7 @@ public class PogCollection {
 	 * @param pogToAdd with data to add
 	 */
 	private void addToCollections(final PogData pogToAdd) {
-		pogTemplateMap.put(pogToAdd.getUUID(), pogToAdd);
+		pogMap.put(pogToAdd.getUUID(), pogToAdd);
 	}
 
 	/**
@@ -143,9 +176,12 @@ public class PogCollection {
 	 * 
 	 * @param pog to add or update
 	 */
-	public void addOrUpdatePogToCommonResource(final PogData pog) {
-		if (findPog(pog.getUUID()) == null) {
-			pogTemplates.addPog(pog);
+	public void addOrUpdatePogCollection(final PogData pog) {
+		PogData existing = findPog(pog.getUUID());
+		if (existing == null) {
+			pogList.addPog(pog);
+		} else {
+			existing.fullUpdate(pog);
 		}
 		rebuildCollections();
 	}
@@ -159,7 +195,7 @@ public class PogCollection {
 		if (findPog(pog.getUUID()) == null) {
 			return;
 		}
-		pogTemplates.remove(pog);
+		pogList.remove(pog);
 		rebuildCollections();
 	}
 
@@ -170,6 +206,22 @@ public class PogCollection {
 	 * @return true if is template
 	 */
 	public boolean isTemplate(final PogData pogData) {
-		return (pogTemplateMap.containsKey(pogData.getUUID()));
+		return (pogMap.containsKey(pogData.getUUID()));
+	}
+	
+	/**
+	 * get a sorted list of pogs.
+	 * @return sorted list
+	 */
+	public List<PogData> getSortedListOfPogs() {
+		if (pogList == null || pogList.getPogList() == null) {
+			return (null);
+		}
+		List<PogData> keys = new ArrayList<>();
+		for (PogData pog : pogList.getPogList()) {
+			keys.add(pog);
+		}
+		Collections.sort(keys, new PogComparator());
+		return (keys);
 	}
 }

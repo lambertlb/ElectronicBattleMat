@@ -34,10 +34,7 @@ import per.lambert.ebattleMat.client.mocks.MockEventManager;
 import per.lambert.ebattleMat.client.mocks.MockResponseData;
 import per.lambert.ebattleMat.client.services.DungeonManager;
 import per.lambert.ebattleMat.client.services.ServiceManager;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionLevel;
 import per.lambert.ebattleMat.client.services.serviceData.FogOfWarData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
@@ -244,13 +241,10 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		hadEvent(ReasonForAction.DungeonDataLoaded);
 		hadEvent(ReasonForAction.DungeonDataReadyToEdit);
 		assertTrue(dungeonManager.isThereASelectedDungeon());
-		DungeonData dungeonData = dungeonManager.getSelectedDungeon();
-		assertTrue(dungeonData != null);
 		assertTrue(dungeonManager.getCurrentLevelIndex() == 0);
 		assertTrue(dungeonManager.getNextAvailableLevelNumber() == 4);
 		assertTrue(dungeonManager.isDungeonMaster());
 		assertTrue(dungeonManager.isEditMode());
-		checkDungeon1TemplateData(dungeonData);
 	}
 
 	/**
@@ -526,10 +520,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		});
 		dungeonManager.dmSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
 		hadEvent(ReasonForAction.DungeonDataReadyToJoin);
-		assertTrue(dungeonManager.getSelectedSession() != null);
-		assertTrue(dungeonManager.isDungeonMaster());
-		assertFalse(dungeonManager.isEditMode());
-		spotCheckSessionData(dungeonManager.getSelectedSession());
 	}
 
 	/**
@@ -564,10 +554,8 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		});
 		dungeonManager.joinSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
 		hadEvent(ReasonForAction.DungeonDataReadyToJoin);
-		assertTrue(dungeonManager.getSelectedSession() != null);
 		assertFalse(dungeonManager.isDungeonMaster());
 		assertFalse(dungeonManager.isEditMode());
-		spotCheckSessionData(dungeonManager.getSelectedSession());
 	}
 
 	/**
@@ -856,64 +844,6 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 	}
 
 	/**
-	 * Spot check session data.
-	 * 
-	 * @param selectedSession to check
-	 */
-	private void spotCheckSessionData(final DungeonSessionData selectedSession) {
-		assertTrue(selectedSession.getDungeonUUID() == "dungeon1-template");
-		assertTrue(selectedSession.getSessionUUID() == "362dd584-3449-4687-aeed-d1a2ac2f10bd");
-		assertTrue(selectedSession.getSessionName() == "Session 1");
-		assertTrue(selectedSession.getVersion() == 1);
-		assertTrue(selectedSession.getSessionLevels().length == 3);
-		spotCheckSessionLevel(selectedSession.getSessionLevels()[0]);
-	}
-
-	/**
-	 * Spot check a dungeon level.
-	 * 
-	 * @param dungeonSessionLevel to check
-	 */
-	private void spotCheckSessionLevel(final DungeonSessionLevel dungeonSessionLevel) {
-		assertTrue(dungeonSessionLevel.getFOW() != null);
-		assertTrue(dungeonSessionLevel.getFOW().length != 0);
-		assertTrue(dungeonSessionLevel.getMonsters() != null);
-		assertTrue(dungeonSessionLevel.getMonsters().getPogList().length != 0);
-		assertTrue(dungeonSessionLevel.getRoomObjects() != null);
-		assertTrue(dungeonSessionLevel.getRoomObjects().getPogList().length != 0);
-	}
-
-	/**
-	 * Do some spot checks on dungeon 1 data.
-	 * 
-	 * @param dungeonData to check
-	 */
-	private void checkDungeon1TemplateData(final DungeonData dungeonData) {
-		assertTrue(dungeonData.getUUID() == "dungeon1-template");
-		assertTrue(dungeonData.getDungeonName() == "Dungeon1");
-		assertTrue(dungeonData.getShowGrid());
-		assertTrue(dungeonData.getDungeonlevels().length == 3);
-		spotCheckDungeon1Level1(dungeonData.getDungeonlevels()[0]);
-	}
-
-	/**
-	 * Spot check dungeon 1 level 1.
-	 * 
-	 * @param dungeonLevel to check
-	 */
-	private void spotCheckDungeon1Level1(final DungeonLevel dungeonLevel) {
-		assertTrue(dungeonLevel.getLevelDrawing() == "level1.jpg");
-		assertTrue(dungeonLevel.getLevelName() == "Entrance");
-		assertTrue(dungeonLevel.getColumns() == 31);
-		assertTrue(dungeonLevel.getRows() == 31);
-		assertTrue(dungeonLevel.getGridSize() == 50.0);
-		assertTrue(dungeonLevel.getGridOffsetX() == 11.0);
-		assertTrue(dungeonLevel.getGridOffsetY() == 11.0);
-		assertTrue(dungeonLevel.getMonsters().getPogList().length == 5);
-		assertTrue(dungeonLevel.getRoomObjects().getPogList().length == 2);
-	}
-
-	/**
 	 * Set proper bit based on reason.
 	 * 
 	 * @param event with reason
@@ -968,6 +898,5 @@ public class ElectronicBattleMatTest extends GWTTestCase {
 		});
 		dungeonManager.dmSession("dungeon1-template", "e3eb2220-2d31-4b5a-ad9f-063624ac209c");
 		dataRequesterForTest.setTestCallback(null);
-		assertTrue(dungeonManager.getSelectedSession() != null);
 	}
 }

@@ -15,9 +15,6 @@
  */
 package per.lambert.ebattleMat.client.controls;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -30,7 +27,9 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
 import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
+import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -42,13 +41,6 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
  *
  */
 public class PogSelection extends DockLayoutPanel {
-	class PogComparator implements Comparator<PogData> {
-		@Override
-		public int compare(final PogData a, final PogData b) {
-			int cp = a.getName().compareToIgnoreCase(b.getName());
-			return cp == 0 ? 1 : cp;
-		}
-	}
 
 	/**
 	 * Tree of pogs.
@@ -244,31 +236,31 @@ public class PogSelection extends DockLayoutPanel {
 	 * Fill trees for common resources.
 	 */
 	private void fillCommonResourceTrees() {
-		buildSortedTree(commonMonsterTree, ServiceManager.getDungeonManager().getMonsterTemplatePogs());
-		buildSortedTree(commonObjectsTree, ServiceManager.getDungeonManager().getRoomObjectTemplatePogs());
+		buildSortedTree(commonMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER));
+		buildSortedTree(commonObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT));
 	}
 
 	/**
 	 * Fill trees with level based pogs.
 	 */
 	private void fillDungeonLevelTrees() {
-		buildSortedTree(dungeonLevelMonsterTree, ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getMonsters().getPogList());
-		buildSortedTree(dungeonLevelObjectsTree, ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getRoomObjects().getPogList());
+		buildSortedTree(dungeonLevelMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.DUNGEON_LEVEL, Constants.POG_TYPE_MONSTER));
+		buildSortedTree(dungeonLevelObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.DUNGEON_LEVEL, Constants.POG_TYPE_ROOMOBJECT));
 	}
 
 	/**
 	 * Fill tree with player pogs.
 	 */
 	private void fillPlayerTree() {
-		buildSortedTree(playerTree, ServiceManager.getDungeonManager().getPlayersForCurrentSession());
+		buildSortedTree(playerTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_RESOURCE, Constants.POG_TYPE_PLAYER));
 	}
 
 	/**
 	 * Fill tree with session level pogs.
 	 */
 	private void fillSessionLevelTree() {
-		buildSortedTree(sessionLevelMonsterTree, ServiceManager.getDungeonManager().getMonstersForCurrentLevel());
-		buildSortedTree(sessionLevelObjectsTree, ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel());
+		buildSortedTree(sessionLevelMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_LEVEL, Constants.POG_TYPE_MONSTER));
+		buildSortedTree(sessionLevelObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_LEVEL, Constants.POG_TYPE_ROOMOBJECT));
 	}
 
 	/**
@@ -291,17 +283,12 @@ public class PogSelection extends DockLayoutPanel {
 	 * @param treeItem
 	 * @param pogs
 	 */
-	private void buildSortedTree(final TreeItem treeItem, final PogData[] pogs) {
+	private void buildSortedTree(final TreeItem treeItem, final List<PogData> pogs) {
 		if (pogs == null) {
 			return;
 		}
 		treeItem.removeItems();
-		List<PogData> keys = new ArrayList<>();
-		for (PogData pog : pogs) {
-			keys.add(pog);
-		}
-		Collections.sort(keys, new PogComparator());
-		for (PogData key : keys) {
+		for (PogData key : pogs) {
 			addTreeItem(treeItem, key);
 		}
 	}

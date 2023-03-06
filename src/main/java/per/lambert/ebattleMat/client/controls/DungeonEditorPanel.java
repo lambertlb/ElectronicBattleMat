@@ -438,7 +438,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			return;
 		}
 		int nextAvailableLevelIndex = ServiceManager.getDungeonManager().getNextAvailableLevelNumber();
-		ServiceManager.getDungeonManager().getSelectedDungeon().setShowGrid(showGrid.getValue());
+		ServiceManager.getDungeonManager().setIsDungeonGridVisible(showGrid.getValue());
 		currentLevel.setGridSize(gridSize.getValue());
 		currentLevel.setGridOffsetX(gridOffsetX.getDoubleValue());
 		currentLevel.setGridOffsetY(gridOffsetY.getDoubleValue());
@@ -512,7 +512,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 * Add level to form.
 	 */
 	private void addLevelDataToForm() {
-		showGrid.setValue(ServiceManager.getDungeonManager().getSelectedDungeon().getShowGrid());
+		showGrid.setValue(ServiceManager.getDungeonManager().isDungeonGridVisible());
 		gridSize.setValue(currentLevel.getGridSize());
 		gridOffsetX.setValue(currentLevel.getGridOffsetX());
 		gridOffsetY.setValue(currentLevel.getGridOffsetY());

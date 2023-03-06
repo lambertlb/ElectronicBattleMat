@@ -37,7 +37,6 @@ import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
 /**
@@ -392,11 +391,11 @@ public class RibbonBar extends Composite {
 	private void characterPogsLoaded() {
 		characterSelect.clear();
 		characterSelect.addItem("Select Character Pog", "");
-		DungeonSessionData sessionData = ServiceManager.getDungeonManager().getSelectedSession();
-		if (sessionData == null) {
+		PogData[] players = ServiceManager.getDungeonManager().getPlayersForCurrentSession();
+		if (players == null) {
 			return;
 		}
-		for (PogData pogData : sessionData.getPlayers().getPogList()) {
+		for (PogData pogData : players) {
 			characterSelect.addItem(pogData.getName(), pogData.getUUID());
 		}
 	}

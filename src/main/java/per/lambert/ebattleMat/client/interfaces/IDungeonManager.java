@@ -15,11 +15,10 @@
  */
 package per.lambert.ebattleMat.client.interfaces;
 
+import java.util.List;
 import java.util.Map;
 
-import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
-import per.lambert.ebattleMat.client.services.serviceData.DungeonSessionData;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
 
@@ -63,13 +62,6 @@ public interface IDungeonManager extends IPogManager {
 	 * @param selectedDungeonUUID UUID of dungeon to edit.
 	 */
 	void editSelectedDungeonUUID(String selectedDungeonUUID);
-
-	/**
-	 * get dungeon data for selected dungeon.
-	 * 
-	 * @return dungeon data for selected dungeon.
-	 */
-	DungeonData getSelectedDungeon();
 
 	/**
 	 * Is there a selected dungeon.
@@ -209,13 +201,6 @@ public interface IDungeonManager extends IPogManager {
 	 * @return true if valid
 	 */
 	boolean isNameValidForNewSession(String newSessionName);
-
-	/**
-	 * get selected session.
-	 * 
-	 * @return selected session.
-	 */
-	DungeonSessionData getSelectedSession();
 
 	/**
 	 * Create a new session for this dungeon.
@@ -466,4 +451,24 @@ public interface IDungeonManager extends IPogManager {
 	 * @param gridWidth grid width
 	 */
 	void setComputedGridWidth(double gridWidth);
+	
+	/**
+	 * Is dungeon grid Visible.
+	 * @return true if it is
+	 */
+	boolean isDungeonGridVisible();
+	
+	/**
+	 * Set is dungeon grid visible.
+	 * @param isVisible true if visible
+	 */
+	void setIsDungeonGridVisible(boolean isVisible);
+	
+	/**
+	 * get a list of sorted pogs from place.
+	 * @param fromWhere which pogs
+	 * @param typeOfPogs type of pogs
+	 * @return sorted list
+	 */
+	List<PogData> getSortedList(PogPlace fromWhere, String typeOfPogs);
 }

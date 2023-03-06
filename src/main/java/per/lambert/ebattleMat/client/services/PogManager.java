@@ -22,6 +22,7 @@ import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IPogManager;
 import per.lambert.ebattleMat.client.interfaces.PlayerFlag;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 
@@ -35,12 +36,28 @@ public abstract class PogManager implements IPogManager {
 	/**
 	 * Collection of monster templates.
 	 */
-	private PogCollection monsterCollection = new PogCollection(ReasonForAction.MonsterPogsLoaded);
+	private PogCollection monsterCollection = new PogCollection(ReasonForAction.MonsterPogsLoaded, PogPlace.COMMON_RESOURCE);
+
+	/**
+	 * Get monster collection.
+	 * @return monster collection
+	 */
+	protected PogCollection getMonsterCollection() {
+		return monsterCollection;
+	}
 
 	/**
 	 * Collection of room templates.
 	 */
-	private PogCollection roomCollection = new PogCollection(ReasonForAction.RoomObjectPogsLoaded);
+	private PogCollection roomCollection = new PogCollection(ReasonForAction.RoomObjectPogsLoaded, PogPlace.COMMON_RESOURCE);
+
+	/**
+	 * Get room collection.
+	 * @return room collection
+	 */
+	protected PogCollection getRoomCollection() {
+		return roomCollection;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -182,9 +199,9 @@ public abstract class PogManager implements IPogManager {
 	 */
 	protected void addOrUpdatePogToCommonResource(final PogData pog) {
 		if (pog.isThisAMonster()) {
-			monsterCollection.addOrUpdatePogToCommonResource(pog);
+			monsterCollection.addOrUpdatePogCollection(pog);
 		} else {
-			roomCollection.addOrUpdatePogToCommonResource(pog);
+			roomCollection.addOrUpdatePogCollection(pog);
 		}
 	}
 
