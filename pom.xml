@@ -141,6 +141,7 @@
 					<startupUrls>
 						<startupUrl>index.html</startupUrl>
 					</startupUrls>
+					<!-- <style>PRETTY</style> -->
 				</configuration>
 			</plugin>
 

@@ -15,6 +15,7 @@
  */
 package per.lambert.ebattleMat.server.handlers;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.DirectoryIteratorException;
@@ -117,18 +118,9 @@ public class FileLister implements IWebRequestHandler {
 	 * @return array of filenames.
 	 */
 	private String[] getFilenamesInPath(final String folderPath) {
-		List<String> list = new ArrayList<String>();
-		Path path = Path.of(folderPath);
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-			for (Path file : stream) {
-				if (!file.toFile().isDirectory()) {
-					list.add(file.toFile().getName());
-				}
-			}
-		} catch (IOException | DirectoryIteratorException x) {
-			throw new RuntimeException(x);
-		}
-		return (String[]) list.toArray(new String[0]);
+		File file = new File(folderPath);
+		String[] pathnames = file.list();
+		return (pathnames);
 	}
 
 }
