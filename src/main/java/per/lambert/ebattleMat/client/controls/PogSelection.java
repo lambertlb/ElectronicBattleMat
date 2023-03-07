@@ -18,6 +18,8 @@ package per.lambert.ebattleMat.client.controls;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -86,6 +88,18 @@ public class PogSelection extends DockLayoutPanel {
 	 * Session Level Room Objects.
 	 */
 	private TreeItem sessionLevelObjectsTree = new TreeItem();
+	/**
+	 * Array of exp-andable tree items.
+	 */
+	private TreeItem[] expandableItems = {playerTree, commonMonsterTree, commonObjectsTree, dungeonLevelMonsterTree, dungeonLevelObjectsTree, sessionLevelMonsterTree, sessionLevelObjectsTree};
+	/**
+	 * Array of pog places vs expandables.
+	 */
+	private PogPlace[] pogPlaces = {PogPlace.SESSION_RESOURCE, PogPlace.COMMON_RESOURCE, PogPlace.COMMON_RESOURCE, PogPlace.DUNGEON_LEVEL, PogPlace.DUNGEON_LEVEL, PogPlace.SESSION_LEVEL, PogPlace.SESSION_LEVEL};
+	/**
+	 * Array of pog types matching expandables.
+	 */
+	private String[]   pogTypes = {Constants.POG_TYPE_PLAYER, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT};
 
 	/**
 	 * Constructor.
@@ -140,6 +154,12 @@ public class PogSelection extends DockLayoutPanel {
 				selectionChanged(event.getSelectedItem());
 			}
 		});
+		pogTree.addOpenHandler(new OpenHandler<TreeItem>() {
+			@Override
+			public void onOpen(final OpenEvent<TreeItem> event) {
+				treeItemOpened(event.getTarget());
+			}
+		});
 	}
 
 	/**
@@ -159,27 +179,37 @@ public class PogSelection extends DockLayoutPanel {
 	 * Add branches to tree.
 	 */
 	private void addBranches() {
-		playerTree.setText("Players");
+		setupTreeItem(playerTree, "Players");
 		pogTree.addItem(playerTree);
 		commonPogTree.setText("Common Resource Pogs");
 		pogTree.addItem(commonPogTree);
-		commonMonsterTree.setText("Monsters");
+		setupTreeItem(commonMonsterTree, "Monsters");
 		commonPogTree.addItem(commonMonsterTree);
-		commonObjectsTree.setText("Room Objects");
+		setupTreeItem(commonObjectsTree, "Room Objects");
 		commonPogTree.addItem(commonObjectsTree);
 		dungeonLevelTree.setText("Dungeon Level Pogs");
 		pogTree.addItem(dungeonLevelTree);
-		dungeonLevelMonsterTree.setText("Monsters");
+		setupTreeItem(dungeonLevelMonsterTree, "Monsters");
 		dungeonLevelTree.addItem(dungeonLevelMonsterTree);
-		dungeonLevelObjectsTree.setText("Room Objects");
+		setupTreeItem(dungeonLevelObjectsTree, "Room Objects");
 		dungeonLevelTree.addItem(dungeonLevelObjectsTree);
 		sessionLevelTree.setText("Session Level Pogs");
 		pogTree.addItem(sessionLevelTree);
-		sessionLevelMonsterTree.setText("Monsters");
+		setupTreeItem(sessionLevelMonsterTree, "Monsters");
 		sessionLevelTree.addItem(sessionLevelMonsterTree);
-		sessionLevelObjectsTree.setText("Room Objects");
+		setupTreeItem(sessionLevelObjectsTree, "Room Objects");
 		sessionLevelTree.addItem(sessionLevelObjectsTree);
 		setStyles();
+	}
+	
+	/**
+	 * set up with dummy node.
+	 * @param treeItem
+	 * @param text
+	 */
+	private void setupTreeItem(final TreeItem treeItem, final String text) {
+		treeItem.setText(text);
+		treeItem.addItem(new TreeItem());
 	}
 
 	/**
@@ -202,9 +232,9 @@ public class PogSelection extends DockLayoutPanel {
 		if (!inEditMode) {
 			fillPlayerTree();
 			fillSessionLevelTree();
-			playerTree.setVisible(!inEditMode);
-			sessionLevelTree.setVisible(!inEditMode);
 		}
+		playerTree.setVisible(!inEditMode);
+		sessionLevelTree.setVisible(!inEditMode);
 	}
 
 	/**
@@ -236,31 +266,45 @@ public class PogSelection extends DockLayoutPanel {
 	 * Fill trees for common resources.
 	 */
 	private void fillCommonResourceTrees() {
-		buildSortedTree(commonMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER));
-		buildSortedTree(commonObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT));
+		if (commonMonsterTree.getState()) {
+			buildSortedTree(commonMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_MONSTER));
+		}
+		if (commonObjectsTree.getState()) {
+			buildSortedTree(commonObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.COMMON_RESOURCE, Constants.POG_TYPE_ROOMOBJECT));
+		}
 	}
 
 	/**
 	 * Fill trees with level based pogs.
 	 */
 	private void fillDungeonLevelTrees() {
-		buildSortedTree(dungeonLevelMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.DUNGEON_LEVEL, Constants.POG_TYPE_MONSTER));
-		buildSortedTree(dungeonLevelObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.DUNGEON_LEVEL, Constants.POG_TYPE_ROOMOBJECT));
+		if (dungeonLevelMonsterTree.getState()) {
+			buildSortedTree(dungeonLevelMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.DUNGEON_LEVEL, Constants.POG_TYPE_MONSTER));
+		}
+		if (dungeonLevelObjectsTree.getState()) {
+			buildSortedTree(dungeonLevelObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.DUNGEON_LEVEL, Constants.POG_TYPE_ROOMOBJECT));
+		}
 	}
 
 	/**
 	 * Fill tree with player pogs.
 	 */
 	private void fillPlayerTree() {
-		buildSortedTree(playerTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_RESOURCE, Constants.POG_TYPE_PLAYER));
+		if (playerTree.getState()) {
+			buildSortedTree(playerTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_RESOURCE, Constants.POG_TYPE_PLAYER));
+		}
 	}
 
 	/**
 	 * Fill tree with session level pogs.
 	 */
 	private void fillSessionLevelTree() {
-		buildSortedTree(sessionLevelMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_LEVEL, Constants.POG_TYPE_MONSTER));
-		buildSortedTree(sessionLevelObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_LEVEL, Constants.POG_TYPE_ROOMOBJECT));
+		if (sessionLevelMonsterTree.getState()) {
+			buildSortedTree(sessionLevelMonsterTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_LEVEL, Constants.POG_TYPE_MONSTER));
+		}
+		if (sessionLevelObjectsTree.getState()) {
+			buildSortedTree(sessionLevelObjectsTree, ServiceManager.getDungeonManager().getSortedList(PogPlace.SESSION_LEVEL, Constants.POG_TYPE_ROOMOBJECT));
+		}
 	}
 
 	/**
@@ -318,5 +362,23 @@ public class PogSelection extends DockLayoutPanel {
 	@Override
 	public void onResize() {
 		super.onResize();
+	}
+
+	/**
+	 * tree item was opened.
+	 * @param target
+	 */
+	private void treeItemOpened(final TreeItem target) {
+		if (target == null) {
+			return;
+		}
+		int index = 0;
+		for (TreeItem treeItem : expandableItems) {
+			if (treeItem == target) {
+				buildSortedTree(treeItem, ServiceManager.getDungeonManager().getSortedList(pogPlaces[index], pogTypes[index]));
+				break;
+			}
+			++index;
+		}
 	}
 }
