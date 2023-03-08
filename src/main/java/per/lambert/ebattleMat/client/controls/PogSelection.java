@@ -91,15 +91,15 @@ public class PogSelection extends DockLayoutPanel {
 	/**
 	 * Array of exp-andable tree items.
 	 */
-	private TreeItem[] expandableItems = {playerTree, commonMonsterTree, commonObjectsTree, dungeonLevelMonsterTree, dungeonLevelObjectsTree, sessionLevelMonsterTree, sessionLevelObjectsTree};
+	private TreeItem[] expandableItems = {playerTree, commonMonsterTree, commonObjectsTree, dungeonLevelMonsterTree, dungeonLevelObjectsTree, sessionLevelMonsterTree, sessionLevelObjectsTree };
 	/**
 	 * Array of pog places vs expandables.
 	 */
-	private PogPlace[] pogPlaces = {PogPlace.SESSION_RESOURCE, PogPlace.COMMON_RESOURCE, PogPlace.COMMON_RESOURCE, PogPlace.DUNGEON_LEVEL, PogPlace.DUNGEON_LEVEL, PogPlace.SESSION_LEVEL, PogPlace.SESSION_LEVEL};
+	private PogPlace[] pogPlaces = {PogPlace.SESSION_RESOURCE, PogPlace.COMMON_RESOURCE, PogPlace.COMMON_RESOURCE, PogPlace.DUNGEON_LEVEL, PogPlace.DUNGEON_LEVEL, PogPlace.SESSION_LEVEL, PogPlace.SESSION_LEVEL };
 	/**
 	 * Array of pog types matching expandables.
 	 */
-	private String[]   pogTypes = {Constants.POG_TYPE_PLAYER, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT};
+	private String[] pogTypes = {Constants.POG_TYPE_PLAYER, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT, Constants.POG_TYPE_MONSTER, Constants.POG_TYPE_ROOMOBJECT };
 
 	/**
 	 * Constructor.
@@ -201,9 +201,10 @@ public class PogSelection extends DockLayoutPanel {
 		sessionLevelTree.addItem(sessionLevelObjectsTree);
 		setStyles();
 	}
-	
+
 	/**
 	 * set up with dummy node.
+	 * 
 	 * @param treeItem
 	 * @param text
 	 */
@@ -338,12 +339,6 @@ public class PogSelection extends DockLayoutPanel {
 	}
 
 	/**
-	 * Pog was selected.
-	 */
-	private void selectPog() {
-	}
-
-	/**
 	 * handle tree item selected.
 	 * 
 	 * @param selectedItem
@@ -366,6 +361,7 @@ public class PogSelection extends DockLayoutPanel {
 
 	/**
 	 * tree item was opened.
+	 * 
 	 * @param target
 	 */
 	private void treeItemOpened(final TreeItem target) {
@@ -381,4 +377,41 @@ public class PogSelection extends DockLayoutPanel {
 			++index;
 		}
 	}
+
+	/**
+	 * We just forced selection so don't want to loop.
+	 */
+	private boolean justDidSelection;
+	/**
+	 * Pog was selected.
+	 */
+	private void selectPog() {
+		if (justDidSelection) {
+			justDidSelection = false;
+			return;
+		}
+		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+		if (selectedPog == null) {
+			return;
+		}
+		int index = 0;
+		for (PogPlace place : pogPlaces) {
+			if (place == selectedPog.getPogPlace()) {
+				TreeItem parent = expandableItems[index];
+				if (!parent.isVisible() || !parent.getState()) {
+					continue;
+				}
+				for (int childIndex = 0; childIndex < parent.getChildCount(); ++childIndex) {
+					TreeItem child = parent.getChild(childIndex);
+					if (selectedPog.getUUID() == ((PogData)child.getUserObject()).getUUID()) {
+						justDidSelection = true;
+						pogTree.setSelectedItem(child);
+						return;
+					}
+				}
+			}
+			++index;
+		}
+	}
+
 }

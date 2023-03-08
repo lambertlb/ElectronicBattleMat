@@ -16,6 +16,7 @@
 package per.lambert.ebattleMat.server.handlers;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -113,7 +114,14 @@ public class FileLister implements IWebRequestHandler {
 	 */
 	private String[] getFilenamesInPath(final String folderPath) {
 		File file = new File(folderPath);
-		String[] pathnames = file.list();
+		String[] pathnames = file.list(new FilenameFilter() {
+			@Override
+			public boolean accept(final File dir, final String name) {
+				File file = new File(dir.getPath() + "/" + name);
+				boolean isDirectory = file.isDirectory();
+				return (!isDirectory);
+			}
+		});
 		return (pathnames);
 	}
 
