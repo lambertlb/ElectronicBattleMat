@@ -145,7 +145,7 @@ public class DataRequester implements IDataRequester {
 	 * @param exception if one was thrown
 	 * @param userCallback user callback
 	 */
-	protected void handleCallbackError(final DungeonServerError dungeonError, final Throwable exception, final IUserCallback userCallback) {
+	private void handleCallbackError(final DungeonServerError dungeonError, final Throwable exception, final IUserCallback userCallback) {
 		userCallback.onError(this, new IErrorInformation() {
 			@Override
 			public Throwable getException() {
@@ -173,7 +173,7 @@ public class DataRequester implements IDataRequester {
 	 * @param parameters parameters for url
 	 * @param urlBuilder url builder
 	 */
-	public static void addParametersToURL(final Map<String, String> parameters, final UrlBuilder urlBuilder) {
+	private static void addParametersToURL(final Map<String, String> parameters, final UrlBuilder urlBuilder) {
 		if (parameters != null) {
 			Iterator<Map.Entry<String, String>> contactIterator = parameters.entrySet().iterator();
 			while (contactIterator.hasNext()) {

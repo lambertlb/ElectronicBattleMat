@@ -55,7 +55,7 @@ public class SessionInformation {
 	public void setDirty(final boolean dirty) {
 		this.dirty = dirty;
 	}
-
+	
 	/**
 	 * Directory of session.
 	 */
@@ -161,24 +161,12 @@ public class SessionInformation {
 	}
 
 	/**
-	 * Session information.
-	 * 
-	 * @param sessionPath session path
-	 * @param sessionDirectory session directory
-	 */
-	public SessionInformation(final String sessionPath, final String sessionDirectory) {
-		this();
-		this.sessionPath = sessionPath;
-		this.sessionDirectory = sessionDirectory;
-	}
-
-	/**
 	 * get session level information.
 	 * 
 	 * @param currentLevel to get
 	 * @return session level information or null
 	 */
-	public DungeonSessionLevel getSessionLevel(final int currentLevel) {
+	private DungeonSessionLevel getSessionLevel(final int currentLevel) {
 		if (currentLevel < 0 || currentLevel >= sessionData.getSessionLevels().length) {
 			return (null);
 		}

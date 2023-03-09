@@ -114,7 +114,7 @@ public class SelectedPog extends Composite {
 	/**
 	 * No pog yet so set the look.
 	 */
-	public void unselectedPogLook() {
+	private void unselectedPogLook() {
 		int height = (int) Constants.RIBBON_BAR_SIZE;
 		pogPanel.setWidth("" + height + "px");
 		if (scalablePog != null) {

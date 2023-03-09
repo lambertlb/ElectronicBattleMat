@@ -55,7 +55,7 @@ public final class PlayerFlag extends FlagBit {
 	 * 
 	 * @return map of names
 	 */
-	protected static Map<String, FlagBit> getNameMap() {
+	private static Map<String, FlagBit> getNameMap() {
 		return nameMap;
 	}
 

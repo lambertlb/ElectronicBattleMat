@@ -41,7 +41,7 @@ public class SessionListHandler implements IWebRequestHandler {
 	 * @author LLambert
 	 *
 	 */
-	public class SessionListResponseData {
+	private final class SessionListResponseData {
 		/**
 		 * dungeon UUID.
 		 */
@@ -60,7 +60,7 @@ public class SessionListHandler implements IWebRequestHandler {
 		 * @param sessionListData collection of session information
 		 * @param dungeonUUID for session
 		 */
-		public SessionListResponseData(final Map<String,String> sessionListData, final String dungeonUUID) {
+		private SessionListResponseData(final Map<String,String> sessionListData, final String dungeonUUID) {
 			this.dungeonUUID = dungeonUUID;
 			sessionNames = new String[sessionListData.size()];
 			sessionUUIDs = new String[sessionListData.size()];

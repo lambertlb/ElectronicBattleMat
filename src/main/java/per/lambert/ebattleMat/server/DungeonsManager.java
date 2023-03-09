@@ -130,7 +130,7 @@ public final class DungeonsManager {
 	/**
 	 * Periodic tasks.
 	 */
-	protected static void periodicTimer() {
+	private static void periodicTimer() {
 		lock.lock();
 		try {
 			checkIfTimeToSaveSessionData();
@@ -186,7 +186,7 @@ public final class DungeonsManager {
 	 * @param dungeonUUID dungeon UUID
 	 * @throws IOException thrown if error
 	 */
-	public static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, final String dungeonUUID) throws IOException {
+	private static void saveDungeonData(final HttpServlet servlet, final String dataToWrite, final String dungeonUUID) throws IOException {
 		String filePath = uuidTemplatePathMap.get(dungeonUUID) + "/dungeonData.json";
 		saveJsonFile(dataToWrite, servlet.getServletContext().getRealPath(filePath));
 	}

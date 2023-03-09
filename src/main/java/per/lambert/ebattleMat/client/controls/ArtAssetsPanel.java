@@ -113,6 +113,9 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		setupEventHandling();
 	}
 
+	/**
+	 * setup event handling.
+	 */
 	private void setupEventHandling() {
 		IEventManager eventManager = ServiceManager.getEventManager();
 		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
@@ -136,6 +139,9 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		});
 	}
 
+	/**
+	 * create content.
+	 */
 	private void createContent() {
 		downloadAssetsButton.addClickHandler(new ClickHandler() {
 
@@ -172,12 +178,15 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		fileTree.addItem(dungeonAssets);
 		fileTree.addItem(monsterAssets);
 		fileTree.addItem(roomAssets);
-		ScrollPanel scrollPanel = new ScrollPanel();
-		scrollPanel.add(fileTree);
+		ScrollPanel scrollPanel = new ScrollPanel(fileTree);
+		scrollPanel.setWidth("95%");
 		add(scrollPanel);
 		setStyles();
 	}
 
+	/**
+	 * Set styles.
+	 */
 	private void setStyles() {
 		urlLabel.setStyleName("ribbonBarLabel");
 		uploadAsset.setStyleName("ribbonBarLabel");
@@ -186,13 +195,15 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		fileUpload.setStyleName("ribbonBarLabel");
 	}
 
+	/**
+	 * Setup for file uploading.
+	 */
 	private void setupForFileUpload() {
 		VerticalPanel panel = new VerticalPanel();
 		formPanel.setWidget(panel);
 		fileUpload.setName("uploadElement");
 		panel.add(fileUpload);
 		fileUpload.setEnabled(false);
-		// fileUpload.setVisible(false);
 		uploadAsset.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -200,7 +211,6 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 				uploadFile();
 				uploadAsset.setEnabled(false);
 				fileUpload.setEnabled(false);
-				// fileUpload.click();
 			}
 		});
 		formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
@@ -217,7 +227,6 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 			}
 		});
 		fileUpload.addChangeHandler(new ChangeHandler() {
-
 			@Override
 			public void onChange(final ChangeEvent event) {
 				if (fileTree.getSelectedItem() != null) {
@@ -316,6 +325,9 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		ServiceManager.getDungeonManager().setAssetURL(txt);
 	}
 
+	/**
+	 * enable or disable appropriate buttons.
+	 */
 	private void disableButtons() {
 		deleteAssetsButton.setEnabled(false);
 		downloadAssetsButton.setEnabled(false);
@@ -324,6 +336,8 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 
 	/**
 	 * Up load file.
+	 * 
+	 * Much of this belongs in model but forced to be here because need form to do the work.
 	 * 
 	 */
 	private void uploadFile() {
@@ -341,6 +355,11 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		formPanel.submit();
 	}
 
+	/**
+	 * get url to file.
+	 * 
+	 * @return url or null
+	 */
 	private String getUrlToFileOnserver() {
 		String filename = fileUpload.getFilename();
 		if (filename == null || filename.isEmpty()) {
@@ -349,6 +368,14 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		return buildUrlToFilename(filename);
 	}
 
+	/**
+	 * Build url for filename.
+	 * 
+	 * This assumes parent node has path to file
+	 * 
+	 * @param filename
+	 * @return url or null
+	 */
 	private String buildUrlToFilename(final String filename) {
 		TreeItem selected = fileTree.getSelectedItem();
 		if (selected == null) {
@@ -372,6 +399,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 		String url = base + rtnName;
 		return (url);
 	}
+
 	/**
 	 * Set value of input control.
 	 * 
@@ -397,7 +425,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 	 */
 	private void deletAsset() {
 		TreeItem selected = fileTree.getSelectedItem();
-		String url = buildUrlToFilename((String)selected.getUserObject());
+		String url = buildUrlToFilename((String) selected.getUserObject());
 		ServiceManager.getDungeonManager().deleteFile(url, new IUserCallback() {
 			@Override
 			public void onError(final Object sender, final IErrorInformation error) {
@@ -409,6 +437,7 @@ public class ArtAssetsPanel extends DockLayoutPanel {
 			}
 		});
 	}
+
 	/**
 	 * 
 	 * {@inheritDoc}

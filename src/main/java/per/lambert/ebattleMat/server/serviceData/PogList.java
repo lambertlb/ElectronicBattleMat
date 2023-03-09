@@ -57,7 +57,7 @@ public class PogList {
 	 * 
 	 * @param startingSize starting size.
 	 */
-	public PogList(final int startingSize) {
+	private PogList(final int startingSize) {
 		pogList = new PogData[startingSize];
 	}
 
@@ -81,7 +81,7 @@ public class PogList {
 	 * 
 	 * @param pog to add
 	 */
-	public void addPog(final PogData pog) {
+	private void addPog(final PogData pog) {
 		PogData[] newList = new PogData[pogList.length + 1];
 		for (int i = 0; i < pogList.length; ++i) {
 			newList[i] = pogList[i];
@@ -126,7 +126,7 @@ public class PogList {
 	 * @param pogData to find
 	 * @return index of pog in arrary else -1.
 	 */
-	public int find(final PogData pogData) {
+	private int find(final PogData pogData) {
 		for (int i = 0; i < pogList.length; ++i) {
 			if (pogList[i].equals(pogData)) {
 				return (i);

@@ -306,7 +306,7 @@ public class RibbonBar extends Composite {
 	/**
 	 * New pog was selected so adjust controls.
 	 */
-	protected void pogSelection() {
+	private void pogSelection() {
 		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (selectedPog != null) {
 			pogNotes.setNotesText(selectedPog.getNotes());
@@ -317,7 +317,7 @@ public class RibbonBar extends Composite {
 	/**
 	 * Setup view.
 	 */
-	protected void setupView() {
+	private void setupView() {
 		setupViewCommon();
 		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
 			setupForDungeonMaster();

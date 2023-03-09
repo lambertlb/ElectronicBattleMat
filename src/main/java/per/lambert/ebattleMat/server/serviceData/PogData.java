@@ -90,17 +90,8 @@ public class PogData {
 	 * @param pogData to clone
 	 */
 	public PogData(final PogData pogData) {
-		copyData(pogData);
-	}
-
-	/**
-	 * Copy data from a different pog.
-	 * 
-	 * @param pogData with data to copy.
-	 */
-	private void copyData(final PogData pogData) {
-		uuid = pogData.uuid;
 		fullUpdate(pogData);
+		uuid = pogData.uuid;
 	}
 
 	/**
@@ -124,7 +115,7 @@ public class PogData {
 	 * 
 	 * @param withUpdates with updates
 	 */
-	public void updatePog(final PogData withUpdates) {
+	private void updatePog(final PogData withUpdates) {
 		this.pogColumn = withUpdates.pogColumn;
 		this.pogRow = withUpdates.pogRow;
 		dungeonLevel = withUpdates.dungeonLevel;

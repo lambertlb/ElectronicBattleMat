@@ -30,16 +30,18 @@ import per.lambert.ebattleMat.server.IWebRequestHandler;
 
 /**
  * Handle update fog of war request.
+ * 
  * @author LLambert
  *
  */
 public class UpdateFOWHander implements IWebRequestHandler {
 	/**
 	 * Worker class for converting fog of war JSON data.
+	 * 
 	 * @author LLambert
 	 *
 	 */
-	public class FogOfWarData {
+	private final class FogOfWarData {
 		/**
 		 * Fog of war data.
 		 */

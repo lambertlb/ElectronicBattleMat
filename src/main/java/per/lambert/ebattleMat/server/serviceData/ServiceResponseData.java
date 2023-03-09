@@ -29,15 +29,6 @@ public class ServiceResponseData {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param error response error.
-	 */
-	protected ServiceResponseData(final int error) {
-		this.error = error;
-	}
-
-	/**
-	 * Constructor.
 	 */
 	protected ServiceResponseData() {
 		this.error = 0;

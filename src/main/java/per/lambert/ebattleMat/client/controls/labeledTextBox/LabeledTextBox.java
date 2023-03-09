@@ -59,11 +59,11 @@ public class LabeledTextBox extends Composite {
 	 * @param labelText label text
 	 * @param editText edit text
 	 */
-	public LabeledTextBox(final String labelText, final String editText) {
-		initWidget(uiBinder.createAndBindUi(this));
-		asDouble = false;
-		setLabelText(labelText);
-	}
+//	public LabeledTextBox(final String labelText, final String editText) {
+//		initWidget(uiBinder.createAndBindUi(this));
+//		asDouble = false;
+//		setLabelText(labelText);
+//	}
 
 	/**
 	 * Constructor for text box.

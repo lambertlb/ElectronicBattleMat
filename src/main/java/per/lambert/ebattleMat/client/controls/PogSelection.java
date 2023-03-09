@@ -168,11 +168,10 @@ public class PogSelection extends DockLayoutPanel {
 	private void createContent() {
 		DockLayoutPanel northPanel = new DockLayoutPanel(Unit.PX);
 		northPanel.setSize("100%", "100%");
-		ScrollPanel scrollPanel = new ScrollPanel();
 		addBranches();
-		scrollPanel.add(pogTree);
+		ScrollPanel scrollPanel = new ScrollPanel(pogTree);
+		scrollPanel.setWidth("95%"); // needed this to get full scroll bar to show
 		add(scrollPanel);
-		forceLayout();
 	}
 
 	/**
@@ -199,7 +198,6 @@ public class PogSelection extends DockLayoutPanel {
 		sessionLevelTree.addItem(sessionLevelMonsterTree);
 		setupTreeItem(sessionLevelObjectsTree, "Room Objects");
 		sessionLevelTree.addItem(sessionLevelObjectsTree);
-		setStyles();
 	}
 
 	/**
@@ -211,16 +209,6 @@ public class PogSelection extends DockLayoutPanel {
 	private void setupTreeItem(final TreeItem treeItem, final String text) {
 		treeItem.setText(text);
 		treeItem.addItem(new TreeItem());
-	}
-
-	/**
-	 * Set styles.
-	 */
-	private void setStyles() {
-		playerTree.getElement().setClassName("my-TreeItem");
-		commonPogTree.getElement().setClassName("my-TreeItem");
-		dungeonLevelTree.getElement().setClassName("my-TreeItem");
-		sessionLevelTree.getElement().setClassName("my-TreeItem");
 	}
 
 	/**
@@ -382,6 +370,7 @@ public class PogSelection extends DockLayoutPanel {
 	 * We just forced selection so don't want to loop.
 	 */
 	private boolean justDidSelection;
+
 	/**
 	 * Pog was selected.
 	 */
@@ -398,15 +387,14 @@ public class PogSelection extends DockLayoutPanel {
 		for (PogPlace place : pogPlaces) {
 			if (place == selectedPog.getPogPlace()) {
 				TreeItem parent = expandableItems[index];
-				if (!parent.isVisible() || !parent.getState()) {
-					continue;
-				}
-				for (int childIndex = 0; childIndex < parent.getChildCount(); ++childIndex) {
-					TreeItem child = parent.getChild(childIndex);
-					if (selectedPog.getUUID() == ((PogData)child.getUserObject()).getUUID()) {
-						justDidSelection = true;
-						pogTree.setSelectedItem(child);
-						return;
+				if (parent.isVisible() && parent.getState()) {
+					for (int childIndex = 0; childIndex < parent.getChildCount(); ++childIndex) {
+						TreeItem child = parent.getChild(childIndex);
+						if (selectedPog.getUUID() == ((PogData) child.getUserObject()).getUUID()) {
+							justDidSelection = true;
+							pogTree.setSelectedItem(child);
+							return;
+						}
 					}
 				}
 			}

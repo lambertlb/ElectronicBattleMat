@@ -441,7 +441,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	/**
 	 * Set image URL.
 	 */
-	public final void setImage() {
+	private void setImage() {
 		this.imageElement = (ImageElement) image.getElement().cast();
 		imageLoaded = true;
 		badURL = false;
@@ -459,7 +459,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	/**
 	 * Bad image url.
 	 */
-	protected void badImage() {
+	private void badImage() {
 		imageElement = null;
 		badURL = true;
 		imageLoaded = true;
@@ -470,7 +470,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	/**
 	 * Adjust canvas based on size.
 	 */
-	public final void adjustCanvases() {
+	private void adjustCanvases() {
 		parentWidth = pogMainPanel.getOffsetWidth();
 		parentHeight = pogMainPanel.getOffsetHeight();
 		imageWidth = image.getWidth();
@@ -611,7 +611,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	/**
 	 * refresh view.
 	 */
-	public void drawEverything() {
+	private void drawEverything() {
 		if (!imageLoaded) {
 			return;
 		}
@@ -630,7 +630,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	/**
 	 * Handle all canvas drawing.
 	 */
-	public final void handleAllDrawing() {
+	private void handleAllDrawing() {
 		if (!badURL && !pogData.isFlagSet(DungeonMasterFlag.TRANSPARENT_BACKGROUND)) {
 			context.setFillStyle("white");
 			context.fillRect(0, 0, parentWidth, parentHeight);

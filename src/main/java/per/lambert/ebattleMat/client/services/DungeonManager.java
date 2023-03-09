@@ -103,14 +103,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	private DungeonData selectedDungeon;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isThereASelectedDungeon() {
-		return (selectedDungeon != null);
-	}
-
 	private DungeonData getSelectedDungeon() {
 		return selectedDungeon;
 	}
@@ -451,7 +443,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param requestData request data
 	 * @param callback user callback
 	 */
-	public void getDungeonList(final Object requestData, final IUserCallback callback) {
+	private void getDungeonList(final Object requestData, final IUserCallback callback) {
 		IDataRequester dataRequester = ServiceManager.getDataRequester();
 		Map<String, String> parameters = new HashMap<String, String>();
 		dataRequester.requestData("", "GETDUNGEONLIST", parameters, new IUserCallback() {
@@ -475,7 +467,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param callback user callback
 	 * @param data data from response
 	 */
-	public void handleSuccessfulDungeonList(final Object requestData, final IUserCallback callback, final Object data) {
+	private void handleSuccessfulDungeonList(final Object requestData, final IUserCallback callback, final Object data) {
 		dungeonToUUIDMap.clear();
 		uuidTemplatePathMap.clear();
 		uuidOfMasterTemplate = null;
@@ -687,7 +679,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * 
 	 * @param data from response
 	 */
-	public void handleSuccessfulSessionList(final Object data) {
+	private void handleSuccessfulSessionList(final Object data) {
 		sessionListData = JsonUtils.<SessionListData>safeEval((String) data);
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionListChanged, null));
 	}
@@ -891,15 +883,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isValidNewCharacterName(final String characterName) {
-		boolean isValid = !characterName.startsWith("Enter ") && characterName.length() > 3;
-		return isValid;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public boolean isValidNewMonsterName(final String monsterName) {
 		boolean isValid = !monsterName.startsWith("Enter ") && monsterName.length() > 3;
 		return isValid;
@@ -1089,7 +1072,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	/**
 	 * Make sure download element exists.
 	 */
-	public native void makeSureLoaderExists() /*-{
+	private native void makeSureLoaderExists() /*-{
 		var aLink = document.getElementById('downloader');
 		if (aLink == null) {
 			aLink = document.createElement('a');
@@ -1104,7 +1087,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * @param fileName to download
 	 * @param urlData URL to resource
 	 */
-	public native void downloadFileFromServer(String fileName, String urlData) /*-{
+	private native void downloadFileFromServer(String fileName, String urlData) /*-{
 		var aLink = document.getElementById('downloader');
 		aLink.download = fileName;
 		aLink.href = encodeURI(urlData);

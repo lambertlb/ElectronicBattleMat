@@ -63,14 +63,6 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PogData[] getMonsterTemplatePogs() {
-		return monsterCollection.getPogList();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public PogData[] getRoomObjectTemplatePogs() {
 		return roomCollection.getPogList();
 	}
@@ -145,22 +137,6 @@ public abstract class PogManager implements IPogManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PogData findMonsterPog(final String pogUUID) {
-		return (monsterCollection.findPog(pogUUID));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PogData findRoomObjectPog(final String pogUUID) {
-		return (roomCollection.findPog(pogUUID));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public PogData createTemplatePog(final String type) {
 		PogData pogData = (PogData) JavaScriptObject.createObject().cast();
 		pogData.setUUID(Constants.generateUUID());
@@ -190,19 +166,6 @@ public abstract class PogManager implements IPogManager {
 	@Override
 	public String[] getPogSizes() {
 		return (new String[] {"Normal", "Large", "Huge", "Gargantuan" });
-	}
-
-	/**
-	 * Add pog to common resource area.
-	 * 
-	 * @param pog to add
-	 */
-	protected void addOrUpdatePogToCommonResource(final PogData pog) {
-		if (pog.isThisAMonster()) {
-			monsterCollection.addOrUpdatePogCollection(pog);
-		} else {
-			roomCollection.addOrUpdatePogCollection(pog);
-		}
 	}
 
 	/**
@@ -244,21 +207,5 @@ public abstract class PogManager implements IPogManager {
 			}
 			ServiceManager.getDungeonManager().addOrUpdatePog(selectedPog);
 		}
-	}
-	
-	/**
-	 * remove this pog.
-	 * @param pog
-	 */
-	protected void removeMonster(final PogData pog) {
-		monsterCollection.remove(pog);
-	}
-
-	/**
-	 * remove this pog.
-	 * @param pog
-	 */
-	protected void removeRoomObject(final PogData pog) {
-		roomCollection.remove(pog);
 	}
 }

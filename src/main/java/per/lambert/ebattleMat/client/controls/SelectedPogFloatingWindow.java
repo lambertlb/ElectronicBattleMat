@@ -99,7 +99,7 @@ public class SelectedPogFloatingWindow extends OkCancelDialog {
 	/**
 	 * Pog was selected so set name in title.
 	 */
-	protected void pogSelected() {
+	private void pogSelected() {
 		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (selectedPog != null) {
 			setText(selectedPog.getName());

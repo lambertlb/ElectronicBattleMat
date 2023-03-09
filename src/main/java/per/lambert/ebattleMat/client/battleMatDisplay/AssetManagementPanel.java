@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 
 import per.lambert.ebattleMat.client.controls.ArtAssetsPanel;
-import per.lambert.ebattleMat.client.controls.DungeonEditorPanel;
+import per.lambert.ebattleMat.client.controls.DungeonLevelEditorPanel;
 import per.lambert.ebattleMat.client.controls.PogEditor;
 
 /**
@@ -41,7 +41,7 @@ public class AssetManagementPanel extends DockLayoutPanel {
 	/**
 	 * Panel for editing dungeon.
 	 */
-	private DungeonEditorPanel dungeonPanel = new DungeonEditorPanel();
+	private DungeonLevelEditorPanel dungeonPanel = new DungeonLevelEditorPanel();
 	/**
 	 * Panel for editing pogs.
 	 */

@@ -42,34 +42,19 @@ public class FileLister implements IWebRequestHandler {
 	 * @author LLambert
 	 *
 	 */
-	public class FileListResponse {
+	@SuppressWarnings("ucd")
+	private final class FileListResponse {
 		/**
 		 * Folder path of files.
 		 */
+		@SuppressWarnings("unused")
 		private String filePath;
-
-		/**
-		 * Get file path.
-		 * 
-		 * @return file path
-		 */
-		public String getFilePath() {
-			return (filePath);
-		}
 
 		/**
 		 * array of dungeon names.
 		 */
+		@SuppressWarnings("unused")
 		private String[] fileNames;
-
-		/**
-		 * get File names.
-		 * 
-		 * @return file names
-		 */
-		public String[] getFileNames() {
-			return (fileNames);
-		}
 
 		/**
 		 * Set filenames.
@@ -85,7 +70,7 @@ public class FileLister implements IWebRequestHandler {
 		 * 
 		 * @param filePath path of files
 		 */
-		public FileListResponse(final String filePath) {
+		private FileListResponse(final String filePath) {
 			fileNames = null;
 			this.filePath = filePath;
 		}

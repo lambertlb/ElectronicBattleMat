@@ -64,13 +64,6 @@ public interface IDungeonManager extends IPogManager {
 	void editSelectedDungeonUUID(String selectedDungeonUUID);
 
 	/**
-	 * Is there a selected dungeon.
-	 * 
-	 * @return true if there is.
-	 */
-	boolean isThereASelectedDungeon();
-
-	/**
 	 * Get map of dungeon names to UUIDs.
 	 * 
 	 * @return map of dungeon names to UUIDs.
@@ -326,14 +319,6 @@ public interface IDungeonManager extends IPogManager {
 	 * remove current level from duingeon.
 	 */
 	void removeCurrentLevel();
-
-	/**
-	 * Is this a valid character name.
-	 * 
-	 * @param characterName to check
-	 * @return true if valid
-	 */
-	boolean isValidNewCharacterName(String characterName);
 
 	/**
 	 * Find character pog in dungeon.

@@ -53,7 +53,7 @@ public class ResizableDialog extends DialogBox {
 	 * @author LLambert
 	 *
 	 */
-	public enum ResizePosition {
+	private enum ResizePosition {
 		/**
 		 * Top of window.
 		 */
@@ -486,7 +486,7 @@ public class ResizableDialog extends DialogBox {
 	 * Do Pan Start.
 	 * @param event pan event data
 	 */
-	protected void doPanStart(final PanStartEvent event) {
+	private void doPanStart(final PanStartEvent event) {
 		startingPanX = event.getTouchInformation().getClientX();
 		startingPanY = event.getTouchInformation().getClientY();
 		ResizePosition where = computeResizePosition(startingPanX, startingPanY);
@@ -501,7 +501,7 @@ public class ResizableDialog extends DialogBox {
 	 * Done panning.
 	 * @param event pan event data
 	 */
-	protected void doPanEnd(final PanEndEvent event) {
+	private void doPanEnd(final PanEndEvent event) {
 		windowMove = false;
 		windowResize = false;
 	}
@@ -510,7 +510,7 @@ public class ResizableDialog extends DialogBox {
 	 * Do Pan operation.
 	 * @param event pan event data
 	 */
-	protected void doPan(final PanEvent event) {
+	private void doPan(final PanEvent event) {
 		int xPos = event.getTouchInformation().getClientX();
 		int yPos = event.getTouchInformation().getClientY();
 		int deltaX = xPos - startingPanX;

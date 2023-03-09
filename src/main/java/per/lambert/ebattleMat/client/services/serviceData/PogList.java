@@ -43,22 +43,6 @@ public class PogList extends JavaScriptObject {
 	}-*/;
 
 	/**
-	 * Add or update pog.
-	 * 
-	 * @param pog to add
-	 */
-	public final void addOrUpdate(final PogData pog) {
-		PogData[] list = getPogList();
-		for (PogData pogInList : list) {
-			if (pogInList.isEqual(pog)) {
-				pogInList.fullUpdate(pog);
-				return;
-			}
-		}
-		addPog(pog);
-	}
-
-	/**
 	 * Add pog to list.
 	 * 
 	 * @param pogToAdd pog to add
@@ -88,7 +72,7 @@ public class PogList extends JavaScriptObject {
 	/**
 	 * create new list.
 	 */
-	public final native void initList() /*-{
+	private native void initList() /*-{
 		this.pogList = [];
 	}-*/;
 }

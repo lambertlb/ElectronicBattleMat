@@ -15,8 +15,6 @@
  */
 package per.lambert.ebattleMat.client.services;
 
-import java.util.logging.Logger;
-
 import per.lambert.ebattleMat.client.interfaces.IDataRequester;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
@@ -97,23 +95,6 @@ public final class ServiceManager {
 			dataRequester = new DataRequester();
 		}
 		return (dataRequester);
-	}
-
-	/**
-	 * Logger for errors.
-	 */
-	private static Logger logger;
-
-	/**
-	 * Get logger.
-	 * 
-	 * @return logger
-	 */
-	public static Logger getLogger() {
-		if (logger == null) {
-			logger = Logger.getLogger("ElectronicBattleMat");
-		}
-		return (logger);
 	}
 
 	/**

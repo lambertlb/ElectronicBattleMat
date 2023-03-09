@@ -44,16 +44,18 @@ import per.lambert.ebattleMat.client.services.serviceData.PogList;
 public class PogCollection {
 	/**
 	 * Compare allowing duplicates.
+	 * 
 	 * @author LLambert
 	 *
 	 */
-	class PogComparator implements Comparator<PogData> {
+	private final class PogComparator implements Comparator<PogData> {
 		@Override
 		public int compare(final PogData a, final PogData b) {
 			int cp = a.getName().compareToIgnoreCase(b.getName());
 			return cp == 0 ? 1 : cp;
 		}
 	}
+
 	/**
 	 * load event.
 	 */
@@ -104,7 +106,7 @@ public class PogCollection {
 	/**
 	 * Clear out collections.
 	 */
-	public void clear() {
+	private void clear() {
 		pogMap.clear();
 	}
 
@@ -132,14 +134,6 @@ public class PogCollection {
 	}
 
 	/**
-	 * Set pog list.
-	 * @param pogList to use
-	 */
-	public void	setPogList(final PogList pogList) {
-		this.pogList = pogList;
-		rebuildCollections();
-	}
-	/**
 	 * Got data from server fill in collections.
 	 * 
 	 * @param data received
@@ -149,12 +143,22 @@ public class PogCollection {
 	}
 
 	/**
+	 * Set pog list.
+	 * 
+	 * @param pogList to use
+	 */
+	public void setPogList(final PogList pogList) {
+		this.pogList = pogList;
+		rebuildCollections();
+	}
+
+	/**
 	 * Rebuild all collections.
 	 */
 	private void rebuildCollections() {
 		clear();
 		for (PogData pogTemplate : pogList.getPogList()) {
-			pogTemplate.setPogPlace(pogPlace);
+			pogTemplate.setPogPlace(pogPlace); // add pog place to pog on client side
 			addToCollections(pogTemplate);
 		}
 		if (loadEvent != ReasonForAction.LastReason) {
@@ -200,17 +204,8 @@ public class PogCollection {
 	}
 
 	/**
-	 * Is this pog a template.
-	 * 
-	 * @param pogData to check
-	 * @return true if is template
-	 */
-	public boolean isTemplate(final PogData pogData) {
-		return (pogMap.containsKey(pogData.getUUID()));
-	}
-	
-	/**
 	 * get a sorted list of pogs.
+	 * 
 	 * @return sorted list
 	 */
 	public List<PogData> getSortedListOfPogs() {

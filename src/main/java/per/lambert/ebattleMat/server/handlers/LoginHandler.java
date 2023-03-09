@@ -40,19 +40,12 @@ public class LoginHandler implements IWebRequestHandler {
 	 * @author LLambert
 	 *
 	 */
-	public class LoginResponseData extends ServiceResponseData {
+	private final class LoginResponseData extends ServiceResponseData {
 		/**
 		 * Token for user.
 		 */
+		@SuppressWarnings("unused")
 		private int token;
-
-		/**
-		 * get token.
-		 * @return token
-		 */
-		public int getToken() {
-			return token;
-		}
 
 		/**
 		 * Set token.

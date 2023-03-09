@@ -49,7 +49,13 @@ import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 
-public class DungeonEditorPanel extends DockLayoutPanel {
+/**
+ * Panel for managing a dungeon Level.
+ * 
+ * @author LLambert
+ *
+ */
+public class DungeonLevelEditorPanel extends DockLayoutPanel {
 	/**
 	 * button bar at top.
 	 */
@@ -159,12 +165,18 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 	 */
 	private boolean imageLoaded;
 
-	public DungeonEditorPanel() {
+	/**
+	 * Constructor.
+	 */
+	public DungeonLevelEditorPanel() {
 		super(Unit.PX);
 		createContent();
 		setupEventHandling();
 	}
 
+	/**
+	 * Create content.
+	 */
 	private void createContent() {
 		manageDungeonsButton = new Button("Manage Dungeons");
 		manageDungeonsButton.addStyleName("ribbonBarLabel");
@@ -189,7 +201,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			}
 		});
 		buttonBar.add(createNewLevelButton);
-		
+
 		removeLevelButton = new Button("DELETE Level");
 		removeLevelButton.addStyleName("ribbonBarLabel");
 		removeLevelButton.addClickHandler(new ClickHandler() {
@@ -199,7 +211,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			}
 		});
 		buttonBar.add(removeLevelButton);
-		
+
 		addNorth(buttonBar, 30);
 		createLevelEditor();
 		add(centerContent);
@@ -259,7 +271,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 				validateContent();
 			}
 		});
-		gridSize.addKeyUpHandler(new KeyUpHandler() {			
+		gridSize.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				isDirty = true;
@@ -281,6 +293,11 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		centerGrid.setWidget(2, 1, gridSize);
 	}
 
+	/**
+	 * Copy grid size into editor.
+	 * 
+	 * Size can be calculated by ctl click on map and drawing a rectangle the size of a grid square.
+	 */
 	private void copyGridSize() {
 		gridSize.setValue(ServiceManager.getDungeonManager().getComputedGridWidth());
 		isDirty = true;
@@ -299,7 +316,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 				validateContent();
 			}
 		});
-		gridOffsetX.addKeyUpHandler(new KeyUpHandler() {			
+		gridOffsetX.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				isDirty = true;
@@ -323,7 +340,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 				validateContent();
 			}
 		});
-		gridOffsetY.addKeyUpHandler(new KeyUpHandler() {			
+		gridOffsetY.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
 				isDirty = true;
@@ -362,6 +379,10 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		centerGrid.setWidget(0, 0, levelNameLabel);
 		centerGrid.setWidget(0, 1, levelName);
 	}
+
+	/**
+	 * Create picture url content.
+	 */
 	private void createLevelPictureURL() {
 		copyResourceURL = new Button("Use Select picture resource");
 		copyResourceURL.setStyleName("ribbonBarLabel");
@@ -373,7 +394,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			}
 		});
 		pictureURL = new TextBox();
-		pictureURL.addChangeHandler(new ChangeHandler() {		
+		pictureURL.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(final ChangeEvent event) {
 				urlChanged();
@@ -389,11 +410,16 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		centerGrid.setWidget(4, 0, copyResourceURL);
 		centerGrid.setWidget(4, 1, pictureURL);
 	}
+
+	/**
+	 * Handle url changed.
+	 */
 	private void urlChanged() {
 		isDirty = true;
 		validateContent();
 		pictureURL.setTitle(pictureURL.getText());
 	}
+
 	/**
 	 * Create save and cancel buttons.
 	 */
@@ -417,6 +443,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		centerGrid.setWidget(6, 0, save);
 		centerGrid.setWidget(6, 1, cancel);
 	}
+
 	/**
 	 * Initialize view.
 	 * 
@@ -432,6 +459,9 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		validateContent();
 	}
 
+	/**
+	 * save button was clicked so save changes.
+	 */
 	private void saveFormData() {
 		DungeonLevel levelData = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
 		if (levelData == null) {
@@ -455,6 +485,10 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		isDirty = false;
 		validateContent();
 	}
+
+	/**
+	 * Changes were canceled.
+	 */
 	private void cancelFormData() {
 		gatherData();
 	}
@@ -574,6 +608,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 
 	/**
 	 * Dummy method to get rid of unused warning.
+	 * 
 	 * @param numberCheck to rid of warning
 	 */
 	private void removeWarning(final double numberCheck) {
@@ -589,7 +624,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		newLevel = true;
 		validateContent();
 	}
-	
+
 	/**
 	 * handle removing current level.
 	 */
@@ -598,6 +633,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 		ServiceManager.getDungeonManager().saveDungeonData();
 		ServiceManager.getDungeonManager().setCurrentLevel(0);
 	}
+
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -609,6 +645,7 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			imageLoaded();
 		}
 	}
+
 	private void imageLoaded() {
 		imageLoaded = true;
 		parentWidth = getOffsetWidth();
@@ -622,9 +659,10 @@ public class DungeonEditorPanel extends DockLayoutPanel {
 			totalZoom = (double) parentHeight / (double) imageHeight;
 		}
 		if (!Double.isNaN(totalZoom) && totalZoom != 0.0) {
-			image.setPixelSize((int)(imageWidth * totalZoom), (int)(imageHeight * totalZoom));
+			image.setPixelSize((int) (imageWidth * totalZoom), (int) (imageHeight * totalZoom));
 		}
 	}
+
 	/**
 	 * Should we scale by width.
 	 * 

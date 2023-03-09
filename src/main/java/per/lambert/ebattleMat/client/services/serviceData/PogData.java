@@ -263,20 +263,6 @@ public class PogData extends JavaScriptObject {
 	}
 
 	/**
-	 * Clear player flags.
-	 */
-	public final native void clearPlayerFlags() /*-{
-		this.playerFlags = 0;
-	}-*/;
-
-	/**
-	 * Clear dungeon master flags.
-	 */
-	public final native void clearDungeonMasterFlags() /*-{
-		this.dungeonMasterFlags = 0;
-	}-*/;
-
-	/**
 	 * Set player flag.
 	 * 
 	 * @param flags to set
@@ -447,7 +433,7 @@ public class PogData extends JavaScriptObject {
 	 * 
 	 * @param withUpdates with updates
 	 */
-	public final void updatePog(final PogData withUpdates) {
+	private void updatePog(final PogData withUpdates) {
 		setColumn(withUpdates.getColumn());
 		setRow(withUpdates.getRow());
 		setDungeonLevel(withUpdates.getDungeonLevel());

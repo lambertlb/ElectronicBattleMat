@@ -95,7 +95,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @author LLambert
 	 *
 	 */
-	public class Rectangle {
+	private class Rectangle {
 		/**
 		 * Top of rectangle.
 		 */
@@ -590,7 +590,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param widthOfParent new width of window.
 	 * @param heightOfParent new height of window.
 	 */
-	public final void parentWidthChanged(final int widthOfParent, final int heightOfParent) {
+	private void parentWidthChanged(final int widthOfParent, final int heightOfParent) {
 		parentWidth = widthOfParent;
 		parentHeight = heightOfParent;
 		imageWidth = image.getWidth();
@@ -708,7 +708,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param clientY position
 	 * @return true if in window and not covered by FOW
 	 */
-	public final boolean isSelectedVisible(final int clientX, final int clientY) {
+	private boolean isSelectedVisible(final int clientX, final int clientY) {
 		if (clientX < 0 || clientY < 0) {
 			return (false);
 		}
@@ -916,7 +916,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Main method for drawing image.
 	 */
-	public final void drawEverything() {
+	private void drawEverything() {
 		calculateDimensions();
 		backCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing + 50, imageHeight + gridSpacing + 50);
 		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
@@ -947,7 +947,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Handle drawing everything.
 	 */
-	public final void handleAllDrawing() {
+	private void handleAllDrawing() {
 		canvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
 		canvas.getContext2d().drawImage(backCanvas.getCanvasElement(), 0, 0);
 		fowCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
@@ -1062,6 +1062,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		pogBorderWidth = totalZoom * getStartingBorderWidth();
 		if (pogBorderWidth < 5.0) {
 			pogBorderWidth = 5.0;
+		}
+		if (pogBorderWidth * 2 > adjustedGridSize()) {
+			pogBorderWidth = 0;
 		}
 	}
 
@@ -1250,7 +1253,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Remove highlighting from grid cell.
 	 */
-	protected void removeHighlightGridSquare() {
+	private void removeHighlightGridSquare() {
 		greyOutPanel.getElement().getStyle().setBackgroundColor("grey");
 		greyOutPanel.setVisible(false);
 	}
@@ -1261,7 +1264,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param clientX Top left X
 	 * @param clientY Top Left Y
 	 */
-	protected void highlightGridSquare(final int clientX, final int clientY) {
+	private void highlightGridSquare(final int clientX, final int clientY) {
 		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
 		if (pogBeingDragged == null) {
 			return;
@@ -1399,7 +1402,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Handle newly selected pog.
 	 */
-	protected void newSelectedPog() {
+	private void newSelectedPog() {
 		deSelectPog();
 		PogData pog = ServiceManager.getDungeonManager().getSelectedPog();
 		if (pog == null) {
@@ -1429,7 +1432,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event with data.
 	 */
-	protected void doDoubleTap(final DoubleTapEvent event) {
+	private void doDoubleTap(final DoubleTapEvent event) {
 		// restoreOriginalView();
 	}
 
@@ -1450,7 +1453,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param target widget
 	 * @return X coordinate relative between mouse click and target element.
 	 */
-	public int getRelativeX(final TouchInformation touchInformation, final Element target) {
+	private int getRelativeX(final TouchInformation touchInformation, final Element target) {
 		return touchInformation.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
 	}
 
@@ -1461,7 +1464,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param target widget
 	 * @return Y coordinate relative between mouse click and target element.
 	 */
-	public int getRelativeY(final TouchInformation touchInformation, final Element target) {
+	private int getRelativeY(final TouchInformation touchInformation, final Element target) {
 		return touchInformation.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
 	}
 
@@ -1470,7 +1473,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event with data
 	 */
-	protected void doPanStart(final PanStartEvent event) {
+	private void doPanStart(final PanStartEvent event) {
 		mouseDownXPos = getRelativeX(event.getTouchInformation(), canvas.getElement());
 		mouseDownYPos = getRelativeY(event.getTouchInformation(), canvas.getElement());
 		toggleFOW = ServiceManager.getDungeonManager().getFowToggle();
@@ -1483,7 +1486,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event with data
 	 */
-	protected void doPanEnd(final PanEndEvent event) {
+	private void doPanEnd(final PanEndEvent event) {
 		this.mouseDown = false;
 		panOperationComplete();
 	}
@@ -1493,7 +1496,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event with data
 	 */
-	protected void doPan(final PanEvent event) {
+	private void doPan(final PanEvent event) {
 		if (mouseDown) {
 			double xPos = event.getTouchInformation().getPageX();
 			double yPos = event.getTouchInformation().getPageY();
@@ -1508,7 +1511,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event with data
 	 */
-	protected void doZoomStart(final ZoomStartEvent event) {
+	private void doZoomStart(final ZoomStartEvent event) {
 		distanceBetweenFingers = event.getZoomInformation().getStartingDistance();
 	}
 
@@ -1517,7 +1520,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event with data
 	 */
-	protected void doZoomEnd(final ZoomEndEvent event) {
+	private void doZoomEnd(final ZoomEndEvent event) {
 	}
 
 	/**
@@ -1525,7 +1528,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * 
 	 * @param event with data
 	 */
-	protected void doZoom(final ZoomEvent event) {
+	private void doZoom(final ZoomEvent event) {
 		double currentDistance = event.getZoomInformation().getCurrentDistance();
 		double xPos = event.getZoomInformation().currentCenterX();
 		double yPos = event.getZoomInformation().currentCenterY();

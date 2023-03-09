@@ -47,10 +47,6 @@ public final class PogPlace extends FlagBit {
 	 * Resides in Session level instance area.
 	 */
 	public static final PogPlace SESSION_LEVEL = new PogPlace("Session Level");
-	/**
-	 * Invalid place.
-	 */
-	public static final PogPlace INVALID = new PogPlace("Invalid Place");
 	
 
 	/**
@@ -63,7 +59,7 @@ public final class PogPlace extends FlagBit {
 	 * 
 	 * @return map of names
 	 */
-	protected static Map<String, FlagBit> getNameMap() {
+	private static Map<String, FlagBit> getNameMap() {
 		return nameMap;
 	}
 

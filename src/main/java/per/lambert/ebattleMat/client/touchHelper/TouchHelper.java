@@ -168,7 +168,7 @@ public class TouchHelper {
 	 * 
 	 * @param event touch start event.
 	 */
-	public void doTouchStart(final TouchStartEvent event) {
+	private void doTouchStart(final TouchStartEvent event) {
 		firstMove = true;
 		amountOfFingers = event.getTouches().length();
 		detectDoubleTap(event);
@@ -179,7 +179,7 @@ public class TouchHelper {
 	 * 
 	 * @param event touch move event.
 	 */
-	public void doTouchMove(final TouchMoveEvent event) {
+	private void doTouchMove(final TouchMoveEvent event) {
 		if (firstMove) {
 			getStartingTouches(event);
 			computeAction(event);
@@ -273,7 +273,7 @@ public class TouchHelper {
 	 * 
 	 * @param event touch end event.
 	 */
-	public void doTouchEnd(final TouchEndEvent event) {
+	private void doTouchEnd(final TouchEndEvent event) {
 		setAction(Action.INVALID, event);
 	}
 
@@ -282,7 +282,7 @@ public class TouchHelper {
 	 * 
 	 * @param event touch cancel event.
 	 */
-	public void doTouchCancel(final TouchCancelEvent event) {
+	private void doTouchCancel(final TouchCancelEvent event) {
 		cancelEvent(event.getNativeEvent());
 	}
 

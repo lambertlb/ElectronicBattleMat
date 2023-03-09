@@ -40,7 +40,7 @@ public class DungeonListHandler implements IWebRequestHandler {
 	 * @author LLambert
 	 *
 	 */
-	public class DungeonListResponseData {
+	private final class DungeonListResponseData {
 		/**
 		 * array of dungeon names.
 		 */
@@ -58,7 +58,7 @@ public class DungeonListHandler implements IWebRequestHandler {
 		 * @param dungeonListData map of dungeons and UUIDS
 		 * @param dungeonDirectoryData map of dungeon and directory names
 		 */
-		public DungeonListResponseData(final Map<String,String> dungeonListData, final Map<String,String> dungeonDirectoryData) {
+		private DungeonListResponseData(final Map<String,String> dungeonListData, final Map<String,String> dungeonDirectoryData) {
 			dungeonNames = new String[dungeonListData.size()];
 			dungeonUUIDS = new String[dungeonListData.size()];
 			dungeonDirectories = new String[dungeonListData.size()];

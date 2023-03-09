@@ -25,13 +25,6 @@ import per.lambert.ebattleMat.client.services.serviceData.PogData;
  */
 public interface IPogManager {
 	/**
-	 * Get list of monster template pogs.
-	 * 
-	 * @return list of monster template pogs.
-	 */
-	PogData[] getMonsterTemplatePogs();
-
-	/**
 	 * Get list of room object template pogs.
 	 * 
 	 * @return list of room object template pogs.
@@ -73,22 +66,6 @@ public interface IPogManager {
 	 * @return true if from ribbon bar
 	 */
 	boolean isFromRibbonBar();
-
-	/**
-	 * Find monster pog with this UUID.
-	 * 
-	 * @param pogUUID to find
-	 * @return monster pog with this UUID.
-	 */
-	PogData findMonsterPog(String pogUUID);
-
-	/**
-	 * Find room object pog with this UUID.
-	 * 
-	 * @param pogUUID to find
-	 * @return room object pog with this UUID.
-	 */
-	PogData findRoomObjectPog(String pogUUID);
 
 	/**
 	 * Get pog sizes.

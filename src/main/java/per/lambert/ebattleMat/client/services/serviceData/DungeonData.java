@@ -142,7 +142,7 @@ public class DungeonData extends JavaScriptObject {
 	/**
 	 * create new list.
 	 */
-	public final native void initList() /*-{
+	private native void initList() /*-{
 		this.dungeonLevels = [];
 	}-*/;
 }

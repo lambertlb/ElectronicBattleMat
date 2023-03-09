@@ -184,7 +184,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	/**
 	 * cancel pressed.
 	 */
-	protected void onCancel() {
+	private void onCancel() {
 		setupDisplayWithData();
 	}
 
@@ -209,7 +209,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	/**
 	 * Save changed notes.
 	 */
-	protected void saveNotes() {
+	private void saveNotes() {
 		notes = editPanel.getElement().getInnerText();
 		dmNotes = dmEditPanel.getElement().getInnerText();
 		enableWidget(save, false);
@@ -328,7 +328,7 @@ public class NotesFloatingWindow extends OkCancelDialog {
 	 * 
 	 * @param event with the information
 	 */
-	protected void handleTextChanged(final KeyUpEvent event) {
+	private void handleTextChanged(final KeyUpEvent event) {
 		if (save != null) {
 			enableWidget(save, true);
 		}
