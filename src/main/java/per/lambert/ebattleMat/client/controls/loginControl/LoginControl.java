@@ -20,6 +20,9 @@ import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -122,6 +125,30 @@ public class LoginControl extends PopupPanel {
 		presenter = new LoginPresenter();
 		presenter.setView(this);
 		txtUserName.setFocus(true);
+		btnLogin.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					btnLogin.click();
+				}
+			}
+		});
+		txtUserName.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					btnLogin.click();
+				}
+			}
+		});
+		txtPassword.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					btnLogin.click();
+				}
+			}
+		});
 	}
 
 	/**
@@ -136,6 +163,7 @@ public class LoginControl extends PopupPanel {
 
 	/**
 	 * User name has changed.
+	 * 
 	 * @param event data
 	 */
 	@SuppressWarnings("VisibilityModifier")
@@ -146,6 +174,7 @@ public class LoginControl extends PopupPanel {
 
 	/**
 	 * Password changed.
+	 * 
 	 * @param event data.
 	 */
 	@SuppressWarnings("VisibilityModifier")
@@ -156,6 +185,7 @@ public class LoginControl extends PopupPanel {
 
 	/**
 	 * Ok button pressed.
+	 * 
 	 * @param event data
 	 */
 	@SuppressWarnings("VisibilityModifier")
@@ -174,6 +204,7 @@ public class LoginControl extends PopupPanel {
 
 	/**
 	 * Enable or disable controls.
+	 * 
 	 * @param enable data
 	 */
 	void setEnable(final boolean enable) {
@@ -184,6 +215,7 @@ public class LoginControl extends PopupPanel {
 
 	/**
 	 * display a message.
+	 * 
 	 * @param message to display
 	 */
 	void displayMessage(final String message) {
@@ -212,4 +244,13 @@ public class LoginControl extends PopupPanel {
 			}
 		}
 	};
+	
+	/**
+	 * show panel.
+	 */
+	@Override
+	public void show() {
+		super.show();
+		txtUserName.setFocus(true);
+	}
 }
