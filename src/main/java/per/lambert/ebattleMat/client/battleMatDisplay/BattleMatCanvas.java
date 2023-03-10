@@ -60,6 +60,7 @@ import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.interfaces.RectangleData;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
@@ -88,125 +89,6 @@ import per.lambert.ebattleMat.client.touchHelper.ZoomStartHandler;
  *         This support panning and zooming all images.
  */
 public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler, MouseDownHandler, MouseMoveHandler, MouseUpHandler {
-
-	/**
-	 * Manage coordinates for selection rectangle.
-	 * 
-	 * @author LLambert
-	 *
-	 */
-	private class Rectangle {
-		/**
-		 * Top of rectangle.
-		 */
-		private int top;
-
-		/**
-		 * Get top of rectangle.
-		 * 
-		 * @return top of rectangle
-		 */
-		public int getTop() {
-			return top;
-		}
-
-		/**
-		 * Set top of rectangle.
-		 * 
-		 * @param top
-		 */
-		public void setTop(final int top) {
-			this.top = top;
-		}
-
-		/**
-		 * Left of rectangle.
-		 */
-		private int left;
-
-		/**
-		 * Get left of rectangle.
-		 * 
-		 * @return left of rectangle
-		 */
-		public int getLeft() {
-			return left;
-		}
-
-		/**
-		 * Set left of rectangle.
-		 * 
-		 * @param left
-		 */
-		public void setLeft(final int left) {
-			this.left = left;
-		}
-
-		/**
-		 * Bottom of rectangle.
-		 */
-		private int bottom;
-
-		/**
-		 * Get bottom of rectangle.
-		 * 
-		 * @return bottom of rectangle
-		 */
-		public int getBottom() {
-			return bottom;
-		}
-
-		/**
-		 * Set bottom of rectangle.
-		 * 
-		 * @param bottom
-		 */
-		public void setBottom(final int bottom) {
-			this.bottom = bottom;
-		}
-
-		/**
-		 * Right of rectangle.
-		 */
-		private int right;
-
-		/**
-		 * Get right of rectangle.
-		 * 
-		 * @return right of rectangle
-		 */
-		public int getRight() {
-			return right;
-		}
-
-		/**
-		 * Set right of rectangle.
-		 * 
-		 * @param right
-		 */
-		public void setRight(final int right) {
-			this.right = right;
-		}
-
-		/**
-		 * Width of square.
-		 * 
-		 * @return width
-		 */
-		public int getWidth() {
-			return (right - left);
-		}
-
-		/**
-		 * get height of square.
-		 * 
-		 * @return height
-		 */
-		public int getHeight() {
-			return (bottom - top);
-		}
-	}
-
 	/**
 	 * Offset for clearing rectangle.
 	 */
@@ -239,6 +121,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Fog of war canvas.
 	 */
 	private Canvas fowCanvas = Canvas.createIfSupported();
+	/**
+	 * Fog of war canvas.
+	 */
+	private Canvas fowBackCanvas = Canvas.createIfSupported();
 	/**
 	 * line style grey.
 	 */
@@ -374,7 +260,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * Selection coordinates.
 	 */
-	private Rectangle selectionCoodinates = new Rectangle();
+	private RectangleData selectionCoodinates = new RectangleData();
+	/**
+	 * Are we currently panning.
+	 */
+	private boolean isPanning;
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -398,6 +288,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		greyOutPanel.getElement().getStyle().setZIndex(Constants.GREYOUT_Z);
 		fowCanvas.getElement().getStyle().setZIndex(Constants.FOW_Z);
 		fowCanvas.setStyleName("noEvents");
+		fowBackCanvas.setStyleName("noEvents");
 		touchHelper = new TouchHelper(canvas);
 	}
 
@@ -595,9 +486,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		parentHeight = heightOfParent;
 		imageWidth = image.getWidth();
 		imageHeight = image.getHeight();
-		sizeACanvas(canvas);
-		sizeACanvas(backCanvas);
-		sizeACanvas(fowCanvas);
+		sizeACanvas(canvas, parentWidth, parentHeight);
+		sizeACanvas(backCanvas, parentWidth, parentHeight);
+		sizeACanvas(fowCanvas, parentWidth, parentHeight);
+		sizeACanvas(fowBackCanvas, imageWidth, imageHeight);
 		calculateStartingZoom();
 		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, 0, 0);
 		drawEverything();
@@ -607,12 +499,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Adjust canvas size to parent size.
 	 * 
 	 * @param canvas to adjust
+	 * @param width
+	 * @param height
 	 */
-	private void sizeACanvas(final Canvas canvas) {
-		canvas.setWidth(parentWidth + "px");
-		canvas.setCoordinateSpaceWidth(parentWidth);
-		canvas.setHeight(parentHeight + "px");
-		canvas.setCoordinateSpaceHeight(parentHeight);
+	private void sizeACanvas(final Canvas canvas, final int width, final int height) {
+		canvas.setWidth(width + "px");
+		canvas.setCoordinateSpaceWidth(width);
+		canvas.setHeight(height + "px");
+		canvas.setCoordinateSpaceHeight(height);
 	}
 
 	/**
@@ -822,8 +716,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param yPos center Y of pan
 	 */
 	private void handleCanvasMoveWhilePanning(final double xPos, final double yPos) {
+		isPanning = true;
 		offsetX += (xPos - mouseDownXPos);
 		offsetY += (yPos - mouseDownYPos);
+		adjustPogs(!isPanning);
 		drawEverything();
 		mouseDownXPos = xPos;
 		mouseDownYPos = yPos;
@@ -910,6 +806,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		}
 		mouseDown = false;
 		toggleFOW = false;
+		if (isPanning) {
+			isPanning = false;
+			drawEverything();
+		}
 		removeHighlightGridSquare();
 	}
 
@@ -921,7 +821,22 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		backCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, imageWidth + gridSpacing + 50, imageHeight + gridSpacing + 50);
 		backCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
 		backCanvas.getContext2d().drawImage(imageElement, 0, 0);
-		handleAllDrawing();
+		canvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
+		canvas.getContext2d().drawImage(backCanvas.getCanvasElement(), 0, 0);
+		fowCanvas.getElement().getStyle().setOpacity(0);
+		fowCanvas.getContext2d().setTransform(1, 0, 0, 1, 0, 0);
+		fowCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
+		if (ServiceManager.getDungeonManager().isDungeonMaster()) {
+			fowCanvas.getElement().getStyle().setOpacity(Constants.FOW_OPACITY_FOR_DM);
+		} else {
+			fowCanvas.getElement().getStyle().setOpacity(Constants.FOW_OPACITY_FOR_PLAYER);
+		}
+		fowCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
+		fowCanvas.getContext2d().drawImage(fowBackCanvas.getCanvasElement(), 0, 0);
+		if (!isPanning) {
+			drawGridLines();
+			adjustPogs(!isPanning);
+		}
 	}
 
 	/**
@@ -942,18 +857,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		gridOffsetY = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridOffsetY() * totalZoom;
 		gridSpacing = ServiceManager.getDungeonManager().getCurrentDungeonLevelData().getGridSize();
 		showGrid = ServiceManager.getDungeonManager().isDungeonGridVisible();
-	}
-
-	/**
-	 * Handle drawing everything.
-	 */
-	private void handleAllDrawing() {
-		canvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
-		canvas.getContext2d().drawImage(backCanvas.getCanvasElement(), 0, 0);
-		fowCanvas.getContext2d().clearRect(CLEAR_OFFEST, CLEAR_OFFEST, parentWidth + gridSpacing, parentHeight + gridSpacing);
-		drawGridLines();
-		adjustPogs();
-		drawFogOfWar();
 	}
 
 	/**
@@ -1033,10 +936,16 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Adjust pog positions.
 	 * 
 	 * Pog data has the column and row and the widget needs to be moved to the proper pixel.
+	 * 
+	 * @param setVisible true if visible.
 	 */
-	private void adjustPogs() {
+	private void adjustPogs(final boolean setVisible) {
 		computPogBorderWidth();
 		for (PogCanvas pog : pogs) {
+			pog.setVisible(setVisible);
+			if (!setVisible) {
+				continue;
+			}
 			int x = (int) (columnToPixel(pog.getPogColumn()));
 			int y = (int) (rowToPixel(pog.getPogRow()));
 			if (pog.getPogData().isFlagSet(DungeonMasterFlag.SHIFT_RIGHT)) {
@@ -1087,12 +996,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			return;
 		}
 		IDungeonManager dungeonManager = ServiceManager.getDungeonManager();
-		double size = adjustedGridSize();
-		if (dungeonManager.isDungeonMaster()) {
-			fowCanvas.getElement().getStyle().setOpacity(Constants.FOW_OPACITY_FOR_DM);
-		} else {
-			fowCanvas.getElement().getStyle().setOpacity(Constants.FOW_OPACITY_FOR_PLAYER);
-		}
+		double size = gridSpacing;
 		for (int i = 0; i < verticalLines; ++i) {
 			for (int j = 0; j < horizontalLines; ++j) {
 				drawFOW(dungeonManager.isFowSet(i, j), size, i, j);
@@ -1115,10 +1019,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		int y = (int) rowToPixel(row);
 		double newSize = size + 1;
 		if (isSet) {
-			fowCanvas.getContext2d().setFillStyle(fogOfWarColor);
-			fowCanvas.getContext2d().fillRect(x - 1, y - 1, newSize, newSize);
+			fowBackCanvas.getContext2d().setFillStyle(fogOfWarColor);
+			fowBackCanvas.getContext2d().fillRect(x - 1, y - 1, newSize, newSize);
 		} else {
-			fowCanvas.getContext2d().clearRect(x - 1, y - 1, newSize, newSize);
+			fowBackCanvas.getContext2d().clearRect(x - 1, y - 1, newSize, newSize);
 		}
 	}
 
@@ -1382,6 +1286,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		addPogListToCanvas(ServiceManager.getDungeonManager().getMonstersForCurrentLevel());
 		addPogListToCanvas(ServiceManager.getDungeonManager().getPlayersForCurrentSession());
 		addPogListToCanvas(ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel());
+		drawFogOfWar();
 		drawEverything();
 	}
 
