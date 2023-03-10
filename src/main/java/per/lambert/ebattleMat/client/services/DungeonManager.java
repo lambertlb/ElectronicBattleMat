@@ -150,6 +150,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		this.currentLevelIndex = currentLevel;
 		loadDungeonData();
 		loadSessionData();
+		computedGridWidth = getCurrentDungeonLevelData().getGridSize();
 		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelectedLevelChanged, null));
 	}
 
@@ -496,6 +497,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			public void onSuccess(final Object sender, final Object data) {
 				selectedDungeon = JsonUtils.<DungeonData>safeEval((String) data);
 				loadDungeonData();
+				computedGridWidth = getCurrentDungeonLevelData().getGridSize();
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonSelected, null));
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataLoaded, null));
 				if (editMode) {

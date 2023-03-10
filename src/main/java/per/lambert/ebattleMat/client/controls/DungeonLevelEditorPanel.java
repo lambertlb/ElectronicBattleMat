@@ -576,7 +576,12 @@ public class DungeonLevelEditorPanel extends DockLayoutPanel {
 		}
 		try {
 			numberCheck = gridSize.getValue();
-			gridSize.removeStyleName("badLabel");
+			if (numberCheck < 4) {
+				isOK = false;
+				gridSize.addStyleName("badLabel");
+			} else {
+				gridSize.removeStyleName("badLabel");
+			}
 		} catch (Exception ex) {
 			isOK = false;
 			gridSize.addStyleName("badLabel");
@@ -595,7 +600,6 @@ public class DungeonLevelEditorPanel extends DockLayoutPanel {
 			isOK = false;
 			gridOffsetY.addStyleName("badLabel");
 		}
-		removeWarning(numberCheck);
 		ResizableDialog.enableWidget(save, isOK && isDirty);
 		ResizableDialog.enableWidget(cancel, isDirty);
 	}
@@ -604,14 +608,6 @@ public class DungeonLevelEditorPanel extends DockLayoutPanel {
 		imageLoaded = false;
 		String url = pictureURL.getText();
 		image.setUrl(ServiceManager.getDungeonManager().getUrlToDungeonResource(url));
-	}
-
-	/**
-	 * Dummy method to get rid of unused warning.
-	 * 
-	 * @param numberCheck to rid of warning
-	 */
-	private void removeWarning(final double numberCheck) {
 	}
 
 	/**

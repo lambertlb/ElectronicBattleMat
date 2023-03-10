@@ -30,7 +30,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -73,7 +72,7 @@ public class LoginControl extends PopupPanel {
 	 */
 	@SuppressWarnings("VisibilityModifier")
 	@UiField(provided = true)
-	PasswordTextBox txtPassword;
+	TextBox txtPassword;
 	/**
 	 * label for user name.
 	 */
@@ -109,7 +108,7 @@ public class LoginControl extends PopupPanel {
 	public LoginControl() {
 		setStyleName("");
 		this.setGlassEnabled(true);
-		txtPassword = new PasswordTextBox();
+		txtPassword = new TextBox();
 		add(binder.createAndBindUi(this));
 		center();
 		Window.addResizeHandler(repositionOnResize);
