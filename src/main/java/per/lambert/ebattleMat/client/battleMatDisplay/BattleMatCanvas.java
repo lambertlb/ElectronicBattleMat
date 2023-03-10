@@ -59,6 +59,7 @@ import per.lambert.ebattleMat.client.interfaces.Constants;
 import per.lambert.ebattleMat.client.interfaces.DungeonMasterFlag;
 import per.lambert.ebattleMat.client.interfaces.IDungeonManager;
 import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.interfaces.RectangleData;
 import per.lambert.ebattleMat.client.services.ServiceManager;
@@ -1124,6 +1125,11 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			clonePog = pogData;
 		} else {
 			clonePog = pogData.clone();
+			if (ServiceManager.getDungeonManager().isEditMode()) {
+				clonePog.setPogPlace(PogPlace.DUNGEON_LEVEL);
+			} else {
+				clonePog.setPogPlace(PogPlace.SESSION_LEVEL);
+			}
 		}
 		return (addPogToCanvas(clonePog));
 	}
