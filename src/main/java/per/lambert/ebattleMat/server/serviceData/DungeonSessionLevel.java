@@ -23,6 +23,20 @@ package per.lambert.ebattleMat.server.serviceData;
  */
 public class DungeonSessionLevel {
 	/**
+	 * Version of for of war.
+	 */
+	private int fogOfWarVersion;
+
+	/**
+	 * Get fog of war version.
+	 * 
+	 * @return fog of war version
+	 */
+	public int getFogOfWarVersion() {
+		return fogOfWarVersion;
+	}
+
+	/**
 	 * Array for Fog of War.
 	 */
 	private boolean[][] fogOfWar = new boolean[0][0];
@@ -51,6 +65,7 @@ public class DungeonSessionLevel {
 	 */
 	public void setFogOfWar(final boolean[][] fogOfWar) {
 		this.fogOfWar = fogOfWar;
+		++fogOfWarVersion;
 	}
 
 	/**
@@ -112,14 +127,5 @@ public class DungeonSessionLevel {
 				fogOfWar[i][j] = true;
 			}
 		}
-	}
-
-	/**
-	 * update Fog of war.
-	 * 
-	 * @param fowData fog of war
-	 */
-	public void updateFOW(final boolean[][] fowData) {
-		this.fogOfWar = fowData;
 	}
 }

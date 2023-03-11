@@ -25,7 +25,11 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
+import per.lambert.ebattleMat.client.event.ReasonForActionEvent;
+import per.lambert.ebattleMat.client.event.ReasonForActionEventHandler;
 import per.lambert.ebattleMat.client.interfaces.Constants;
+import per.lambert.ebattleMat.client.interfaces.IEventManager;
+import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 
 /**
@@ -70,7 +74,7 @@ public class BattleMatLayout extends ResizeComposite {
 	/**
 	 * Have panels been setup.
 	 */
-	private boolean panelsSetup; 
+	private boolean panelsSetup;
 
 	/**
 	 * Sets up the widget. We create the GUI, set up event handling, and call initWidget on the holder panel.
@@ -80,6 +84,7 @@ public class BattleMatLayout extends ResizeComposite {
 		initWidget(dockPanel);
 		// ensure this widget takes up as much space as possible
 		this.setSize("100%", "100%");
+		setupEventHandler();
 	}
 
 	/**
@@ -100,7 +105,7 @@ public class BattleMatLayout extends ResizeComposite {
 			@Override
 			public void onResize() {
 				super.onResize();
-				battleMatCanvas.dungeonDataChanged();
+				battleMatCanvas.onResize();
 			};
 		};
 		mainPanel.add(splitPanel);
@@ -119,9 +124,30 @@ public class BattleMatLayout extends ResizeComposite {
 	}
 
 	/**
+	 * Setup event handlers.
+	 */
+	private void setupEventHandler() {
+		IEventManager eventManager = ServiceManager.getEventManager();
+		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
+			public void onReasonForAction(final ReasonForActionEvent event) {
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToEdit) {
+					dungeonDataChanged();
+					return;
+				} else if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToJoin) {
+					dungeonDataChanged();
+					return;
+				} else if (event.getReasonForAction() == ReasonForAction.DungeonDataSaved) {
+					dungeonDataChanged();
+					return;
+				}
+			}
+		});
+	}
+
+	/**
 	 * delegate dungeon data changed.
 	 */
-	public void dungeonDataChanged() {
+	private void dungeonDataChanged() {
 		if (!panelsSetup) {
 			setupPanels();
 		}
@@ -129,7 +155,6 @@ public class BattleMatLayout extends ResizeComposite {
 		// hide the splitter
 		east.setVisible(isDM);
 		splitPanel.setWidgetSize(east, isDM ? Window.getClientWidth() / 5.0 : 0.0);
-		battleMatCanvas.dungeonDataChanged();
 	}
 
 	/**
@@ -140,12 +165,6 @@ public class BattleMatLayout extends ResizeComposite {
 		splitPanel.add(battleMatCanvasPanel);
 		panelsSetup = true;
 	}
-	/**
-	 * delegate dungeon data updated.
-	 */
-	public void dungeonDataUpdated() {
-		battleMatCanvas.dungeonDataUpdated();
-	}
 
 	/**
 	 * delegate window resized.
@@ -153,7 +172,6 @@ public class BattleMatLayout extends ResizeComposite {
 	 * @param event event data
 	 */
 	private void doWindowResize(final ResizeEvent event) {
-		battleMatCanvas.dungeonDataChanged();
+		battleMatCanvas.onResize();
 	}
-
 }

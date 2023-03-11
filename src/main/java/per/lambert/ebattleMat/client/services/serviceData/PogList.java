@@ -49,9 +49,10 @@ public class PogList extends JavaScriptObject {
 	 */
 	public final native void addPog(PogData pogToAdd) /*-{
 		if (this.pogList === undefined) {
-			this.pogList = [];
+			initList();
 		}
 		this.pogList.push(pogToAdd);
+		setListVersion(getListVersion() + 1);
 	}-*/;
 
 	/**
@@ -67,6 +68,12 @@ public class PogList extends JavaScriptObject {
 				addPog(pogInList);
 			}
 		}
+		setListVersion(getListVersion() + 1);
+	}
+
+	public final void update(final PogData pog) {
+		pog.fullUpdate(pog);
+		setListVersion(getListVersion() + 1);
 	}
 
 	/**
@@ -74,5 +81,24 @@ public class PogList extends JavaScriptObject {
 	 */
 	private native void initList() /*-{
 		this.pogList = [];
+	}-*/;
+
+	/**
+	 * Get version of list.
+	 * @return version of list
+	 */
+	public final native int getListVersion() /*-{
+		if (this.listVersion === undefined) {
+			this.listVersion = 0;
+		}
+		return this.listVersion;
+	}-*/;
+
+	/**
+	 * set version of list.
+	 * @param listVersion
+	 */
+	private native void setListVersion(int listVersion) /*-{
+		this.listVersion = listVersion;
 	}-*/;
 }

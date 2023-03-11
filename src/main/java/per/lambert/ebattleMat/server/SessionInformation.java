@@ -267,7 +267,7 @@ public class SessionInformation {
 		if (sessionLevel == null) {
 			return;
 		}
-		sessionLevel.updateFOW(fowData);
+		sessionLevel.setFogOfWar(fowData);
 		sessionData.increamentVersion();
 		dirty = true;
 	}

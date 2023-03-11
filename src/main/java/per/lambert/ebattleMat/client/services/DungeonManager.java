@@ -33,6 +33,8 @@ import per.lambert.ebattleMat.client.interfaces.IErrorInformation;
 import per.lambert.ebattleMat.client.interfaces.IUserCallback;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
+import per.lambert.ebattleMat.client.interfaces.VersionedItem;
+import per.lambert.ebattleMat.client.services.serviceData.DataVersions;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonData;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonListData;
@@ -374,6 +376,10 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * Collection of session level monster templates.
 	 */
 	private PogCollection sessionLevelPlayers = new PogCollection(ReasonForAction.LastReason, PogPlace.SESSION_RESOURCE);
+	/**
+	 * Versions of data.
+	 */
+	private DataVersions dataVersion = new DataVersions();
 
 	/**
 	 * construct a dungeon manager.
@@ -521,6 +527,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (dungeonLevel != null) {
 			dungeonLevelMonsters.setPogList(dungeonLevel.getMonsters());
 			dungeonLevelRoomObjects.setPogList(dungeonLevel.getRoomObjects());
+			updateDataVersion();
 		}
 	}
 
@@ -772,6 +779,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			sessionLevelMonsters.setPogList(getCurrentSessionLevelData().getMonsters());
 			sessionLevelRoomObjects.setPogList(getCurrentSessionLevelData().getRoomObjects());
 			sessionLevelPlayers.setPogList(selectedSession.getPlayers());
+			updateDataVersion();
 		}
 	}
 
@@ -965,6 +973,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 					lastError = error.getError();
 				}
 			});
+			sessionLevel.setFOWVersion(sessionLevel.getFOWVersion() + 1);
 		}
 	}
 
@@ -1173,6 +1182,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (pog.isEqual(getSelectedPog())) {
 			setSelectedPogInternal(pog);
 		}
+		updateDataVersion();
 	}
 
 	/**
@@ -1236,6 +1246,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		getCurrentSessionLevelData().setFOW(fogOfWar);
 	}
 
+	/**
+	 * Return original fow.
+	 */
 	private void showSavedFOW() {
 		if (savedFOW == null) {
 			return;
@@ -1418,5 +1431,34 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			collection = sessionLevelPlayers;
 		}
 		return (collection);
+	}
+	/**
+	 * Update data versions.
+	 */
+	private void updateDataVersion() {
+		dataVersion.initialize();
+		dataVersion.setItemVersion(VersionedItem.COMMON_RESOURCE_MONSTERS, getMonsterCollection().getPogListVserion());
+		dataVersion.setItemVersion(VersionedItem.COMMON_RESOURCE_ROOMOBECTS, getRoomCollection().getPogListVserion());
+		DungeonLevel dungeonLevel = getCurrentDungeonLevelData();
+		if (dungeonLevel != null) {
+			dataVersion.setItemVersion(VersionedItem.DUNGEON_LEVEL_MONSTERS, dungeonLevelMonsters.getPogListVserion());
+			dataVersion.setItemVersion(VersionedItem.DUNGEON_LEVEL_ROOMOBJECTS, dungeonLevelRoomObjects.getPogListVserion());
+		}
+		DungeonSessionLevel sessionLevelData =  getCurrentSessionLevelData();
+		if (sessionLevelData != null) {
+			dataVersion.setItemVersion(VersionedItem.SESSION_LEVEL_MONSTERS, sessionLevelMonsters.getPogListVserion());
+			dataVersion.setItemVersion(VersionedItem.SESSION_LEVEL_ROOMOBJECTS, sessionLevelRoomObjects.getPogListVserion());
+			dataVersion.setItemVersion(VersionedItem.SESSION_RESOURCE_PLAYERS, sessionLevelPlayers.getPogListVserion());
+			dataVersion.setItemVersion(VersionedItem.FOG_OF_WAR, sessionLevelData.getFOWVersion());
+		}
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getItemVersion(final VersionedItem itemToGet) {
+		return dataVersion.getItemVersion(itemToGet);
 	}
 }

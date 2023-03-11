@@ -456,4 +456,10 @@ public interface IDungeonManager extends IPogManager {
 	 * @return sorted list
 	 */
 	List<PogData> getSortedList(PogPlace fromWhere, String typeOfPogs);
+	/**
+	 * Get version for this item.
+	 * @param itemToGet
+	 * @return version
+	 */
+	int getItemVersion(VersionedItem itemToGet);
 }

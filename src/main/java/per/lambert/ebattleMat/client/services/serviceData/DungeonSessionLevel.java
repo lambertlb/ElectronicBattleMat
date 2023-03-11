@@ -21,6 +21,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * client side session level.
  * 
  * This needs to match per.lambert.ebattleMat.server.serviceData.DungeonSessionLevel
+ * 
  * @author LLambert
  *
  */
@@ -32,7 +33,28 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	}
 
 	/**
+	 * Get fog of War version.
+	 * 
+	 * @return fog of War version.
+	 */
+	public final native int getFOWVersion() /*-{
+		if (this.fogOfWarVersion === undefined) {
+			this.fogOfWarVersion = 0;
+		}
+		return (this.fogOfWarVersion);
+	}-*/;
+
+	/**
+	 * Set fow version.
+	 * @param fowVersion to set
+	 */
+	public final native void setFOWVersion(int fowVersion) /*-{
+		this.fogOfWarVersion = fowVersion;
+	}-*/;
+
+	/**
 	 * Get fog of War.
+	 * 
 	 * @return fog of War.
 	 */
 	public final native boolean[][] getFOW() /*-{
@@ -44,6 +66,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 
 	/**
 	 * set fog of War.
+	 * 
 	 * @param fogOfWar fog of War.
 	 */
 	public final native void setFOW(boolean[][] fogOfWar) /*-{
@@ -52,6 +75,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 
 	/**
 	 * update fog of War.
+	 * 
 	 * @param columns number of columns
 	 * @param rows number of rows
 	 * @param value value for cell
@@ -66,6 +90,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 
 	/**
 	 * is fog of War set for this cell.
+	 * 
 	 * @param column to check
 	 * @param row to check
 	 * @return value of cell
@@ -80,22 +105,28 @@ public class DungeonSessionLevel extends JavaScriptObject {
 
 	/**
 	 * Get monsters on level.
+	 * 
 	 * @return monsters on level.
 	 */
 	public final native PogList getMonsters() /*-{
 		if (this.monsters === undefined) {
-			this.monsters = {"pogList": []};
+			this.monsters = {
+				"pogList" : []
+			};
 		}
 		return (this.monsters);
 	}-*/;
 
 	/**
 	 * get room objects.
+	 * 
 	 * @return room objects
 	 */
 	public final native PogList getRoomObjects() /*-{
 		if (this.roomObjects === undefined) {
-			this.roomObjects = {"pogList": []};
+			this.roomObjects = {
+				"pogList" : []
+			};
 		}
 		return (this.roomObjects);
 	}-*/;

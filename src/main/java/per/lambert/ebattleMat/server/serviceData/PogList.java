@@ -23,9 +23,29 @@ package per.lambert.ebattleMat.server.serviceData;
  */
 public class PogList {
 	/**
+	 * Version of this list.
+	 */
+	private int listVersion;
+	/**
 	 * List of pogs.
 	 */
 	private PogData[] pogList;
+	
+	/**
+	 * Get version of list.
+	 * @return version of list
+	 */
+	public int getListVersion() {
+		return listVersion;
+	}
+
+	/**
+	 * Get version of list.
+	 * @param listVersion
+	 */
+	public void setListVersion(final int listVersion) {
+		this.listVersion = listVersion;
+	}
 
 	/**
 	 * Get list of pogs.
@@ -34,15 +54,6 @@ public class PogList {
 	 */
 	public PogData[] getPogList() {
 		return pogList;
-	}
-
-	/**
-	 * Set list of pogs.
-	 * 
-	 * @param pogList list of pogs.
-	 */
-	public void setPogList(final PogData[] pogList) {
-		this.pogList = pogList;
 	}
 
 	/**
@@ -70,6 +81,7 @@ public class PogList {
 		for (PogData pogInList : pogList) {
 			if (pogInList.equals(pog)) {
 				pogInList.fullUpdate(pog);
+				++listVersion;
 				return;
 			}
 		}
@@ -88,6 +100,7 @@ public class PogList {
 		}
 		newList[pogList.length] = pog;
 		pogList = newList;
+		++listVersion;
 	}
 
 	/**
@@ -95,6 +108,7 @@ public class PogList {
 	 */
 	public PogList clone() {
 		PogList newList = new PogList(pogList.length);
+		newList.setListVersion(listVersion);
 		for (int i = 0; i < pogList.length; ++i) {
 			newList.pogList[i] = pogList[i].clone();
 		}
@@ -117,6 +131,7 @@ public class PogList {
 				newList[j++] = pogList[i];
 			}
 			pogList = newList;
+			++listVersion;
 		}
 	}
 

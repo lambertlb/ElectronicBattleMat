@@ -81,26 +81,6 @@ public class ElectronicBattleMat implements EntryPoint {
 					showDungeonManagerDialog();
 					return;
 				}
-				if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToEdit) {
-					layout.dungeonDataChanged();
-					return;
-				}
-				if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToJoin) {
-					layout.dungeonDataChanged();
-					return;
-				}
-				if (event.getReasonForAction() == ReasonForAction.SessionDataChanged) {
-					layout.dungeonDataUpdated();
-					return;
-				}
-				if (event.getReasonForAction() == ReasonForAction.SessionDataSaved) {
-					layout.dungeonDataUpdated();
-					return;
-				}
-				if (event.getReasonForAction() == ReasonForAction.DungeonDataSaved) {
-					layout.dungeonDataChanged();
-					return;
-				}
 			}
 		});
 	}

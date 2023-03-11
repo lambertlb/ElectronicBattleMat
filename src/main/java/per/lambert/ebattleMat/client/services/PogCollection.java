@@ -185,7 +185,7 @@ public class PogCollection {
 		if (existing == null) {
 			pogList.addPog(pog);
 		} else {
-			existing.fullUpdate(pog);
+			pogList.update(pog);
 		}
 		rebuildCollections();
 	}
@@ -218,5 +218,17 @@ public class PogCollection {
 		}
 		Collections.sort(keys, new PogComparator());
 		return (keys);
+	}
+
+	/**
+	 * Get version of pog list.
+	 * 
+	 * @return versionof list
+	 */
+	public int getPogListVserion() {
+		if (pogList == null) {
+			return (-1);
+		}
+		return (pogList.getListVersion());
 	}
 }
