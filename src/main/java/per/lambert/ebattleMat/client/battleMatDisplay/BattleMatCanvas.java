@@ -61,6 +61,7 @@ import per.lambert.ebattleMat.client.interfaces.IEventManager;
 import per.lambert.ebattleMat.client.interfaces.PogPlace;
 import per.lambert.ebattleMat.client.interfaces.ReasonForAction;
 import per.lambert.ebattleMat.client.interfaces.RectangleData;
+import per.lambert.ebattleMat.client.interfaces.VersionedItem;
 import per.lambert.ebattleMat.client.services.ServiceManager;
 import per.lambert.ebattleMat.client.services.serviceData.DataVersions;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
@@ -277,7 +278,19 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	/**
 	 * History of data versions.
 	 */
-	private DataVersions dataVersionsHistpry = new DataVersions();
+	private DataVersions dataVersionsHistory = new DataVersions();
+	/**
+	 * Current dungeon UUID.
+	 */
+	private String currentDungeonID;
+	/**
+	 * Current session UUID.
+	 */
+	private String currentSessionID;
+	/**
+	 * Current dungeon or session level.
+	 */
+	private int currentLevel;
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -285,7 +298,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	public BattleMatCanvas() {
 		showGrid = false;
 		createContainers();
-		intializeView();
 		createContextMenu();
 		setupEventHandling();
 	}
@@ -303,20 +315,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		fowCanvas.setStyleName("noEvents");
 		fowBackCanvas.setStyleName("noEvents");
 		touchHelper = new TouchHelper(canvas);
-	}
-
-	/**
-	 * Initialize view.
-	 */
-	private void intializeView() {
-		monsterPogs.clear();
-		roomObjectPogs.clear();
-		playerPogs.clear();
-		super.clear();
-		super.add(canvas, 0, 0);
-		super.add(fowCanvas, 0, 0);
-		super.add(hidePanel, -1, -1);
-		super.add(greyOutPanel, 100, 100);
 	}
 
 	/**
@@ -339,44 +337,15 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		setupEventManagerHandling();
 		addTouchHandlerEvents();
 		handleContextMenuEvents();
-		setupInternalEventHandler();
 
 		// handle when main image is loaded
 		image.addLoadHandler(new LoadHandler() {
 			public void onLoad(final LoadEvent event) {
 				setImage();
-				addPogs();
+				checkForDataChanges();
 			}
 		});
 	}
-
-	/**
-	 * Setup event handlers.
-	 */
-	private void setupInternalEventHandler() {
-		IEventManager eventManager = ServiceManager.getEventManager();
-		eventManager.addHandler(ReasonForActionEvent.getReasonForActionEventType(), new ReasonForActionEventHandler() {
-			public void onReasonForAction(final ReasonForActionEvent event) {
-				if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToEdit) {
-					dungeonDataChanged();
-					return;
-				} else if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToJoin) {
-					dungeonDataChanged();
-					return;
-				} else if (event.getReasonForAction() == ReasonForAction.SessionDataChanged) {
-					dungeonDataUpdated();
-					return;
-				} else if (event.getReasonForAction() == ReasonForAction.SessionDataSaved) {
-					dungeonDataUpdated();
-					return;
-				} else if (event.getReasonForAction() == ReasonForAction.DungeonDataSaved) {
-					dungeonDataChanged();
-					return;
-				}
-			}
-		});
-	}
-
 
 	/**
 	 * Setup drag and drop.
@@ -442,12 +411,26 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 					onMouseMove((MouseMoveEvent) event.getData());
 					return;
 				}
-				if (event.getReasonForAction() == ReasonForAction.DungeonSelectedLevelChanged) {
-					dungeonDataChanged();
-					return;
-				}
 				if (event.getReasonForAction() == ReasonForAction.PogWasSelected) {
 					newSelectedPog();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToEdit) {
+					checkForDataChanges();
+					return;
+				} else if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToJoin) {
+					checkForDataChanges();
+					return;
+				} else if (event.getReasonForAction() == ReasonForAction.SessionDataChanged) {
+					checkForDataChanges();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonSelectedLevelChanged) {
+					checkForDataChanges();
+					return;
+				}
+				if (event.getReasonForAction() == ReasonForAction.DungeonDataSaved) {
+					checkForDataChanges();
 					return;
 				}
 			}
@@ -1073,8 +1056,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * @param row of cell
 	 */
 	private void drawFOW(final boolean isSet, final double size, final int column, final int row) {
-		int x = (int) columnToPixel(column);
-		int y = (int) rowToPixel(row);
+		int x = (int) ((column * gridSpacing));
+		int y = (int) ((row * gridSpacing));
 		double newSize = size + 1;
 		if (isSet) {
 			fowBackCanvas.getContext2d().setFillStyle(fogOfWarColor);
@@ -1140,6 +1123,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	/**
 	 * Find This pog canvas.
+	 * 
 	 * @param pogToFind
 	 * @return found pog canvas
 	 */
@@ -1343,69 +1327,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	}
 
 	/**
-	 * Dungeon data has changed get the URL for current level picture. All other activities will get triggered when the picture actually loads.
-	 */
-	public void dungeonDataChanged() {
-		intializeView();
-		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
-		if (dungeonLevel == null) {
-			return;
-		}
-		String dungeonPicture = dungeonLevel.getLevelDrawing();
-		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(dungeonPicture);
-		image.setUrl(imageUrl);
-	}
-
-	/**
-	 * Dungeon data changed.
-	 */
-	public void dungeonDataUpdated() {
-		deSelectPog();
-		removePogs(monsterPogs);
-		removePogs(roomObjectPogs);
-		removePogs(playerPogs);
-		addPogs();
-		newSelectedPog();
-	}
-
-	/**
-	 * Remove all pogs from canvas.
-	 * @param pogList
-	 */
-	private void removePogs(final ArrayList<PogCanvas> pogList) {
-		for (PogCanvas pog : pogList) {
-			remove(pog);
-		}
-		pogList.clear();
-	}
-
-	/**
-	 * Add all pogs from dungeon to canvas.
-	 */
-	private void addPogs() {
-		getGridData();
-		addPogListToCanvas(ServiceManager.getDungeonManager().getMonstersForCurrentLevel());
-		addPogListToCanvas(ServiceManager.getDungeonManager().getPlayersForCurrentSession());
-		addPogListToCanvas(ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel());
-		drawFogOfWar();
-		drawEverything();
-	}
-
-	/**
-	 * Add list of pogs to canvas.
-	 * 
-	 * @param pogsToAdd list to add
-	 */
-	private void addPogListToCanvas(final PogData[] pogsToAdd) {
-		if (pogsToAdd == null) {
-			return;
-		}
-		for (PogData pog : pogsToAdd) {
-			addPogToCanvas(pog);
-		}
-	}
-
-	/**
 	 * Handle newly selected pog.
 	 */
 	private void newSelectedPog() {
@@ -1539,11 +1460,110 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		zoomCanvas(xPos, yPos, currentDistance / distanceBetweenFingers);
 		distanceBetweenFingers = currentDistance;
 	}
-	
+
 	/**
 	 * Parent window resized.
 	 */
 	public void onResize() {
-		dungeonDataChanged();
+		checkForDataChanges();
+	}
+
+	/**
+	 * Add all pogs from dungeon to canvas.
+	 */
+	private void updateNeededData() {
+		getGridData();
+		updatePogs(VersionedItem.SESSION_RESOURCE_PLAYERS, ServiceManager.getDungeonManager().getPlayersForCurrentSession(), playerPogs);
+		updatePogs(VersionedItem.SESSION_LEVEL_MONSTERS, ServiceManager.getDungeonManager().getMonstersForCurrentLevel(), monsterPogs);
+		updatePogs(VersionedItem.SESSION_LEVEL_ROOMOBJECTS, ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel(), roomObjectPogs);
+		drawFogOfWar();
+		drawEverything();
+	}
+
+	private void updatePogs(final VersionedItem versionedItem, final PogData[] pogs, final ArrayList<PogCanvas> pogList) {
+		if (pogs == null || ServiceManager.getDungeonManager().getItemVersion(versionedItem) == dataVersionsHistory.getItemVersion(versionedItem)) {
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		ArrayList<PogCanvas> clone = (ArrayList<PogCanvas>) pogList.clone();
+		ArrayList<PogData> toAdd = new ArrayList<PogData>();
+		
+		for (PogData pog : pogs) {
+			boolean found = false;
+			for (int index = 0; index < clone.size(); ++index) {
+				PogCanvas pg = clone.get(index);
+				if (pog.isEqual(pg.getPogData())) {
+					clone.remove(pg);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				toAdd.add(pog);
+			}
+		}
+		for (PogData pog : toAdd) {
+			addPogToCanvas(pog);
+		}
+		for (PogCanvas pog : clone) {
+			remove(pog);
+		}
+	}
+
+	/**
+	 * Dungeon data changed.
+	 */
+	public void dungeonDataUpdated() {
+		deSelectPog();
+		updateNeededData();
+		newSelectedPog();
+	}
+
+	/**
+	 * Initialize view.
+	 */
+	private void intializeView() {
+		dataVersionsHistory.initialize();
+		monsterPogs.clear();
+		roomObjectPogs.clear();
+		playerPogs.clear();
+		super.clear();
+		super.add(canvas, 0, 0);
+		super.add(fowCanvas, 0, 0);
+		super.add(hidePanel, -1, -1);
+		super.add(greyOutPanel, 100, 100);
+		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
+		if (dungeonLevel == null) {
+			return;
+		}
+		String dungeonPicture = dungeonLevel.getLevelDrawing();
+		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(dungeonPicture);
+		image.setUrl(imageUrl);
+	}
+
+	/**
+	 * See if any changes in data.
+	 */
+	private void checkForDataChanges() {
+		IDungeonManager dungeonManager = ServiceManager.getDungeonManager();
+		if (dungeonManager.getCurrentDungeonLevelData() == null) {
+			return;
+		}
+		boolean initView = false;
+		if (dungeonManager.getCurrentDungeonUUID() != currentDungeonID) {
+			initView = true;
+		} else if (dungeonManager.getCurrentSessionUUID() != currentSessionID) {
+			initView = true;
+		} else if (dungeonManager.getCurrentLevelIndex() != currentLevel) {
+			initView = true;
+		}
+		if (initView) {
+			intializeView();
+		} else {
+			dungeonDataUpdated();
+		}
+		currentDungeonID = dungeonManager.getCurrentDungeonUUID();
+		currentSessionID = dungeonManager.getCurrentSessionUUID();
+		currentLevel = dungeonManager.getCurrentLevelIndex();
 	}
 }

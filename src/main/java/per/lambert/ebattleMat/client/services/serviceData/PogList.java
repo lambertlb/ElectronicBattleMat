@@ -42,17 +42,20 @@ public class PogList extends JavaScriptObject {
 		return this.pogList;
 	}-*/;
 
+	public final void addPog(final PogData pogToAdd) {
+		addPogNative(pogToAdd);
+		setListVersion(getListVersion() + 1);
+	}
 	/**
 	 * Add pog to list.
 	 * 
 	 * @param pogToAdd pog to add
 	 */
-	public final native void addPog(PogData pogToAdd) /*-{
+	public final native void addPogNative(PogData pogToAdd) /*-{
 		if (this.pogList === undefined) {
-			initList();
+			this.pogList = [];
 		}
 		this.pogList.push(pogToAdd);
-		setListVersion(getListVersion() + 1);
 	}-*/;
 
 	/**
@@ -65,7 +68,7 @@ public class PogList extends JavaScriptObject {
 		initList();
 		for (PogData pogInList : list) {
 			if (!pogInList.isEqual(pog)) {
-				addPog(pogInList);
+				addPogNative(pogInList);
 			}
 		}
 		setListVersion(getListVersion() + 1);

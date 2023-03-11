@@ -110,9 +110,33 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	}
 
 	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getCurrentDungeonUUID() {
+		if (selectedDungeon != null) {
+			return (selectedDungeon.getUUID());
+		}
+		return (null);
+	}
+
+	/**
 	 * selected session.
 	 */
 	private DungeonSessionData selectedSession;
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getCurrentSessionUUID() {
+		if (selectedSession != null) {
+			return (selectedSession.getSessionUUID());
+		}
+		return (null);
+	}
 
 	/**
 	 * Get selected session.
@@ -1432,6 +1456,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		}
 		return (collection);
 	}
+
 	/**
 	 * Update data versions.
 	 */
@@ -1444,7 +1469,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			dataVersion.setItemVersion(VersionedItem.DUNGEON_LEVEL_MONSTERS, dungeonLevelMonsters.getPogListVserion());
 			dataVersion.setItemVersion(VersionedItem.DUNGEON_LEVEL_ROOMOBJECTS, dungeonLevelRoomObjects.getPogListVserion());
 		}
-		DungeonSessionLevel sessionLevelData =  getCurrentSessionLevelData();
+		DungeonSessionLevel sessionLevelData = getCurrentSessionLevelData();
 		if (sessionLevelData != null) {
 			dataVersion.setItemVersion(VersionedItem.SESSION_LEVEL_MONSTERS, sessionLevelMonsters.getPogListVserion());
 			dataVersion.setItemVersion(VersionedItem.SESSION_LEVEL_ROOMOBJECTS, sessionLevelRoomObjects.getPogListVserion());

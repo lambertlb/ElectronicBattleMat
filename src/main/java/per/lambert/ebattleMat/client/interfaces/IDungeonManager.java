@@ -462,4 +462,14 @@ public interface IDungeonManager extends IPogManager {
 	 * @return version
 	 */
 	int getItemVersion(VersionedItem itemToGet);
+	/**
+	 * Get UUID of current dungeon.
+	 * @return UUID
+	 */
+	String getCurrentDungeonUUID();
+	/**
+	 * Get UUID of current dungeon.
+	 * @return UUID
+	 */
+	String getCurrentSessionUUID();
 }
