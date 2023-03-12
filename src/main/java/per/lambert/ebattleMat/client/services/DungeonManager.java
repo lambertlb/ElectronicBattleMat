@@ -1486,4 +1486,13 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	public int getItemVersion(final VersionedItem itemToGet) {
 		return dataVersion.getItemVersion(itemToGet);
 	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updateDataVersion(final DataVersions needsUpdating) {
+		dataVersion.updateFrom(needsUpdating);
+	}
 }

@@ -870,8 +870,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		} else {
 			fowCanvas.getElement().getStyle().setOpacity(Constants.FOW_OPACITY_FOR_PLAYER);
 		}
-		fowCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, offsetX, offsetY);
-		fowCanvas.getContext2d().drawImage(fowBackCanvas.getCanvasElement(), 0, 0);
+		fowCanvas.getContext2d().setTransform(totalZoom, 0, 0, totalZoom, gridOffsetX, gridOffsetY);
+		fowCanvas.getContext2d().drawImage(fowBackCanvas.getCanvasElement(), offsetX / totalZoom, offsetY / totalZoom);
 	}
 
 	/**
@@ -1025,24 +1025,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 */
 	private double getStartingBorderWidth() {
 		return (gridSpacing / 10);
-	}
-
-	/**
-	 * Draw fog of war.
-	 * 
-	 * If this is DM let them see through it.
-	 */
-	private void drawFogOfWar() {
-		if (ServiceManager.getDungeonManager().isEditMode()) {
-			return;
-		}
-		IDungeonManager dungeonManager = ServiceManager.getDungeonManager();
-		double size = gridSpacing;
-		for (int i = 0; i < verticalLines; ++i) {
-			for (int j = 0; j < horizontalLines; ++j) {
-				drawFOW(dungeonManager.isFowSet(i, j), size, i, j);
-			}
-		}
 	}
 
 	/**
@@ -1465,80 +1447,13 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Parent window resized.
 	 */
 	public void onResize() {
-		checkForDataChanges();
-	}
-
-	/**
-	 * Add all pogs from dungeon to canvas.
-	 */
-	private void updateNeededData() {
-		getGridData();
-		updatePogs(VersionedItem.SESSION_RESOURCE_PLAYERS, ServiceManager.getDungeonManager().getPlayersForCurrentSession(), playerPogs);
-		updatePogs(VersionedItem.SESSION_LEVEL_MONSTERS, ServiceManager.getDungeonManager().getMonstersForCurrentLevel(), monsterPogs);
-		updatePogs(VersionedItem.SESSION_LEVEL_ROOMOBJECTS, ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel(), roomObjectPogs);
-		drawFogOfWar();
-		drawEverything();
-	}
-
-	private void updatePogs(final VersionedItem versionedItem, final PogData[] pogs, final ArrayList<PogCanvas> pogList) {
-		if (pogs == null || ServiceManager.getDungeonManager().getItemVersion(versionedItem) == dataVersionsHistory.getItemVersion(versionedItem)) {
+		IDungeonManager dungeonManager = ServiceManager.getDungeonManager();
+		if (dungeonManager.getCurrentDungeonLevelData() == null) {
 			return;
 		}
-		@SuppressWarnings("unchecked")
-		ArrayList<PogCanvas> clone = (ArrayList<PogCanvas>) pogList.clone();
-		ArrayList<PogData> toAdd = new ArrayList<PogData>();
-		
-		for (PogData pog : pogs) {
-			boolean found = false;
-			for (int index = 0; index < clone.size(); ++index) {
-				PogCanvas pg = clone.get(index);
-				if (pog.isEqual(pg.getPogData())) {
-					clone.remove(pg);
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				toAdd.add(pog);
-			}
-		}
-		for (PogData pog : toAdd) {
-			addPogToCanvas(pog);
-		}
-		for (PogCanvas pog : clone) {
-			remove(pog);
-		}
-	}
-
-	/**
-	 * Dungeon data changed.
-	 */
-	public void dungeonDataUpdated() {
-		deSelectPog();
-		updateNeededData();
-		newSelectedPog();
-	}
-
-	/**
-	 * Initialize view.
-	 */
-	private void intializeView() {
+		setImage();
 		dataVersionsHistory.initialize();
-		monsterPogs.clear();
-		roomObjectPogs.clear();
-		playerPogs.clear();
-		super.clear();
-		super.add(canvas, 0, 0);
-		super.add(fowCanvas, 0, 0);
-		super.add(hidePanel, -1, -1);
-		super.add(greyOutPanel, 100, 100);
-		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
-		if (dungeonLevel == null) {
-			return;
-		}
-		String dungeonPicture = dungeonLevel.getLevelDrawing();
-		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(dungeonPicture);
-		image.setUrl(imageUrl);
+		dungeonDataUpdated();
 	}
 
 	/**
@@ -1565,5 +1480,114 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		currentDungeonID = dungeonManager.getCurrentDungeonUUID();
 		currentSessionID = dungeonManager.getCurrentSessionUUID();
 		currentLevel = dungeonManager.getCurrentLevelIndex();
+	}
+
+	/**
+	 * Initialize view.
+	 */
+	private void intializeView() {
+		dataVersionsHistory.initialize();
+		monsterPogs.clear();
+		roomObjectPogs.clear();
+		playerPogs.clear();
+		super.clear();
+		super.add(canvas, 0, 0);
+		super.add(fowCanvas, 0, 0);
+		super.add(hidePanel, -1, -1);
+		super.add(greyOutPanel, 100, 100);
+		DungeonLevel dungeonLevel = ServiceManager.getDungeonManager().getCurrentDungeonLevelData();
+		if (dungeonLevel == null) {
+			return;
+		}
+		String dungeonPicture = dungeonLevel.getLevelDrawing();
+		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(dungeonPicture);
+		image.setUrl(imageUrl);
+	}
+
+	/**
+	 * Dungeon data changed.
+	 */
+	public void dungeonDataUpdated() {
+		deSelectPog();
+		updateNeededData();
+		newSelectedPog();
+	}
+
+	/**
+	 * Add all pogs from dungeon to canvas.
+	 */
+	private void updateNeededData() {
+		getGridData();
+		updatePogs(VersionedItem.SESSION_RESOURCE_PLAYERS, ServiceManager.getDungeonManager().getPlayersForCurrentSession(), playerPogs);
+		updatePogs(VersionedItem.SESSION_LEVEL_MONSTERS, ServiceManager.getDungeonManager().getMonstersForCurrentLevel(), monsterPogs);
+		updatePogs(VersionedItem.SESSION_LEVEL_ROOMOBJECTS, ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel(), roomObjectPogs);
+		updateFogOfWar();
+		drawEverything();
+		ServiceManager.getDungeonManager().updateDataVersion(dataVersionsHistory);
+	}
+
+	/**
+	 * Remove of add pogs to canvas based on pog lists.
+	 * 
+	 * @param versionedItem
+	 * @param pogs
+	 * @param pogList
+	 */
+	private void updatePogs(final VersionedItem versionedItem, final PogData[] pogs, final ArrayList<PogCanvas> pogList) {
+		if (pogs == null || ServiceManager.getDungeonManager().getItemVersion(versionedItem) == dataVersionsHistory.getItemVersion(versionedItem)) {
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		ArrayList<PogCanvas> existingPogs = (ArrayList<PogCanvas>) pogList.clone();
+		ArrayList<PogData> pogsToBeAdded = new ArrayList<PogData>();
+
+		getPogsTHatNeedToBeAddedOrRemoved(pogs, existingPogs, pogsToBeAdded);
+		for (PogCanvas pog : existingPogs) {
+			remove(pog);
+		}
+		for (PogData pog : pogsToBeAdded) {
+			addPogToCanvas(pog);
+		}
+	}
+
+	/**
+	 * Find all the pogs that need to be added or removed from canvas.
+	 * @param sourcePogs
+	 * @param existingPogs
+	 * @param pogsToBeAdded
+	 */
+	private void getPogsTHatNeedToBeAddedOrRemoved(final PogData[] sourcePogs, final ArrayList<PogCanvas> existingPogs, final ArrayList<PogData> pogsToBeAdded) {
+		for (PogData pog : sourcePogs) {
+			boolean found = false;
+			for (int index = 0; index < existingPogs.size(); ++index) {
+				PogCanvas pg = existingPogs.get(index);
+				if (pog.isEqual(pg.getPogData())) {
+					existingPogs.remove(pg);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				pogsToBeAdded.add(pog);
+			}
+		}
+	}
+
+	/**
+	 * Draw fog of war.
+	 * 
+	 * If this is DM let them see through it.
+	 */
+	private void updateFogOfWar() {
+		if (ServiceManager.getDungeonManager().isEditMode() || ServiceManager.getDungeonManager().getItemVersion(VersionedItem.FOG_OF_WAR) == dataVersionsHistory.getItemVersion(VersionedItem.FOG_OF_WAR)) {
+			return;
+		}
+		IDungeonManager dungeonManager = ServiceManager.getDungeonManager();
+		double size = gridSpacing;
+		for (int i = 0; i < verticalLines; ++i) {
+			for (int j = 0; j < horizontalLines; ++j) {
+				drawFOW(dungeonManager.isFowSet(i, j), size, i, j);
+			}
+		}
 	}
 }

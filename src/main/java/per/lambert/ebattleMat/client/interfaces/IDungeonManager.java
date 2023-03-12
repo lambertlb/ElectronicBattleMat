@@ -18,6 +18,7 @@ package per.lambert.ebattleMat.client.interfaces;
 import java.util.List;
 import java.util.Map;
 
+import per.lambert.ebattleMat.client.services.serviceData.DataVersions;
 import per.lambert.ebattleMat.client.services.serviceData.DungeonLevel;
 import per.lambert.ebattleMat.client.services.serviceData.PogData;
 import per.lambert.ebattleMat.client.services.serviceData.SessionListData;
@@ -427,49 +428,67 @@ public interface IDungeonManager extends IPogManager {
 
 	/**
 	 * Get computed Grid width.
+	 * 
 	 * @return grid width
 	 */
 	double getComputedGridWidth();
+
 	/**
 	 * Set computed grid witdh.
 	 * 
 	 * @param gridWidth grid width
 	 */
 	void setComputedGridWidth(double gridWidth);
-	
+
 	/**
 	 * Is dungeon grid Visible.
+	 * 
 	 * @return true if it is
 	 */
 	boolean isDungeonGridVisible();
-	
+
 	/**
 	 * Set is dungeon grid visible.
+	 * 
 	 * @param isVisible true if visible
 	 */
 	void setIsDungeonGridVisible(boolean isVisible);
-	
+
 	/**
 	 * get a list of sorted pogs from place.
+	 * 
 	 * @param fromWhere which pogs
 	 * @param typeOfPogs type of pogs
 	 * @return sorted list
 	 */
 	List<PogData> getSortedList(PogPlace fromWhere, String typeOfPogs);
+
 	/**
 	 * Get version for this item.
+	 * 
 	 * @param itemToGet
 	 * @return version
 	 */
 	int getItemVersion(VersionedItem itemToGet);
+
 	/**
 	 * Get UUID of current dungeon.
+	 * 
 	 * @return UUID
 	 */
 	String getCurrentDungeonUUID();
+
 	/**
 	 * Get UUID of current dungeon.
+	 * 
 	 * @return UUID
 	 */
 	String getCurrentSessionUUID();
+
+	/**
+	 * Update to master data versions.
+	 * 
+	 * @param needsUpdating
+	 */
+	void updateDataVersion(DataVersions needsUpdating);
 }

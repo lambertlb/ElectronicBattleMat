@@ -64,4 +64,14 @@ public class DataVersions {
 	public void setItemVersion(final VersionedItem item, final int version) {
 		dataVersion[item.ordinal()] = version;
 	}
+	
+	/**
+	 * Update to the data in this master copy.
+	 * @param needsUpdating
+	 */
+	public void updateFrom(final DataVersions needsUpdating) {
+		for (int i = 0; i < dataVersion.length; ++i) {
+			needsUpdating.dataVersion[i] = dataVersion[i];
+		}
+	}
 }
