@@ -46,6 +46,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 
 	/**
 	 * Set fow version.
+	 * 
 	 * @param fowVersion to set
 	 */
 	public final native void setFOWVersion(int fowVersion) /*-{
@@ -71,6 +72,27 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 */
 	public final native void setFOW(boolean[][] fogOfWar) /*-{
 		this.fogOfWar = fogOfWar;
+	}-*/;
+
+	/**
+	 * Get fog of War.
+	 * 
+	 * @return fog of War.
+	 */
+	public final native int[] getFOWData() /*-{
+		if (this.fogOfWarData === undefined) {
+			return (null);
+		}
+		return (this.fogOfWarData);
+	}-*/;
+
+	/**
+	 * set fog of War.
+	 * 
+	 * @param fogOfWarData fog of War.
+	 */
+	public final native void setFOWData(int[] fogOfWarData) /*-{
+		this.fogOfWarData = fogOfWarData;
 	}-*/;
 
 	/**
@@ -130,4 +152,66 @@ public class DungeonSessionLevel extends JavaScriptObject {
 		}
 		return (this.roomObjects);
 	}-*/;
+
+	/**
+	 * Migrate needed data.
+	 * 
+	 * @param dungeonLevel
+	 * @return true if migrated
+	 */
+	public final boolean migrateSession(final DungeonLevel dungeonLevel) {
+		setBitsPerColumn(dungeonLevel.getColumns());
+		return (migrateFOW(dungeonLevel));
+	}
+
+	/**
+	 * Migrate fog of war data.
+	 * 
+	 * @param dungeonLevel
+	 * @return true if migrated
+	 */
+	private boolean migrateFOW(final DungeonLevel dungeonLevel) {
+		boolean[][] oldData = getFOW();
+		if (oldData == null) {
+			return (false);
+		}
+		int[] newData = new int[((getBitsPerColumn() * dungeonLevel.getRows()) / 32) + 1];
+		for (int row = 0; row < dungeonLevel.getRows(); ++row) {
+			for (int column = 0; column < dungeonLevel.getColumns(); ++column) {
+				int bitIndex = (row * getBitsPerColumn()) + column;
+				int arrayIndex = bitIndex / 32;
+				int bitShift = bitIndex % 32;
+				int bitMask = 1 << bitShift;
+				if (isFowSet(column, row)) {
+					newData[arrayIndex] |= bitMask;
+				} else {
+					newData[arrayIndex] &= bitMask;
+				}
+			}
+		}
+		setFOWData(newData);
+		return (true);
+	}
+
+	/**
+	 * get amount of bits per fow column.
+	 * 
+	 * @return amount of bits
+	 */
+	public final native int getBitsPerColumn() /*-{
+		if (this.bitsPerColumn === undefined) {
+			this.bitsPerColumn = 0;
+		}
+		return (this.bitsPerColumn);
+	}-*/;
+
+	/**
+	 * set amount of bits per fow column.
+	 * 
+	 * @param bitsPerColumn
+	 */
+	public final native void setBitsPerColumn(int bitsPerColumn) /*-{
+		this.bitsPerColumn = bitsPerColumn;
+	}-*/;
+
 }

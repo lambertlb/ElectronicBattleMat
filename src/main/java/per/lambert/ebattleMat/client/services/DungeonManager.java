@@ -800,10 +800,28 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	private void loadSessionData() {
 		if (getCurrentSessionLevelData() != null) {
+			migrateSession();
 			sessionLevelMonsters.setPogList(getCurrentSessionLevelData().getMonsters());
 			sessionLevelRoomObjects.setPogList(getCurrentSessionLevelData().getRoomObjects());
 			sessionLevelPlayers.setPogList(selectedSession.getPlayers());
 			updateDataVersion();
+		}
+	}
+
+	/**
+	 * Migrate any needed data.
+	 */
+	private void migrateSession() {
+		boolean migratedData = false;
+		for (int i = 0; i < selectedSession.getSessionLevels().length; ++i) {
+			DungeonSessionLevel sessionlevel = selectedSession.getSessionLevels()[i];
+			DungeonLevel dungeonLevel = selectedDungeon.getDungeonlevels()[i];
+			if (sessionlevel.migrateSession(dungeonLevel)) {
+				migratedData = true;
+			}
+		}
+		if (migratedData) {
+			migratedData = false;// TODO need code to update server.
 		}
 	}
 

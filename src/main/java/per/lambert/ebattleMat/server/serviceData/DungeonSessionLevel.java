@@ -41,6 +41,10 @@ public class DungeonSessionLevel {
 	 */
 	private boolean[][] fogOfWar = new boolean[0][0];
 	/**
+	 * Bits for fog of war.
+	 */
+	private int[] fogOfWarData = new int[0];
+	/**
 	 * list of monsters.
 	 */
 	private PogList monsters = new PogList();
@@ -113,6 +117,7 @@ public class DungeonSessionLevel {
 		monsters = dungeonLevel.getMonsters().clone();
 		roomObjects = dungeonLevel.getRoomObjects().clone();
 		creatFogOfWar(dungeonLevel);
+		creatFogOfWarData(dungeonLevel);
 	}
 
 	/**
@@ -126,6 +131,18 @@ public class DungeonSessionLevel {
 			for (int j = 0; j < dungeonLevel.getRows(); ++j) {
 				fogOfWar[i][j] = true;
 			}
+		}
+	}
+
+	/**
+	 * create fog of war data.
+	 * @param dungeonLevel
+	 */
+	private void creatFogOfWarData(final DungeonLevel dungeonLevel) {
+		int intsNeeded = ((dungeonLevel.getColumns() * dungeonLevel.getRows()) / 32) + 1;
+		fogOfWarData = new int[intsNeeded];
+		for (int i = 0; i < fogOfWarData.length; ++i) {
+			fogOfWarData[i] = -1;
 		}
 	}
 }
