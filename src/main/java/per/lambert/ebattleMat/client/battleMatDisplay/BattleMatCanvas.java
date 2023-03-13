@@ -1577,6 +1577,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				PogCanvas pg = existingPogs.get(index);
 				if (pog.isEqual(pg.getPogData())) {
 					existingPogs.remove(pg);
+					pg.setPogPosition(pog.getColumn(), pog.getRow());
 					found = true;
 					break;
 				}

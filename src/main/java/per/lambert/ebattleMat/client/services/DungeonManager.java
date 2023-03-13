@@ -780,6 +780,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				String jsonData = (String) data;
 				if (!jsonData.isEmpty()) {
 					selectedSession = JsonUtils.<DungeonSessionData>safeEval(jsonData);
+					migrateSession();
 					loadSessionData();
 					if (versionToTest == -1) { // is this first load?
 						ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.DungeonDataReadyToJoin, null));
@@ -800,7 +801,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	private void loadSessionData() {
 		if (getCurrentSessionLevelData() != null) {
-			migrateSession();
 			sessionLevelMonsters.setPogList(getCurrentSessionLevelData().getMonsters());
 			sessionLevelRoomObjects.setPogList(getCurrentSessionLevelData().getRoomObjects());
 			sessionLevelPlayers.setPogList(selectedSession.getPlayers());
@@ -817,13 +817,12 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			DungeonSessionLevel sessionlevel = selectedSession.getSessionLevels()[i];
 			DungeonLevel dungeonLevel = selectedDungeon.getDungeonlevels()[i];
 			if (sessionlevel.migrateSession(dungeonLevel)) {
-				migratedData = true;
+				currentLevelIndex = i;
+				fowDirty = true;
+				saveFow();
 			}
 		}
-		if (migratedData) {
-			fowDirty = true;
-			saveFow();
-		}
+		currentLevelIndex = 0;
 	}
 
 	/**
