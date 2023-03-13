@@ -33,7 +33,7 @@ public class FogOfWarData extends JavaScriptObject {
 	 * get fog of war.
 	 * @return data for fog of war.
 	 */
-	public final native boolean[][] getFOW() /*-{
+	public final native int[] getFOW() /*-{
 		if (this.fogOfWar === undefined) {
 			return (null);
 		}
@@ -44,7 +44,7 @@ public class FogOfWarData extends JavaScriptObject {
 	 * Set fog of war data.
 	 * @param fogOfWar data.
 	 */
-	public final native void setFOW(boolean[][] fogOfWar) /*-{
+	public final native void setFOW(int[] fogOfWar) /*-{
 		this.fogOfWar = fogOfWar;
 	}-*/;
 }

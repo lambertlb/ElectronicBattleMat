@@ -262,7 +262,7 @@ public class SessionInformation {
 	 * @param fowData to update
 	 * @param currentLevel session level.
 	 */
-	public void updateFOW(final boolean[][] fowData, final int currentLevel) {
+	public void updateFOW(final int[] fowData, final int currentLevel) {
 		DungeonSessionLevel sessionLevel = getSessionLevel(currentLevel);
 		if (sessionLevel == null) {
 			return;

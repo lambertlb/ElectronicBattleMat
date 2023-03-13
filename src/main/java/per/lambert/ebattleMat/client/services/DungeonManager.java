@@ -821,7 +821,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			}
 		}
 		if (migratedData) {
-			migratedData = false;// TODO need code to update server.
+			fowDirty = true;
+			saveFow();
 		}
 	}
 
@@ -1016,6 +1017,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				}
 			});
 			sessionLevel.setFOWVersion(sessionLevel.getFOWVersion() + 1);
+			dataVersion.setItemVersion(VersionedItem.FOG_OF_WAR, dataVersion.getItemVersion(VersionedItem.FOG_OF_WAR) + 1);
 		}
 	}
 
@@ -1280,11 +1282,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	/**
 	 * Saved FOW.
 	 */
-	private boolean[][] savedFOW;
+	private int[] savedFOW;
 
 	private void hideFOW() {
 		savedFOW = getCurrentSessionLevelData().getFOW();
-		boolean[][] fogOfWar = new boolean[getCurrentDungeonLevelData().getColumns()][getCurrentDungeonLevelData().getRows()];
+		int[] fogOfWar = getCurrentSessionLevelData().createNewFOWData(getCurrentDungeonLevelData().getRows());
 		getCurrentSessionLevelData().setFOW(fogOfWar);
 	}
 

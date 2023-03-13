@@ -38,8 +38,12 @@ public class DungeonSessionLevel {
 
 	/**
 	 * Array for Fog of War.
+	 * 
+	 * No longer used but left here for backwards compatibility.
+	 * Old data will get migrated on client side.
 	 */
-	private boolean[][] fogOfWar = new boolean[0][0];
+	@SuppressWarnings("unused")
+	private boolean[][] fogOfWar;
 	/**
 	 * Bits for fog of war.
 	 */
@@ -54,22 +58,14 @@ public class DungeonSessionLevel {
 	private PogList roomObjects = new PogList();
 
 	/**
-	 * get Array for Fog of War.
-	 * 
-	 * @return Array for Fog of War.
-	 */
-	public boolean[][] getFogOfWar() {
-		return fogOfWar;
-	}
-
-	/**
 	 * set Array for Fog of War.
 	 * 
-	 * @param fogOfWar Array for Fog of War.
+	 * @param newFogOfWar Array for Fog of War.
 	 */
-	public void setFogOfWar(final boolean[][] fogOfWar) {
-		this.fogOfWar = fogOfWar;
+	public void setFogOfWar(final int[] newFogOfWar) {
+		this.fogOfWarData = newFogOfWar;
 		++fogOfWarVersion;
+		fogOfWar = null;
 	}
 
 	/**
@@ -117,28 +113,13 @@ public class DungeonSessionLevel {
 		monsters = dungeonLevel.getMonsters().clone();
 		roomObjects = dungeonLevel.getRoomObjects().clone();
 		creatFogOfWar(dungeonLevel);
-		creatFogOfWarData(dungeonLevel);
-	}
-
-	/**
-	 * Create fog of war array.
-	 * 
-	 * @param dungeonLevel dungeon level with needed information
-	 */
-	private void creatFogOfWar(final DungeonLevel dungeonLevel) {
-		fogOfWar = new boolean[dungeonLevel.getColumns()][dungeonLevel.getRows()];
-		for (int i = 0; i < dungeonLevel.getColumns(); ++i) {
-			for (int j = 0; j < dungeonLevel.getRows(); ++j) {
-				fogOfWar[i][j] = true;
-			}
-		}
 	}
 
 	/**
 	 * create fog of war data.
 	 * @param dungeonLevel
 	 */
-	private void creatFogOfWarData(final DungeonLevel dungeonLevel) {
+	private void creatFogOfWar(final DungeonLevel dungeonLevel) {
 		int intsNeeded = ((dungeonLevel.getColumns() * dungeonLevel.getRows()) / 32) + 1;
 		fogOfWarData = new int[intsNeeded];
 		for (int i = 0; i < fogOfWarData.length; ++i) {

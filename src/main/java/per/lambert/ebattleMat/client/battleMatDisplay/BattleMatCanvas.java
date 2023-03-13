@@ -291,6 +291,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Current dungeon or session level.
 	 */
 	private int currentLevel;
+	/**
+	 * Has image been loaded.
+	 */
+	private boolean imageLoaded;
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -500,6 +504,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		offsetY = 0;
 		this.imageElement = (ImageElement) image.getElement().cast();
 		parentWidthChanged(getParent().getOffsetWidth(), getParent().getOffsetHeight());
+		imageLoaded = true;
 	}
 
 	/**
@@ -647,8 +652,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (!isSelectedVisible(clientX, clientY)) {
 			return;
 		}
-		clearFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
 		if (toggleFOW && ServiceManager.getDungeonManager().isDungeonMaster()) {
+			clearFOW = ServiceManager.getDungeonManager().isFowSet(selectedColumn, selectedRow);
 			handleProperFOWAtSelectedPosition();
 		}
 	}
@@ -721,7 +726,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		// only adjust if different
 		if (currentFOW != !clearFOW) {
 			ServiceManager.getDungeonManager().setFow(selectedColumn, selectedRow, !currentFOW);
-			drawFOW(!currentFOW, adjustedGridSize() + 2, selectedColumn, selectedRow);
+			drawFOW(!currentFOW, gridSpacing, selectedColumn, selectedRow);
 			bitBlitFOW();
 		}
 	}
@@ -831,6 +836,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void panOperationComplete() {
 		if (toggleFOW) {
 			ServiceManager.getDungeonManager().saveFow();
+			dataVersionsHistory.setItemVersion(VersionedItem.FOG_OF_WAR, dataVersionsHistory.getItemVersion(VersionedItem.FOG_OF_WAR) + 1);
 		}
 		mouseDown = false;
 		toggleFOW = false;
@@ -1077,7 +1083,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Update the pog canvas for this cell. Create one if none exists.
 	 */
 	private void updateOrCreatePogCanvasForThisCell() {
-		PogCanvas existingPog = findCanvasForDraggedPog();
+		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
+		PogCanvas existingPog = findPogCanvas(pogBeingDragged);
 		if (existingPog == null && !ServiceManager.getDungeonManager().isFromRibbonBar()) {
 			return; // this can happen if not finished with previous server request.
 		}
@@ -1088,19 +1095,31 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			remove(existingPog); // ensure it is on top by removing then adding back.
 		}
 		add(existingPog);
-		updatePogData(existingPog);
+		existingPog.setPogPosition(dragColumn, dragRow);
+		existingPog.getPogData().setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevelIndex());
 		ServiceManager.getDungeonManager().addOrUpdatePog(existingPog.getPogData());
 		ServiceManager.getDungeonManager().setSelectedPog(existingPog.getPogData());
+		updateVersionHistory(existingPog.getPogData());
 	}
 
-	/**
-	 * Find Pog canvas for pog being dragged.
-	 * 
-	 * @return Pog canvas or null.
-	 */
-	private PogCanvas findCanvasForDraggedPog() {
-		PogData pogBeingDragged = ServiceManager.getDungeonManager().getPogBeingDragged();
-		return findPogCanvas(pogBeingDragged);
+	private void updateVersionHistory(final PogData pog) {
+		VersionedItem versionedItem = null;
+		if (ServiceManager.getDungeonManager().isEditMode()) {
+			if (pog.getType() == Constants.POG_TYPE_MONSTER) {
+				versionedItem = VersionedItem.DUNGEON_LEVEL_MONSTERS;
+			} else {
+				versionedItem = VersionedItem.DUNGEON_LEVEL_ROOMOBJECTS;
+			}
+		} else {
+			if (pog.getType() == Constants.POG_TYPE_MONSTER) {
+				versionedItem = VersionedItem.SESSION_LEVEL_MONSTERS;
+			} else 	if (pog.getType() == Constants.POG_TYPE_PLAYER) {
+				versionedItem = VersionedItem.SESSION_RESOURCE_PLAYERS;
+			} else {
+				versionedItem = VersionedItem.SESSION_LEVEL_ROOMOBJECTS;
+			}
+		}
+		dataVersionsHistory.setItemVersion(versionedItem, dataVersionsHistory.getItemVersion(versionedItem) + 1);
 	}
 
 	/**
@@ -1126,16 +1145,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			}
 		}
 		return (null);
-	}
-
-	/**
-	 * Update pog position data.
-	 * 
-	 * @param pog to update
-	 */
-	private void updatePogData(final PogCanvas pog) {
-		pog.setPogPosition(dragColumn, dragRow);
-		pog.getPogData().setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevelIndex());
 	}
 
 	/**
@@ -1502,12 +1511,16 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		String dungeonPicture = dungeonLevel.getLevelDrawing();
 		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(dungeonPicture);
 		image.setUrl(imageUrl);
+		imageLoaded = false;
 	}
 
 	/**
 	 * Dungeon data changed.
 	 */
 	public void dungeonDataUpdated() {
+		if (!imageLoaded) {
+			return;
+		}
 		deSelectPog();
 		updateNeededData();
 		newSelectedPog();
@@ -1552,6 +1565,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 	/**
 	 * Find all the pogs that need to be added or removed from canvas.
+	 * 
 	 * @param sourcePogs
 	 * @param existingPogs
 	 * @param pogsToBeAdded
