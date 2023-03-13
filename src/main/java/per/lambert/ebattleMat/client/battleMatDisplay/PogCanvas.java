@@ -580,9 +580,6 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param zoomFactor zoom factor
 	 */
 	public void setPogSizing(final double width, final double borderSize, final double zoomFactor) {
-		if (scaledWidth == width && zoomFactor == this.zoomFactor) {
-			return;
-		}
 		scaledWidth = width;
 		this.zoomFactor = zoomFactor;
 		if (!showNormalSizeOnly) {
