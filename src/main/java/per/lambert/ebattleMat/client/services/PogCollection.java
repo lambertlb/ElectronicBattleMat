@@ -16,6 +16,7 @@
 package per.lambert.ebattleMat.client.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -183,11 +184,20 @@ public class PogCollection {
 	public void addOrUpdatePogCollection(final PogData pog) {
 		PogData existing = findPog(pog.getUUID());
 		if (existing == null) {
-			pogList.addPog(pog);
+			addPog(pog);
 		} else {
-			pogList.update(pog);
+			pogList.update(pog, existing);
 		}
-		rebuildCollections();
+	}
+
+	/**
+	 * Add this pog.
+	 * @param pog
+	 */
+	private void addPog(final PogData pog) {
+		pog.setPogPlace(pogPlace);
+		pogList.addPog(pog);
+		addToCollections(pog);
 	}
 
 	/**
@@ -200,7 +210,7 @@ public class PogCollection {
 			return;
 		}
 		pogList.remove(pog);
-		rebuildCollections();
+		pogMap.remove(pog.getUUID());
 	}
 
 	/**
@@ -230,5 +240,34 @@ public class PogCollection {
 			return (-1);
 		}
 		return (pogList.getListVersion());
+	}
+	
+	/**
+	 * Update Pogs with data in list.
+	 * @param updateList
+	 */
+	public void	updateCollection(final PogList updateList) {
+		if (pogList == null) {
+			setPogList(updateList);
+			return;
+		}
+		ArrayList<PogData> toRemove = new ArrayList<PogData>(Arrays.asList(pogList.getPogList()));
+		ArrayList<PogData> toAdd = new ArrayList<PogData>();
+		for (PogData pd : updateList.getPogList()) {
+			pd.setPogPlace(pogPlace);
+			PogData found = pogMap.get(pd.getUUID());
+			if (found != null) {
+				found.fullUpdate(pd);
+				toRemove.remove(found);
+				continue;
+			}
+			toAdd.add(found);
+		}
+		for (PogData pg : toRemove) {
+			remove(pg);
+		}
+		for (PogData pg : toAdd) {
+			addPog(pg);
+		}
 	}
 }

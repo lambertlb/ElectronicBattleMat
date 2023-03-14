@@ -419,6 +419,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 					newSelectedPog();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.PogDataChanged) {
+					checkForDataChanges();
+					return;
+				}
 				if (event.getReasonForAction() == ReasonForAction.DungeonDataReadyToEdit) {
 					checkForDataChanges();
 					return;
@@ -1577,7 +1581,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				PogCanvas pg = existingPogs.get(index);
 				if (pog.isEqual(pg.getPogData())) {
 					existingPogs.remove(pg);
-					pg.setPogPosition(pog.getColumn(), pog.getRow());
+					pg.updatePogData(pog);
 					found = true;
 					break;
 				}

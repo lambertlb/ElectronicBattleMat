@@ -308,6 +308,11 @@ public class PogSelection extends DockLayoutPanel {
 		newItem.setText(pog.getName());
 		newItem.setUserObject(pog);
 		treeItem.addItem(newItem);
+		PogData selectedPog = ServiceManager.getDungeonManager().getSelectedPog();
+		if (pog.isEqual(selectedPog)) {
+			pogTree.setSelectedItem(newItem);
+		}
+		
 	}
 
 	/**
@@ -390,7 +395,7 @@ public class PogSelection extends DockLayoutPanel {
 				if (parent.isVisible() && parent.getState()) {
 					for (int childIndex = 0; childIndex < parent.getChildCount(); ++childIndex) {
 						TreeItem child = parent.getChild(childIndex);
-						if (selectedPog.getUUID() == ((PogData) child.getUserObject()).getUUID()) {
+						if (selectedPog.isEqual((PogData) child.getUserObject())) {
 							justDidSelection = true;
 							pogTree.setSelectedItem(child);
 							return;

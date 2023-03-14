@@ -74,8 +74,8 @@ public class PogList extends JavaScriptObject {
 		setListVersion(getListVersion() + 1);
 	}
 
-	public final void update(final PogData pog) {
-		pog.fullUpdate(pog);
+	public final void update(final PogData src, final PogData dst) {
+		dst.fullUpdate(src);
 		setListVersion(getListVersion() + 1);
 	}
 

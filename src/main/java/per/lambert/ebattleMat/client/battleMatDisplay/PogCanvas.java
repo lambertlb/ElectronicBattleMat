@@ -385,6 +385,18 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	}
 
 	/**
+	 * Pog data may have changed so update it.
+	 * @param updateData
+	 */
+	public void updatePogData(final PogData updateData) {
+		if (updateData.getImageUrl() != pogData.getImageUrl()) {
+			setPogData(pogData);
+			return;
+		}
+		pogData = updateData;
+	}
+
+	/**
 	 * Setup view with this data.
 	 * 
 	 * @param pogData data to use.

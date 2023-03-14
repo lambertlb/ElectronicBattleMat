@@ -801,9 +801,9 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 */
 	private void loadSessionData() {
 		if (getCurrentSessionLevelData() != null) {
-			sessionLevelMonsters.setPogList(getCurrentSessionLevelData().getMonsters());
-			sessionLevelRoomObjects.setPogList(getCurrentSessionLevelData().getRoomObjects());
-			sessionLevelPlayers.setPogList(selectedSession.getPlayers());
+			sessionLevelMonsters.updateCollection(getCurrentSessionLevelData().getMonsters());
+			sessionLevelRoomObjects.updateCollection(getCurrentSessionLevelData().getRoomObjects());
+			sessionLevelPlayers.updateCollection(selectedSession.getPlayers());
 			updateDataVersion();
 		}
 	}
@@ -812,7 +812,6 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * Migrate any needed data.
 	 */
 	private void migrateSession() {
-		boolean migratedData = false;
 		for (int i = 0; i < selectedSession.getSessionLevels().length; ++i) {
 			DungeonSessionLevel sessionlevel = selectedSession.getSessionLevels()[i];
 			DungeonLevel dungeonLevel = selectedDungeon.getDungeonlevels()[i];
@@ -1225,6 +1224,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (pog.isEqual(getSelectedPog())) {
 			setSelectedPogInternal(pog);
 		}
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, pog));
 		updateDataVersion();
 	}
 
@@ -1252,7 +1252,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				if (editMode) {
 					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				} else {
-					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, null));
+					ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, pog));
 				}
 			}
 

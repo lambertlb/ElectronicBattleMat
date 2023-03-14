@@ -540,8 +540,25 @@ public class PogEditor extends DockLayoutPanel {
 					selectPog();
 					return;
 				}
+				if (event.getReasonForAction() == ReasonForAction.PogDataChanged) {
+					pogDataChanged((PogData)event.getData());
+					return;
+				}
 			}
 		});
+	}
+
+	/**
+	 * Pog data has changed.
+	 * @param data
+	 */
+	private void pogDataChanged(final PogData data) {
+		if (data == null) {
+			return;
+		}
+		if (data.isEqual(pogData)) {
+			selectPog();
+		}
 	}
 
 	/**
