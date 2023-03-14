@@ -261,7 +261,7 @@ public class PogCollection {
 				toRemove.remove(found);
 				continue;
 			}
-			toAdd.add(found);
+			toAdd.add(pd);
 		}
 		for (PogData pg : toRemove) {
 			remove(pg);

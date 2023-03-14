@@ -1560,6 +1560,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 
 		getPogsTHatNeedToBeAddedOrRemoved(pogs, existingPogs, pogsToBeAdded);
 		for (PogCanvas pog : existingPogs) {
+			pogList.remove(pog);
 			remove(pog);
 		}
 		for (PogData pog : pogsToBeAdded) {
