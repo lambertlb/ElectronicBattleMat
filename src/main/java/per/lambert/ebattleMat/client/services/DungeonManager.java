@@ -1334,6 +1334,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				removeThisPog(getSelectedPog(), place);
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.SessionDataSaved, null));
 				ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, null));
+				setSelectedPog(null);
 			}
 
 			@Override
@@ -1355,7 +1356,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 			return;
 		}
 		collection.remove(pog);
-		setSelectedPog(null);
+		updateDataVersion();
 	}
 
 	/**

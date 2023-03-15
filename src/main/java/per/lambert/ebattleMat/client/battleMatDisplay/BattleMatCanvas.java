@@ -1107,27 +1107,6 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		existingPog.getPogData().setDungeonLevel(ServiceManager.getDungeonManager().getCurrentLevelIndex());
 		ServiceManager.getDungeonManager().addOrUpdatePog(existingPog.getPogData());
 		ServiceManager.getDungeonManager().setSelectedPog(existingPog.getPogData());
-		updateVersionHistory(existingPog.getPogData());
-	}
-
-	private void updateVersionHistory(final PogData pog) {
-		VersionedItem versionedItem = null;
-		if (ServiceManager.getDungeonManager().isEditMode()) {
-			if (pog.getType() == Constants.POG_TYPE_MONSTER) {
-				versionedItem = VersionedItem.DUNGEON_LEVEL_MONSTERS;
-			} else {
-				versionedItem = VersionedItem.DUNGEON_LEVEL_ROOMOBJECTS;
-			}
-		} else {
-			if (pog.getType() == Constants.POG_TYPE_MONSTER) {
-				versionedItem = VersionedItem.SESSION_LEVEL_MONSTERS;
-			} else 	if (pog.getType() == Constants.POG_TYPE_PLAYER) {
-				versionedItem = VersionedItem.SESSION_RESOURCE_PLAYERS;
-			} else {
-				versionedItem = VersionedItem.SESSION_LEVEL_ROOMOBJECTS;
-			}
-		}
-		dataVersionsHistory.setItemVersion(versionedItem, dataVersionsHistory.getItemVersion(versionedItem) + 1);
 	}
 
 	/**
