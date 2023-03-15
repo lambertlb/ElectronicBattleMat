@@ -467,17 +467,6 @@ public class PogEditor extends DockLayoutPanel {
 	}
 
 	/**
-	 * Save data from form.
-	 */
-	private void saveFormData() {
-		isDirty = false;
-		validateForm();
-		getDialogData();
-		ServiceManager.getDungeonManager().addOrUpdatePog(pogData, PogPlace.valueOf(pogLocationList.getSelectedItemText()));
-		ServiceManager.getDungeonManager().setSelectedPog(pogData);
-	}
-
-	/**
 	 * Cancel changes.
 	 */
 	private void cancelFormData() {
@@ -718,5 +707,16 @@ public class PogEditor extends DockLayoutPanel {
 		pogData.setDungeonMasterFlagsNative(dmFlagDialog.getBits());
 		pogData.setNotes(notes);
 		pogData.setDmNotes(dmNotes);
+	}
+
+	/**
+	 * Save data from form.
+	 */
+	private void saveFormData() {
+		isDirty = false;
+		validateForm();
+		getDialogData();
+		ServiceManager.getDungeonManager().addOrUpdatePog(pogData, PogPlace.valueOf(pogLocationList.getSelectedItemText()));
+		ServiceManager.getDungeonManager().setSelectedPog(pogData);
 	}
 }

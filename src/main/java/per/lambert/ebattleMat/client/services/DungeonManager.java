@@ -1224,8 +1224,8 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 		if (pog.isEqual(getSelectedPog())) {
 			setSelectedPogInternal(pog);
 		}
-		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, pog));
 		updateDataVersion();
+		ServiceManager.getEventManager().fireEvent(new ReasonForActionEvent(ReasonForAction.PogDataChanged, pog));
 	}
 
 	/**

@@ -295,6 +295,10 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	 * Has image been loaded.
 	 */
 	private boolean imageLoaded;
+	/**
+	 * Currently loaded dungeon picture.
+	 */
+	private String dungeonPicture;
 
 	/**
 	 * Widget for managing all battle mat activities.
@@ -1484,6 +1488,8 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 			initView = true;
 		} else if (dungeonManager.getCurrentLevelIndex() != currentLevel) {
 			initView = true;
+		} else if (dungeonManager.getCurrentDungeonLevelData().getLevelDrawing() != dungeonPicture) {
+			initView = true;
 		}
 		if (initView) {
 			intializeView();
@@ -1512,7 +1518,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (dungeonLevel == null) {
 			return;
 		}
-		String dungeonPicture = dungeonLevel.getLevelDrawing();
+		dungeonPicture = dungeonLevel.getLevelDrawing();
 		String imageUrl = ServiceManager.getDungeonManager().getUrlToDungeonResource(dungeonPicture);
 		image.setUrl(imageUrl);
 		imageLoaded = false;
@@ -1536,8 +1542,14 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 	private void updateNeededData() {
 		getGridData();
 		updatePogs(VersionedItem.SESSION_RESOURCE_PLAYERS, ServiceManager.getDungeonManager().getPlayersForCurrentSession(), playerPogs);
-		updatePogs(VersionedItem.SESSION_LEVEL_MONSTERS, ServiceManager.getDungeonManager().getMonstersForCurrentLevel(), monsterPogs);
-		updatePogs(VersionedItem.SESSION_LEVEL_ROOMOBJECTS, ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel(), roomObjectPogs);
+		if (ServiceManager.getDungeonManager().isEditMode()) {
+			updatePogs(VersionedItem.DUNGEON_LEVEL_MONSTERS, ServiceManager.getDungeonManager().getMonstersForCurrentLevel(), monsterPogs);
+			updatePogs(VersionedItem.DUNGEON_LEVEL_ROOMOBJECTS, ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel(), roomObjectPogs);
+			
+		} else {
+			updatePogs(VersionedItem.SESSION_LEVEL_MONSTERS, ServiceManager.getDungeonManager().getMonstersForCurrentLevel(), monsterPogs);
+			updatePogs(VersionedItem.SESSION_LEVEL_ROOMOBJECTS, ServiceManager.getDungeonManager().getRoomObjectsForCurrentLevel(), roomObjectPogs);
+		}
 		updateFogOfWar();
 		drawEverything();
 		ServiceManager.getDungeonManager().updateDataVersion(dataVersionsHistory);

@@ -136,6 +136,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * Show as normal size only.
 	 */
 	private boolean showNormalSizeOnly = false;
+	/**
+	 * URL of current picture.
+	 */
+	private String currentPictureUrl;
 
 	/**
 	 * Get show normal size only.
@@ -389,7 +393,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param updateData
 	 */
 	public void updatePogData(final PogData updateData) {
-		if (updateData.getImageUrl() != pogData.getImageUrl()) {
+		if (updateData.getImageUrl() != currentPictureUrl) {
 			setPogData(pogData);
 			return;
 		}
@@ -609,6 +613,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 	 * @param pogImageUrl URL for image
 	 */
 	public void setPogImageUrl(final String pogImageUrl) {
+		currentPictureUrl = pogImageUrl;
 		imageLoaded = false;
 		pogData.setImageUrl(pogImageUrl);
 		String imageUrl;
