@@ -32,22 +32,22 @@ public final class PogPlace extends FlagBit {
 	 */
 	private static int nextValue = 0;
 	/**
-	 * Resides in Common resource area available to all dungeons.
-	 */
-	public static final PogPlace COMMON_RESOURCE = new PogPlace("Common Resource");
-	/**
 	 * Resides in dungeon instance area.
 	 */
 	public static final PogPlace DUNGEON_LEVEL = new PogPlace("Dungeon Level");
 	/**
-	 * Resides in Session common resource area.
-	 */
-	public static final PogPlace SESSION_RESOURCE = new PogPlace("Session Resource");
-	/**
 	 * Resides in Session level instance area.
 	 */
 	public static final PogPlace SESSION_LEVEL = new PogPlace("Session Level");
-	
+	/**
+	 * Resides in Session common resource area.
+	 */
+	public static final PogPlace SESSION_RESOURCE = new PogPlace("Player Location");
+	/**
+	 * Resides in Common resource area available to all dungeons.
+	 */
+	public static final PogPlace COMMON_RESOURCE = new PogPlace("Common Resource");
+
 
 	/**
 	 * Map of names vs flag bit.

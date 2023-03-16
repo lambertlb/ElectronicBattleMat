@@ -812,6 +812,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	 * Migrate any needed data.
 	 */
 	private void migrateSession() {
+		int saveIndex = currentLevelIndex;
 		for (int i = 0; i < selectedSession.getSessionLevels().length; ++i) {
 			DungeonSessionLevel sessionlevel = selectedSession.getSessionLevels()[i];
 			DungeonLevel dungeonLevel = selectedDungeon.getDungeonlevels()[i];
@@ -821,7 +822,7 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 				saveFow();
 			}
 		}
-		currentLevelIndex = 0;
+		currentLevelIndex = saveIndex;
 	}
 
 	/**

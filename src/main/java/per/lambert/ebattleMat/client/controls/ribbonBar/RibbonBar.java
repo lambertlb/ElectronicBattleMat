@@ -202,6 +202,7 @@ public class RibbonBar extends Composite {
 			}
 		});
 		pogNotes = new NotesFloatingWindow();
+		pogWindow.setModal(false);
 		pogNotes.addSaveClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -235,6 +236,7 @@ public class RibbonBar extends Composite {
 			}
 		});
 		pogWindow = new SelectedPogFloatingWindow();
+		pogWindow.setModal(false);
 	}
 
 	/**

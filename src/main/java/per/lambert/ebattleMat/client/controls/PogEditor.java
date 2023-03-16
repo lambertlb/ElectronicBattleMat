@@ -210,7 +210,7 @@ public class PogEditor extends DockLayoutPanel {
 		centerContent.setHeight("100%");
 		centerContent.setWidth("100%");
 		centerGrid = new Grid();
-		centerGrid.setWidth("100%");
+		centerGrid.setWidth("95%");
 		centerGrid.resize(8, 2);
 		centerGrid.getColumnFormatter().setWidth(0, "100px");
 		selectedPog = new SelectedPog(null);
@@ -278,6 +278,7 @@ public class PogEditor extends DockLayoutPanel {
 			public void onChange(final ChangeEvent event) {
 				isDirty = true;
 				validateForm();
+				adjustLocationSelection();
 			}
 		});
 		pogTypeList.setStyleName("ribbonBarLabel");
@@ -287,6 +288,22 @@ public class PogEditor extends DockLayoutPanel {
 		pogTypeList.addItem(Constants.POG_TYPE_PLAYER);
 		centerGrid.setWidget(1, 0, pogTypeLabel);
 		centerGrid.setWidget(1, 1, pogTypeList);
+	}
+
+	/**
+	 * Set default location based on type selected.
+	 */
+	private void adjustLocationSelection() {
+		String selectedType = pogTypeList.getSelectedItemText();
+		if (selectedType == Constants.POG_TYPE_MONSTER || selectedType == Constants.POG_TYPE_ROOMOBJECT) {
+			if (ServiceManager.getDungeonManager().isEditMode()) {
+				pogLocationList.setSelectedIndex(PogPlace.DUNGEON_LEVEL.getValue());
+			} else {
+				pogLocationList.setSelectedIndex(PogPlace.SESSION_LEVEL.getValue());
+			}
+		} else if (selectedType == Constants.POG_TYPE_PLAYER) {
+			pogLocationList.setSelectedIndex(PogPlace.SESSION_RESOURCE.getValue());
+		}
 	}
 
 	/**
