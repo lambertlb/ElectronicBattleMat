@@ -15,6 +15,7 @@
 			<li><a href="#CreateNewDungeon">Creating a New Dungeon</a></li>
 			<li><a href="#EditDungeon">Editing a Dungeon</a></li>
 			<ul>
+				<li><a href="#DungeonEditorLayout>">Dungeon Editor Layout</a></li>
 				<li><a href="#CreateDungeonLevel">Create a new Dungeon
 						Level</a></li>
 				<li><a href="#EditDungeonLevel">Editing a dungeon level</a></li>
@@ -40,7 +41,7 @@
 	<h2 id="Overview">Electronic Battle Mat Overview</h2>
 	<p>Electronic Battle mat is a Web Application to help DMs and
 		players have a better experience for running a role playing game. It
-		encompasses three modes of operation.
+		encompasses four modes of operation.
 	<ol>
 		<li>Creating and editing Template dungeons</li>
 		<p>Template dungeons contain all the maps and resources needed for
@@ -79,14 +80,6 @@
 		</li>
 		<p>This opens up all the operations and privileges of a Dungeon
 			Master.</p>
-		<li>Select a Template Dungeon</li>
-		<p>
-			This dungeon will be copied as a starting point for the new dungeon.
-			Typically you would select the &quot;<b>Template Dungeon</b>&quot;.
-			This will also make the text box with the text &quot;<b>Enter
-				Dungeon Name</b>&quot; editable.
-		</p>
-		<img src="help/ManageDungeons2.png">
 		<li>Name the new dungeon</li>
 		<p>
 			In the text box labeled "<b>Enter Dungeon Name</b>&quot; enter the
@@ -95,11 +88,11 @@
 			match an existing name. Once a legal name is entered the &quot;<b>Create
 				New Dungeon</b>&quot; button will be enabled.
 		</p>
-		<img src="help/ManageDungeons6.png">
+		<img src="help/ManageDungeons2.png">
 		<li>Click the &quot;<b>Create New Dungeon</b>&quot; button
 			<p>
 				This will create a new dungeon with the entered name by copying the
-				selected dungeon. It should now be visible in the &quot;<b>Select
+				"Template" dungeon. It should now be visible in the &quot;<b>Select
 					a Dungeon for Operations</b>&quot; list.
 			</p> <img src="help/ManageDungeons7.png">
 		</li>
@@ -126,6 +119,102 @@
 			The ribbon bar will also map to the available operations that the DM
 			can do on the dungeon.</p>
 	</ol>
+	<h3 id="DungeonEditorLayout>">Dungeon Editor Layout</h3>
+	<p>This is how the editor should look when it is first opened up on
+		a new dungeon created from the "Template" dungeon.</p>
+	<img src="help/DungeonEditor.png">
+	<ol>
+		<li>This is the <a href="#RibbonBar">Ribbon Bar area</a>.
+		</li>
+		<li>This is the <a href="#BattleMat">Battle Mat area</a>.
+		</li>
+		<li>This is the <a href="#InformationManagement">Information
+				Management area</a>.
+		</li>
+	</ol>
+	<h3 id="RibbonBar">Ribbon Bar Area</h3>
+	<ol>
+		<li>Selected Pog Area</li>
+		<img src="help/RibbonBar1.png">
+		<p>This will show the picture of the currently selected Pog. You
+			can click and drag in this area to place a copy of the pog onto the
+			map.</p>
+		<li>Level Selection Area</li>
+		<img src="help/RibbonBar2.png">
+		<p>This is where you select which dungeon level you wish to edit.</p>
+		<li>Show Pog Notes Checkbox</li>
+		<img src="help/RibbonBar3.png">
+		<p>By checking this box you will cause a floating dialog window to
+			appear. This window will allow you to view and edit the notes placed
+			on a pog. You can edit both regular notes which are viewable by the
+			players or DM notes only viewable by the DM.</p>
+		<li>Show Selected Pog Checkbox</li>
+		<img src="help/RibbonBar4.png">
+		<p>By checking this box you will cause a floating dialog window to
+			appear. This window will allow you to view the picture of the
+			selected pog. You can resize the window by dragging in the lower
+			right corner allowing you to get a better view.</p>
+		<li>Show Help</li>
+		<img src="help/RibbonBar5.png">
+		<p>By clicking here you will get this help page.</p>
+	</ol>
+	<h3 id="BattleMat">Battle Mat Area</h3>
+	<p>
+		This area is where the map and all the objects placed on it appear.
+		When you are DMing a session this will also display the areas that
+		have <b>Fog of War (FOW)</b> on them. It will be transparent to the DM
+		but will be solid black to the players preventing them from seeing
+		stuff. Following are a few things you can do with and to this area.
+	</p>
+	<ol>
+		<li>Pan the Map</li>
+		<p>By clicking on the map and holding the mouse button down you
+			can change the position of the map.</p>
+		<li>Zoom the Map</li>
+		<p>By spinning the center mouse button you can zoom in and out of
+			the map.</p>
+		<li>Move Pogs around</li>
+		<p>You can click on a pog and drag it to a new spot.</p>
+		<li>Add new pogs to map</li>
+		<p>By dragging an dropping a picture of a pog from the ribbon bar
+			you will create a new pog on the map. This is a copy of the pog and
+			not the original. So if you want two more of a monster already on the
+			map. You just need to select it so it shows in the ribbon bar then
+			drag and drop twice from the ribbon bar.</p>
+		<li>Change properties of a pog</li>
+		<p>By right clicking on a pog you can change some properties. Like
+			make it visible or invisible to players or give it a number to help
+			players more easily identify it. You can even delete it from the map.</p>
+	</ol>
+	<h3 id="InformationManagement">Information Management area</h3>
+	<p>This area allows the DM to edit and create all kinds of
+		information related to the dungeon. It is broken into different tabs
+		to help separate functionality.</p>
+	<ol>
+		<li>Art Assets</li>
+		<p>This area allows you to manage the artwork needed for you dungeon</p>
+		<li>Dungeon Editor</li>
+		<p>This area allows you to edit and add dungeon levels</p>
+		<li>Pog Editor</li>
+		<p>This area allows you to do things like edit, create and delete pogs.</p>
+	</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<h3 id="CreateDungeonLevel">Create a new Dungeon Level</h3>
 	<ol>
 		<li>From the ribbon bar click the &quot;&quot;<b>Level
@@ -276,15 +365,11 @@
 	<p>To create a new session do the following steps.</p>
 	<ol>
 		<li>Get into the Manage Dungeons dialog.</li>
-		<p>
-			You can do this be either revisiting the Electronic Battle Mat screen
-			and log back in or if you already in as dungeon master just click the
-			<b>Manage Dungeons</b> Button on the ribbon bar
-		</p>
-		<img src="help/RibbonBar11.png">
+		<p>You can do this by revisiting the Electronic Battle Mat screen
+			and log back in.</p>
 		<li>Check the <b>I am DM</b> check box
 		<li>Select the template dungeon you wish to make a session for</li>
-		<img src="help/ManageDungeons2.png">
+		<img src="help/ManageDungeons.png">
 		<li>Enter a new Session name</li>
 		<p>This name must be unique from other sessions in this dungeon
 			and it must be at least 4 characters long and can't start with "Enter
