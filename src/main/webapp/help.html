@@ -12,10 +12,16 @@
 		<p>
 		<ul>
 			<li><a href="#Overview">Electronic Battle Mat Overview</a></li>
+			<li><a href="#DungeonEditorLayout>">Dungeon Editor Layout</a></li>
 			<li><a href="#CreateNewDungeon">Creating a New Dungeon</a></li>
 			<li><a href="#EditDungeon">Editing a Dungeon</a></li>
 			<ul>
-				<li><a href="#DungeonEditorLayout>">Dungeon Editor Layout</a></li>
+				<li><a href="#ManageArtAssets">Managing Art Assets</a></li>
+				<ul>
+					<li><a href="#AddingArtAssets">Adding Art Assets</a></li>
+					<li><a href="#DeletingArtAssets">Deleting Art Assets</a></li>
+					<li><a href="#SelectingArtAssets">Selecting Art Assets</a></li>
+				</ul>
 				<li><a href="#CreateDungeonLevel">Create a new Dungeon
 						Level</a></li>
 				<li><a href="#EditDungeonLevel">Editing a dungeon level</a></li>
@@ -38,6 +44,8 @@
 		</ul>
 		</p>
 	</div>
+
+
 	<h2 id="Overview">Electronic Battle Mat Overview</h2>
 	<p>Electronic Battle mat is a Web Application to help DMs and
 		players have a better experience for running a role playing game. It
@@ -69,57 +77,9 @@
 			the map. They can also create a PC pog and move it around the visible
 			areas of the map.</p>
 	</ol>
-	</p>
-	<h2 id="CreateNewDungeon">Creating a New Dungeon</h2>
-	<p>
-		These are the steps to create a new dungeon. They are performed in the
-		Dungeon Manager Dialog when &quot;<b>I am DM</b>&quot; is checked
-	</p>
-	<ol>
-		<li>Check the <b>I am DM</b> check box
-		</li>
-		<p>This opens up all the operations and privileges of a Dungeon
-			Master.</p>
-		<li>Name the new dungeon</li>
-		<p>
-			In the text box labeled "<b>Enter Dungeon Name</b>&quot; enter the
-			name of your new dungeon. You can use letters, numbers and spaces in
-			the name. The name must be greater than 4 letters long and cannot
-			match an existing name. Once a legal name is entered the &quot;<b>Create
-				New Dungeon</b>&quot; button will be enabled.
-		</p>
-		<img src="help/ManageDungeons2.png">
-		<li>Click the &quot;<b>Create New Dungeon</b>&quot; button
-			<p>
-				This will create a new dungeon with the entered name by copying the
-				"Template" dungeon. It should now be visible in the &quot;<b>Select
-					a Dungeon for Operations</b>&quot; list.
-			</p> <img src="help/ManageDungeons7.png">
-		</li>
-	</ol>
-	<h2 id="EditDungeon">Editing a Dungeon</h2>
-	<p>
-		These are the steps to edit a dungeon. They are performed in the
-		Dungeon Manager Dialog when &quot;<b>I am DM</b>&quot; is checked
-	</p>
-	<ol>
-		<li>Check the <b>I am DM</b> check box
-		</li>
-		<p>This opens up all the operations and privileges of a Dungeon
-			Master.</p>
-		<li>Select a Dungeon to edit</li>
-		<p>
-			In the drop down called &quot;<b>Select a Dungeon for Operations</b>&quot;
-			select a dungeon to edit. This will enable the &quot;<b>Edit
-				Dungeon</b>&quot; button.
-		</p>
-		<li>Press the &quot;<b>Edit Dungeon</b>&quot; button
-		</li>
-		<p>This will load in the dungeon and display the first level map.
-			The ribbon bar will also map to the available operations that the DM
-			can do on the dungeon.</p>
-	</ol>
-	<h3 id="DungeonEditorLayout>">Dungeon Editor Layout</h3>
+
+
+	<h2 id="DungeonEditorLayout>">Dungeon Editor Layout</h2>
 	<p>This is how the editor should look when it is first opened up on
 		a new dungeon created from the "Template" dungeon.</p>
 	<img src="help/DungeonEditor.png">
@@ -141,7 +101,8 @@
 			map.</p>
 		<li>Level Selection Area</li>
 		<img src="help/RibbonBar2.png">
-		<p>This is where you select which dungeon level you wish to edit.</p>
+		<p>This is where you select which dungeon level you wish to view
+			or edit.</p>
 		<li>Show Pog Notes Checkbox</li>
 		<img src="help/RibbonBar3.png">
 		<p>By checking this box you will cause a floating dialog window to
@@ -176,7 +137,7 @@
 		<li>Move Pogs around</li>
 		<p>You can click on a pog and drag it to a new spot.</p>
 		<li>Add new pogs to map</li>
-		<p>By dragging an dropping a picture of a pog from the ribbon bar
+		<p>By dragging and dropping a picture of a pog from the ribbon bar
 			you will create a new pog on the map. This is a copy of the pog and
 			not the original. So if you want two more of a monster already on the
 			map. You just need to select it so it shows in the ribbon bar then
@@ -192,18 +153,134 @@
 		to help separate functionality.</p>
 	<ol>
 		<li>Art Assets</li>
-		<p>This area allows you to manage the artwork needed for you dungeon</p>
+		<p>This area allows you to manage the artwork needed for you
+			dungeon</p>
 		<li>Dungeon Editor</li>
 		<p>This area allows you to edit and add dungeon levels</p>
 		<li>Pog Editor</li>
-		<p>This area allows you to do things like edit, create and delete pogs.</p>
+		<p>This area allows you to do things like edit, create and delete
+			pogs.</p>
+	</ol>
+
+
+	<h2 id="CreateNewDungeon">Creating a New Dungeon</h2>
+	<p>These are the steps to create a new dungeon. You have access to
+		this dialog just after you log in.</p>
+	<ol>
+		<li>Check the <b>I am DM</b> check box
+		</li>
+		<p>This opens up all the operations and privileges of a Dungeon
+			Master.</p>
+		<li>Name the new dungeon</li>
+		<p>
+			In the text box labeled "<b>Enter Dungeon Name</b>&quot; enter the
+			name of your new dungeon. You can use letters, numbers and spaces in
+			the name. The name must be greater than 4 letters long and cannot
+			match an existing name. Once a legal name is entered the &quot;<b>Create
+				New Dungeon</b>&quot; button will be enabled.
+		</p>
+		<img src="help/ManageDungeons2.png">
+		<li>Click the &quot;<b>Create New Dungeon</b>&quot; button
+			<p>
+				This will create a new dungeon with the entered name by copying the
+				"Template" dungeon. It should now be visible in the &quot;<b>Select
+					a Dungeon for Operations</b>&quot; list.
+			</p> <img src="help/ManageDungeons7.png">
+		</li>
+	</ol>
+
+
+	<h2 id="EditDungeon">Editing a Dungeon</h2>
+	<p>These are the steps to edit a dungeon.</p>
+	<ol>
+		<li>Check the <b>I am DM</b> check box
+		</li>
+		<p>This opens up all the operations and privileges of a Dungeon
+			Master.</p>
+		<li>Select a Dungeon to edit</li>
+		<p>
+			In the drop down called &quot;<b>Select a Dungeon for Operations</b>&quot;
+			select a dungeon to edit. This will enable the &quot;<b>Edit
+				Dungeon</b>&quot; button.
+		</p>
+		<li>Press the &quot;<b>Edit Dungeon</b>&quot; button
+		</li>
+		<p>This will load in the dungeon and display the first level map.
+			The ribbon bar will also map to the available operations that the DM
+			can do on the dungeon.</p>
 	</ol>
 
 
 
+	<h2 id="ManageArtAssets">Managing Art Assets</h2>
+	<p>One of the first operations you will probably need to do is
+		manage some of the art assets. Specifically you will probably want to
+		have access to a picture that will be used for this level of the
+		dungeon</p>
+	<img src="help/ArtAssets1.png">
+	<p>Above you can see that there are already some assets available
+		and they belong in three categories.</p>
+	<ol>
+		<li>Dungeon Assets</li>
+		<p>All items in this list belong specifically to the Dungeon you
+			are currently editing. For example level1.png is the picture for
+			level 1. So if you need to add or subtract any artwork for your
+			dungeon it would be in this list. dungeonData.json is a JSON
+			formatted text file containing all the information about the dungeon.
+			You should not need to manipulate this file manually. You can edit it
+			using the Dungeon Editor Tab</p>
+		<li>Global Monster Assets</li>
+		<p>This list contains any pictures for monsters that you wish to
+			have available across all dungeons. pogs.json is a JSON formatted
+			text file containing the pog information that uses the pictures. You
+			should not need to manipulate this file manually. You can edit it
+			using the Pog Editor Tab.</p>
+		<li>Global Room Assets</li>
+		<p>This list contains any pictures for room objects that you wish
+			to have available across all dungeons. pogs.json is a JSON formatted
+			text file containing the pog information that uses the pictures. You
+			should not need to manipulate this file manually. You can edit it
+			using the Pog Editor Tab.</p>
+	</ol>
 
+	<h2 id="AddingArtAssets">Adding Art Assets</h2>
+	<p>Following is how you would add an art asset.</p>
+	<ol>
+		<li>Select where you want the asset to be uploaded to.</li>
+		<p>
+			For example you may wish this to be a dungeon asset so select the <b>Dungeon
+				Assets</b> area. You can select either the top level or any items in the
+			list. This will enable the <b>Choose File</b> button.
+		</p>
+		<img src="help/ArtAssets2.png">
+		<li>Choose file you wish to upload.</li>
+		<p>
+			Click the <b>Choose File</b> button then navigate to and select the
+			picture file you wish to upload then press the open button. The
+			filename should show up next to the Choose File button. The <b>Upload
+				Asset</b> button should become enabled.
+		</p>
+		<li>Upload the file.</li>
+		<p>
+			Click the <b>Upload Asset</b> button to actually upload it to the
+			server. The list should update and show you the new file.
+		</p>
+	</ol>
 
+	<h2 id="DeletingArtAssets">Deleting Art Assets</h2>
+	<p>
+		Select the item you wish to delete and the <b>Delete Asset</b> button
+		will enable. Just click it to delete the asset. Some assets like
+		dungeonData or pogs .json files cannot be deleted.
+	</p>
 
+	<h2 id="SelectingArtAssets">Selecting Art Assets</h2>
+	<p>When you need to use an art asset in either the Dungeon Editor
+		or the Pog Editor just select a picture file in one of the lists. The
+		file path for the file you selected will show up under the buttons at
+		the top of the panel. This path is also save internally and is
+		available to be used by the mentioned editor. See those editors on the
+		specifics on how to get at it.</p>
 
 
 
