@@ -22,6 +22,7 @@
 					<li><a href="#DeletingArtAssets">Deleting Art Assets</a></li>
 					<li><a href="#SelectingArtAssets">Selecting Art Assets</a></li>
 				</ul>
+				<li><a href="#ManageDungeonLevels">Managing Dungeon Levels</a></li>
 				<li><a href="#CreateDungeonLevel">Create a new Dungeon
 						Level</a></li>
 				<li><a href="#EditDungeonLevel">Editing a dungeon level</a></li>
@@ -146,6 +147,28 @@
 		<p>By right clicking on a pog you can change some properties. Like
 			make it visible or invisible to players or give it a number to help
 			players more easily identify it. You can even delete it from the map.</p>
+		<li>Adjust Fog of War</li>
+		<p>Dms have the ability to adjust what the players see I.E. change
+			the fog of war. This can be done several ways only when DMing a
+			session</p>
+		<ol>
+			<li>Toggle FOW check box on ribbon bar</li>
+			<p>The DM can enable this mode by clicking in the checkbox. Once
+				in this mode you can click on the map in a grid square. The FOW in
+				that square will toggle. If you hold down the mouse button and move
+				around the map other squares will also change to what the starting
+				one was.</p>
+			<li>Shift click in a grid square</li>
+			<p>The DM can change FOW by just holding SHIFT key down and
+				clicking in a square. The FOW in that square will toggle. If you
+				hold down the mouse button and move around the map other squares
+				will also change to what the starting one was.</p>
+			<li>Control click in a grid square</li>
+			<p>The DM can change FOW by just holding Control key down and
+				clicking in a square. Now you drag to form a red rectangle. All the
+				squares in to rectangle will change to the opposite of the first one
+				you clicked in.</p>
+		</ol>
 	</ol>
 	<h3 id="InformationManagement">Information Management area</h3>
 	<p>This area allows the DM to edit and create all kinds of
@@ -282,7 +305,72 @@
 		available to be used by the mentioned editor. See those editors on the
 		specifics on how to get at it.</p>
 
-
+	<h2 id="ManageDungeonLevels">Managing Dungeon Levels</h2>
+	<p>
+		The tab labeled <b>Dungeon Editor</b> allows you to edit levels of the
+		dungeon. What information is shown here is dependent on what level is
+		selected in the drop down list on the ribbon bar.
+	</p>
+	<img src="help/DungeonEditor1.png">
+	<p>Following is a brief description of what the items in this view
+		do.</p>
+	<ul>
+		<li>Manage Dungeons button</li>
+		<p>
+			This will call up the Manage Dungeons Dialog box allowing you to
+			switch dungeons or create new ones as described in <a
+				href="#CreateNewDungeon">Creating a New Dungeon.</a>
+		</p>
+		<li>New Level button</li>
+		<p>This will clear out the information for the current level and
+			make the entries ready for a new one. You just need to fill in the
+			appropriate information and click the save button to create the new
+			level.</p>
+		<li>DELETE Level button</li>
+		<p>
+			This delete the currently selected level. <b>There is no undo so
+				be very careful with this.</b>
+		</p>
+		<li>Level Name</li>
+		<p>This is where you enter or change the name of the selected
+			level</p>
+		<li>Show Grid checkbox</li>
+		<p>This is where you enable or disable the grid from showing on
+			the map. This is mainly used for sizing the grid. Most maps have the
+			grid already drawn on them but this tool needs to match that grid in
+			size and position so you would enable the grid to help with that</p>
+		<li>Grid Size button</li>
+		<p>To assist in figuring out the size of a grid square you can do
+			the following. Go to the map and zoom in until one square is pretty
+			large. Then control click in the upper left corner of the square and
+			draw a rectangle to the lower right corner. Then release the mouse
+			button. The size of this box will get captured internally and get put
+			into the Dungeon editor dialog when you press the Grid Size button.
+			This will get the number close but might need some manual tweaking.
+			The number can have a decimal point in it so you can fine toon it.</p>
+		<img src="help/DungeonEditor2.png">
+		<li>OffsetX and OffsetY</li>
+		<p>Once you have the grid size correct you probable will need to
+			have the grid move up, down, left or right. You enter decimal numbers
+			in Offset X and Y to do that.</p>
+		<li>Use Selected picture resource button</li>
+		<p>
+			The text area next to this button is where you enter the URL for the
+			picture you wish to use for this level. The picture can be gotten
+			from the internet by using its web path. It can also be gotten from
+			one of your assets you upload in the asset management tab. Just go
+			there and select the picture then come back here and press the <b>Selected
+				picture resource</b> button.
+		</p>
+		<li>Save button</li>
+		<p>If all information in the dialog area is correct then the save
+			button will enable. Just press it to save the data. If you had pushed
+			the New Level button then a new level will be created with the
+			information else the existing level will be edited.</p>
+		<li>Cancel button</li>
+		<p>Pressing cancel will throw away changes and revert back to
+			original information.</p>
+	</ul>
 
 
 
