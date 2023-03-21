@@ -23,6 +23,8 @@
 					<li><a href="#SelectingArtAssets">Selecting Art Assets</a></li>
 				</ul>
 				<li><a href="#ManageDungeonLevels">Managing Dungeon Levels</a></li>
+				<li><a href="#ManagePogs">Managing Pogs</a></li>
+
 				<li><a href="#CreateDungeonLevel">Create a new Dungeon
 						Level</a></li>
 				<li><a href="#EditDungeonLevel">Editing a dungeon level</a></li>
@@ -347,7 +349,7 @@
 			button. The size of this box will get captured internally and get put
 			into the Dungeon editor dialog when you press the Grid Size button.
 			This will get the number close but might need some manual tweaking.
-			The number can have a decimal point in it so you can fine toon it.</p>
+			The number can have a decimal point in it so you can fine tune it.</p>
 		<img src="help/DungeonEditor2.png">
 		<li>OffsetX and OffsetY</li>
 		<p>Once you have the grid size correct you probable will need to
@@ -372,7 +374,139 @@
 			original information.</p>
 	</ul>
 
-
+	<h2 id="ManagePogs">Managing Pogs</h2>
+	<p>
+		The tab labeled <b>Pog Editor</b> allows you to edit, create and
+		delete pogs. Pogs are the little pictures you can create and drop onto
+		the map. They represent the monsters, Player characters, and room
+		object that might exist in the dungeon.
+	</p>
+	<img src="help/PogEditor1.png">
+	<ul>
+		<li>Create Pog Button</li>
+		<p>This will clear out the dialog information in preparation for
+			creating a new Pog.</p>
+		<li>DELETE Pog Button</li>
+		<p>
+			This delete the currently selected pog. <b>There is no undo so be
+				very careful with this.</b>
+		</p>
+		<li>Pog Name</li>
+		<p>
+			This is where you give your pog a name. I suggest you use the
+			following guideline in doing that. Make the name by using RACE CLASS
+			SEX separated by spaces. By doing this in the future filtering can
+			easily be added to narrow down choices to help find things.</b>
+		</p>
+		<li>Pog type</li>
+		<p>
+			There are three choices. MONSTER, ROOM OBJECT, and PLAYER. The type
+			are mostly to help separate them in lists. Players are the only
+			unique ones because there can only ever be one instance. So if you
+			drag and drop them on a different map they disappear from the
+			original map. Also PLAYER can only be created and used when DMing a
+			session because they exist in the Session data and not in the dungeon
+			data as explained later.</b>
+		</p>
+		<li>Pog Location</li>
+		<p>This is where the data for this pog resides. Following are the
+			possibilities.</p>
+		<ul>
+			<li>Dungeon Level</li>
+			<p>This means the data exists in the dungeonData.json file in the
+				section for a specific level. Most of the time data is gotten here
+				by dragging and dropping a pog from the ribbon bar onto the map. A
+				copy of the select pogs information in placed in the Dungeon Level.
+				This is where you would also create and dungeon specific pogs.</p>
+			<li>Session Level</li>
+			<p>This means the data for the pog is stored in the
+				sessionData.json file in a specific session. This file starts out as
+				a copy of dungeonData.json file. This way any pogs moved around,
+				created or deleted only affect the one session. Data is only changed
+				here when the DM is managing a session.</p>
+			<li>Player Location</li>
+			<p>This means the data for the pog is stored in the
+				sessionData.json file in a specific session. The data for these
+				player characters are in a special portion of the sessionData.json
+				file. Data is only changed here when the DM is managing a session.</p>
+			<li>Common Resource</li>
+			<p>This means the data for the pog is stored in the pogs.json
+				file in common resource area. This area is outside of any specific
+				dungeon and therefore applies to all of them. This is where you
+				would add pogs that all dungeons might shares like Kobolds.</p>
+		</ul>
+		<li>Use Selected picture resource button</li>
+		<p>
+			The text area next to this button is where you enter the URL for the
+			picture you wish to use for this pog. The picture can be gotten from
+			the internet by using its web path. It can also be gotten from one of
+			your assets you upload in the asset management tab. Just go there and
+			select the picture then come back here and press the <b>Selected
+				picture resource</b> button.
+		</p>
+		<li>Edit Notes button</li>
+		<p>Pressing this button will bring up a dialog box the will allow
+			you edit either the player visible notes or the DM notes that the
+			players don't see. Any pog can have notes on them. These are useful
+			for adding box text to the map.</p>
+		<li>Pog size drop down</li>
+		<p>Next to the notes button is a size drop down. Normal means the
+			pog takes up one grid square. Large is 2x2. Huge is 3x3. Gargantuan
+			is 4x4</p>
+		<li>Player Flags button</li>
+		<p>This button will bring up a dialog to select player flags.
+			These are flags players can adjust during a session.</p>
+		<ul>
+			<li>Dead</li>
+			<p>This means the monster or player is dead. An indicator will be
+				placed on the Pog to denote that.</p>
+			<li>Invisible</li>
+			<p>This means the monster or player is invisible. The pog will be
+				transparent to denote that. This transparent pog can be seen by
+				players.</p>
+		</ul>
+		<li>DM Flags button</li>
+		<p>This button will bring up a dialog to select DM flags. These
+			are flags only a DM can manipulate.</p>
+		<ul>
+			<li>Invisible to Player</li>
+			<p>This means the monster or PC is invisible to players. The pog
+				will be transparent to the DM denote that. This transparent pog
+				cannot be seen by players.</p>
+			<li>Transparent Background</li>
+			<p>If the picture for a pog has a transparent background then it
+				is allowed to be used. Otherwise a white background is used.</p>
+			<li>Shift to Right</li>
+			<p>Normally pogs are draw with the upper left corner matching the
+				upper left corner of a grid square. Something you might wish it to
+				be over a bit for example a secret door would be on the wall and not
+				in a square. By selecting this option the pog will move to the right
+				half a square.</p>
+			<li>Shift to Top</li>
+			<p>Normally pogs are draw with the upper left corner matching the
+				upper left corner of a grid square. Something you might wish it to
+				be over a bit for example a secret door would be on the wall and not
+				in a square. By selecting this option the pog will move up half a
+				square.</p>
+			<li>Dark background in edit mode</li>
+			<p>Sometimes a light pog picture is hard to see against a light
+				background. By making the background dark in edit mode it helps.</p>
+		</ul>
+		<li>Save button</li>
+		<p>If all information in the dialog area is correct then the save
+			button will enable. Just press it to save the data. If you had pushed
+			the New Pog button then a new pog will be created with the
+			information else the existing pog will be edited.</p>
+		<li>Cancel button</li>
+		<p>Pressing cancel will throw away changes and revert back to
+			original information.</p>
+		<li>Pog trees</li>
+		<p>Below the editable area is where to trees of existing pogs
+			lives. you can use this to find and select a particular pog. The
+			information for it will show up in the edit area and its picture will
+			show up in both the ribbon bar and at the lower part of this panel.
+			You can drag and drop either picture to create a copy on the map.</p>
+	</ul>
 
 
 

@@ -38,7 +38,7 @@ public final class DungeonMasterFlag extends FlagBit {
 	/**
 	 * This pog is invisible to players.
 	 */
-	public static final DungeonMasterFlag INVISIBLE_FROM_PLAYER = new DungeonMasterFlag("Invis to Player"); // 1
+	public static final DungeonMasterFlag INVISIBLE_FROM_PLAYER = new DungeonMasterFlag("Invisible to Player"); // 1
 	/**
 	 * The background is transparent.
 	 */
