@@ -283,11 +283,18 @@ public class PogEditor extends DockLayoutPanel {
 		});
 		pogTypeList.setStyleName("ribbonBarLabel");
 		pogTypeList.setVisibleItemCount(1);
-		pogTypeList.addItem(Constants.POG_TYPE_MONSTER);
-		pogTypeList.addItem(Constants.POG_TYPE_ROOMOBJECT);
-		pogTypeList.addItem(Constants.POG_TYPE_PLAYER);
+		fillPogTypeList();
 		centerGrid.setWidget(1, 0, pogTypeLabel);
 		centerGrid.setWidget(1, 1, pogTypeList);
+	}
+
+	private void fillPogTypeList() {
+		pogTypeList.clear();
+		pogTypeList.addItem(Constants.POG_TYPE_MONSTER);
+		pogTypeList.addItem(Constants.POG_TYPE_ROOMOBJECT);
+		if (!ServiceManager.getDungeonManager().isEditMode()) {
+			pogTypeList.addItem(Constants.POG_TYPE_PLAYER);
+		}
 	}
 
 	/**
@@ -322,12 +329,23 @@ public class PogEditor extends DockLayoutPanel {
 		});
 		pogLocationList.setStyleName("ribbonBarLabel");
 		pogLocationList.setVisibleItemCount(1);
-		Collection<FlagBit> places = PogPlace.getValues();
-		for (FlagBit flag : places) {
-			pogLocationList.addItem(flag.getName());
-		}
+		fillPogPlaceList();
 		centerGrid.setWidget(2, 0, pogLocationLabel);
 		centerGrid.setWidget(2, 1, pogLocationList);
+	}
+
+	/**
+	 * Fill in type list with proper locations.
+	 */
+	private void fillPogPlaceList() {
+		pogLocationList.clear();
+		boolean inEdit = ServiceManager.getDungeonManager().isEditMode();
+		Collection<FlagBit> places = PogPlace.getValues();
+		for (FlagBit flag : places) {
+			if (!inEdit || (!flag.getName().contains("Session") && !flag.getName().contains("Player"))) {
+				pogLocationList.addItem(flag.getName());
+			}
+		}
 	}
 
 	/**
@@ -547,7 +565,7 @@ public class PogEditor extends DockLayoutPanel {
 					return;
 				}
 				if (event.getReasonForAction() == ReasonForAction.PogDataChanged) {
-					pogDataChanged((PogData)event.getData());
+					pogDataChanged((PogData) event.getData());
 					return;
 				}
 			}
@@ -556,6 +574,7 @@ public class PogEditor extends DockLayoutPanel {
 
 	/**
 	 * Pog data has changed.
+	 * 
 	 * @param data
 	 */
 	private void pogDataChanged(final PogData data) {
@@ -654,6 +673,8 @@ public class PogEditor extends DockLayoutPanel {
 	 * New dungeon loaded.
 	 */
 	private void dungeonDataLoaded() {
+		fillPogPlaceList();
+		fillPogTypeList();
 		selectPog();
 	}
 
