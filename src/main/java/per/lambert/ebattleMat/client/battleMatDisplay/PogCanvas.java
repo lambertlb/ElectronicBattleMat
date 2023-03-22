@@ -390,6 +390,7 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 
 	/**
 	 * Pog data may have changed so update it.
+	 * 
 	 * @param updateData
 	 */
 	public void updatePogData(final PogData updateData) {
@@ -654,16 +655,10 @@ public class PogCanvas extends Composite implements HasDragStartHandlers, MouseD
 		}
 		double opacity = 1.0;
 		if (!showNormalSizeOnly) {
-			if (ServiceManager.getDungeonManager().isDungeonMaster()) {
-				if (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)) {
-					opacity = 0.5; // DM can see transparent view
-				}
-			} else {
-				if (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)) {
-					opacity = 0; // player sees nothing
-				} else if (pogData.isFlagSet(PlayerFlag.INVISIBLE)) {
-					opacity = 0.5; // player see transparent view
-				}
+			if (pogData.isFlagSet(PlayerFlag.INVISIBLE)) {
+				opacity = 0.5; // player see transparent view
+			} else if (pogData.isFlagSet(DungeonMasterFlag.INVISIBLE_FROM_PLAYER)) {
+				opacity = ServiceManager.getDungeonManager().isDungeonMaster() ? 0.5 : 0;
 			}
 		}
 		pogDrawPanel.getElement().getStyle().setOpacity(opacity);

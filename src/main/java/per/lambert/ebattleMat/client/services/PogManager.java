@@ -199,6 +199,9 @@ public abstract class PogManager implements IPogManager {
 	 */
 	@Override
 	public void toggleFlagOfSelectedPog(final DungeonMasterFlag flag) {
+		if (!ServiceManager.getDungeonManager().isDungeonMaster()) {
+			return;
+		}
 		if (selectedPog != null) {
 			if (selectedPog.isFlagSet(flag)) {
 				selectedPog.clearFlags(flag);
