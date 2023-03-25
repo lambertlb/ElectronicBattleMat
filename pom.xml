@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 		</dependency>
 
 		<!-- from example https://github.com/jetty-project/embedded-jetty-jsp/blob/master/pom.xml -->
