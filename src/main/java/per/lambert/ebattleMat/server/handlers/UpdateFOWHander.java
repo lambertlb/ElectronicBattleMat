@@ -45,7 +45,7 @@ public class UpdateFOWHander implements IWebRequestHandler {
 		/**
 		 * Fog of war data.
 		 */
-		private int[] fogOfWar;
+		private long[] fogOfWar;
 	}
 
 	/**

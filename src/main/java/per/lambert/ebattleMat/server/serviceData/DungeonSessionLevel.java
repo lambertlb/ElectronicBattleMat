@@ -35,19 +35,10 @@ public class DungeonSessionLevel {
 	public int getFogOfWarVersion() {
 		return fogOfWarVersion;
 	}
-
-	/**
-	 * Array for Fog of War.
-	 * 
-	 * No longer used but left here for backwards compatibility.
-	 * Old data will get migrated on client side.
-	 */
-	@SuppressWarnings("unused")
-	private boolean[][] fogOfWar;
 	/**
 	 * Bits for fog of war.
 	 */
-	private int[] fogOfWarData = new int[0];
+	private long[] fogOfWarData = new long[0];
 	/**
 	 * list of monsters.
 	 */
@@ -62,10 +53,9 @@ public class DungeonSessionLevel {
 	 * 
 	 * @param newFogOfWar Array for Fog of War.
 	 */
-	public void setFogOfWar(final int[] newFogOfWar) {
+	public void setFogOfWar(final long[] newFogOfWar) {
 		this.fogOfWarData = newFogOfWar;
 		++fogOfWarVersion;
-		fogOfWar = null;
 	}
 
 	/**
@@ -121,9 +111,9 @@ public class DungeonSessionLevel {
 	 */
 	private void creatFogOfWar(final DungeonLevel dungeonLevel) {
 		int intsNeeded = ((dungeonLevel.getColumns() * dungeonLevel.getRows()) / 32) + 1;
-		fogOfWarData = new int[intsNeeded];
+		fogOfWarData = new long[intsNeeded];
 		for (int i = 0; i < fogOfWarData.length; ++i) {
-			fogOfWarData[i] = -1;
+			fogOfWarData[i] = 0xffffffff;
 		}
 	}
 }

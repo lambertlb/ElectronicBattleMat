@@ -655,7 +655,7 @@ public final class DungeonsManager {
 	 * @param currentLevel level in dungeon
 	 * @param fogOfWar array of fog of war bits
 	 */
-	public static void updateFOW(final HttpServlet servlet, final String sessionUUID, final int currentLevel, final int[] fogOfWar) {
+	public static void updateFOW(final HttpServlet servlet, final String sessionUUID, final int currentLevel, final long[] fogOfWar) {
 		lock.lock();
 		try {
 			SessionInformation sessionInformation = getSessionFromCache(sessionUUID);

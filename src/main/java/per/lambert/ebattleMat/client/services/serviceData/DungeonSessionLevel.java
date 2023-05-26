@@ -58,28 +58,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * 
 	 * @return fog of War.
 	 */
-	public final native boolean[][] getOldFOW() /*-{
-		if (this.fogOfWar === undefined) {
-			return (null);
-		}
-		return (this.fogOfWar);
-	}-*/;
-
-	/**
-	 * set fog of War.
-	 * 
-	 * @param fogOfWar fog of War.
-	 */
-	public final native void setOldFOW(boolean[][] fogOfWar) /*-{
-		this.fogOfWar = fogOfWar;
-	}-*/;
-
-	/**
-	 * Get fog of War.
-	 * 
-	 * @return fog of War.
-	 */
-	public final native int[] getFOW() /*-{
+	public final native long[] getFOW() /*-{
 		if (this.fogOfWarData === undefined) {
 			return (null);
 		}
@@ -94,7 +73,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * @param value value for cell
 	 */
 	public final void updateFOW(final int columns, final int rows, final boolean value) {
-		int[] fowGrid = getFOW();
+		long[] fowGrid = getFOW();
 		if (fowGrid == null) {
 			return;
 		}
@@ -117,7 +96,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * @return value of cell
 	 */
 	public final boolean isFowSet(final int column, final int row) {
-		int[] fowGrid = getFOW();
+		long[] fowGrid = getFOW();
 		if (fowGrid == null) {
 			return (false);
 		}
@@ -133,7 +112,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * 
 	 * @param fogOfWarData fog of War.
 	 */
-	public final native void setFOW(int[] fogOfWarData) /*-{
+	public final native void setFOW(long[] fogOfWarData) /*-{
 		this.fogOfWarData = fogOfWarData;
 	}-*/;
 
@@ -183,27 +162,7 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * @return true if migrated
 	 */
 	private boolean migrateFOW(final DungeonLevel dungeonLevel) {
-		boolean[][] oldData = getOldFOW();
-		if (oldData == null) {
-			return (false);
-		}
-		int[] newData = createNewFOWData(dungeonLevel.getRows());
-		for (int row = 0; row < dungeonLevel.getRows(); ++row) {
-			for (int column = 0; column < dungeonLevel.getColumns(); ++column) {
-				int bitIndex = (row * getBitsPerColumn()) + column;
-				int arrayIndex = bitIndex / 32;
-				int bitShift = bitIndex % 32;
-				int bitMask = 1 << bitShift;
-				if (oldData[column][row]) {
-					newData[arrayIndex] |= bitMask;
-				} else {
-					newData[arrayIndex] &= ~bitMask;
-				}
-			}
-		}
-		setFOW(newData);
-		setOldFOW(null);
-		return (true);
+		return (false);
 	}
 
 	/**
@@ -212,8 +171,8 @@ public class DungeonSessionLevel extends JavaScriptObject {
 	 * @param rows
 	 * @return array
 	 */
-	public final int[] createNewFOWData(final int rows) {
-		int[] newData = new int[((getBitsPerColumn() * rows) / 32) + 1];
+	public final long[] createNewFOWData(final int rows) {
+		long[] newData = new long[((getBitsPerColumn() * rows) / 32) + 1];
 		return (newData);
 	}
 

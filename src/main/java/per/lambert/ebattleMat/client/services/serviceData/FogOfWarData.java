@@ -44,7 +44,7 @@ public class FogOfWarData extends JavaScriptObject {
 	 * Set fog of war data.
 	 * @param fogOfWar data.
 	 */
-	public final native void setFOW(int[] fogOfWar) /*-{
+	public final native void setFOW(long[] fogOfWar) /*-{
 		this.fogOfWar = fogOfWar;
 	}-*/;
 }

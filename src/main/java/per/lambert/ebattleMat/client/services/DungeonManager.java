@@ -1282,11 +1282,11 @@ public class DungeonManager extends PogManager implements IDungeonManager {
 	/**
 	 * Saved FOW.
 	 */
-	private int[] savedFOW;
+	private long[] savedFOW;
 
 	private void hideFOW() {
 		savedFOW = getCurrentSessionLevelData().getFOW();
-		int[] fogOfWar = getCurrentSessionLevelData().createNewFOWData(getCurrentDungeonLevelData().getRows());
+		long[] fogOfWar = getCurrentSessionLevelData().createNewFOWData(getCurrentDungeonLevelData().getRows());
 		getCurrentSessionLevelData().setFOW(fogOfWar);
 	}
 
