@@ -735,7 +735,9 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 		if (currentFOW != !clearFOW) {
 			ServiceManager.getDungeonManager().setFow(selectedColumn, selectedRow, !currentFOW);
 			drawFOW(!currentFOW, gridSpacing, selectedColumn, selectedRow);
-			bitBlitFOW();
+			if (!doingSelection) {
+				bitBlitFOW();
+			}
 		}
 	}
 
@@ -784,6 +786,7 @@ public class BattleMatCanvas extends AbsolutePanel implements MouseWheelHandler,
 				}
 			}
 			doingSelection = false;
+			drawEverything();
 		}
 		panOperationComplete();
 		DOM.releaseCapture(canvas.getElement());
